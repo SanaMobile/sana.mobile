@@ -1,0 +1,10 @@
+Self contained mobile project for Sana.
+
+Contents:
+1. api
+2. api-android
+3. app-android
+
+api: Pure java library. WIP
+api-android: Common library for Sana mobile Android client as well external plugin apps.
+app-android: Sana mobile Android application.
