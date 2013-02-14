@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?> 
+
+<!-- Used in SavedProcedureList activity-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dip">
+    <CheckBox
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginRight="6dip" 
+        android:focusable="false" 
+        android:focusableInTouchMode="false"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:layout_height="fill_parent">
+        <TextView
+        	android:text="" 
+            android:id="@+id/toptext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+        	android:focusable="false" 
+        	android:focusableInTouchMode="false"/>
+        <TextView
+        	android:text="" 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            android:id="@+id/bottomtext"
+            android:ellipsize="marquee"
+        	android:focusable="false" 
+        	android:focusableInTouchMode="false"/>
+        <TextView
+        	android:text="" 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            android:id="@+id/queue_status"
+            android:ellipsize="marquee"
+        	android:focusable="false" 
+        	android:focusableInTouchMode="false"/>
+    </LinearLayout>
+</LinearLayout>

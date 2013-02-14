@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/title_resource_settings" >
+        <EditTextPreference
+            android:key="s_binary_file_path"
+            android:summary="@string/setting_storage_directory_summary"
+            android:title="@string/setting_storage_directory" />
+        <EditTextPreference
+            android:key="s_pic_scale"
+            android:summary="@string/setting_image_scale"
+            android:title="@string/setting_image_scale_summary" />
+        <CheckBoxPreference 
+            android:key="s_edu_rsrc"
+            android:title="@string/setting_edu"
+            android:summary="@string/setting_edu_summary"
+            android:defaultValue="false" />
+        <PreferenceScreen
+            android:key="s_education_resource"
+            android:summary="@string/setting_edu_viewer_summary"
+            android:title="@string/setting_edu_viewer" />
+        <PreferenceScreen
+            android:key="s_procedures"
+            android:summary="@string/setting_procedure_summary"
+            android:title="@string/setting_procedure" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

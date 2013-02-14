@@ -1,8 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Docs say that all the identifiers should be in lower case -->
+
 <resources>
 
+    <string name="hello">Hello</string>
     <string name="app_name">Sana</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
-
+    
+    <!--  Activity titles  -->
+    <string name="title_register_new_patient">Register New Patient</string>
+    <string name="title_patients_list">All Patients</string>
+    <string name="title_procedures_list">Available Procedures</string>
+    <string name="title_savedprocedure_list">Saved Procedures</string>
+	<string name="title_procedure_runner">Sana Perform Procedure</string>
+	<string name="title_notification_viewer">Sana Notification Viewer</string>
+	<string name="title_notifications_list">Notifications List (by Patient ID)</string>
+    <string name="title_help_list">Help List</string>
+	<string name="title_settings">Sana Settings</string>
+    <string name="title_network_settings">Sana Network Settings</string>
+    <string name="title_resource_settings">Sana Resource Settings</string>
+	<string name="title_upload_service">Sana Upload Service</string>
+	
+	<!-- Main menu buttons  -->
+    <string name="button_main_education">Education Resources</string>
+	<string name="button_main_new_encounter">Encounters</string>
+	<string name="button_main_view_prior_encounters">View Prior Encounters</string>
+	<string name="button_main_view_notifications">Notifications</string>
+	<string name="button_main_view_patients">Patients</string>
+	
+	<!--  General Phrases -->
+	<string name="general_ok">Okay</string>
+	<string name="general_cancel">Cancel</string>
+	<string name="general_yes">Yes</string>
+	<string name="general_no">No</string>
+    <string name="general_save">Save</string>
+    <string name="general_dismiss">Dismiss</string>
+	<string name="general_discard">Discard</string>
+	<string name="general_alert">Alert!</string>
+    <string name="general_capture_data">Capture Data</string>
+    <string name="general_view_data">View Data</string>
+    <string name="general_zoom_in">Zoom In</string>
+    <string name="general_zoom_out">Zoom Out</string>
+    <string name="general_back">Back</string>
+    <string name="general_center">Center</string>
+    <string name="general_error">Error</string>
+    <string name="general_change_settings">Change Settings</string>
+    <string name="general_input_required">Input required</string>
+	
+	<!--  Dialog Strings -->
+	<string name="dialog_already_uploaded">This procedure has already been uploaded.</string>
+	<string name="dialog_exit_procedure">Exit Current Procedure</string>
+	<string name="dialog_save_changes">Save Changes</string>
+	<string name="dialog_incorrect_credentials">Could not upload: OpenMRS username/password incorrect!</string>
+	<string name="dialog_no_help_available">No help Available</string>
+    <string name="dialog_no_network">Could not check username/password - no network connection.</string>
+    <string name="dialog_no_reload_db_warn">Warning: reloading the database will clear all saved procedures and notifications. Proceed?</string>
+    <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number</string>
+    <string name="dialog_loading_procedure">Loading Procedure.</string>
+	
+	<!-- Menu options strings -->
+	<string name="menu_new_patient">New Patient</string>
+	<string name="menu_reload_db">Reload Database</string>
+	<string name="menu_settings">Settings</string>
+	<string name="menu_sync">Sync</string>
+	<string name="menu_select_all">Select All</string>
+	<string name="menu_delete">Delete</string>
+	<string name="menu_save_exit">Save &amp; Exit</string>
+	<string name="menu_discard_exit">Discard &amp; Exit</string>
+	<string name="menu_jump_to_question">Jump To A Question</string>
+	<string name="menu_exit">Exit</string>
+	
+	<!-- Settings Activity Strings -->
+	<string name="settings_title">Sana Configuration</string>
+    <string name="settings_network_title">Sana Configuration</string>
+    <string name="settings_resource_title">Sana Configuration</string>
+	<string name="setting_mds_url">Mobile Dispatch Server URL</string>
+    <string name="setting_mds_url_summary">IP address of MDS, do NOT add a trailing /</string>
+    <string name="setting_secure">Secure Transmission</string>
+    <string name="setting_secure_summary">Encrypt data sent over the network</string>
+    <string name="setting_phone_name">Phone Name</string>
+    <string name="setting_phone_name_summary">(typically the phone number)</string>
+    <string name="setting_pkt_size">Initial Packet Size</string>
+    <string name="setting_pkt_size_summary">(should be lower in poor coverage areas)</string>
+    <string name="setting_storage_directory">External Device File Folder</string>
+    <string name="setting_storage_directory_summary">Folder where binary files for upload are stored</string>
+    <string name="setting_emr_refresh">OpenMRS Database Refresh Interval</string>
+    <string name="setting_emr_refresh_summary">Interval at which the OpenMRS database will be cached, in hours</string>
+    <string name="setting_emr_username">Username</string>
+    <string name="setting_emr_username_summary">Username for medical records system</string>
+    <string name="setting_emr_password">Password</string>
+    <string name="setting_emr_password_summary">Password for medical records system</string>
+    <string name="setting_proxy_host">Proxy Hostname</string>
+    <string name="setting_proxy_host_summary">Enter the hostname of a proxy to use if required  (ex: 10.10.1.100). Leave blank if not required.</string>
+    <string name="setting_proxy_port">Proxy Port</string>
+    <string name="setting_proxy_port_summary">Enter the port number of your proxy if required (ex: 9401). Leave blank if not required.</string>
+    <string name="setting_bandwidth">Estimated Network Bandwidth </string>
+    <string name="setting_bandwidth_summary">Used for calculating timeouts</string>
+    <string name="setting_bandwidth_dialog">The network bandwidth value will be used to calculate appropriate timeouts for uploading. Enter in kilobytes per second.</string>
+    <string name="setting_image_scale">Image downscale factor</string>
+    <string name="setting_image_scale_summary">Scales down pictures taken with the camera.</string>
+    <string name="setting_barcode">Enable barcode reading</string>
+    <string name="setting_barcode_summary">Enable barcode reading of patient and physician ids.</string>
+    <string name="setting_upload_hack">Enable Upload Hack</string>
+    <string name="setting_upload_hack_summary">Enable a hack to send images as text to the MDS. This is a workaround for cell phone carriers which block file uploads</string>
+    <string name="setting_edu">Visible Education Resources</string>
+    <string name="setting_edu_summary">Make education resources visible in procedures</string>
+    <string name="setting_edu_viewer">View All Education Resources</string>
+    <string name="setting_edu_viewer_summary">Displays a list of all available resources</string>
+    <string name="setting_procedure">Manage Procedures</string>
+    <string name="setting_procedure_summary">update, add, and delete available procedures</string>
+    <string name="setting_resource">Sana Resources</string>
+    <string name="setting_resource_summary">Configure and view available resources</string>
+    <string name="setting_network">Sana Network</string>
+    <string name="setting_network_summary">Configure network settings</string>
+    
+	<!-- Strings describing standard questions and common UI elements once inside a Procedure -->
+	<string name="next">Next</string>
+	<string name="previous">Previous</string>
+	<string name="question_standard_new_mrn">Enter New Patient\'s Medical Record Number</string>
+	<string name="question_standard_firstname">Enter Patient\'s First Name</string>
+	<string name="question_standard_lastname">Last Name</string>
+	<string name="question_standard_birthdate">Enter Patient\'s Birthdate</string>
+	<string name="question_standard_month">Month</string>
+	<string name="question_standard_day">Day</string>
+	<string name="question_standard_year">Year</string>
+	<string name="question_standard_gender">Select Patient\'s Gender</string>
+	<string name="question_standard_male">Male</string>
+	<string name="question_standard_female">Female</string>
+	<string name="question_standard_view_resource">View Resource</string>
+    <string name="question_standard_capture">Capture Data</string>
+    <string name="question_standard_binary_element">Capture Data</string>
+    
+    <!-- GPS element -->
+    <string name="question_standard_gps_element">Please enter GPS coordinates:</string>
+	<string name="gps_element_acquire_waiting">Waiting for GPS...</string>
+    <string name="gps_element_acquire_unavailable">GPS service not available. Try again.</string>
+    <string name="gps_element_acquire_fail">Could not acquire location. Try again.</string>
+    <string name="gps_element_default_answer">Coordinates not acquired.</string>
+    
+	<!--Procedure Runner related  -->
+	<string name="procedurerunner_formdone">All Done. What would you like to do?</string>
+	<string name="procedurerunner_viewpagelist">View Page List</string>
+	<string name="procedurerunner_goback">Go Back</string>
+	<string name="procedurerunner_upload">Save &amp; Upload to Server</string>
+	<string name="procedurerunner_saveforlater">Save for Later Upload</string>
+	<string name="procedurerunner_next">Next</string>
+	<string name="procedurerunner_previous">Prev</string>
+	<string name="procedurerunner_done">Done</string>
+	<string name="procedurerunner_scan_id">Scan ID</string>
+    <string name="procedurerunner_info">Info</string>
+	
+	<!-- SD card Procedure updater -->
+	<string name="sd_import_empty">No new procedures found. Check settings?</string>
+	<string name="import_proc_all">Importing all procedures from SD card</string>
+    <string name="import_load_all">Load All Procedures</string>
+    <string name="import_proc">Importing procedure</string>
+    <string name="import_proc_delete_db">Delete Database</string>
+    <string name="import_proc_reload">Reload Database</string>
+    <string name="import_proc_warn_load_all">Warning: Load all procedures found on SD card?</string>
+    <string name="import_proc_warn_reload_all">Warning: RELOADING the database will clear all saved procedures and notifications. Proceed?</string>
+    <string name="import_proc_warn_delete_all">Warning: DELETING the database will clear all saved procedures and notifications. Proceed?</string>
+    <string name="import_proc_duplicate">Duplicate procedure found. Press OK to Update.</string>
+    
+    <!--  Message strings -->
+    <string name="msg_err_no_plugin">No capture plugin found.</string>
+    <string name="msg_err_no_data">No data available.</string>
+    <string name="msg_err_no_answer">Answer not set.</string>
+    <string name="msg_err_reset_db">Error resetting database.</string>
+    
+    <!-- PatientInfoDialog Activity  -->
+    <string name="patient_out_of_sync">Patient information does not match database</string>
+    
+    <!-- Notification Viewer Activity -->
+    <string name="note_pt_diagnosis">Diagnosis for Patient</string>
+    
+    <!-- Patients Related -->
+    <string name="msg_no_patients">No Patients</string>
 </resources>

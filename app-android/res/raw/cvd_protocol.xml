@@ -1,0 +1,44 @@
+<Procedure title="CVD Risk Assessment Protocol" author="Moca">
+	<Page>
+		<Element type="RADIO" id="3" concept="SMOKING" 
+		    question="Smoking Status:"
+			answer="" choices="Smoking,Non-Smoking" />
+		<Element type="RADIO" concept="DIABETES" id="4" 
+		    question="Diabetes Status:"
+			answer="" choices="Diabetic,Non-Diabetic" />
+	</Page>
+	<Page>
+		<Element type="SELECT" id="5" concept="SYSTOLIC BLOOD PRESSURE"
+			question="Measure Systolic Blood Pressure:" answer=""
+			choices="111-120,121-130,131-140,141-150,151-160,161-170,171-180" />
+		<Element type="SELECT" concept="BMI" id="6"
+			question="Select Body Mass Index (BMI):" answer=""
+			choices="15-20,20-25,25-30,30-40" />
+	</Page>
+	<Page>
+		<ShowIf>
+			<or>
+				<and>
+					<Criteria type="EQUALS" id="1" value="65-74" />
+				</and>
+				<and>
+					<Criteria type="EQUALS" id="1" value="55-64" />
+					<Criteria type="EQUALS" id="4" value="Diabetic" />
+				</and>
+				<and>
+					<Criteria type="EQUALS" id="1" value="55-64" />
+					<Criteria type="EQUALS" id="4" value="Non-Diabetic" />
+					<Criteria type="EQUALS" id="3" value="Smoking" />
+				</and>
+				<and>
+					<Criteria type="EQUALS" id="1" value="45-54" />
+					<Criteria type="EQUALS" id="4" value="Diabetic" />
+					<Criteria type="EQUALS" id="3" value="Smoking" />
+				</and>
+			</or>
+		</ShowIf>
+		<Element type="ENTRY" concept="HIGHRISK" id="7"
+			question="High Risk Patient. Please refer to Doctor. Add any additional comments."
+			answer="" />
+	</Page>
+</Procedure>

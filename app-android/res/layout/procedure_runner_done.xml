@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:gravity="center">
+	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:gravity="center"
+	android:layout_weight="0.5"
+	>
+		<TextView android:text="@string/procedurerunner_formdone"
+		android:id="@+id/procedure_done_text"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		/>
+	</LinearLayout>
+		
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:gravity="center"
+	android:layout_weight="0.5"
+	>	
+		<Button android:id="@+id/procedure_done_upload"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/procedurerunner_upload" />
+		<Button android:id="@+id/procedure_done_back"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/procedurerunner_goback" />
+			
+	</LinearLayout>
+	
+
+</LinearLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/settings_title" >
+        <EditTextPreference
+            android:key="s_phone_name"
+            android:summary="@string/setting_phone_name_summary"
+            android:title="@string/setting_phone_name" />
+        <EditTextPreference
+            android:key="s_username"
+            android:summary="@string/setting_emr_username_summary"
+            android:title="@string/setting_emr_username" />
+        <EditTextPreference
+            android:key="s_password"
+            android:summary="@string/setting_emr_password_summary"
+            android:title="@string/setting_emr_password" />
+
+        <PreferenceScreen
+            android:key="s_network_settings"
+            android:summary="@string/setting_network_summary"
+            android:title="@string/setting_network" />
+        <PreferenceScreen
+            android:key="s_resource_settings"
+            android:summary="@string/setting_resource_summary"
+            android:title="@string/setting_resource" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

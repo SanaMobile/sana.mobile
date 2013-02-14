@@ -1,0 +1,82 @@
+<Procedure title="Ophthalmology Questionaire" author="Click Diagnostics">
+	<Page>
+		<Element type="MULTI_SELECT" id="0" concept="SYMPTOMS" question="Symptoms (check all that apply):" answer="" choices="Sudden loss of vision,Gradual loss of vision,Pain,Tearing,Itching,Redness,Swollen eye lid,Discharge present,Double vision,Headache,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="2" concept="HISTORY" question="Medical history (check all that apply):" answer="" choices="Glaucoma,Dry eyes,Uveitis,Allergic eye disease,Vernal catarrh,Uses spectacles/contact lenses,Diabetic,Hypertensive,HIV+,TB,Meningitis,Other"/>"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="4" concept="EYE MEDICATIONS" question="Eye Medications (check all that apply):" answer="" choices="Brimonidine (Alphagan),Pilocarpine,Prednisolone 1% (Predforte),Prednisolone .12% (Predmild),Flourometholone Neomycin (FMLNeo),Tetracycline,Chloramphenicol,Tears,Antihistamine drops,Sodium cromoglycate drops,Others"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="6" concept="SURGERIES" question="Been through surgery (check all that apply):" answer="" choices="Cataract,Pteryglum excision,Trabeculectumy,Cryotherapy,Conjunctival tumour excision,Pan retinal laser treatment,Macular laser treatment,Yag laser for posterior capsular opacity,Cornea transplant,Evisceration,Enucleation,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="8" concept="FAMILY HISTORY" question="Family history of (check all that apply):" answer="" choices="Glaucoma,Cataract,Other"/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="9" concept="VISUAL ACUITY RIGHT EYE" question="Visual acuity - right eye (e.g. 6/6):" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="10" concept="VISUAL ACUITY LEFT EYE" question="Visual acuity - left eye (e.g. 6/6):" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="11" concept="VISUAL ACUITY PINHOLE RIGHT EYE" question="Visual acuity with pinhole/spectacles - right eye:" answer=""/>
+		<Element type="ENTRY" id="12" concept="VISUAL ACUITY PINHOLE LEFT EYE" question="left eye:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="13" concept="INTRAOCULAR PRESSURE RIGHT EYE" question="Intra-ocular pressure - right eye:" answer=""/>
+		<Element type="ENTRY" id="14" concept="INTRAOCULAR PRESSURE LEFT EYE" question="left eye:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="15" concept="GLOBE ORBIT RIGHT EYE" question="Globe/Orbit -  Right Eye (check all that apply):" answer="" choices="Proptosis,Swelling,Reduced eye movements,Squint,Resistace to retropulsion,Tumour"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="16" concept="GLOBE ORBIT LEFT EYE" question="Globe/Orbit - Left Eye (check all that apply):" answer="" choices="Proptosis,Swelling,Reduced eye movements,Squint,Resistace to retropulsion,Tumour"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="17" concept="EYELIDS RIGHT EYE" question="Eyelids - Right Eye (check all that apply):" answer="" choices="Trichiasis,Everted,Can’t close tightly,Swollen,Pouting meibomian glands,Stye,Chalazion,Tumour,Herpes zoster lesions"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="18" concept="EYELIDS LEFT EYE" question="Eyelids - Left Eye (check all that apply):" answer="" choices="Trichiasis,Everted,Can’t close tightly,Swollen,Pouting meibomian glands,Stye,Chalazion,Tumour,Herpes zoster lesions"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="19" concept="PUPILS RIGHT EYE" question="Pupils - Right Eye (check all that apply):" answer="" choices="Round and reactive,Relative afferent pupillary defect,Irregular ,Small,Large,Unreactive/sluggish reaction,Posterior synichia"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="20" concept="PUPILS LEFT EYE" question="Pupils - Left Eye (check all that apply):" answer="" choices="Round and reactive,Relative afferent pupillary defect,Irregular ,Small,Large,Unreactive/sluggish reaction,Posterior synichia"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="21" concept="CONJUNCTIVA RIGHT EYE" question="Conjunctiva - Right Eye (check all that apply):" answer="" choices="Hyperaemia,Chemosis,Discharge,Follicles,Papillary reaction,Pterygium,Tumour,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="22" concept="CONJUNCTIVA LEFT EYE" question="Conjunctiva - Left Eye (check all that apply):" answer="" choices="Hyperaemia,Chemosis,Discharge,Follicles,Papillary reaction,Pterygium,Tumour,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="23" concept="CORNEA RIGHT EYE" question="Cornea - Right Eye (check all that apply):" answer="" choices="Reduced sensation,Ulcer,Scar,Erosion,Dry,Superficial punctuate keratopathy,Oedema,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="24" concept="CORNEA LEFT EYE" question="Cornea - Left Eye (check all that apply):" answer="" choices="Reduced sensation,Ulcer,Scar,Erosion,Dry,Superficial punctuate keratopathy,Oedema,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="25" concept="ANTERIOR CHAMBER RIGHT EYE" question="Anterior Chamber - Right Eye (check all that apply):" answer="" choices="Shallow,Deep,Cells,Flare,Hyphaema,Hypopyon,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="26" concept="ANTERIOR CHAMBER LEFT EYE" question="Anterior Chamber - Left Eye (check all that apply):" answer="" choices="Shallow,Deep,Cells,Flare,Hyphaema,Hypopyon,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="27" concept="LENS RIGHT EYE" question="Lens - Right Eye (check all that apply):" answer="" choices="Cataract,Disclocated/subluxed,Cortical materials in AC,Pseudophakic,Posterior capsular opacity,Aphakic,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="28" concept="LENS LEFT EYE" question="Lens - Left Eye (check all that apply):" answer="" choices="Cataract,Disclocated/subluxed,Cortical materials in AC,Pseudophakic,Posterior capsular opacity,Aphakic,Other"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="29" concept="FUNDUS RIGHT EYE" question="Fundus - Right Eye (check all that apply):" answer="" choices="Swollen optic nerve,Pale optic nerve,Cupped optic nerve,Vitreous haemorrhage,Hazy vitreo,(cells/flare),Retinal haemorrhages,Retinal exudates,Other "/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="30" concept="FUNDUS LEFT EYE" question="Fundus - Left Eye (check all that apply):" answer="" choices="Swollen optic nerve,Pale optic nerve,Cupped optic nerve,Vitreous haemorrhage,Hazy vitreo,(cells/flare),Retinal haemorrhages,Retinal exudates,Other "/>
+	</Page>
+	<Page>
+		<Element type="PICTURE" id="31" concept="EYE IMAGE" question="Add a picture of the condition." answer=""/>
+	</Page> 
+</Procedure>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+	<mediaList>
+		<educationResource>
+            <id>worker:WELCOMETOSANAWelcometotheSanaAndroidClient</id>
+            <majorMinorVersion>1.1</majorMinorVersion>
+            <name>Welcome</name>
+            <author>Sana</author>
+            <descriptionText>An introductory video</descriptionText>
+            <filename>welcome.3gp</filename>
+            <downloadUrl>education/welcome.3gp</downloadUrl>
+            <mimeType>video/3gp</mimeType>
+            <hash>md5:9ac2a07f2fcb9a1242fa1d206c605b52</hash>
+        </educationResource>
+        <educationResource>
+            <id>patient:WELCOMETOSANAWelcometotheSanaAndroidClient</id>
+            <majorMinorVersion>1.1</majorMinorVersion>
+            <name>Welcome</name>
+            <author>Sana</author>
+            <descriptionText>An introductory text page</descriptionText>
+            <filename>welcome.html</filename>
+            <downloadUrl></downloadUrl>
+            <mimeType>text/html</mimeType>
+            <hash></hash>
+            <audience></audience>
+        </educationResource>
+	</mediaList>
+</manifest>
+<!--
+<forms>
+    <form>
+        <id></id>
+        <majorMinorVersion></majorMinorVersion>
+        <name></name>
+        <descriptionText></descriptionText>
+        <downloadUrl></downloadUrl>
+        <hash></hash>
+    </form>
+</forms>
+<mediaList>
+<educationResource>
+        <id>worker:WELCOMETOSANAeducationResource</id>
+        <majorMinorVersion></majorMinorVersion>
+        <name>Welcome To Sana</name>
+        <author>Sana</author>
+        <descriptionText>A video introduction to the Sana platform</descriptionText>
+        <text></text>
+        <filename>welcome.3gp</filename>
+        <downloadUrl>http://sana-dev.mit.edu/sana/resources/education/client/chw/welcome.3gp</downloadUrl>
+        <mimeType>video/3gp</mimeType>
+        <hash>md5:9ac2a07f2fcb9a1242fa1d206c605b52</hash>
+</educationResource>
+</mediaList>
+-->

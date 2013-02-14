@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Docs say that all the identifiers should be in lower case -->
+
+<resources>
+
+    <string name="hello">Hello</string>
+    <string name="app_name">Moca</string>
+    <string name="title_procedures_list">Available Procedures</string>
+    <string name="title_savedprocedure_list">Saved Procedures</string>
+	<string name="title_procedure_runner">Moca Perform Procedure</string>
+	<string name="title_notification_viewer">Moca Notification Viewer</string>
+	<string name="title_notifications_list">Notifications List (by Patient ID)</string>
+	<string name="title_settings">Moca Settings</string>
+	<string name="title_upload_service">Moca Upload Service</string>
+	<string name="button_main_new_encounter">Empezar Nueva Cita</string>
+	<string name="button_main_view_prior_encounters">Ver Ultimo Citas</string>
+	<string name="button_main_view_notifications">Ver Notificaciones</string>
+    <string name="button_main_help">Ver Media</string>
+	
+	<!-- Menu options strings -->
+	<string name="menu_reload_db">Reload Database</string>
+	<string name="menu_settings">Settings</string>
+	<string name="menu_sync">Sync</string>
+	<string name="menu_save_exit">Save &amp; Exit</string>
+	<string name="menu_discard_exit">Discard &amp; Exit</string>
+	<string name="menu_jump_to_question">Jump To A Question</string>
+	
+	
+	<!-- Strings describing standard questions and common UI elements once inside a Procedure -->
+	<string name="next">Next</string>
+	<string name="previous">Previous</string>
+	<string name="question_standard_new_mrn">Enter New Patient\'s Medical Record Number</string>
+	<string name="question_standard_firstname">Enter Patient\'s First Name</string>
+	<string name="question_standard_lastname">Last Name</string>
+	<string name="question_standard_birthdate">Enter Patient\'s Birthdate</string>
+	<string name="question_standard_month">Month</string>
+	<string name="question_standard_day">Day</string>
+	<string name="question_standard_year">Year</string>
+	<string name="question_standard_gender">Select Patient\'s Gender</string>
+	<string name="question_standard_male">Male</string>
+	<string name="question_standard_female">Female</string>
+</resources>

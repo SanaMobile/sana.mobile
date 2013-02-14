@@ -1,0 +1,17 @@
+<Procedure title="Radiology Examination" author="UP Manilla National Telehealth Center">
+	<Page>
+		<Element type="ENTRY" id="1" concept="CHIEF COMPLAINT" question="Chief Complaint:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="2" concept="HISTORY" question="Short History of Present Illness:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="3" concept="PHYSICAL FINDINGS" question="Physical Findings:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="4" concept="INITIAL DIAGNOSIS" question="Diagnosis:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="PICTURE" id="15" concept="XRAY IMAGE" question="Take Picture of x-ray" answer=""/>
+	</Page> 
+</Procedure>

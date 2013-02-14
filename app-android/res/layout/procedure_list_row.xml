@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?> 
+
+<!-- Used in ProcedureList activity-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="6dip">
+        <TextView
+        	android:text="" 
+            android:id="@+id/toptext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+        	android:focusable="false" 
+        	android:focusableInTouchMode="false" 
+        	android:textStyle="bold" 
+        	android:textAppearance="?android:attr/textAppearanceLarge"
+        	/>
+        <TextView
+        	android:text="" 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" 
+            android:id="@+id/bottomtext"
+            android:ellipsize="marquee"
+        	android:focusable="false" 
+        	android:focusableInTouchMode="false"/>
+</LinearLayout>

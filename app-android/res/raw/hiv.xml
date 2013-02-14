@@ -1,0 +1,308 @@
+<Procedure title="HIV Regimen Failure" author="Click Diagnostics">
+	<!--  <Page>
+		<Element type="ENTRY" id="patientId" question="Enter the patient's ID number:" answer=""/>
+	</Page> -->
+	<Page>
+		<Element type="ENTRY" concept="PATIENT AGE" id="1" question="Enter Patient's Age:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="WEIGHT (KG)" id="2" question="Enter Patient's Weight (kg):" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="DRUG ALLERGIES" id="3" question="Enter any drug allergies:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="OTHER CONDITIONS" id="4" question="Enter other medical conditions or diagnoses:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="MEDICATIONS" id="5" question="Enter other medications (Not HIV):" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="AGE AT DIAGNOSIS" id="6" question="Patient's age at diagnosis:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="LOWEST CD4" id="7" question="Patient's Lowest CD4:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="HISTORY INFECTIONS" id="8" question="History of opportunistic infections:" answer=""/>
+	</Page>
+	
+	<Page>
+		<Element type="TEXT" concept="REGIMEN HISTORY" id="9" question="Enter HIV regimen history on following pages:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="REGIMEN START DATE" id="10" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" concept="REGIMEN STOP DATE" id="11" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="12" concept="REGIMEN" question="Enter regimen during this time:" answer=""/>
+		<Element type="ENTRY" id="13" concept="REACTIONS" question="Adverse reactions and reason for discontinuation:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="14" concept="ADD REGIMEN" question="Add another regimen?" answer="" choices="Yes, No" />	
+	</Page>
+	<Page>
+		<ShowIf>
+    		<Criteria type="EQUALS" id="14" value="Yes"/>
+  		</ShowIf>
+		<Element type="ENTRY" id="15" concept="REGIMENT START DATE"  question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="16" concept="REGIMEN STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<Criteria type="EQUALS" id="14" value="Yes"/>
+  		</ShowIf>
+		<Element type="ENTRY" id="17" concept="REGIMEN" question="Enter regimen during this time:" answer=""/>
+		<Element type="ENTRY" id="18" concept="REACTIONS" question="Adverse reactions and reason for discontinuation:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<Criteria type="EQUALS" id="14" value="Yes"/>
+  		</ShowIf>
+		<Element type="RADIO" id="19" concept="ADD REGIMEN" question="Add another regimen?" answer="" choices="Yes, No" />	
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+    			<Criteria type="EQUALS" id="14" value="Yes"/>
+    		    <Criteria type="EQUALS" id="19" value="Yes"/>
+    		</and>
+  		</ShowIf>
+		<Element type="ENTRY" id="20" concept="REGIMEN START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="21" concept="REGIMEN STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+    			<Criteria type="EQUALS" id="14" value="Yes"/>
+    		    <Criteria type="EQUALS" id="19" value="Yes"/>
+    		</and>  	
+    	</ShowIf>
+		<Element type="ENTRY" id="22" concept="REGIMEN" question="Enter regimen during this time:" answer=""/>
+		<Element type="ENTRY" id="23" concept="REACTIONS" question="Adverse reactions and reason for discontinuation:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+    			<Criteria type="EQUALS" id="14" value="Yes"/>
+    		    <Criteria type="EQUALS" id="19" value="Yes"/>
+    		</and>  		
+    	</ShowIf>
+		<Element type="RADIO" id="24" concept="ADD REGIMEN" question="Add another regimen?" answer="" choices="Yes, No" />	
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+    			<Criteria type="EQUALS" id="14" value="Yes"/>
+    		    <Criteria type="EQUALS" id="19" value="Yes"/>
+    		    <Criteria type="EQUALS" id="24" value="Yes"/>
+    		</and>  		
+    	</ShowIf>
+		<Element type="ENTRY" id="25" concept="REGIMEN START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="26" concept="REGIMEN END DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="14" value="Yes"/>
+    		    <Criteria type="EQUALS" id="19" value="Yes"/>
+    		    <Criteria type="EQUALS" id="24" value="Yes"/>
+    		</and>  	
+  		</ShowIf>
+		<Element type="ENTRY" id="27" concept="REGIMEN" question="Enter regimen during this time:" answer=""/>
+		<Element type="ENTRY" id="28" concept="REACTIONS" question="Adverse reactions and reason for discontinuation:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="14" value="Yes"/>
+    		    <Criteria type="EQUALS" id="19" value="Yes"/>
+    		    <Criteria type="EQUALS" id="24" value="Yes"/>
+    		</and>  	
+  		</ShowIf>
+		<Element type="RADIO" id="29" concept="ADD REGIMEN" question="Add another regimen?" answer="" choices="Yes, No" />	
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="14" value="Yes"/>
+    		    <Criteria type="EQUALS" id="19" value="Yes"/>
+    		    <Criteria type="EQUALS" id="24" value="Yes"/>
+    		    <Criteria type="EQUALS" id="29" value="Yes"/>
+    		</and>  	
+  		</ShowIf>
+		<Element type="ENTRY" id="30" concept="REGIMEN START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="31" concept="REGIMEN END DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="14" value="Yes"/>
+    		    <Criteria type="EQUALS" id="19" value="Yes"/>
+    		    <Criteria type="EQUALS" id="24" value="Yes"/>
+    		    <Criteria type="EQUALS" id="29" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="ENTRY" id="32" concept="REGIMEN" question="Enter regimen during this time:" answer=""/>
+		<Element type="ENTRY" id="33" concept="REACTIONS" question="Adverse reactions and reason for discontinuation:" answer=""/>
+	</Page>
+	
+	<Page>
+		<Element type="TEXT" id="34" concept="CD4 TREND" question="Enter CD4 trend info on following pages:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="35" concept="CD4 START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="36" concept="CD4 STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="37" concept="CD4" question="Enter CD4:" answer=""/>
+		<Element type="ENTRY" id="38" concept="VIRAL LOAD" question="Enter viral load (if available):" answer=""/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="39" concept="ADD CD4 INFO" question="Add more CD4 info?" answer="" choices="Yes, No" />	
+	</Page>
+	
+	<Page>
+		<ShowIf>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+  		</ShowIf>
+		<Element type="ENTRY" id="40" concept="CD4 START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="41" concept="CD4 STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+  		</ShowIf>
+		<Element type="ENTRY" id="42" concept="CD4" question="Enter CD4:" answer=""/>
+		<Element type="ENTRY" id="43" concept="VIRAL LOAD" question="Enter viral load (if available):" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+  		</ShowIf>
+		<Element type="RADIO" id="44" concept="ADD CD4 INFO" question="Add more CD4 info?" answer="" choices="Yes, No" />	
+	</Page>
+	
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+    			<Criteria type="EQUALS" id="44" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="ENTRY" id="45" concept="CD4 START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="46" concept="CD4 STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+    			<Criteria type="EQUALS" id="44" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="ENTRY" id="47" concept="CD4" question="Enter CD4:" answer=""/>
+		<Element type="ENTRY" id="48" concept="VIRAL LOAD" question="Enter viral load (if available):" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+    			<Criteria type="EQUALS" id="44" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="RADIO" id="49" concept="ADD CD4 INFO" question="Add more CD4 info?" answer="" choices="Yes, No" />	
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+    			<Criteria type="EQUALS" id="44" value="Yes"/>
+    			<Criteria type="EQUALS" id="49" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="ENTRY" id="50" concept="CD4 START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="51" concept="CD4 STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+    			<Criteria type="EQUALS" id="44" value="Yes"/>
+    			<Criteria type="EQUALS" id="49" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="ENTRY" id="52" concept="CD4" question="Enter CD4:" answer=""/>
+		<Element type="ENTRY" id="53" concept="VIRAL LOAD" question="Enter viral load (if available):" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+    			<Criteria type="EQUALS" id="44" value="Yes"/>
+    			<Criteria type="EQUALS" id="49" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="RADIO" id="54" concept="ADD CD4 INFO" question="Add more CD4 info?" answer="" choices="Yes, No" />	
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+    			<Criteria type="EQUALS" id="44" value="Yes"/>
+    			<Criteria type="EQUALS" id="49" value="Yes"/>
+    			<Criteria type="EQUALS" id="54" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="ENTRY" id="55" concept="CD4 START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="56" concept="CD4 STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+    		<and>
+    			<Criteria type="EQUALS" id="39" value="Yes"/>
+    			<Criteria type="EQUALS" id="44" value="Yes"/>
+    			<Criteria type="EQUALS" id="49" value="Yes"/>
+    			<Criteria type="EQUALS" id="54" value="Yes"/>
+    		</and> 
+  		</ShowIf>
+		<Element type="ENTRY" id="57" concept="CD4" question="Enter CD4:" answer=""/>
+		<Element type="ENTRY" id="58" concept="VIRAL LOAD" question="Enter viral load (if available):" answer=""/>
+	</Page>
+	
+	<Page>
+		<Element type="TEXT" id="59" concept="CREATININE INFO" question="Enter Creatinine info on following pages:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="60" concept="CREATININE START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="61" concept="CREATININE STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="62" concept="CREATININE RESULTS" question="Enter Creatinine Results:" answer=""/>
+	</Page>
+	
+	<Page>
+		<Element type="TEXT" id="63" concept="HEMOGLOBIN INFO" question="Enter Hemoglobin info on following pages:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="64" concept="HEMOGLOBIN START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="65" concept="HEMOGLOBIN STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="66" concept="HEMOGLOBIN RESULTS" question="Enter Hemoglobin Results:" answer=""/>
+	</Page>
+	
+	<Page>
+		<Element type="TEXT" id="67" concept="ALT/SGOT INFO" question="Enter ALT/SGOT info on following pages:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="68" concept="ALT/SGOT START DATE" question="Enter start date:" answer=""/>
+		<Element type="ENTRY" id="69" concept="ALT/SGOT STOP DATE" question="Stop date:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="70" concept="ALT/SGOT RESULTS" question="Enter ALT/SGOT Results:" answer=""/>
+	</Page>
+	
+	<Page>
+		<Element type="ENTRY" id="71" concept="COMMENTS" question="Additional comments:" answer=""/>
+	</Page>
+</Procedure>

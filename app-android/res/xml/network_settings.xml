@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/settings_title" >
+        <EditTextPreference
+            android:key="s_mds_url"
+            android:title="@string/setting_mds_url"
+            android:summary="@string/setting_mds_url_summary" />
+        <CheckBoxPreference 
+            android:key="s_secure"
+            android:title="@string/setting_secure"
+            android:summary="@string/setting_secure_summary"
+            android:defaultValue="false" />
+        <EditTextPreference
+            android:key="s_packet_init_size"
+            android:title="@string/setting_pkt_size"
+            android:summary="@string/setting_pkt_size_summary" />
+        <EditTextPreference
+            android:key="s_database_refresh_period"
+            android:title="@string/setting_emr_refresh"
+            android:summary="@string/setting_emr_refresh_summary" />
+        <EditTextPreference
+            android:key="s_proxy_host"
+            android:title="@string/setting_proxy_host"
+            android:summary="@string/setting_proxy_host_summary" />
+        <EditTextPreference
+            android:key="s_proxy_port"
+            android:title="@string/setting_proxy_port"
+            android:summary="@string/setting_proxy_port_summary" />
+        <EditTextPreference
+            android:key="s_network_bandwidth"
+            android:dialogTitle="@string/setting_bandwidth"
+            android:dialogMessage="@string/setting_bandwidth_dialog"
+            android:title="@string/setting_bandwidth"
+            android:summary="@string/setting_bandwidth_summary" />
+        <CheckBoxPreference 
+            android:key="s_upload_hack"
+            android:title="@string/setting_upload_hack"
+            android:summary="@string/setting_upload_hack_summary"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

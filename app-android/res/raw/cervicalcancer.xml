@@ -1,0 +1,32 @@
+<Procedure title="Diagnose Cervical Cancer" author="Moca">
+	<Page>
+		<Element concept="SEXUAL PARTNERS" type="ENTRY" id="1" question="Number sexual partners patient has had in lifetime:" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<Criteria type="GREATER" id="1" value="0"/>
+		</ShowIf>
+		<Element concept="CONDOM USE" type="SELECT" id="2" question="Condom use with partners:" answer="Never use condom" choices="Never use condom, Sometimes use condom, Almost always use condom, Always use condom"/>
+	</Page>
+	<Page>
+		<Element concept="ABDOMINAL PAIN" type="RADIO" id="3" question="Any abdominal/pelvic pain?" answer="No" choices="Yes,No"/>
+	</Page>
+	<Page>
+		<Element concept="MENSTRUAL FLOW" type="RADIO" id="4" question="Menstrual blood flow:" answer="Moderate" choices="Heavy,Moderate,Scanty"/>
+	</Page>
+	<Page>
+		<Element concept="HIV POSITIVE" type="RADIO" id="5" question="Is the patient HIV positive?" answer="Not tested" choices="Yes,No,Not tested"/>
+	</Page>
+	<Page>
+		<Element concept="SYMPTOMS" type="MULTI_SELECT" id="6" question="Check all of the following which apply:" choices="Vaginal itching,Vaginal discharge,Pelvic tenderness" answer=""/>
+	</Page>
+	<!--  <Page>
+		<Element concept="VERBAL NOTES" type="SOUND" id="7" question="Record any verbal notes to send to the physician." answer=""/>
+	</Page>-->
+	<Page>
+		<Element concept="GEOGRAPHICAL LOCATION" type="GPS" id="12" question="Record Your Position" answer=""/>
+	</Page> 
+	<Page>
+		<Element concept="CERVIX IMAGE" type="PICTURE" id="8" question="Add Cervix Picture" answer=""/>
+	</Page>
+</Procedure>
