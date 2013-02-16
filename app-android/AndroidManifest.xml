@@ -34,7 +34,7 @@
             android:name="org.sana.android.db.ProcedureProvider"
             android:authorities="org.sana.provider.Procedure" />
         <provider
-            android:name=".db.SavedProcedureProvider"
+            android:name="org.sana.android.db.SavedProcedureProvider"
             android:authorities="org.sana.provider.SavedProcedure" />
         <provider
             android:name="org.sana.android.db.BinaryProvider"

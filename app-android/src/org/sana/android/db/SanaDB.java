@@ -93,13 +93,13 @@ public final class SanaDB {
          * The MIME type of CONTENT_URI providing a directory of procedures.
          */
         public static final String CONTENT_TYPE = 
-        	"vnd.android.cursor.dir/org.sana.android.procedure";
+        	"vnd.android.cursor.dir/org.sana.procedure";
 
         /**
          * The MIME type of CONTENT_URI subdirectory of a single procedure.
          */
         public static final String CONTENT_ITEM_TYPE = 
-        	"vnd.android.cursor.item/org.sana.android.procedure";
+        	"vnd.android.cursor.item/org.sana.procedure";
 
         /**
          * The default sort order.
