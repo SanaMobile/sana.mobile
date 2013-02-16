@@ -18,22 +18,23 @@ import org.sana.android.task.ResetDatabaseTask;
 import org.sana.android.task.ValidationListener;
 import org.sana.android.util.SanaUtil;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Main Sana activity. When Sana is launched, this activity runs, allowing the 
@@ -42,7 +43,7 @@ import android.view.View;
  * 
  * @author Sana Dev Team
  */
-public class Sana extends Activity implements View.OnClickListener {
+public class Sana extends SherlockActivity implements View.OnClickListener {
     public static final String TAG = Sana.class.getSimpleName();
 
     // Option menu codes

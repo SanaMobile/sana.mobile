@@ -3,7 +3,6 @@ package org.sana.android.activity;
 import org.sana.R;
 import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 
-import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,12 +12,14 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.actionbarsherlock.app.SherlockListActivity;
+
 /**
  * Displays a list of Procedures.
  * 
  * @author Sana Development Team
  */
-public class ProceduresList extends ListActivity {
+public class ProceduresList extends SherlockListActivity {
     private static final String TAG = ProceduresList.class.toString();
     private static final String[] PROJECTION = new String[] { 
     	ProcedureSQLFormat._ID,ProcedureSQLFormat.TITLE, 

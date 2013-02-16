@@ -8,16 +8,17 @@ import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Contains Fragment for displaying all patients.
  *
  * @author Sana Development Team
  */
-public class PatientsList extends FragmentActivity implements OnPatientSelectedListener {
+public class PatientsList extends SherlockFragmentActivity implements OnPatientSelectedListener {
 
     // Options menu code
     private static final int OPTIONS_NEW_PATIENT = 1;

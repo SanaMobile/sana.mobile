@@ -1,7 +1,8 @@
 package org.sana.android.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 /**
  * Activity for creating a new patient. Each question is wrapped in a 
@@ -10,7 +11,7 @@ import android.support.v4.app.FragmentActivity;
  * @author Sana Development Team
  *
  */
-public class PatientRunner extends FragmentActivity {
+public class PatientRunner extends SherlockFragmentActivity {
     
     /** {@inheritDoc} */
     @Override

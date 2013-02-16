@@ -13,17 +13,18 @@ import org.sana.android.task.ImportProcedureAll;
 import org.sana.android.task.ResetDatabaseTask;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Activity for importing Procedures from the sdcard.
@@ -31,7 +32,7 @@ import android.widget.ListView;
  * @author Sana Development Team
  *
  */
-public class ProcedureSdImporter extends ListActivity {
+public class ProcedureSdImporter extends SherlockListActivity {
 
 	// Option menu codes
 	private static final int OPTION_LOAD_ALL = 0;

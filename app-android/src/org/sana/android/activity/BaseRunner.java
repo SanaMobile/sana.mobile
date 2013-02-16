@@ -6,8 +6,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.Window;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 /**
  * Base class activity for containing a BaseRunnerFragment.
@@ -18,7 +19,7 @@ import android.view.Window;
  * 
  * @author Sana Development Team
  */
-public abstract class BaseRunner extends FragmentActivity {
+public abstract class BaseRunner extends SherlockFragmentActivity {
 
     // Dialog IDs
     public static final int DIALOG_ALREADY_UPLOADED = 7;
