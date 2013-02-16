@@ -1,3 +1,4 @@
+
 package org.sana.android.activity;
 
 import org.sana.R;
@@ -8,54 +9,66 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.actionbarsherlock.app.SherlockListActivity;
 
-/**
- * Displays a list of Procedures.
+/** Displays a list of Procedures.
  * 
- * @author Sana Development Team
- */
+ * @author Sana Development Team */
 public class ProceduresList extends SherlockListActivity {
-    private static final String TAG = ProceduresList.class.toString();
-    private static final String[] PROJECTION = new String[] { 
-    	ProcedureSQLFormat._ID,ProcedureSQLFormat.TITLE, 
-    	ProcedureSQLFormat.AUTHOR };
+
+    /** Intent extra for a procedure. */
+    public static final String EXTRA_PROCEDURE_URI = "uri_procedure";
     
+    private static final String TAG = ProceduresList.class.toString();
+    private static final String[] PROJECTION = new String[] {
+            ProcedureSQLFormat._ID, ProcedureSQLFormat.TITLE,
+            ProcedureSQLFormat.AUTHOR
+    };
+
     /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Uri uri = getIntent().getData();
-        
-        if(uri == null)
-        	uri = ProcedureSQLFormat.CONTENT_URI;
 
-        Cursor cursor = managedQuery(uri, PROJECTION, null, null, 
-        		ProcedureSQLFormat.DEFAULT_SORT_ORDER);
+        if (uri == null) {
+            uri = ProcedureSQLFormat.CONTENT_URI;
+        }
+
+        Cursor cursor = managedQuery(uri, PROJECTION, null, null,
+                ProcedureSQLFormat.DEFAULT_SORT_ORDER);
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.procedure_list_row, cursor,
-                new String[] { ProcedureSQLFormat.TITLE, 
-        					   ProcedureSQLFormat.AUTHOR },
-                new int[] { R.id.toptext, R.id.bottomtext });
+                new String[] {
+                        ProcedureSQLFormat.TITLE,
+                        ProcedureSQLFormat.AUTHOR
+                },
+                new int[] {
+                        R.id.toptext, R.id.bottomtext
+                });
         setListAdapter(adapter);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Uri uri = ContentUris.withAppendedId(getIntent().getData(), id);
         String action = getIntent().getAction();
-        if (Intent.ACTION_PICK.equals(action) || 
-        		Intent.ACTION_GET_CONTENT.equals(action)) 
-        {
+        if (Intent.ACTION_PICK.equals(action) ||
+                Intent.ACTION_GET_CONTENT.equals(action)) {
             // The caller is waiting for us to return a note selected by
-            // the user.  The have clicked on one, so return it now.
-            setResult(RESULT_OK, new Intent().setData(uri));
+            // the user. They have clicked on one, so return it now.
+            Log.d(TAG, "URI selected: " + uri);
+            Intent intent = getIntent();
+            intent.setData(uri);
+            intent.putExtra(EXTRA_PROCEDURE_URI, uri);
+            setResult(RESULT_OK, intent);
             finish();
         } else {
             // Launch activity to view/edit the currently selected item

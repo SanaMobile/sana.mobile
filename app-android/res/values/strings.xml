@@ -26,7 +26,7 @@
 	<string name="button_main_view_prior_encounters">View Prior Encounters</string>
 	<string name="button_main_view_notifications">Notifications</string>
 	<string name="button_main_view_patients">Patients</string>
-	
+		
 	<!--  General Phrases -->
 	<string name="general_ok">Okay</string>
 	<string name="general_cancel">Cancel</string>
