@@ -639,6 +639,15 @@ public final class SanaDB {
     	public static final String IMAGE = "_data";
     	
     	/** The current registration state. */
+        // Status of the patient
+        // For use in PatientRunnerFragment to show each patient's status
+        // 0 - Was never put into queue, or "Not Uploaded"
+        // 1 - Still in the queue waiting to be sent
+        // 2 - Upload Successful - has been sent to the MDS, no longer in queue
+        // 3 - Upload in progress
+        // 4 - In the queue but waiting for connectivity to upload
+        // 5 - Upload failed
+        // 6 - Upload stalled - username/password incorrect
     	public static final String STATE = "_state";
     	
     }
