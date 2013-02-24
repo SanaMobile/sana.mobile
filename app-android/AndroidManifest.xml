@@ -67,6 +67,7 @@
             android:label="@string/title_register_new_patient" >
             <intent-filter>
                 <action android:name="android.intent.action.INSERT" />
+                <action android:name="android.intent.action.INSERT_OR_EDIT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 

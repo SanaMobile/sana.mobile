@@ -2,12 +2,14 @@
 package org.sana.android.activity;
 
 import org.sana.R;
+import org.sana.android.db.SanaDB.PatientSQLFormat;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
-import org.sana.android.fragment.PatientRunnerFragment;
+import org.sana.android.util.SanaUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -20,6 +22,8 @@ import com.actionbarsherlock.view.MenuItem;
 public class PatientsList extends SherlockFragmentActivity implements
         OnPatientSelectedListener {
 
+    public static final String TAG = PatientsList.class.getSimpleName();
+
     /** Intent extra for a patient's ID. */
     public static final String EXTRA_PATIENT_ID = "extra_patient_id";
 
@@ -27,30 +31,41 @@ public class PatientsList extends SherlockFragmentActivity implements
 
     // Activity request codes
     /** Intent request code for creating a new patient. */
-    // private static final int CREATE_PATIENT = 2;
+    private static final int CREATE_PATIENT = 2;
 
     // Fragments
     private PatientListFragment mFragmentPatientList;
-    private PatientRunnerFragment mFragmentPatientRunner;
 
     /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_list_activity);
+    }
 
-        if (savedInstanceState == null) {
-            mFragmentPatientList = new PatientListFragment();
-        } else {
-            mFragmentPatientList = (PatientListFragment) getSupportFragmentManager()
-                    .findFragmentByTag(PatientListFragment.class.toString());
+    /** {@inheritDoc} */
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment.getClass() == PatientListFragment.class) {
+            mFragmentPatientList = (PatientListFragment) fragment;
+            mFragmentPatientList.setOnPatientSelectedListener(this);
         }
-        mFragmentPatientList.setOnPatientSelectedListener(this);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, mFragmentPatientList,
-                        PatientListFragment.class.toString())
-                .commit();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+        SanaUtil.logActivityResult(TAG, requestCode, resultCode);
+        switch (requestCode) {
+            case CREATE_PATIENT:
+                // TODO
+                if (resultCode == RESULT_OK) {
+                } else {
+                }
+                break;
+        }
     }
 
     /** {@inheritDoc} */
@@ -74,11 +89,10 @@ public class PatientsList extends SherlockFragmentActivity implements
 
     // Starts PatientRunnerFragment for creating a new patient.
     private void registerNewPatient() {
-        // Intent i = new Intent(Intent.ACTION_INSERT);
-        // i.setType(PatientSQLFormat.CONTENT_TYPE);
-        // i.setData(PatientSQLFormat.CONTENT_URI);
-        // startActivityForResult(i, CREATE_PATIENT);
-        // TODO
+        Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
+        intent.setType(PatientSQLFormat.CONTENT_TYPE);
+        intent.setData(PatientSQLFormat.CONTENT_URI);
+        startActivityForResult(intent, CREATE_PATIENT);
     }
 
     /** {@inheritDoc} */
