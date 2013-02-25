@@ -93,13 +93,13 @@ public final class SanaDB {
          * The MIME type of CONTENT_URI providing a directory of procedures.
          */
         public static final String CONTENT_TYPE = 
-        	"vnd.android.cursor.dir/org.sana.procedure";
+        	"vnd.android.cursor.dir/org.sana.android.procedure";
 
         /**
          * The MIME type of CONTENT_URI subdirectory of a single procedure.
          */
         public static final String CONTENT_ITEM_TYPE = 
-        	"vnd.android.cursor.item/org.sana.procedure";
+        	"vnd.android.cursor.item/org.sana.android.procedure";
 
         /**
          * The default sort order.
@@ -639,15 +639,6 @@ public final class SanaDB {
     	public static final String IMAGE = "_data";
     	
     	/** The current registration state. */
-        // Status of the patient
-        // For use in PatientRunnerFragment to show each patient's status
-        // 0 - Was never put into queue, or "Not Uploaded"
-        // 1 - Still in the queue waiting to be sent
-        // 2 - Upload Successful - has been sent to the MDS, no longer in queue
-        // 3 - Upload in progress
-        // 4 - In the queue but waiting for connectivity to upload
-        // 5 - Upload failed
-        // 6 - Upload stalled - username/password incorrect
     	public static final String STATE = "_state";
     	
     }
