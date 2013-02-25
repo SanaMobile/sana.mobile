@@ -1,10 +1,44 @@
-Self contained mobile project for Sana.
+                   Sana Mobile Client
+
+Overview. The new client code is intended to be a self-contained, modularized, 
+project including all necessary support libraries and unit testing code. 
 
 Contents:
-1. api
-2. api-android
-3. app-android
+1.  api - Pure Java library consisting of POJO's and code w/o Android 
+    dependencies
+2.  api-android - Common library for Sana mobile Android client as well 
+    external plugin apps. 
+3.  app-android - Sana mobile client
+4.  libs - Additional libraries required by the projects.
 
-api: Pure java library. WIP
-api-android: Common library for Sana mobile Android client as well external plugin apps.
-app-android: Sana mobile Android application.
+Development Requirements
+1.  Git
+2.  JDK(latest 1.6 release)
+3.  Android SDK + API 7
+4.  Ecipse IDE. Get the Java EE Version.
+5.  Eclipse ADT plugin
+6.  Android emulator or phone which supports API 7
+
+Code installation instructions.
+1.  Checkout the source code from the Git repo
+        git clone https://code.google.com/p/sana.mobile/
+2.  Create a new workspace for Sana code
+3.  Import the projects.
+    a.  Import the Java library project in sana.mobile/api
+	b.  Import the Android library project in sana.mobile/api-android
+	c.  Import the Android client application project
+	
+Additional support libraries.
+You will need to import the additional support libraries for the projects from 
+the sana.mobile/libs directory. Currently included support 
+
+Troubleshooting
+A.  Missing Android dependencies. Use the "Android SDK Manager" to add any 
+    missing API levels. In Eclipse, it can be launched by selecting
+        Window --> Android SDK Manager 
+B.  Missing libraries. Please see the section on "Additional support libraries."
+    above.
+C.  "NoClassDefFoundError" when running the client application. By default, the 
+    ADT plugin does not export libraries included in the build. To correct this
+    issue, right click on the project in Eclipse and open the Properties window.
+    Select 
