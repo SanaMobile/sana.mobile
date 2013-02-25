@@ -18,22 +18,23 @@ import org.sana.android.task.ResetDatabaseTask;
 import org.sana.android.task.ValidationListener;
 import org.sana.android.util.SanaUtil;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Main Sana activity. When Sana is launched, this activity runs, allowing the 
@@ -42,7 +43,7 @@ import android.view.View;
  * 
  * @author Sana Dev Team
  */
-public class Sana extends Activity implements View.OnClickListener {
+public class Sana extends SherlockActivity implements View.OnClickListener {
     public static final String TAG = Sana.class.getSimpleName();
 
     // Option menu codes
@@ -204,20 +205,38 @@ public class Sana extends Activity implements View.OnClickListener {
         }
     }
     
-    /** Starts Activity for viewing all patients */
-    private void viewPatients() {
-        Intent i = new Intent(Intent.ACTION_PICK);
-        i.setType(PatientSQLFormat.CONTENT_TYPE);
-        i.setData(PatientSQLFormat.CONTENT_URI);
-        startActivityForResult(i, PICK_PATIENT);
+    /** 
+     * Starts Activity for viewing all patients 
+     * 
+     * @param intentWithProcedureInfo Intent to use for selecting a patient 
+     * (optional). This Intent should contain information about the procedure
+     * to start for the selected patient (via Bundle extra).
+     */
+    private void pickPatient(Intent intentWithProcedureInfo) {
+        if (intentWithProcedureInfo == null) {
+            intentWithProcedureInfo = new Intent();
+        }
+        intentWithProcedureInfo.setAction(Intent.ACTION_PICK);
+        intentWithProcedureInfo.setType(PatientSQLFormat.CONTENT_TYPE);
+        intentWithProcedureInfo.setData(PatientSQLFormat.CONTENT_URI);
+        startActivityForResult(intentWithProcedureInfo, PICK_PATIENT);
     }
     
-    /** Activates selecting a procedure and to start a new encounter */
-    private void pickProcedure() {
-    	Intent i = new Intent(Intent.ACTION_PICK);
-        i.setType(ProcedureSQLFormat.CONTENT_TYPE);
-        i.setData(ProcedureSQLFormat.CONTENT_URI);
-        startActivityForResult(i, PICK_PROCEDURE);
+    /** 
+     * Activates selecting a procedure and to start a new encounter 
+     * 
+     * @param intentWithPatientId Optional Intent for selecting a Procedure.
+     * This Intent should contain the patient (patient ID) to run the 
+     * Procedure for.
+     */
+    private void pickProcedure(Intent intentWithPatientId) {
+        if (intentWithPatientId == null) {
+            intentWithPatientId = new Intent();
+        }
+        intentWithPatientId.setAction(Intent.ACTION_PICK);
+        intentWithPatientId.setType(ProcedureSQLFormat.CONTENT_TYPE);
+        intentWithPatientId.setData(ProcedureSQLFormat.CONTENT_URI);
+        startActivityForResult(intentWithPatientId, PICK_PROCEDURE);
     }
     
     /** Starts Activity for selecting and then viewing a previous encounter */
@@ -243,10 +262,10 @@ public class Sana extends Activity implements View.OnClickListener {
 		switch (arg0.getId()) {
 		// buttons on the main screen
         case R.id.moca_main_view_patients:
-            viewPatients();
+            pickPatient(null);
             break;
 		case R.id.moca_main_procedure:
-			pickProcedure();
+			pickProcedure(null);
 			break;
 		case R.id.moca_main_transfers:
 			pickSavedProcedure();
@@ -266,7 +285,7 @@ public class Sana extends Activity implements View.OnClickListener {
         switch (resultCode) {
         case RESULT_CANCELED:
         	if(requestCode == RUN_PROCEDURE) {
-        		pickProcedure();
+        		pickProcedure(null);
         	} else if(requestCode == RESUME_PROCEDURE) {
         		pickSavedProcedure();
         	} else if(requestCode == SETTINGS) {
@@ -300,7 +319,12 @@ public class Sana extends Activity implements View.OnClickListener {
         	}
         	if(requestCode == PICK_PROCEDURE) {
         		assert(uri != null);
-        		doPerformProcedure(uri);
+        		long patientId = data.getLongExtra(PatientsList.EXTRA_PATIENT_ID, PatientsList.INVALID_PATIENT_ID);
+        		if (patientId == PatientsList.INVALID_PATIENT_ID) {
+        		    pickPatient(data);
+        		} else {
+        		    doPerformProcedureForPatient(uri, patientId);
+        		}
         	} else if(requestCode == PICK_SAVEDPROCEDURE) {
         		assert(uri != null);
         		doResumeProcedure(uri);
@@ -310,8 +334,16 @@ public class Sana extends Activity implements View.OnClickListener {
         	} else if (requestCode == RUN_PROCEDURE || 
         				requestCode == RESUME_PROCEDURE) {
         		pickSavedProcedure();
+        	} else if (requestCode == PICK_PATIENT) {
+        	    long patientId = data.getLongExtra(PatientsList.EXTRA_PATIENT_ID, PatientsList.INVALID_PATIENT_ID);
+        	    assert(patientId != PatientsList.INVALID_PATIENT_ID);
+        	    Uri procedureUri = data.getParcelableExtra(ProceduresList.EXTRA_PROCEDURE_URI);
+        	    if (procedureUri == null) {
+        	        pickProcedure(data);
+        	    } else {
+        	        doPerformProcedureForPatient(procedureUri, patientId);
+        	    }
         	}
-        	// TODO: handle return from new patient
             break;
         }
     }
@@ -425,10 +457,11 @@ public class Sana extends Activity implements View.OnClickListener {
      * 
      * @param uri The Procedure to run
      */
-    private void doPerformProcedure(final Uri uri) {
+    private void doPerformProcedureForPatient(final Uri uri, long patientId) {
         Log.i(TAG, "doPerformProcedure uri=" + uri.toString());
         try {
         	Intent i = new Intent(Intent.ACTION_VIEW, uri);
+        	i.putExtra(PatientsList.EXTRA_PATIENT_ID, patientId);
     		startActivityForResult(i, RUN_PROCEDURE);
         } catch (Exception e) {
             SanaUtil.errorAlert(this, e.toString());

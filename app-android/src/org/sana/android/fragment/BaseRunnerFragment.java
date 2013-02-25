@@ -12,7 +12,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.activity.ProcedureRunner;
@@ -20,9 +19,9 @@ import org.sana.android.db.EncounterDAO;
 import org.sana.android.db.EventDAO;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.db.ProcedureDAO;
+import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
 import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
-import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
 import org.sana.android.media.EducationResource.Audience;
 import org.sana.android.net.MDSInterface;
 import org.sana.android.procedure.Procedure;
@@ -48,8 +47,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -68,16 +67,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
-/**
- * Base class for running either a new encounter or a new patient. Individual
+/** Base class for running either a new encounter or a new patient. Individual
  * procedure steps are rendered to a view which is wrapped in a container which
  * presents buttons for paging. Additional logic is built into this class to
  * handle launching and capturing returned values from Activities used to
  * capture data along with initiating procedure saving, reloading, and
  * uploading.
  * 
- * @author Sana Development Team
- */
+ * @author Sana Development Team */
 public abstract class BaseRunnerFragment extends Fragment implements View.OnClickListener,
         ServiceListener<BackgroundUploader>, PatientLookupListener {
 
@@ -94,8 +91,8 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
     public static final int IMPLICIT_PLUGIN_INTENT_REQUEST_CODE = 8;
 
     // Dialog
-    private ProgressDialog lookupProgress = null;
-    private ProgressDialog loadProgressDialog = null;
+    protected ProgressDialog lookupProgress = null;
+    protected ProgressDialog loadProgressDialog = null;
 
     // Views
     private Button next, prev, info;
@@ -106,10 +103,10 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
     private BackgroundUploader mUploadService = null;
 
     // State instance fields
-    private Procedure p = null;
-    private Uri thisSavedProcedure;
-    private int startPage = 0;
-    private boolean onDonePage = false;
+    protected Procedure mProcedure = null;
+    protected Uri thisSavedProcedure;
+    protected int startPage = 0;
+    protected boolean onDonePage = false;
     private PatientLookupTask patientLookupTask = null;
 
     /** {@inheritDoc} */
@@ -129,7 +126,7 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
     @Override
     public void onActivityCreated(Bundle instance) {
         super.onActivityCreated(instance);
-        Log.v(getClass().getSimpleName(), "onCreate");
+        Log.v(getClass().getSimpleName(), "onActivityCreate");
 
         try {
             mConnector.setServiceListener(this);
@@ -142,22 +139,13 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
 
         logEvent(EventType.ENCOUNTER_ACTIVITY_START_OR_RESUME, "");
 
-        // Load procedure
-        if (p == null) {
-            ProcedureLoadRequest request = new ProcedureLoadRequest();
-            request.instance = instance;
-            request.intent = getActivity().getIntent();
-
-            logEvent(EventType.ENCOUNTER_LOAD_STARTED, "");
-            new ProcedureLoaderTask().execute(request);
-            
-            loadProgressDialog = new ProgressDialog(getActivity());
-            loadProgressDialog.setMessage(getString(R.string.dialog_loading_procedure));
-            loadProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            if (!getActivity().isFinishing())
-                loadProgressDialog.show();
-        }
+        loadProcedure(instance);
     }
+
+    /** Loads in a procedure from the bundle passed in to the fragment.
+     * 
+     * @param instance */
+    protected abstract void loadProcedure(Bundle instance);
 
     /** {@inheritDoc} */
     @Override
@@ -187,8 +175,8 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                 e.printStackTrace();
             }
         }
-        if (p != null) {
-            p.clearCachedViews();
+        if (mProcedure != null) {
+            mProcedure.clearCachedViews();
         }
     }
 
@@ -217,17 +205,15 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
 
     }
 
-    /**
-     * Serializes the current procedure to the database. Takes the answers map
+    /** Serializes the current procedure to the database. Takes the answers map
      * from the procedure, serializes it to JSON, and stores it. If finished is
      * set, then it will set the procedure's row to finished. This will signal
      * to the upload service that it is ready for upload.
      * 
-     * @param finished -- Whether to set the procedure as ready for upload.
-     */
+     * @param finished -- Whether to set the procedure as ready for upload. */
     public void storeCurrentProcedure(boolean finished) {
-        if (p != null && thisSavedProcedure != null) {
-            JSONObject answersMap = new JSONObject(p.toAnswers());
+        if (mProcedure != null && thisSavedProcedure != null) {
+            JSONObject answersMap = new JSONObject(mProcedure.toAnswers());
             String json = answersMap.toString();
 
             ContentValues cv = new ContentValues();
@@ -243,21 +229,19 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         }
     }
 
-    /**
-     * Removes the current procedure form the database.
-     */
+    /** Removes the current procedure form the database. */
     public void deleteCurrentProcedure() {
         getActivity().getContentResolver().delete(thisSavedProcedure, null, null);
     }
 
-    /**
-     * Navigates to the next page.
-     * @return true if navigating to the next page was successful, otherwise, false.
-     */
+    /** Navigates to the next page.
+     * 
+     * @return true if navigating to the next page was successful, otherwise,
+     *         false. */
     public synchronized boolean nextPage() {
         boolean succeed = true;
         try {
-            p.current().validate();
+            mProcedure.current().validate();
         } catch (ValidationError e) {
             String message = e.getMessage();
             logEvent(EventType.ENCOUNTER_PAGE_VALIDATION_FAILED, message);
@@ -265,8 +249,8 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
             return false;
         }
 
-        ProcedureElement patientId = p.current().getElementByType("patientId");
-        if (patientId != null && p.getPatientInfo() == null) {
+        ProcedureElement patientId = mProcedure.current().getElementByType("patientId");
+        if (patientId != null && mProcedure.getPatientInfo() == null) {
             // The patient ID question is on this page. Look up the ID in an
             // AsyncTask
             lookupPatient(patientId.getAnswer());
@@ -275,7 +259,7 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
 
         // Save answers
         storeCurrentProcedure(false);
-        if (!p.hasNextShowable()) {
+        if (!mProcedure.hasNextShowable()) {
             if (!onDonePage) {
                 baseViews.setInAnimation(getActivity(), R.anim.slide_from_right);
                 baseViews.setOutAnimation(getActivity(), R.anim.slide_to_left);
@@ -286,34 +270,34 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                 succeed = false;
             }
         } else {
-            p.advance();
+            mProcedure.advance();
 
             logEvent(EventType.ENCOUNTER_NEXT_PAGE, Integer.toString(
-                    p.getCurrentIndex()));
+                    mProcedure.getCurrentIndex()));
 
             // Hide the keyboard
             InputMethodManager imm = (InputMethodManager) getActivity().
                     getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null && p != null && p.getCachedView() != null)
-                imm.hideSoftInputFromWindow(p.getCachedView().getWindowToken(),
+            if (imm != null && mProcedure != null && mProcedure.getCachedView() != null)
+                imm.hideSoftInputFromWindow(mProcedure.getCachedView().getWindowToken(),
                         0);
 
             Log.v(TAG, "In nextPage(), current page index is: "
-                    + Integer.toString(p.getCurrentIndex()));
+                    + Integer.toString(mProcedure.getCurrentIndex()));
             getActivity().setProgress(currentProg());
 
             // Tell the current page to play its first audio prompt
-            p.current().playFirstPrompt();
+            mProcedure.current().playFirstPrompt();
         }
 
         updateNextPrev();
         return succeed;
     }
 
-    /**
-     * Displays the previous page.
-     * @return true if navigating to the previous page was successful, otherwise, false.
-     */
+    /** Displays the previous page.
+     * 
+     * @return true if navigating to the previous page was successful,
+     *         otherwise, false. */
     public synchronized boolean prevPage() {
         boolean succeed = true;
 
@@ -325,24 +309,24 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
             getActivity().setProgress(currentProg());
 
             // Tell the current page to play its first audio prompt
-            p.current().playFirstPrompt();
+            mProcedure.current().playFirstPrompt();
         }
         // If was on start of procedures page
         // Back button will go back to procedures list page
-        else if (!p.hasPrevShowable()) {
+        else if (!mProcedure.hasPrevShowable()) {
             // This quits when you hit back and have nowhere else to go back to.
             getActivity().setResult(Activity.RESULT_CANCELED, null);
             logEvent(EventType.ENCOUNTER_EXIT_NO_SAVE, "");
             getActivity().finish();
             return succeed;
         }
-        else if (p.hasPrevShowable()) {
-            p.back();
-            Log.v("prev", Integer.toString(p.getCurrentIndex()));
+        else if (mProcedure.hasPrevShowable()) {
+            mProcedure.back();
+            Log.v("prev", Integer.toString(mProcedure.getCurrentIndex()));
             getActivity().setProgress(currentProg());
 
             logEvent(EventType.ENCOUNTER_PREVIOUS_PAGE,
-                    Integer.toString(p.getCurrentIndex()));
+                    Integer.toString(mProcedure.getCurrentIndex()));
 
             // Save answers
             storeCurrentProcedure(false);
@@ -350,27 +334,25 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
             // Hide the keyboard
             InputMethodManager imm = (InputMethodManager) getActivity()
                     .getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null && p != null && p.getCachedView() != null)
-                imm.hideSoftInputFromWindow(p.getCachedView().getWindowToken(),
+            if (imm != null && mProcedure != null && mProcedure.getCachedView() != null)
+                imm.hideSoftInputFromWindow(mProcedure.getCachedView().getWindowToken(),
                         0);
 
             // Tell the current page to play its first audio prompt
-            p.current().playFirstPrompt();
+            mProcedure.current().playFirstPrompt();
         }
 
         updateNextPrev();
         return succeed;
     }
 
-    /**
-     * Launches the EducationList activity. Audience may be patient or worker.
+    /** Launches the EducationList activity. Audience may be patient or worker.
      * 
-     * @param audience the target audience.
-     */
+     * @param audience the target audience. */
     public synchronized void showInfo(Audience audience) {
         Log.d(TAG, "Launching Help, audience: " + audience);
         // Gets the elements of the current page which have help
-        Intent i = p.current().educationResources(audience);
+        Intent i = mProcedure.current().educationResources(audience);
         if (i == null) {
             Toast.makeText(getActivity(), getString(R.string.dialog_no_help_available),
                     Toast.LENGTH_SHORT).show();
@@ -383,9 +365,7 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         }
     }
 
-    /**
-     * Adds current procedure to queue for upload.
-     */
+    /** Adds current procedure to queue for upload. */
     public void uploadProcedureInBackground() {
         storeCurrentProcedure(true);
         // First check to make sure procedure has not already been uploaded
@@ -405,41 +385,22 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
 
     // current progress in the procedure
     private int currentProg() {
-        int pageCount = p.getVisiblePageCount();
+        int pageCount = mProcedure.getVisiblePageCount();
         if (pageCount == 0)
             return 10000;
-        return (int) (10000 * (double) (p.getCurrentVisibleIndex()) / pageCount);
+        return (int) (10000 * (double) (mProcedure.getCurrentVisibleIndex()) / pageCount);
     }
 
-    /**
-     * Logs an event.
+    /** Logs an event.
+     * 
      * @param type
-     * @param value
-     */
-    public void logEvent(EventType type, String value) {
-        String savedProcedureGuid = "";
-        String patientId = "";
-        String userId = "";
+     * @param value */
+    public abstract void logEvent(EventType type, String value);
 
-        if (thisSavedProcedure != null) {
-            savedProcedureGuid = EncounterDAO.getEncounterGuid(getActivity(),
-                    thisSavedProcedure);
-        }
-
-        if (p != null) {
-            PatientInfo pi = p.getPatientInfo();
-            if (pi != null) {
-                patientId = pi.getPatientIdentifier();
-            } else {
-                // TODO find the patient ID in the form and look at its answer
-            }
-        }
-        // TODO lookup current user
-        EventDAO.registerEvent(getActivity(), type, value, savedProcedureGuid,
-                patientId, userId);
-    }
-
-    private void logException(Throwable t) {
+    /** Logs an exception
+     * 
+     * @param t */
+    protected void logException(Throwable t) {
         String stackTrace = EventDAO.getStackTrace(t);
         EventType et = EventType.EXCEPTION;
         if (t instanceof OutOfMemoryError) {
@@ -448,35 +409,29 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         logEvent(et, stackTrace);
     }
 
-    /**
-     * For connecting to the BackgroundUploader.
-     */
+    /** For connecting to the BackgroundUploader. */
     @Override
     public void onConnect(BackgroundUploader uploadService) {
         Log.i(TAG, "onServiceConnected");
         mUploadService = uploadService;
     }
 
-    /**
-     * For disconnecting from the BackgroundUploader.
-     */
+    /** For disconnecting from the BackgroundUploader. */
     @Override
     public void onDisconnect(BackgroundUploader uploadService) {
         Log.i(TAG, "onServiceDisconnected");
         mUploadService = null;
     }
-    
-    /**
-     * Call this method from the containing activity so this fragment can handle
-     * back button behavior.
-     */
+
+    /** Call this method from the containing activity so this fragment can handle
+     * back button behavior. */
     public void onBackButtonPressed(boolean wasOnDonePage) {
         if (!wasOnDonePage) {
             prevPage();
         }
         setContentView(baseViews);
     }
-    
+
     // Sets the view of this fragment
     private void setContentView(View view) {
         ViewGroup root = (ViewGroup) getView().findViewById(R.id.base_runner_root);
@@ -484,12 +439,10 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         root.addView(view);
     }
 
-    /**
-     * Displays a list of all the questions in the procedure
-     */
+    /** Displays a list of all the questions in the procedure */
     public void pageList() {
         ListView mList = new ListView(getActivity());
-        List<String> pList = p.toStringArray();
+        List<String> pList = mProcedure.toStringArray();
 
         // int currentPage = p.getCurrentIndex();
 
@@ -500,11 +453,11 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
             public void onItemClick(AdapterView<?> parentView, View childView,
                     int position, long id) {
                 onDonePage = false;
-                //wasOnDonePage = false;
+                // wasOnDonePage = false;
 
                 logEvent(EventType.ENCOUNTER_JUMP_TO_QUESTION,
                         Integer.toString(position));
-                p.jumpToVisiblePage(position);
+                mProcedure.jumpToVisiblePage(position);
                 baseViews.setDisplayedChild(0);
                 getActivity().setProgress(currentProg());
                 updateNextPrev();
@@ -513,19 +466,17 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         });
         setContentView(mList);
     }
-    
-    /**
-     * Creates the base view of this object.
-     */
+
+    /** Creates the base view of this object. */
     public void createView() {
-        if (p == null)
+        if (mProcedure == null)
             return;
-        getActivity().setTitle(p.getTitle());
-        View procedureView = wrapViewWithInterface(p.toView(getActivity()));
+        getActivity().setTitle(mProcedure.getTitle());
+        View procedureView = wrapViewWithInterface(mProcedure.toView(getActivity()));
 
         // Now that the view is active, go to the correct page.
-        if (p.getCurrentIndex() != startPage) {
-            p.jumpToPage(startPage);
+        if (mProcedure.getCurrentIndex() != startPage) {
+            mProcedure.jumpToPage(startPage);
             updateNextPrev();
         }
 
@@ -562,13 +513,11 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         getActivity().setProgress(0);
     }
 
-    /**
-     * Takes a view and wraps it with next/previous buttons for navigating.
+    /** Takes a view and wraps it with next/previous buttons for navigating.
      * 
      * @param sub - the view which is to be wrapped
      * @return - a new view which is <param>sub</param> wrapped with next/prev
-     *         buttons.
-     */
+     *         buttons. */
     public View wrapViewWithInterface(View sub) {
         // View sub = state.current().toView(this);
         // RelativeLayout rl = new RelativeLayout(this);
@@ -626,14 +575,12 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         return base;
     }
 
-    /**
-     * Updates the next and previous page references.
-     */
+    /** Updates the next and previous page references. */
     public void updateNextPrev() {
-        prev.setEnabled(p.hasPrev());
+        prev.setEnabled(mProcedure.hasPrev());
         prev.setText(getResources().getString(
                 R.string.procedurerunner_previous));
-        if (p.hasNext()) {
+        if (mProcedure.hasNext()) {
             next.setText(getResources().getString(
                     R.string.procedurerunner_next));
         } else {
@@ -642,34 +589,17 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         }
     }
 
-    /**
-     * A request for loading a procedure.
+    /** A request for loading a procedure.
      * 
-     * @author Sana Development Team
-     */
+     * @author Sana Development Team */
     class ProcedureLoadRequest {
         Bundle instance;
         Intent intent;
     }
 
-    /**
-     * The result of loading a procedure
+    /** A task for loading a procedure.
      * 
-     * @author Sana Development Team
-     */
-    class ProcedureLoadResult {
-        Uri procedureUri;
-        Uri savedProcedureUri;
-        Procedure p = null;
-        boolean success = false;
-        String errorMessage = "";
-    }
-
-    /**
-     * A task for loading a procedure.
-     * 
-     * @author Sana Development Team
-     */
+     * @author Sana Development Team */
     class ProcedureLoaderTask extends AsyncTask<ProcedureLoadRequest, Void,
             ProcedureLoadResult>
     {
@@ -750,7 +680,7 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                 result.savedProcedureUri = thisSavedProcedure;
 
             } else {
-                
+
                 // This is a saved encounter.
                 startPage = 0;
                 PatientInfo pi = null;
@@ -869,10 +799,10 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                 loadProgressDialog = null;
             }
             if (result != null && result.success) {
-                p = result.p;
+                mProcedure = result.p;
                 thisSavedProcedure = result.savedProcedureUri;
                 logEvent(EventType.ENCOUNTER_LOAD_FINISHED, "");
-                if (p != null)
+                if (mProcedure != null)
                     createView();
                 else
                     logEvent(EventType.ENCOUNTER_LOAD_FAILED, "Null procedure");
@@ -883,6 +813,17 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                 getActivity().finish();
             }
         }
+    }
+
+    /** The result of loading a procedure
+     * 
+     * @author Sana Development Team */
+    class ProcedureLoadResult {
+        Uri procedureUri;
+        Uri savedProcedureUri;
+        Procedure p = null;
+        boolean success = false;
+        String errorMessage = "";
     }
 
     // starts a new patient look up task
@@ -905,11 +846,9 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
         }
     }
 
-    /**
-     * Callback to handle when a patient look up succeeds. Will result in an
+    /** Callback to handle when a patient look up succeeds. Will result in an
      * alert being displayed prompting the user to confirm that it is the
-     * correct patient.
-     */
+     * correct patient. */
     public void onPatientLookupSuccess(final PatientInfo patientInfo) {
         logEvent(EventType.ENCOUNTER_LOOKUP_PATIENT_SUCCESS,
                 patientInfo.getPatientIdentifier());
@@ -944,7 +883,7 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                        p.setPatientInfo(patientInfo);
+                        mProcedure.setPatientInfo(patientInfo);
                         nextPage();
                     }
                 }).setNegativeButton(
@@ -953,7 +892,7 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        p.current().getPatientIdElement()
+                        mProcedure.current().getPatientIdElement()
                                 .setAndRefreshAnswer("");
                     }
                 });
@@ -962,11 +901,9 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
             alert.show();
     }
 
-    /**
-     * Callback to handle when a patient look up fails. Will result in an alert
+    /** Callback to handle when a patient look up fails. Will result in an alert
      * being displayed prompting the user to input whether the patient should be
-     * considered new.
-     */
+     * considered new. */
     public void onPatientLookupFailure(final String patientIdentifier) {
         logEvent(EventType.ENCOUNTER_LOOKUP_PATIENT_FAILED, patientIdentifier);
 
@@ -991,7 +928,7 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                         dialog.cancel();
                         PatientInfo pi = new PatientInfo();
                         pi.setPatientIdentifier(patientIdentifier);
-                        p.setPatientInfo(pi);
+                        mProcedure.setPatientInfo(pi);
                         nextPage();
                     }
                 }).setNegativeButton(

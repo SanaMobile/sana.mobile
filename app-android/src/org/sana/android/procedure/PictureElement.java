@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import org.sana.android.ImagePreviewDialog;
 import org.sana.android.ScalingImageAdapter;
-import org.sana.android.activity.ProcedureRunner;
 import org.sana.android.db.SanaDB;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.w3c.dom.Node;
@@ -21,12 +20,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 /**
  * PictureElement is a ProcedureElement that allows a user to take photos. It 
@@ -133,7 +132,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
 				 getProcedure().getInstanceUri().getPathSegments().get(1); //which procedure its part of
 			 String[] params = {procedureId, id};
 		
-			 imageCaptureIntent = new Intent(getContext(), ProcedureRunner.class);
+			 imageCaptureIntent = new Intent(getContext(), ((Activity) getContext()).getClass());
 			 imageCaptureIntent.putExtra(PARAMS_NAME, params)
 			 			  .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 			              .putExtra("intentKey", 0);

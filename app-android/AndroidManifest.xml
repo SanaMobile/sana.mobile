@@ -23,7 +23,8 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sherlock" >
         <service
             android:name="org.sana.android.service.BackgroundUploader"
             android:enabled="true"
@@ -34,7 +35,7 @@
             android:name="org.sana.android.db.ProcedureProvider"
             android:authorities="org.sana.provider.Procedure" />
         <provider
-            android:name=".db.SavedProcedureProvider"
+            android:name="org.sana.android.db.SavedProcedureProvider"
             android:authorities="org.sana.provider.SavedProcedure" />
         <provider
             android:name="org.sana.android.db.BinaryProvider"
@@ -66,6 +67,7 @@
             android:label="@string/title_register_new_patient" >
             <intent-filter>
                 <action android:name="android.intent.action.INSERT" />
+                <action android:name="android.intent.action.INSERT_OR_EDIT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 

@@ -2,11 +2,12 @@ package org.sana.android.activity;
 
 import org.sana.R;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import com.actionbarsherlock.app.SherlockActivity;
 
 /**
  * Alerts that patient information does no match database and captures whether 
@@ -15,7 +16,7 @@ import android.os.Bundle;
  * @author Sana Development Team
  *
  */
-public class PatientInfoDialog extends Activity {
+public class PatientInfoDialog extends SherlockActivity {
 
 	private static String errormessage;
 

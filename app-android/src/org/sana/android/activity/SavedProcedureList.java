@@ -7,7 +7,6 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
 import org.sana.R;
 import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
@@ -17,15 +16,12 @@ import org.sana.android.service.ServiceConnector;
 import org.sana.android.service.ServiceListener;
 import org.sana.android.util.SanaUtil;
 
-import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ListAdapter;
@@ -33,12 +29,16 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 /**
  * Displays a list of previous encounters and their status.
  * 
  * @author Sana Development Team
  */
-public class SavedProcedureList extends ListActivity implements 
+public class SavedProcedureList extends SherlockListActivity implements 
 	SimpleCursorAdapter.ViewBinder 
 {
 	private static final String TAG = SavedProcedureList.class.getSimpleName();

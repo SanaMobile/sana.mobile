@@ -34,6 +34,14 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     private SimpleCursorAdapter mAdapter;
     private OnPatientSelectedListener mListener;
     
+    /** {@inheritDoc} */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+    
+    /** {@inheritDoc} */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -56,6 +64,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         getLoaderManager().initLoader(PATIENTS_LOADER, null, this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (mListener != null) {
@@ -63,6 +72,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         CursorLoader loader = new CursorLoader(mActivity, mUri, PROJECTION, 
@@ -70,6 +80,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         return loader;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         
@@ -80,6 +91,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         mAdapter.notifyDataSetChanged();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
@@ -91,6 +103,9 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
      * @author Sana Development Team
      */
     public interface OnPatientSelectedListener {
+        /** Callback when a patient is selected in the list. 
+         * @param patientId The selected patient's ID.
+         */
         public void onPatientSelected(long patientId);
     }
     
