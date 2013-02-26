@@ -10,29 +10,37 @@ Contents:
     external plugin apps. 
 3.  app-android - Sana mobile client
 4.  libs - Additional libraries required by the projects.
+5.  libs-android - Additional android support libraries.
 
 Development Requirements
+------------------------
 1.  Git
 2.  JDK(latest 1.6 release)
 3.  Android SDK + API 7
 4.  Ecipse IDE. Get the Java EE Version.
-5.  Eclipse ADT plugin
-6.  Android emulator or phone which supports API 7
+5.  Eclipse Egit plugin
+6.  Eclipse ADT plugin
+7.  Android emulator or phone which supports API 7
 
 Code installation instructions.
-1.  Checkout the source code from the Git repo
-        git clone https://code.google.com/p/sana.mobile/
-2.  Create a new workspace for Sana code
+-------------------------------
+1.  Create a new workspace for Sana code
+2.  Import the source code as a general project using the following url for the
+    repository: https://code.google.com/p/sana.mobile/
 3.  Import the projects.
     a.  Import the Java library project in sana.mobile/api
 	b.  Import the Android library project in sana.mobile/api-android
-	c.  Import the Android client application project
+	c.  Import the actionbarsherlock library project from
+	    sana.mobile/libs-android/actionbarsherlock
+	d.  Import the Android client application project
 	
 Additional support libraries.
-You will need to import the additional support libraries for the projects from 
-the sana.mobile/libs directory. Currently included support 
+The projects above include additional support libraries included in the
+sana.mobile/libs directory. 
+
 
 Troubleshooting
+---------------
 A.  Missing Android dependencies. Use the "Android SDK Manager" to add any 
     missing API levels. In Eclipse, it can be launched by selecting
         Window --> Android SDK Manager 
@@ -42,3 +50,49 @@ C.  "NoClassDefFoundError" when running the client application. By default, the
     ADT plugin does not export libraries included in the build. To correct this
     issue, right click on the project in Eclipse and open the Properties window.
     Select 
+    
+Licensing
+---------
+This software is released under the BSD License. Please see LICENSE for a full
+copy of the license and copyright information. Licensing information for
+additional software included with this product can be found in the NOTICE.
+
+Cryptographic Software Notice
+-----------------------------
+
+This distribution may include software that has been designed for use
+with cryptographic software. The country in which you currently reside
+may have restrictions on the import, possession, use, and/or re-export
+to another country, of encryption software. BEFORE using any encryption
+software, please check your country's laws, regulations and policies
+concerning the import, possession, or use, and re-export of encryption
+software, to see if this is permitted. See <http://www.wassenaar.org/>
+for more information.
+
+The U.S. Government Department of Commerce, Bureau of Industry and
+Security (BIS), has classified this software as Export Commodity
+Control Number (ECCN) 5D002.C.1, which includes information security
+software using or performing cryptographic functions with asymmetric
+algorithms. The form and manner of this Apache Software Foundation
+distribution makes it eligible for export under the License Exception
+ENC Technology Software Unrestricted (TSU) exception (see the BIS
+Export Administration Regulations, Section 740.13) for both object
+code and source code.
+
+The following provides more details on the included software that
+may be subject to export controls on cryptographic software:
+
+  Apache HttpComponents Client interfaces with the
+  Java Secure Socket Extension (JSSE) API to provide
+
+    - HTTPS support
+
+  Apache HttpComponents Client does not include any
+  implementation of JSSE.
+  
+  
+Contact
+-------
+Additional information can be found at, or is linked from, the main project 
+site: http://sana.mit.edu
+ 
