@@ -24,7 +24,7 @@ public class Concept implements Unique{
 	private String name;
 	
 	/** Human-readable name */
-	private String displayName;
+	private String display_name;
 
 	/** Longer human-readable, narrative description. */
 	private String description;
@@ -75,17 +75,17 @@ public class Concept implements Unique{
 	}
 
 	/**
-	 * @return the displayName
+	 * @return the display_name
 	 */
 	public String getDisplayName() {
-		return displayName;
+		return display_name;
 	}
 
 	/**
 	 * @param display_name the display_name to set
 	 */
 	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+		this.display_name = displayName;
 	}
 
 	/**
