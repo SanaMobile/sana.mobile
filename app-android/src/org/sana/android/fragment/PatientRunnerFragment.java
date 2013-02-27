@@ -112,7 +112,12 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
             if (patientGender != null) {
                 patientInfo.setPatientGender(patientGender.getAnswer());
             }
+            
             // TODO figure out patient image
+            ProcedureElement patientImg = mProcedure.current().getElementByType("patientPhoto");
+            if (patientImg != null) {
+                Log.d(TAG, "patientImg answer: " + patientImg.getAnswer());
+            }
             
             // Store extracted patient information into db
             ContentValues cv = new ContentValues();
@@ -132,6 +137,15 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
             Log.i(TAG, "patientInfo updated " + updatedObjects
                     + " objects. (SHOULD ONLY BE 1)");
         }
+    }
+    
+    /**
+     * Don't actually upload the patient when this gets called. Simply mark
+     * the patient state as to be uploaded.
+     */
+    @Override
+    public void uploadProcedureInBackground() {
+        storeCurrentProcedure(true);
     }
     
     /** A task for loading the findpatient procedure.

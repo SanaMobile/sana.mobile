@@ -224,7 +224,7 @@ public class PatientProvider extends ContentProvider {
 				+ PatientSQLFormat.PATIENT_GENDER + " TEXT,"
 				+ PatientSQLFormat.IMAGE + " TEXT,"
 				+ PatientSQLFormat.STATE + " INTEGER DEFAULT '-1',"
-				+ PatientSQLFormat.PATIENT_DOB + " INTEGER"
+				+ PatientSQLFormat.PATIENT_DOB + " DATE"
 				+ ");");
 		Log.i(TAG, "Finished Creating Patient Data TAble");
 		
@@ -261,5 +261,6 @@ public class PatientProvider extends ContentProvider {
 		sPatientProjectionMap.put(PatientSQLFormat.PATIENT_LASTNAME, PatientSQLFormat.PATIENT_LASTNAME);
 		sPatientProjectionMap.put(PatientSQLFormat.PATIENT_DOB, PatientSQLFormat.PATIENT_DOB);
 		sPatientProjectionMap.put(PatientSQLFormat.PATIENT_GENDER, PatientSQLFormat.PATIENT_GENDER);
+		sPatientProjectionMap.put("image", PatientSQLFormat.IMAGE);
 	}
 }
