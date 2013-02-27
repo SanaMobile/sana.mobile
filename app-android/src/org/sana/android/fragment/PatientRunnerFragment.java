@@ -13,7 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.sana.R;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
-import org.sana.android.db.SanaDB.PatientSQLFormat;
+import org.sana.android.db.SanaDB.Patients;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
@@ -112,26 +112,40 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
             if (patientGender != null) {
                 patientInfo.setPatientGender(patientGender.getAnswer());
             }
+            
             // TODO figure out patient image
+            ProcedureElement patientImg = mProcedure.current().getElementByType("patientPhoto");
+            if (patientImg != null) {
+                Log.d(TAG, "patientImg answer: " + patientImg.getAnswer());
+            }
             
             // Store extracted patient information into db
             ContentValues cv = new ContentValues();
-            cv.put(PatientSQLFormat.PATIENT_ID, patientInfo.getPatientIdentifier());
-            cv.put(PatientSQLFormat.PATIENT_FIRSTNAME, patientInfo.getPatientFirstName());
-            cv.put(PatientSQLFormat.PATIENT_LASTNAME, patientInfo.getPatientLastName());
+            cv.put(Patients.PATIENT_ID, patientInfo.getPatientIdentifier());
+            cv.put(Patients.PATIENT_FIRSTNAME, patientInfo.getPatientFirstName());
+            cv.put(Patients.PATIENT_LASTNAME, patientInfo.getPatientLastName());
             // TODO: what is the format of a patient date?
 //            if (patientInfo.getPatientBirthdate() != null) 
-//                cv.put(PatientSQLFormat.PATIENT_DOB, patientInfo.getPatientBirthdate().get);
-            cv.put(PatientSQLFormat.PATIENT_GENDER, patientInfo.getPatientGender());;
+//                cv.put(Patients.PATIENT_DOB, patientInfo.getPatientBirthdate().get);
+            cv.put(Patients.PATIENT_GENDER, patientInfo.getPatientGender());;
             
             if (finished)
-                cv.put(PatientSQLFormat.STATE, 1);
+                cv.put(Patients.STATE, 1);
 
             int updatedObjects = getActivity().getContentResolver()
                     .update(thisSavedProcedure, cv, null, null);
             Log.i(TAG, "patientInfo updated " + updatedObjects
                     + " objects. (SHOULD ONLY BE 1)");
         }
+    }
+    
+    /**
+     * Don't actually upload the patient when this gets called. Simply mark
+     * the patient state as to be uploaded.
+     */
+    @Override
+    public void uploadProcedureInBackground() {
+        storeCurrentProcedure(true);
     }
     
     /** A task for loading the findpatient procedure.
@@ -169,10 +183,10 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
                 // procedure.toString());
                 
                 ContentValues cv = new ContentValues();
-                cv.put(PatientSQLFormat.STATE, 0);
+                cv.put(Patients.STATE, 0);
                 
                 thisSavedProcedure = getActivity().getContentResolver().insert(
-                        PatientSQLFormat.CONTENT_URI, cv);
+                        Patients.CONTENT_URI, cv);
                 
                 Log.i(TAG, "onCreate() : uri = " + procedure.toString()
                         + " savedUri = " + thisSavedProcedure);
