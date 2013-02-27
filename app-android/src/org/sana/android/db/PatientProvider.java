@@ -1,13 +1,12 @@
 package org.sana.android.db;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
+import org.sana.android.content.FileContentProvider;
 import org.sana.android.db.SanaDB.DatabaseHelper;
-import org.sana.android.db.SanaDB.PatientSQLFormat;
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
-
-import android.content.ContentProvider;
+import org.sana.android.provider.Patients;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -27,14 +26,14 @@ import android.util.Log;
  * 
  * @author Sana Development Team
  */
-public class PatientProvider extends ContentProvider {
+public class PatientProvider extends FileContentProvider implements Patients.Contract{
 
-	private static final String TAG = "PatientProvider";
+	private static final String TAG = PatientProvider.class.getSimpleName();
 
-	private static final String PATIENT_TABLE_NAME = "patients";
+	private static final String TABLE = "patients";
 
-	private static final int PATIENTS = 1;
-	private static final int PATIENTS_ID = 2;
+	private static final int ITEMS = 1;
+	private static final int ITEM_ID = 2;
 
 	private DatabaseHelper mOpenHelper;
 	private static final UriMatcher sUriMatcher;
@@ -56,13 +55,13 @@ public class PatientProvider extends ContentProvider {
 				+ TextUtils.join(",",projection));
 		
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		qb.setTables(PATIENT_TABLE_NAME);
+		qb.setTables(TABLE);
 
 		switch(sUriMatcher.match(uri)) {
-		case PATIENTS:    
+		case ITEMS:    
 			break;
-		case PATIENTS_ID:
-			qb.appendWhere(PatientSQLFormat._ID + "=" 
+		case ITEM_ID:
+			qb.appendWhere(_ID + "=" 
 					+ uri.getPathSegments().get(1));
 			break;
 		default:
@@ -71,7 +70,7 @@ public class PatientProvider extends ContentProvider {
 
 		String orderBy;
 		if(TextUtils.isEmpty(sortOrder)) {
-			orderBy = PatientSQLFormat.DEFAULT_SORT_ORDER;
+			orderBy = Patients.DEFAULT_SORT_ORDER;
 		} else {
 			orderBy = sortOrder;
 		}
@@ -91,13 +90,13 @@ public class PatientProvider extends ContentProvider {
 		int count = 0; 
 
 		switch(sUriMatcher.match(uri)) {
-		case PATIENTS:
-			count = db.update(PATIENT_TABLE_NAME, values, selection, 
+		case ITEMS:
+			count = db.update(TABLE, values, selection, 
 					selectionArgs);
 			break;
-		case PATIENTS_ID:
+		case ITEM_ID:
 			String patientId = uri.getPathSegments().get(1);
-			count = db.update(PATIENT_TABLE_NAME, values, PatientSQLFormat._ID 
+			count = db.update(TABLE, values, _ID 
 					+ "=" + patientId + (!TextUtils.isEmpty(selection) 
 							? " AND (" + selection + ")" : ""), selectionArgs);
 			break;
@@ -115,12 +114,12 @@ public class PatientProvider extends ContentProvider {
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		int count;
 		switch (sUriMatcher.match(uri)) {
-		case PATIENTS:
-			count = db.delete(PATIENT_TABLE_NAME, selection, selectionArgs);
+		case ITEMS:
+			count = db.delete(TABLE, selection, selectionArgs);
 			break;
-		case PATIENTS_ID:
+		case ITEM_ID:
 			String patientId = uri.getPathSegments().get(1); 
-			count = db.delete(PATIENT_TABLE_NAME, PatientSQLFormat._ID + "=" 
+			count = db.delete(TABLE, _ID + "=" 
 					+ patientId + (!TextUtils.isEmpty(selection) ? " AND (" 
 							+ selection + ")" : ""), selectionArgs);
 			break;
@@ -136,7 +135,7 @@ public class PatientProvider extends ContentProvider {
 	@Override
 	public Uri insert(Uri uri, ContentValues initialValues) {
 		Log.i(TAG,"starting insert method");
-		if (sUriMatcher.match(uri) != PATIENTS) {
+		if (sUriMatcher.match(uri) != ITEMS) {
 			Log.i(TAG, "Throwing IllegalArgumentException");
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -151,34 +150,34 @@ public class PatientProvider extends ContentProvider {
 
 		Long now = Long.valueOf(System.currentTimeMillis());
 
-		if(values.containsKey(PatientSQLFormat.PATIENT_FIRSTNAME) == false) {
-			values.put(PatientSQLFormat.PATIENT_FIRSTNAME, "");
+		if(values.containsKey(GIVEN_NAME) == false) {
+			values.put(GIVEN_NAME, "");
 		}
 		
-		if(values.containsKey(PatientSQLFormat.PATIENT_LASTNAME) == false) {
-			values.put(PatientSQLFormat.PATIENT_LASTNAME, "");
+		if(values.containsKey(FAMILY_NAME) == false) {
+			values.put(FAMILY_NAME, "");
 		}
 
-		if(values.containsKey(PatientSQLFormat.PATIENT_DOB) == false) {
-			values.put(PatientSQLFormat.PATIENT_DOB, "");
+		if(values.containsKey(DOB) == false) {
+			values.put(DOB, "");
 		}
 
-		if(values.containsKey(PatientSQLFormat.PATIENT_ID) == false) {
-			values.put(PatientSQLFormat.PATIENT_ID, now);
+		if(values.containsKey(PATIENT_ID) == false) {
+			values.put(PATIENT_ID, now);
 		}
 		
-		if(values.containsKey(PatientSQLFormat.PATIENT_GENDER) == false) {
-			values.put(PatientSQLFormat.PATIENT_GENDER, "");
+		if(values.containsKey(GENDER) == false) {
+			values.put(GENDER, "");
 		}
  
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
  
 		try {
-			long rowId = db.insertOrThrow(PATIENT_TABLE_NAME, 
-					PatientSQLFormat.PATIENT_FIRSTNAME, values);
+			long rowId = db.insertOrThrow(TABLE, 
+					GIVEN_NAME, values);
 			if(rowId > 0) {
 				Uri patientUri = ContentUris.withAppendedId(
-						PatientSQLFormat.CONTENT_URI, rowId);
+						Patients.CONTENT_URI, rowId);
 				getContext().getContentResolver().notifyChange(patientUri, 
 						null);
 				return patientUri;
@@ -196,10 +195,10 @@ public class PatientProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		Log.i(TAG, "getType(uri="+uri.toString()+")");
 		switch(sUriMatcher.match(uri)) {
-		case PATIENTS:
-			return PatientSQLFormat.CONTENT_TYPE;
-		case PATIENTS_ID:
-			return PatientSQLFormat.CONTENT_ITEM_TYPE;
+		case ITEMS:
+			return Patients.CONTENT_TYPE;
+		case ITEM_ID:
+			return Patients.CONTENT_ITEM_TYPE;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -216,15 +215,15 @@ public class PatientProvider extends ContentProvider {
      */
 	public static void onCreateDatabase(SQLiteDatabase db) {
 		Log.i(TAG, "Creating Patient Data Table");
-		db.execSQL("CREATE TABLE " + PATIENT_TABLE_NAME + " ("
-				+ PatientSQLFormat._ID + " INTEGER PRIMARY KEY,"
-				+ PatientSQLFormat.PATIENT_ID + " TEXT,"
-				+ PatientSQLFormat.PATIENT_FIRSTNAME + " TEXT,"
-				+ PatientSQLFormat.PATIENT_LASTNAME + " TEXT,"
-				+ PatientSQLFormat.PATIENT_GENDER + " TEXT,"
-				+ PatientSQLFormat.IMAGE + " TEXT,"
-				+ PatientSQLFormat.STATE + " INTEGER DEFAULT '-1',"
-				+ PatientSQLFormat.PATIENT_DOB + " DATE"
+		db.execSQL("CREATE TABLE " + TABLE + " ("
+				+ _ID + " INTEGER PRIMARY KEY,"
+				+ PATIENT_ID + " TEXT,"
+				+ GIVEN_NAME + " TEXT,"
+				+ FAMILY_NAME + " TEXT,"
+				+ GENDER + " TEXT,"
+				+ IMAGE + " TEXT,"
+				+ STATE + " INTEGER DEFAULT '-1',"
+				+ DOB + " DATE"
 				+ ");");
 		Log.i(TAG, "Finished Creating Patient Data TAble");
 		
@@ -243,24 +242,36 @@ public class PatientProvider extends ContentProvider {
         if (oldVersion == 1 && newVersion == 2) {
         	// Do nothing
         } else if (oldVersion <= 3 && newVersion == 4){
-        	String sql = "ALTER TABLE " + PATIENT_TABLE_NAME +
-    			" ADD COLUMN " + PatientSQLFormat.IMAGE + " TEXT";
+        	String sql = "ALTER TABLE " + TABLE +
+    			" ADD COLUMN " + IMAGE + " TEXT";
         	db.execSQL(sql);
         }
 	}
 
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		sUriMatcher.addURI(SanaDB.PATIENT_AUTHORITY, "patients", PATIENTS);
-		sUriMatcher.addURI(SanaDB.PATIENT_AUTHORITY, "patients/#", PATIENTS_ID);
+		sUriMatcher.addURI(SanaDB.PATIENT_AUTHORITY, "patients", ITEMS);
+		sUriMatcher.addURI(SanaDB.PATIENT_AUTHORITY, "patients/#", ITEM_ID);
 
 		sPatientProjectionMap = new HashMap<String, String>();
-		sPatientProjectionMap.put(PatientSQLFormat._ID, PatientSQLFormat._ID);
-		sPatientProjectionMap.put(PatientSQLFormat.PATIENT_ID, PatientSQLFormat.PATIENT_ID);
-		sPatientProjectionMap.put(PatientSQLFormat.PATIENT_FIRSTNAME, PatientSQLFormat.PATIENT_FIRSTNAME);
-		sPatientProjectionMap.put(PatientSQLFormat.PATIENT_LASTNAME, PatientSQLFormat.PATIENT_LASTNAME);
-		sPatientProjectionMap.put(PatientSQLFormat.PATIENT_DOB, PatientSQLFormat.PATIENT_DOB);
-		sPatientProjectionMap.put(PatientSQLFormat.PATIENT_GENDER, PatientSQLFormat.PATIENT_GENDER);
-		sPatientProjectionMap.put("image", PatientSQLFormat.IMAGE);
+		sPatientProjectionMap.put(_ID, _ID);
+		sPatientProjectionMap.put(PATIENT_ID, PATIENT_ID);
+		sPatientProjectionMap.put(GIVEN_NAME, GIVEN_NAME);
+		sPatientProjectionMap.put(FAMILY_NAME, FAMILY_NAME);
+		sPatientProjectionMap.put(DOB, DOB);
+		sPatientProjectionMap.put(GENDER, GENDER);
+		sPatientProjectionMap.put(IMAGE, IMAGE);
+	}
+
+	@Override
+	protected File insertFileHelper(Uri uri, ContentValues values)
+			throws FileNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected String getFileColumn() {
+		return IMAGE;
 	}
 }
