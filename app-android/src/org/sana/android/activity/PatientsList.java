@@ -2,7 +2,7 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.db.SanaDB.PatientSQLFormat;
+import org.sana.android.provider.Patients;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
 import org.sana.android.util.SanaUtil;
@@ -90,8 +90,8 @@ public class PatientsList extends SherlockFragmentActivity implements
     // Starts PatientRunnerFragment for creating a new patient.
     private void registerNewPatient() {
         Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
-        intent.setType(PatientSQLFormat.CONTENT_TYPE);
-        intent.setData(PatientSQLFormat.CONTENT_URI);
+        intent.setType(Patients.CONTENT_TYPE);
+        intent.setData(Patients.CONTENT_URI);
         startActivityForResult(intent, CREATE_PATIENT);
     }
 

@@ -4,7 +4,7 @@ import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.activity.settings.Settings;
 import org.sana.android.db.SanaDB.NotificationSQLFormat;
-import org.sana.android.db.SanaDB.PatientSQLFormat;
+import org.sana.android.provider.Patients;
 import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.media.EducationResource;
@@ -217,8 +217,8 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
             intentWithProcedureInfo = new Intent();
         }
         intentWithProcedureInfo.setAction(Intent.ACTION_PICK);
-        intentWithProcedureInfo.setType(PatientSQLFormat.CONTENT_TYPE);
-        intentWithProcedureInfo.setData(PatientSQLFormat.CONTENT_URI);
+        intentWithProcedureInfo.setType(Patients.CONTENT_TYPE);
+        intentWithProcedureInfo.setData(Patients.CONTENT_URI);
         startActivityForResult(intentWithProcedureInfo, PICK_PATIENT);
     }
     

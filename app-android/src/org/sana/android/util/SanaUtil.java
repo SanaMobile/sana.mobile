@@ -11,17 +11,17 @@ import java.util.Random;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.sana.R;
-import org.sana.android.db.ObservationProvider.Observations;
 import org.sana.android.db.SanaDB;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.db.SanaDB.NotificationSQLFormat;
-import org.sana.android.db.SanaDB.PatientSQLFormat;
+import org.sana.android.provider.Patients;
 import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SoundSQLFormat;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureParseException;
+import org.sana.android.provider.Observations;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -195,15 +195,16 @@ public class SanaUtil {
         deleteContentUri(ctx, BinarySQLFormat.CONTENT_URI,
                 BinarySQLFormat._ID);
         if (SanaDB.DATABASE_VERSION > 4)
-            deleteContentUri(ctx, Observations.CONTENT_URI, Observations._ID);
+            deleteContentUri(ctx, Observations.CONTENT_URI, 
+            		Observations.Contract._ID);
     }
 
     /** Removes all stored patient information
      * 
      * @param ctx the Context where the data is stored */
     public static void clearPatientData(Context ctx) {
-        deleteContentUri(ctx, PatientSQLFormat.CONTENT_URI,
-                PatientSQLFormat._ID);
+        deleteContentUri(ctx, Patients.CONTENT_URI,
+                Patients.Contract._ID);
     }
 
     /** Inserts a new procedure into the data store

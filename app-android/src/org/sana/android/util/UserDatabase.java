@@ -2,7 +2,7 @@ package org.sana.android.util;
 import java.util.Date;
 
 import org.sana.android.db.PatientInfo;
-import org.sana.android.db.SanaDB.PatientSQLFormat;
+import org.sana.android.provider.Patients;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -21,11 +21,11 @@ public class UserDatabase {
     public static final String TAG = UserDatabase.class.toString();
     
     private static final String[] PROJECTION = new String[] {
-    	PatientSQLFormat.PATIENT_DOB,
-		PatientSQLFormat.PATIENT_FIRSTNAME, 
-		PatientSQLFormat.PATIENT_LASTNAME, 
-		PatientSQLFormat.PATIENT_GENDER,
-		PatientSQLFormat.PATIENT_ID};
+    	Patients.Contract.DOB,
+		Patients.Contract.GIVEN_NAME, 
+		Patients.Contract.FAMILY_NAME, 
+		Patients.Contract.GENDER,
+		Patients.Contract.PATIENT_ID};
     
     /**
      * Inserts data for a list of users.
@@ -67,12 +67,12 @@ public class UserDatabase {
 				Log.i(TAG, "id is " + id);
 
 				// add new user to database
-				newuser.put(PatientSQLFormat.PATIENT_FIRSTNAME, firstname);
-				newuser.put(PatientSQLFormat.PATIENT_LASTNAME, lastname);
-				newuser.put(PatientSQLFormat.PATIENT_DOB, birthdate);
-				newuser.put(PatientSQLFormat.PATIENT_ID, id);
-				newuser.put(PatientSQLFormat.PATIENT_GENDER, gender);
-				cr.insert(PatientSQLFormat.CONTENT_URI, newuser);
+				newuser.put(Patients.Contract.GIVEN_NAME, firstname);
+				newuser.put(Patients.Contract.FAMILY_NAME, lastname);
+				newuser.put(Patients.Contract.DOB, birthdate);
+				newuser.put(Patients.Contract.PATIENT_ID, id);
+				newuser.put(Patients.Contract.GENDER, gender);
+				cr.insert(Patients.CONTENT_URI, newuser);
 				newuser.clear();
 				Log.i(TAG, "added new patient to database");
 			} catch (Exception e) {
@@ -185,7 +185,7 @@ public class UserDatabase {
 		
 		Cursor cursor = null;
 		try {
-			cursor = c.getContentResolver().query(PatientSQLFormat.CONTENT_URI, 
+			cursor = c.getContentResolver().query(Patients.CONTENT_URI, 
 					PROJECTION, "(patient_id=\""+id+"\")", null, null);
 			
 			if (cursor.getCount() > 0) {

@@ -2,7 +2,7 @@ package org.sana.android.service;
 
 import java.util.PriorityQueue;
 
-import org.sana.android.db.SanaDB.PatientSQLFormat;
+import org.sana.android.provider.Patients;
 import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.net.MDSInterface;
@@ -448,7 +448,7 @@ public class BackgroundUploader extends Service {
 		String type = getContentResolver().getType(uri);
 		if(uri.getScheme().compareTo("content") != 0)
 			throw new IllegalArgumentException("Must be content style uri: " + uri);
-		if (type.compareTo(PatientSQLFormat.CONTENT_TYPE) == 0){
+		if (type.compareTo(Patients.CONTENT_TYPE) == 0){
 			
 		} else if (type.compareTo(SavedProcedureSQLFormat.CONTENT_ITEM_TYPE) == 0){
 			addProcedureToQueue(uri);

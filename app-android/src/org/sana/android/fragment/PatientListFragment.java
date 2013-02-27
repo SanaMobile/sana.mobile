@@ -2,7 +2,7 @@ package org.sana.android.fragment;
 
 import org.sana.R;
 import org.sana.android.activity.PatientsList;
-import org.sana.android.db.SanaDB.PatientSQLFormat;
+import org.sana.android.provider.Patients;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,8 +25,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     private static final int PATIENTS_LOADER = 0;
     
     private static final String[] PROJECTION = new String[] {
-        PatientSQLFormat._ID, PatientSQLFormat.PATIENT_FIRSTNAME,
-        PatientSQLFormat.PATIENT_LASTNAME
+        Patients.Contract._ID, Patients.Contract.GIVEN_NAME,
+        Patients.Contract.FAMILY_NAME
     };
     
     private PatientsList mActivity;
@@ -50,13 +50,13 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         
         mUri = mActivity.getIntent().getData();
         if (mUri == null) {
-            mUri = PatientSQLFormat.CONTENT_URI;
+            mUri = Patients.CONTENT_URI;
         }
         
         mAdapter = new SimpleCursorAdapter(mActivity, 
                 R.layout.patient_list_row, null, 
-                new String[] { PatientSQLFormat.PATIENT_LASTNAME, 
-                               PatientSQLFormat.PATIENT_FIRSTNAME },
+                new String[] { Patients.Contract.FAMILY_NAME, 
+                               Patients.Contract.GIVEN_NAME },
                 new int[] { R.id.last_name, R.id.first_name }, 
                 SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         setListAdapter(mAdapter);
@@ -76,7 +76,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         CursorLoader loader = new CursorLoader(mActivity, mUri, PROJECTION, 
-                null, null, PatientSQLFormat.DEFAULT_SORT_ORDER);
+                null, null, Patients.DEFAULT_SORT_ORDER);
         return loader;
     }
 
