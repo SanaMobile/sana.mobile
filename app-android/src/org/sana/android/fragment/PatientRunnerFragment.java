@@ -13,7 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.sana.R;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
-import org.sana.android.db.SanaDB.Patients;
+import org.sana.android.db.SanaDB.PatientSQLFormat;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
@@ -121,16 +121,16 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
             
             // Store extracted patient information into db
             ContentValues cv = new ContentValues();
-            cv.put(Patients.PATIENT_ID, patientInfo.getPatientIdentifier());
-            cv.put(Patients.PATIENT_FIRSTNAME, patientInfo.getPatientFirstName());
-            cv.put(Patients.PATIENT_LASTNAME, patientInfo.getPatientLastName());
+            cv.put(PatientSQLFormat.PATIENT_ID, patientInfo.getPatientIdentifier());
+            cv.put(PatientSQLFormat.PATIENT_FIRSTNAME, patientInfo.getPatientFirstName());
+            cv.put(PatientSQLFormat.PATIENT_LASTNAME, patientInfo.getPatientLastName());
             // TODO: what is the format of a patient date?
 //            if (patientInfo.getPatientBirthdate() != null) 
-//                cv.put(Patients.PATIENT_DOB, patientInfo.getPatientBirthdate().get);
-            cv.put(Patients.PATIENT_GENDER, patientInfo.getPatientGender());;
+//                cv.put(PatientSQLFormat.PATIENT_DOB, patientInfo.getPatientBirthdate().get);
+            cv.put(PatientSQLFormat.PATIENT_GENDER, patientInfo.getPatientGender());;
             
             if (finished)
-                cv.put(Patients.STATE, 1);
+                cv.put(PatientSQLFormat.STATE, 1);
 
             int updatedObjects = getActivity().getContentResolver()
                     .update(thisSavedProcedure, cv, null, null);
@@ -183,10 +183,10 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
                 // procedure.toString());
                 
                 ContentValues cv = new ContentValues();
-                cv.put(Patients.STATE, 0);
+                cv.put(PatientSQLFormat.STATE, 0);
                 
                 thisSavedProcedure = getActivity().getContentResolver().insert(
-                        Patients.CONTENT_URI, cv);
+                        PatientSQLFormat.CONTENT_URI, cv);
                 
                 Log.i(TAG, "onCreate() : uri = " + procedure.toString()
                         + " savedUri = " + thisSavedProcedure);
