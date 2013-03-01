@@ -3,7 +3,7 @@ package org.sana.android.service;
 import java.util.Collection;
 import java.util.PriorityQueue;
 
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
+import org.sana.android.provider.Encounters;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -29,9 +29,9 @@ public class QueueManager {
 	public static final int UPLOAD_STATUS_FAILURE = 5;
 	public static final int UPLOAD_STATUS_CREDENTIALS_INVALID = 6;
 	
-	private static final String[] PROJECTION = { SavedProcedureSQLFormat._ID,
-		SavedProcedureSQLFormat.GUID, SavedProcedureSQLFormat.PROCEDURE_ID,
-		SavedProcedureSQLFormat.UPLOAD_QUEUE };
+	private static final String[] PROJECTION = { Encounters.Contract._ID,
+		Encounters.Contract.UUID, Encounters.Contract.PROCEDURE,
+		Encounters.Contract.UPLOAD_QUEUE };
 	
 	/**
 	 * Initializes the in-memory queue with what is stored in the database.
@@ -43,16 +43,16 @@ public class QueueManager {
 			// Initialize the queue from the database
 			Log.i(TAG, "In initQueue - getting queue from database");
 			cursor = c.getContentResolver().query(
-					SavedProcedureSQLFormat.CONTENT_URI, PROJECTION,
-					SavedProcedureSQLFormat.UPLOAD_QUEUE + " >= 0", null,
-					SavedProcedureSQLFormat.QUEUE_SORT_ORDER);
+					Encounters.CONTENT_URI, PROJECTION,
+					Encounters.Contract.UPLOAD_QUEUE + " >= 0", null,
+					Encounters.QUEUE_SORT_ORDER);
 			cursor.moveToFirst();
 
 			int position = 0;
 			while (!cursor.isAfterLast()) {
 				int savedProcedureId = cursor.getInt(0);
 				Uri savedProcedureUri = ContentUris.withAppendedId(
-						SavedProcedureSQLFormat.CONTENT_URI, savedProcedureId);
+						Encounters.CONTENT_URI, savedProcedureId);
 				Log.i(TAG, "Queue item #" + position + " has URI " + savedProcedureUri);
 				queue.add(savedProcedureUri);
 				cursor.moveToNext();
@@ -85,8 +85,8 @@ public class QueueManager {
 		// everything out of the queue, then we re-add everything that is in the
 		// in-memory queue.
 		ContentValues cv = new ContentValues();
-		cv.put(SavedProcedureSQLFormat.UPLOAD_QUEUE, -1);
-		c.getContentResolver().update(SavedProcedureSQLFormat.CONTENT_URI, cv, 
+		cv.put(Encounters.Contract.UPLOAD_QUEUE, -1);
+		c.getContentResolver().update(Encounters.CONTENT_URI, cv, 
 				null, null);
 		
 		// TODO(XXX) This loop is inefficient -- O(n^2) when it could be O(n)
@@ -95,7 +95,7 @@ public class QueueManager {
 			int index = queueIndex(queue, procedureUri);
 			Log.i(TAG, "In updateQueueInDB, queueIndex(" + procedureUri
 					+ ") returns: " + index);
-			cv.put(SavedProcedureSQLFormat.UPLOAD_QUEUE, index);
+			cv.put(Encounters.Contract.UPLOAD_QUEUE, index);
 			c.getContentResolver().update(procedureUri, cv, null, null);
 		}
 	}
@@ -194,7 +194,7 @@ public class QueueManager {
 	{
 		Log.v(TAG, "Setting upload status for " + procedureUri + " to " + status);
 		ContentValues cv = new ContentValues();
-		cv.put(SavedProcedureSQLFormat.UPLOAD_STATUS, status); 
+		cv.put(Encounters.Contract.UPLOAD_STATUS, status); 
 		c.getContentResolver().update(procedureUri, cv, null, null); 
 	}
 	
@@ -209,7 +209,7 @@ public class QueueManager {
 			Collection<Uri> procedureUris, int status) 
 	{
 		ContentValues cv = new ContentValues();
-		cv.put(SavedProcedureSQLFormat.UPLOAD_STATUS, status);
+		cv.put(Encounters.Contract.UPLOAD_STATUS, status);
 		for (Uri uri : procedureUris) {
 			c.getContentResolver().update(uri, cv, null, null);
 		}

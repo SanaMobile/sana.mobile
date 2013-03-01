@@ -269,8 +269,8 @@ public class ImageProvider extends ContentProvider {
             values.put(ImageSQLFormat.MODIFIED_DATE, now);
         }
  
-        if(values.containsKey(ImageSQLFormat.SAVED_PROCEDURE_ID) == false) {
-            values.put(ImageSQLFormat.SAVED_PROCEDURE_ID, "");
+        if(values.containsKey(ImageSQLFormat.ENCOUNTER_ID) == false) {
+            values.put(ImageSQLFormat.ENCOUNTER_ID, "");
         }
         
         if(values.containsKey(ImageSQLFormat.ELEMENT_ID) == false) {
@@ -299,7 +299,7 @@ public class ImageProvider extends ContentProvider {
         
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowId = db.insert(IMAGE_TABLE_NAME, 
-        		ImageSQLFormat.SAVED_PROCEDURE_ID, values);
+        		ImageSQLFormat.ENCOUNTER_ID, values);
         if(rowId > 0) {
             
             String filename = rowId + "";
@@ -345,7 +345,7 @@ public class ImageProvider extends ContentProvider {
         Log.i(TAG, "Creating Image Table");
         db.execSQL("CREATE TABLE " + IMAGE_TABLE_NAME + " ("
                 + ImageSQLFormat._ID + " INTEGER PRIMARY KEY,"
-                + ImageSQLFormat.SAVED_PROCEDURE_ID + " TEXT,"
+                + ImageSQLFormat.ENCOUNTER_ID + " TEXT,"
                 + ImageSQLFormat.ELEMENT_ID + " TEXT,"
                 + ImageSQLFormat.FILE_URI + " TEXT,"
                 + ImageSQLFormat.FILE_VALID + " INTEGER,"
@@ -380,7 +380,7 @@ public class ImageProvider extends ContentProvider {
         
         sImageProjectionMap = new HashMap<String, String>();
         sImageProjectionMap.put(ImageSQLFormat._ID, ImageSQLFormat._ID);
-        sImageProjectionMap.put(ImageSQLFormat.SAVED_PROCEDURE_ID, ImageSQLFormat.SAVED_PROCEDURE_ID);
+        sImageProjectionMap.put(ImageSQLFormat.ENCOUNTER_ID, ImageSQLFormat.ENCOUNTER_ID);
         sImageProjectionMap.put(ImageSQLFormat.ELEMENT_ID, ImageSQLFormat.ELEMENT_ID);
         sImageProjectionMap.put(ImageSQLFormat.FILE_URI, ImageSQLFormat.FILE_URI);
         sImageProjectionMap.put(ImageSQLFormat.FILE_VALID, ImageSQLFormat.FILE_VALID);

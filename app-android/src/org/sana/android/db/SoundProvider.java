@@ -226,8 +226,8 @@ public class SoundProvider extends ContentProvider {
             values.put(SoundSQLFormat.MODIFIED_DATE, now);
         }
         
-        if(values.containsKey(SoundSQLFormat.SAVED_PROCEDURE_ID) == false) {
-            values.put(SoundSQLFormat.SAVED_PROCEDURE_ID, "");
+        if(values.containsKey(SoundSQLFormat.ENCOUNTER_ID) == false) {
+            values.put(SoundSQLFormat.ENCOUNTER_ID, "");
         }
         
         if(values.containsKey(SoundSQLFormat.FILE_URI) == false) {
@@ -256,7 +256,7 @@ public class SoundProvider extends ContentProvider {
         
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowId = db.insert(SOUND_TABLE_NAME, 
-        		SoundSQLFormat.SAVED_PROCEDURE_ID, values);
+        		SoundSQLFormat.ENCOUNTER_ID, values);
         if(rowId > 0) {
             
             String filename = rowId + "";
@@ -302,7 +302,7 @@ public class SoundProvider extends ContentProvider {
         Log.i(TAG, "Creating Sound Table");
         db.execSQL("CREATE TABLE " + SOUND_TABLE_NAME + " ("
                 + SoundSQLFormat._ID + " INTEGER PRIMARY KEY,"
-                + SoundSQLFormat.SAVED_PROCEDURE_ID + " TEXT,"
+                + SoundSQLFormat.ENCOUNTER_ID + " TEXT,"
                 + SoundSQLFormat.ELEMENT_ID + " TEXT,"
                 + SoundSQLFormat.FILE_URI + " TEXT,"
 //                + SoundSQLFormat.FILE_VALID + " INTEGER,"
@@ -337,7 +337,7 @@ public class SoundProvider extends ContentProvider {
         sSoundProjectionMap = new HashMap<String, String>();
         sSoundProjectionMap.put(SoundSQLFormat._ID, SoundSQLFormat._ID);
         sSoundProjectionMap.put(SoundSQLFormat.ELEMENT_ID, SoundSQLFormat.ELEMENT_ID);
-        sSoundProjectionMap.put(SoundSQLFormat.SAVED_PROCEDURE_ID, SoundSQLFormat.SAVED_PROCEDURE_ID);
+        sSoundProjectionMap.put(SoundSQLFormat.ENCOUNTER_ID, SoundSQLFormat.ENCOUNTER_ID);
         sSoundProjectionMap.put(SoundSQLFormat.FILE_URI, SoundSQLFormat.FILE_URI);
 //        sSoundProjectionMap.put(SoundSQLFormat.FILE_VALID, SoundSQLFormat.FILE_VALID);
 //        sSoundProjectionMap.put(SoundSQLFormat.FILE_SIZE, SoundSQLFormat.FILE_SIZE);

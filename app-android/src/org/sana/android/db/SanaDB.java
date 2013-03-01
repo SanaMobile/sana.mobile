@@ -13,12 +13,6 @@ import android.provider.BaseColumns;
 public final class SanaDB {
     
     /**
-     * The authority for the saved procedures provider.
-     */
-    public static final String SAVED_PROCEDURE_AUTHORITY = 
-    	"org.sana.provider.SavedProcedure";
-    
-    /**
      * The authority for the sound provider.
      */
     public static final String BINARY_AUTHORITY = "org.sana.provider.Binary";
@@ -68,130 +62,6 @@ public final class SanaDB {
     
     /**
      * This class defines the URI and data fields for the content provider 
-     * storing the text for a completed procedure form, referred to as a saved 
-     * procedure.
-     * 
-     * @author Sana Development Team
-     */
-    public static final class SavedProcedureSQLFormat implements BaseColumns {
-        
-        private SavedProcedureSQLFormat() {
-        }
-        
-        /**
-         * The content:// style URI for this content provider.
-         */
-        public static final Uri CONTENT_URI = Uri.parse("content://"
-                + SAVED_PROCEDURE_AUTHORITY + "/savedProcedures");
-
-        /**
-         * The MIME type of CONTENT_URI providing a directory of saved procedures.
-         */
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/org.sana.savedProcedure";
-
-        /**
-         * The MIME type of CONTENT_URI subdirectory of a single saved procedure.
-         */
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/org.sana.savedProcedure";
-
-        /**
-         * The default sort order.
-         */
-        public static final String DEFAULT_SORT_ORDER = "modified DESC";
-        
-        /**
-         * Sort by descending created column
-         */
-        public static final String CREATED_SORT_ORDER = "created DESC";
-        
-        /**
-         * Sort by ascending upload_queue column
-         */
-        public static final String QUEUE_SORT_ORDER = "upload_queue ASC";
-        
-        // COLUMNS
-        
-        /**
-         * The guid of this procedure (randomly generated on insert).
-         */
-        public static final String GUID = "GUID";
-
-        /**
-         * A foreign key to the procedure used to create this saved procedure.
-         */
-        public static final String PROCEDURE_ID = "procedure_id";
-        
-        /**
-         * The JSON data representing the state of this procedure.
-         */
-        public static final String PROCEDURE_STATE = "procedure";
-        
-
-    	/** The subject who data was collected about; i.e. the patient */
-        public static final String SUBJECT = "_subject";
-        
-        /**
-         * Status of data inputting. When finished, upload data to MDS.
-         */
-        public static final String FINISHED = "finished";
-        
-        // This procedure's text/state has been uploaded to the MDS
-		// successfully. This doesn't mean its binaries have been -- only the
-		// text.
-        /**
-         * Status of procedure upload to MDS. Does not indicate status of 
-         * binary upload -- only the text
-         */
-        public static final String UPLOADED = "uploaded";
-        
-        // Status of the procedure in the upload queue
-        // For use in SavedProcedureList to show each procedure's status
-        // 0 - Was never put into queue, or "Not Uploaded"
-        // 1 - Still in the queue waiting to be sent
-        // 2 - Upload Successful - has been sent to the MDS, no longer in queue
-        // 3 - Upload in progress
-        // 4 - In the queue but waiting for connectivity to upload
-        // 5 - Upload failed
-        // 6 - Upload stalled - username/password incorrect
-        /**
-         * Status of the procedure in the upload queue<br>
-         * <pre><blockquote>
-         * 0 - Was never put into queue, or "Not Uploaded"
-         * 1 - Still in the queue waiting to be sent
-         * 2 - Upload Successful - has been sent to the MDS, no longer in queue
-         * 3 - Upload in progress
-         * 4 - In the queue but waiting for connectivity to upload
-         * 5 - Upload failed
-         * 6 - Upload stalled - username/password incorrect
-         * </blockquote></pre>
-         */
-        public static final String UPLOAD_STATUS = "upload_queue_status";
-        
-        // Keeps track of the background upload queue
-        // >=0 -- In queue, shows position in line
-        // =-1 -- Not in queue (either never added or upload finished)
-        /**
-         * Keeps track of the background upload queue.
-         * <pre><blockquote>
-         * >=0 - In queue, shows position in line
-         * -1 - Not in queue (either never added or upload finished)
-         * </blockquote></pre>
-         */
-        public static final String UPLOAD_QUEUE = "upload_queue";
-
-        /**
-         * The date the procedure was created.
-         */
-        public static final String CREATED_DATE = "created";
-
-        /**
-         * The date the procedure was last modified.
-         */
-        public static final String MODIFIED_DATE = "modified";
-    }
-
-    /**
-     * This class defines the URI and data fields for the content provider 
      * storing the metadata for a binary file collected during a procedure.
      * 
      * @author Sana Development Team
@@ -227,7 +97,7 @@ public final class SanaDB {
         /**
          * The id of the saved procedure associated with the  file.
          */
-        public static final String SAVED_PROCEDURE_ID = "procedure";
+        public static final String ENCOUNTER_ID = "procedure";
         
         /**
          * The number of bytes successfully uploaded to the MDS.
@@ -300,7 +170,7 @@ public final class SanaDB {
         /**
          * The id of the saved procedure the image is associated with.
          */
-        public static final String SAVED_PROCEDURE_ID = "procedure";
+        public static final String ENCOUNTER_ID = "procedure";
         
         /**
          * The id uniquely identifying this element in the procedure it is 
@@ -389,7 +259,7 @@ public final class SanaDB {
         /**
          * The id of the saved procedure associated with the sound file.
          */
-        public static final String SAVED_PROCEDURE_ID = "procedure";
+        public static final String ENCOUNTER_ID = "procedure";
         
         /**
          * The URI of the sound file.
@@ -848,7 +718,7 @@ public final class SanaDB {
         @Override
         public void onCreate(SQLiteDatabase db) {
             ProcedureProvider.onCreateDatabase(db);
-            SavedProcedureProvider.onCreateDatabase(db);
+            EncounterProvider.onCreateDatabase(db);
             ImageProvider.onCreateDatabase(db);
             SoundProvider.onCreateDatabase(db);
             NotificationProvider.onCreateDatabase(db);
@@ -869,7 +739,7 @@ public final class SanaDB {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             ProcedureProvider.onUpgradeDatabase(db, oldVersion, newVersion);
-            SavedProcedureProvider.onUpgradeDatabase(db, oldVersion, newVersion);
+            EncounterProvider.onUpgradeDatabase(db, oldVersion, newVersion);
             BinaryProvider.onUpgradeDatabase(db, oldVersion, newVersion);
             ImageProvider.onUpgradeDatabase(db, oldVersion, newVersion);
             SoundProvider.onUpgradeDatabase(db, oldVersion, newVersion);

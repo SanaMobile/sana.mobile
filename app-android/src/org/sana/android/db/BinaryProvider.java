@@ -39,7 +39,7 @@ public class BinaryProvider extends ContentProvider {
     	BinarySQLFormat._ID,  BinarySQLFormat.CONTENT };
     
     protected static final String OBS_WHERE =  
-    	BinarySQLFormat.SAVED_PROCEDURE_ID + " = ? AND " 
+    	BinarySQLFormat.ENCOUNTER_ID + " = ? AND " 
     	+  BinarySQLFormat.ELEMENT_ID +" = ?" ;
     
     protected static final String[] PROJ_ID = new String[]{ 
@@ -243,8 +243,8 @@ public class BinaryProvider extends ContentProvider {
             values.put(BinarySQLFormat.MODIFIED_DATE, now);
         }
         
-        if(values.containsKey(BinarySQLFormat.SAVED_PROCEDURE_ID) == false) {
-            values.put(BinarySQLFormat.SAVED_PROCEDURE_ID, "");
+        if(values.containsKey(BinarySQLFormat.ENCOUNTER_ID) == false) {
+            values.put(BinarySQLFormat.ENCOUNTER_ID, "");
         }
         
         if(values.containsKey(BinarySQLFormat.UPLOAD_PROGRESS) == false) {
@@ -274,7 +274,7 @@ public class BinaryProvider extends ContentProvider {
         
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowId = db.insert(TABLE, 
-        		BinarySQLFormat.SAVED_PROCEDURE_ID, values);
+        		BinarySQLFormat.ENCOUNTER_ID, values);
         if(rowId > 0) {
             
             String filename = rowId + "";
@@ -320,7 +320,7 @@ public class BinaryProvider extends ContentProvider {
         Log.i(TAG, "Creating Binary Table");
         db.execSQL("CREATE TABLE " + TABLE + " ("
                 + BinarySQLFormat._ID + " INTEGER PRIMARY KEY,"
-                + BinarySQLFormat.SAVED_PROCEDURE_ID + " TEXT,"
+                + BinarySQLFormat.ENCOUNTER_ID + " TEXT,"
                 + BinarySQLFormat.ELEMENT_ID + " TEXT,"
                 + BinarySQLFormat.UPLOAD_PROGRESS + " INTEGER,"
                 + BinarySQLFormat.UPLOADED + " INTEGER,"
@@ -359,7 +359,7 @@ public class BinaryProvider extends ContentProvider {
         sProjectionMap = new HashMap<String, String>();
         sProjectionMap.put(BinarySQLFormat._ID, BinarySQLFormat._ID);
         sProjectionMap.put(BinarySQLFormat.ELEMENT_ID, BinarySQLFormat.ELEMENT_ID);
-        sProjectionMap.put(BinarySQLFormat.SAVED_PROCEDURE_ID, BinarySQLFormat.SAVED_PROCEDURE_ID);
+        sProjectionMap.put(BinarySQLFormat.ENCOUNTER_ID, BinarySQLFormat.ENCOUNTER_ID);
         sProjectionMap.put(BinarySQLFormat.UPLOADED, BinarySQLFormat.UPLOADED);
         sProjectionMap.put(BinarySQLFormat.UPLOAD_PROGRESS, BinarySQLFormat.UPLOAD_PROGRESS);
         sProjectionMap.put(BinarySQLFormat.CREATED_DATE, BinarySQLFormat.CREATED_DATE);

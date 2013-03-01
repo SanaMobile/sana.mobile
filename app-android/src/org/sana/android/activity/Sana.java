@@ -3,10 +3,10 @@ package org.sana.android.activity;
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.activity.settings.Settings;
+import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Notifications;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.media.EducationResource;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.service.BackgroundUploader;
@@ -242,8 +242,8 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
     /** Starts Activity for selecting and then viewing a previous encounter */
     private void pickSavedProcedure() {
     	Intent i = new Intent(Intent.ACTION_PICK);
-    	i.setType(SavedProcedureSQLFormat.CONTENT_TYPE);
-    	i.setData(SavedProcedureSQLFormat.CONTENT_URI);
+    	i.setType(Encounters.CONTENT_TYPE);
+    	i.setData(Encounters.CONTENT_URI);
     	startActivityForResult(i, PICK_SAVEDPROCEDURE);
     }
 

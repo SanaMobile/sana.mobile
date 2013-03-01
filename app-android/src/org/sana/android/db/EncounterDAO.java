@@ -1,6 +1,7 @@
 package org.sana.android.db;
 
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
+
+import org.sana.android.provider.Encounters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -26,11 +27,11 @@ public class EncounterDAO {
 		String guid = "";
 		try {
 			cursor = context.getContentResolver().query(encounterUri, 
-					new String [] { SavedProcedureSQLFormat.GUID }, null, null, 
+					new String [] { Encounters.Contract.UUID }, null, null, 
 					null);
 			if (cursor.moveToFirst()) {
 				guid = cursor.getString(cursor.getColumnIndex(
-						SavedProcedureSQLFormat.GUID));
+						Encounters.Contract.UUID));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

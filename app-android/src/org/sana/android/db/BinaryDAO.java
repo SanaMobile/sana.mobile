@@ -66,7 +66,7 @@ public class BinaryDAO {
 	{
 		Uri result = null;
 		ContentValues values = new ContentValues();
-		values.put(BinarySQLFormat.SAVED_PROCEDURE_ID, encounterId);
+		values.put(BinarySQLFormat.ENCOUNTER_ID, encounterId);
 		values.put(BinarySQLFormat.ELEMENT_ID, elementId);
 		values.put(BinarySQLFormat.CONTENT, fileUri.toString());
 		values.put(BinarySQLFormat.MIME, mime);
@@ -90,7 +90,7 @@ public class BinaryDAO {
 	{
 		Uri result = null;
 		ContentValues values = new ContentValues();
-		values.put(BinarySQLFormat.SAVED_PROCEDURE_ID, encounterId);
+		values.put(BinarySQLFormat.ENCOUNTER_ID, encounterId);
 		values.put(BinarySQLFormat.ELEMENT_ID, elementId);
 		result = cr.insert(BinarySQLFormat.CONTENT_URI, values);
 

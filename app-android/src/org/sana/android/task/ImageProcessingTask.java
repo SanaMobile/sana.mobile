@@ -123,7 +123,7 @@ public class ImageProcessingTask extends
 		
 		// Get the image parameters stored in the Intent
 		ContentValues values = new ContentValues();
-		values.put(ImageSQLFormat.SAVED_PROCEDURE_ID, savedProcedureId);
+		values.put(ImageSQLFormat.ENCOUNTER_ID, savedProcedureId);
 		values.put(ImageSQLFormat.ELEMENT_ID, elementId);
 		
 		Uri imageUri = c.getContentResolver().insert(ImageSQLFormat.CONTENT_URI, values);

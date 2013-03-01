@@ -19,13 +19,13 @@ import org.sana.android.db.EventDAO;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.db.ProcedureDAO;
 import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.media.EducationResource.Audience;
 import org.sana.android.net.MDSInterface;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.sana.android.procedure.ValidationError;
+import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Procedures;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.ServiceConnector;
@@ -216,10 +216,10 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
             String json = answersMap.toString();
 
             ContentValues cv = new ContentValues();
-            cv.put(SavedProcedureSQLFormat.PROCEDURE_STATE, json);
+            cv.put(Encounters.Contract.STATE, json);
 
             if (finished)
-                cv.put(SavedProcedureSQLFormat.FINISHED, finished);
+                cv.put(Encounters.Contract.FINISHED, finished);
 
             int updatedObjects = getActivity().getContentResolver().update(thisSavedProcedure,
                     cv, null, null);
@@ -628,14 +628,14 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                         procedure.toString());
 
                 ContentValues cv = new ContentValues();
-                cv.put(SavedProcedureSQLFormat.PROCEDURE_ID, procedureId);
-                cv.put(SavedProcedureSQLFormat.PROCEDURE_STATE, "");
-                cv.put(SavedProcedureSQLFormat.FINISHED, true);
-                cv.put(SavedProcedureSQLFormat.UPLOADED, false);
-                cv.put(SavedProcedureSQLFormat.UPLOAD_STATUS, 0);
+                cv.put(Encounters.Contract.PROCEDURE, procedureId);
+                cv.put(Encounters.Contract.STATE, "");
+                cv.put(Encounters.Contract.FINISHED, true);
+                cv.put(Encounters.Contract.UPLOADED, false);
+                cv.put(Encounters.Contract.UPLOAD_STATUS, 0);
 
                 thisSavedProcedure = getActivity().getContentResolver().insert(
-                        SavedProcedureSQLFormat.CONTENT_URI, cv);
+                        Encounters.CONTENT_URI, cv);
 
                 Log.i(TAG, "onCreate() : uri = " + procedure.toString()
                         + " savedUri=" + thisSavedProcedure);
@@ -712,8 +712,8 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                 try {
                     c = getActivity().getContentResolver().query(thisSavedProcedure,
                             new String[] {
-                                    SavedProcedureSQLFormat.PROCEDURE_ID,
-                                    SavedProcedureSQLFormat.PROCEDURE_STATE
+                                    Encounters.Contract.PROCEDURE,
+                                    Encounters.Contract.STATE
                             },
                             null, null, null);
                     c.moveToFirst();

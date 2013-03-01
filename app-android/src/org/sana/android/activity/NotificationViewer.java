@@ -51,8 +51,8 @@ public class NotificationViewer extends SherlockActivity implements OnClickListe
         		Notifications.Contract.FULL_MESSAGE));
         cursor.close();
         /*
-        cursor = managedQuery(SavedProcedureSQLFormat.CONTENT_URI, new String[] {SavedProcedureSQLFormat._ID, SavedProcedureSQLFormat.PROCEDURE_ID, SavedProcedureSQLFormat.PROCEDURE_STATE},
-        		SavedProcedureSQLFormat.GUID + " = ?",
+        cursor = managedQuery(Encounters.CONTENT_URI, new String[] {Encounters._ID, Encounters.PROCEDURE, Encounters.STATE},
+        		Encounters.UUID + " = ?",
         		new String[] { procedureIdentifier }, null);
         
         if(cursor.getCount() == 0) {
@@ -64,7 +64,7 @@ public class NotificationViewer extends SherlockActivity implements OnClickListe
         int procedureId = cursor.getInt(1);
         String answers = cursor.getString(2);
         cursor.close();
-        Uri savedUri = ContentUris.withAppendedId(SavedProcedureSQLFormat.CONTENT_URI, spId);
+        Uri savedUri = ContentUris.withAppendedId(Encounters.CONTENT_URI, spId);
         
         Uri procedureUri = ContentUris.withAppendedId(Procedures.CONTENT_URI, procedureId);
         Log.i(TAG, "Getting procedure " + procedureUri.toString());

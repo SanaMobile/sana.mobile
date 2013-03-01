@@ -66,7 +66,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
         imageGrid = new GridView(c);
         String procedureId = 
         	getProcedure().getInstanceUri().getPathSegments().get(1);
-        String whereStr = ImageSQLFormat.SAVED_PROCEDURE_ID + " = ? AND "
+        String whereStr = ImageSQLFormat.ENCOUNTER_ID + " = ? AND "
 				+ ImageSQLFormat.ELEMENT_ID + " = ? AND "
 				+ ImageSQLFormat.FILE_VALID + " = ?";
 		Cursor cursor = c.getContentResolver().query(

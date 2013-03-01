@@ -186,7 +186,7 @@ public class SoundElement extends ProcedureElement implements OnClickListener {
 		                ContentValues values = new ContentValues();
 		                String procedureId = getProcedure().getInstanceUri()
 		                						.getPathSegments().get(1);
-		                values.put(SoundSQLFormat.SAVED_PROCEDURE_ID, 
+		                values.put(SoundSQLFormat.ENCOUNTER_ID, 
 		                		procedureId);
 		                values.put(SoundSQLFormat.ELEMENT_ID, getId());
 		                Uri recording = 

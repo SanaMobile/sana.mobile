@@ -2,9 +2,9 @@ package org.sana.android.service;
 
 import java.util.PriorityQueue;
 
+import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.net.MDSInterface;
 import org.sana.android.task.CheckCredentialsTask;
 import org.sana.android.task.ValidationListener;
@@ -356,14 +356,14 @@ public class BackgroundUploader extends Service {
 		String procedureTitle = "Unknown Procedure";
 		try {
 			cursor = getContentResolver().query(procedure, new String [] { 
-					SavedProcedureSQLFormat._ID, 
-					SavedProcedureSQLFormat.PROCEDURE_ID, 
-					SavedProcedureSQLFormat.PROCEDURE_STATE }, null, null,null);        
+					Encounters.Contract._ID, 
+					Encounters.Contract.PROCEDURE, 
+					Encounters.Contract.STATE }, null, null,null);        
 			cursor.moveToFirst();
 			long savedProcedureId = cursor.getLong(cursor.getColumnIndex(
-					SavedProcedureSQLFormat._ID));
+					Encounters.Contract._ID));
 			long procedureId = cursor.getLong(cursor.getColumnIndex(
-					SavedProcedureSQLFormat.PROCEDURE_ID));
+					Encounters.Contract.PROCEDURE));
 			cursor.close();
 
 			Uri procedureUri = ContentUris.withAppendedId(
@@ -450,7 +450,7 @@ public class BackgroundUploader extends Service {
 			throw new IllegalArgumentException("Must be content style uri: " + uri);
 		if (type.compareTo(Patients.CONTENT_TYPE) == 0){
 			
-		} else if (type.compareTo(SavedProcedureSQLFormat.CONTENT_ITEM_TYPE) == 0){
+		} else if (type.compareTo(Encounters.CONTENT_ITEM_TYPE) == 0){
 			addProcedureToQueue(uri);
 		} else {
 			throw new UnsupportedOperationException("POST support not available for " + type);

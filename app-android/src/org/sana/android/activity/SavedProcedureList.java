@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.sana.R;
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
+import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Procedures;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.QueueManager;
@@ -42,12 +42,12 @@ public class SavedProcedureList extends SherlockListActivity implements
 	SimpleCursorAdapter.ViewBinder 
 {
 	private static final String TAG = SavedProcedureList.class.getSimpleName();
-	private static final String[] PROJECTION = { SavedProcedureSQLFormat._ID,
-			SavedProcedureSQLFormat.GUID, 
-			SavedProcedureSQLFormat.PROCEDURE_ID, 
-			SavedProcedureSQLFormat.PROCEDURE_STATE, 
-			SavedProcedureSQLFormat.UPLOAD_STATUS,
-			SavedProcedureSQLFormat.UPLOAD_QUEUE };
+	private static final String[] PROJECTION = { Encounters.Contract._ID,
+			Encounters.Contract.UUID, 
+			Encounters.Contract.PROCEDURE, 
+			Encounters.Contract.STATE, 
+			Encounters.Contract.UPLOAD_STATUS,
+			Encounters.Contract.UPLOAD_QUEUE };
 	private HashMap<Integer, String> procedureToName = 
 		new HashMap<Integer, String>();
 
@@ -217,16 +217,16 @@ public class SavedProcedureList extends SherlockListActivity implements
         	e.printStackTrace();
         }
 		
-        Cursor cursor = managedQuery(SavedProcedureSQLFormat.CONTENT_URI, 
+        Cursor cursor = managedQuery(Encounters.CONTENT_URI, 
         		PROJECTION, null, null, 
-        		SavedProcedureSQLFormat.DEFAULT_SORT_ORDER);
+        		Encounters.DEFAULT_SORT_ORDER);
 
         try {
 	        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,	                
 	        		R.layout.row, cursor,
-	                new String[] { SavedProcedureSQLFormat.PROCEDURE_ID, 
-	        					   SavedProcedureSQLFormat.PROCEDURE_STATE, 
-	        					   SavedProcedureSQLFormat.UPLOAD_STATUS },
+	                new String[] { Encounters.Contract.PROCEDURE, 
+	        					   Encounters.Contract.STATE, 
+	        					   Encounters.Contract.UPLOAD_STATUS },
 	                new int[] { R.id.toptext, R.id.bottomtext, 
 	        					R.id.queue_status });
 	        adapter.setViewBinder(this);
@@ -361,8 +361,8 @@ public class SavedProcedureList extends SherlockListActivity implements
 			String idList = SanaUtil.formatPrimaryKeyList(ids);
 
 			// Now delete the ids
-			getContentResolver().delete(SavedProcedureSQLFormat.CONTENT_URI, 
-					SavedProcedureSQLFormat._ID + " IN " + idList, null); 
+			getContentResolver().delete(Encounters.CONTENT_URI, 
+					Encounters.Contract._ID + " IN " + idList, null); 
 		}
 		catch (Exception e) {
 			unselectAllProcedures();

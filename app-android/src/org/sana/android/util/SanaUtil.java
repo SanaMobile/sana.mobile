@@ -14,10 +14,10 @@ import org.sana.R;
 import org.sana.android.db.SanaDB;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
+import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Notifications;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SoundSQLFormat;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureParseException;
@@ -184,8 +184,8 @@ public class SanaUtil {
     public static void clearDatabase(Context ctx) {
         deleteContentUri(ctx, Procedures.CONTENT_URI,
                 Procedures.Contract._ID);
-        deleteContentUri(ctx, SavedProcedureSQLFormat.CONTENT_URI,
-                SavedProcedureSQLFormat._ID);
+        deleteContentUri(ctx, Encounters.CONTENT_URI,
+                Encounters.Contract._ID);
         deleteContentUri(ctx, ImageSQLFormat.CONTENT_URI,
                 ImageSQLFormat._ID);
         deleteContentUri(ctx, SoundSQLFormat.CONTENT_URI,

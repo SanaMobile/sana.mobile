@@ -44,13 +44,13 @@ import org.sana.android.Constants;
 import org.sana.android.db.Event;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SoundSQLFormat;
 import org.sana.android.net.ssl.SimpleSSLProtocolSocketFactory;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.sana.android.procedure.ProcedureElement.ElementType;
+import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Procedures;
 import org.sana.android.util.SanaUtil;
 import org.sana.android.util.UserDatabase;
@@ -121,12 +121,12 @@ public class MDSInterface {
 	public static final String TAG = MDSInterface.class.getSimpleName();
 
 	public static String[] savedProcedureProjection = new String[] {
-		SavedProcedureSQLFormat._ID, 
-		SavedProcedureSQLFormat.PROCEDURE_ID,
-		SavedProcedureSQLFormat.PROCEDURE_STATE,
-		SavedProcedureSQLFormat.FINISHED,
-		SavedProcedureSQLFormat.GUID, 
-		SavedProcedureSQLFormat.UPLOADED };
+		Encounters.Contract._ID, 
+		Encounters.Contract.PROCEDURE,
+		Encounters.Contract.STATE,
+		Encounters.Contract.FINISHED,
+		Encounters.Contract.UUID, 
+		Encounters.Contract.UPLOADED };
 
 	/**
 	 * Http request url for validating MRS credentials
@@ -844,7 +844,7 @@ public class MDSInterface {
 				if (postResponses(context, savedProcedureGUID, json)) {
 					// Mark the procedure text as uploaded in the database
 					ContentValues cv = new ContentValues();
-					cv.put(SavedProcedureSQLFormat.UPLOADED, true);
+					cv.put(Encounters.Contract.UPLOADED, true);
 					context.getContentResolver().update(uri, cv, null, null);
 					Log.i(TAG, "Responses were uploaded successfully.");
 					break;

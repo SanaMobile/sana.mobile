@@ -6,8 +6,8 @@ import java.util.HashMap;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.DatabaseHelper;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
-import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SoundSQLFormat;
+import org.sana.android.provider.Encounters;
 import org.sana.android.util.SanaUtil;
 
 import android.content.ContentProvider;
@@ -28,18 +28,18 @@ import android.util.Log;
  * @author Sana Development Team
  *
  */
-public class SavedProcedureProvider extends ContentProvider {
+public class EncounterProvider extends ContentProvider {
 	
-    private static final String TAG = SavedProcedureProvider.class.getSimpleName();
+    private static final String TAG = EncounterProvider.class.getSimpleName();
 
-    private static final String SAVED_PROCEDURE_TABLE_NAME = "saved_procedures";
+    private static final String ENCOUNTER_TABLE = "encounters";
     
-    private static final int SAVED_PROCEDURES = 1;
-    private static final int SAVED_PROCEDURE_ID = 2;
+    private static final int ENCOUNTERS = 1;
+    private static final int ENCOUNTER_ID = 2;
     
     private DatabaseHelper mOpenHelper;
     private static final UriMatcher sUriMatcher;
-    private static HashMap<String,String> sSavedProcedureProjectionMap;
+    private static HashMap<String,String> sProjectionMap;
 
     /** {@inheritDoc} */
     @Override
@@ -49,16 +49,16 @@ public class SavedProcedureProvider extends ContentProvider {
         return true;
     }
     
-    private void deleteRelated(String savedProcedureId) {
+    private void deleteRelated(String encounterId) {
 		getContext().getContentResolver().delete(ImageSQLFormat.CONTENT_URI,
-				ImageSQLFormat.SAVED_PROCEDURE_ID + " = ?",
-				new String[] { savedProcedureId });
+				ImageSQLFormat.ENCOUNTER_ID + " = ?",
+				new String[] { encounterId });
 		getContext().getContentResolver().delete(SoundSQLFormat.CONTENT_URI,
-				SoundSQLFormat.SAVED_PROCEDURE_ID + " = ?",
-				new String[] { savedProcedureId });
+				SoundSQLFormat.ENCOUNTER_ID + " = ?",
+				new String[] { encounterId });
 		getContext().getContentResolver().delete(BinarySQLFormat.CONTENT_URI,
-				BinarySQLFormat.SAVED_PROCEDURE_ID + " = ?",
-				new String[] { savedProcedureId });
+				BinarySQLFormat.ENCOUNTER_ID + " = ?",
+				new String[] { encounterId });
 		// TODO notifications too?
 	}
 
@@ -70,13 +70,13 @@ public class SavedProcedureProvider extends ContentProvider {
         		+ TextUtils.join(",",projection));
         
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(SAVED_PROCEDURE_TABLE_NAME);
+        qb.setTables(ENCOUNTER_TABLE);
         
         switch(sUriMatcher.match(uri)) {
-        case SAVED_PROCEDURES:    
+        case ENCOUNTERS:    
             break;
-        case SAVED_PROCEDURE_ID:
-            qb.appendWhere(SavedProcedureSQLFormat._ID + "=" 
+        case ENCOUNTER_ID:
+            qb.appendWhere(Encounters.Contract._ID + "=" 
             		+ uri.getPathSegments().get(1));
             break;
         default:
@@ -85,7 +85,7 @@ public class SavedProcedureProvider extends ContentProvider {
         
         String orderBy;
         if(TextUtils.isEmpty(sortOrder)) {
-            orderBy = SavedProcedureSQLFormat.DEFAULT_SORT_ORDER;
+            orderBy = Encounters.DEFAULT_SORT_ORDER;
         } else {
             orderBy = sortOrder;
         }
@@ -105,15 +105,15 @@ public class SavedProcedureProvider extends ContentProvider {
         int count = 0; 
         
         switch(sUriMatcher.match(uri)) {
-        case SAVED_PROCEDURES:
-            count = db.update(SAVED_PROCEDURE_TABLE_NAME, values, selection, 
+        case ENCOUNTERS:
+            count = db.update(ENCOUNTER_TABLE, values, selection, 
             		selectionArgs);
             break;
             
-        case SAVED_PROCEDURE_ID:
+        case ENCOUNTER_ID:
             String procedureId = uri.getPathSegments().get(1);
-            count = db.update(SAVED_PROCEDURE_TABLE_NAME, values, 
-            		SavedProcedureSQLFormat._ID + "=" + procedureId 
+            count = db.update(ENCOUNTER_TABLE, values, 
+            		Encounters.Contract._ID + "=" + procedureId 
             		+ (!TextUtils.isEmpty(selection) ? " AND (" + selection 
             				+ ")" : ""), selectionArgs);
             break;
@@ -133,23 +133,23 @@ public class SavedProcedureProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-        case SAVED_PROCEDURES:
+        case ENCOUNTERS:
         	
-        	Cursor c = query(SavedProcedureSQLFormat.CONTENT_URI, 
-        			new String[] { SavedProcedureSQLFormat._ID }, selection, 
+        	Cursor c = query(Encounters.CONTENT_URI, 
+        			new String[] { Encounters.Contract._ID }, selection, 
         			selectionArgs, null);
         	ArrayList<String> idList = new ArrayList<String>(c.getCount());
         	if(c.moveToFirst()) {
         		while(!c.isAfterLast()) {
         			String id = c.getString(c.getColumnIndex(
-        					SavedProcedureSQLFormat._ID));
+        					Encounters.Contract._ID));
         			idList.add(id);
         			c.moveToNext();
         		}
         	}
         	c.deactivate();
         	
-            count = db.delete(SAVED_PROCEDURE_TABLE_NAME, selection, 
+            count = db.delete(ENCOUNTER_TABLE, selection, 
             		selectionArgs);
 
             // Do this after so that SavedProcedures remain consistent, while 
@@ -159,10 +159,10 @@ public class SavedProcedureProvider extends ContentProvider {
             }
             
             break;
-        case SAVED_PROCEDURE_ID:
+        case ENCOUNTER_ID:
         	String procedureId = uri.getPathSegments().get(1);
-            count = db.delete(SAVED_PROCEDURE_TABLE_NAME, 
-            		SavedProcedureSQLFormat._ID + "=" + procedureId 
+            count = db.delete(ENCOUNTER_TABLE, 
+            		Encounters.Contract._ID + "=" + procedureId 
             		+ (!TextUtils.isEmpty(selection) ? " AND (" + selection 
             				+ ")" : ""), selectionArgs);
 
@@ -182,7 +182,7 @@ public class SavedProcedureProvider extends ContentProvider {
     /** {@inheritDoc} */
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
-        if (sUriMatcher.match(uri) != SAVED_PROCEDURES) {
+        if (sUriMatcher.match(uri) != ENCOUNTERS) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
         
@@ -195,49 +195,49 @@ public class SavedProcedureProvider extends ContentProvider {
         
         Long now = Long.valueOf(System.currentTimeMillis());
         
-        if(values.containsKey(SavedProcedureSQLFormat.CREATED_DATE) == false) {
-            values.put(SavedProcedureSQLFormat.CREATED_DATE, now);
+        if(values.containsKey(Encounters.Contract.CREATED) == false) {
+            values.put(Encounters.Contract.CREATED, now);
         }
         
-        if(values.containsKey(SavedProcedureSQLFormat.MODIFIED_DATE) == false) {
-            values.put(SavedProcedureSQLFormat.MODIFIED_DATE, now);
+        if(values.containsKey(Encounters.Contract.MODIFIED) == false) {
+            values.put(Encounters.Contract.MODIFIED, now);
         }
         
-        if(values.containsKey(SavedProcedureSQLFormat.GUID) == false) {
-        	values.put(SavedProcedureSQLFormat.GUID, SanaUtil.randomString("SP",
+        if(values.containsKey(Encounters.Contract.UUID) == false) {
+        	values.put(Encounters.Contract.UUID, SanaUtil.randomString("SP",
         			20));
         }
         
-        if(values.containsKey(SavedProcedureSQLFormat.PROCEDURE_ID) == false) {
-            values.put(SavedProcedureSQLFormat.PROCEDURE_ID, -1);
+        if(values.containsKey(Encounters.Contract.PROCEDURE) == false) {
+            values.put(Encounters.Contract.PROCEDURE, -1);
         }
         
-        if(values.containsKey(SavedProcedureSQLFormat.PROCEDURE_STATE)== false){
-            values.put(SavedProcedureSQLFormat.PROCEDURE_STATE, "");
+        if(values.containsKey(Encounters.Contract.STATE)== false){
+            values.put(Encounters.Contract.STATE, "");
         }
         
-        if(values.containsKey(SavedProcedureSQLFormat.FINISHED) == false) {
-            values.put(SavedProcedureSQLFormat.FINISHED, false);
+        if(values.containsKey(Encounters.Contract.FINISHED) == false) {
+            values.put(Encounters.Contract.FINISHED, false);
         }
         
-        if(values.containsKey(SavedProcedureSQLFormat.UPLOADED) == false) {
-            values.put(SavedProcedureSQLFormat.UPLOADED, false);
+        if(values.containsKey(Encounters.Contract.UPLOADED) == false) {
+            values.put(Encounters.Contract.UPLOADED, false);
         }
         
-        if(values.containsKey(SavedProcedureSQLFormat.UPLOAD_STATUS) == false) {
-            values.put(SavedProcedureSQLFormat.UPLOAD_STATUS, -1);
+        if(values.containsKey(Encounters.Contract.UPLOAD_STATUS) == false) {
+            values.put(Encounters.Contract.UPLOAD_STATUS, -1);
         }
         
-        if(values.containsKey(SavedProcedureSQLFormat.UPLOAD_QUEUE) == false) {
-            values.put(SavedProcedureSQLFormat.UPLOAD_QUEUE, -1);
+        if(values.containsKey(Encounters.Contract.UPLOAD_QUEUE) == false) {
+            values.put(Encounters.Contract.UPLOAD_QUEUE, -1);
         }
         
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(SAVED_PROCEDURE_TABLE_NAME, 
-        		SavedProcedureSQLFormat.PROCEDURE_STATE, values);
+        long rowId = db.insert(ENCOUNTER_TABLE, 
+        		Encounters.Contract.STATE, values);
         if(rowId > 0) {
             Uri savedProcedureUri = ContentUris.withAppendedId(
-            		SavedProcedureSQLFormat.CONTENT_URI, rowId);
+            		Encounters.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(savedProcedureUri,
             		null);
             return savedProcedureUri;
@@ -251,10 +251,10 @@ public class SavedProcedureProvider extends ContentProvider {
     public String getType(Uri uri) {
         Log.i(TAG, "getType(uri="+uri.toString()+")");
         switch(sUriMatcher.match(uri)) {
-        case SAVED_PROCEDURES:
-            return SavedProcedureSQLFormat.CONTENT_TYPE;
-        case SAVED_PROCEDURE_ID:
-            return SavedProcedureSQLFormat.CONTENT_ITEM_TYPE;
+        case ENCOUNTERS:
+            return Encounters.CONTENT_TYPE;
+        case ENCOUNTER_ID:
+            return Encounters.CONTENT_ITEM_TYPE;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -266,18 +266,18 @@ public class SavedProcedureProvider extends ContentProvider {
      */
     public static void onCreateDatabase(SQLiteDatabase db) {
         Log.i(TAG, "Creating Saved Procedure Table");
-        db.execSQL("CREATE TABLE " + SAVED_PROCEDURE_TABLE_NAME + " ("
-                + SavedProcedureSQLFormat._ID + " INTEGER PRIMARY KEY,"
-                + SavedProcedureSQLFormat.GUID + " TEXT,"
-                + SavedProcedureSQLFormat.PROCEDURE_ID + " INTEGER,"
-                + SavedProcedureSQLFormat.SUBJECT + " INTEGER NOT NULL,"
-                + SavedProcedureSQLFormat.PROCEDURE_STATE + " TEXT,"
-                + SavedProcedureSQLFormat.FINISHED + " INTEGER,"
-                + SavedProcedureSQLFormat.UPLOADED + " INTEGER,"
-                + SavedProcedureSQLFormat.UPLOAD_STATUS + " TEXT,"
-                + SavedProcedureSQLFormat.UPLOAD_QUEUE + " TEXT,"
-                + SavedProcedureSQLFormat.CREATED_DATE + " INTEGER,"
-                + SavedProcedureSQLFormat.MODIFIED_DATE + " INTEGER"
+        db.execSQL("CREATE TABLE " + ENCOUNTER_TABLE + " ("
+                + Encounters.Contract._ID + " INTEGER PRIMARY KEY,"
+                + Encounters.Contract.UUID + " TEXT,"
+                + Encounters.Contract.PROCEDURE + " INTEGER,"
+                + Encounters.Contract.SUBJECT + " INTEGER NOT NULL,"
+                + Encounters.Contract.STATE + " TEXT,"
+                + Encounters.Contract.FINISHED + " INTEGER,"
+                + Encounters.Contract.UPLOADED + " INTEGER,"
+                + Encounters.Contract.UPLOAD_STATUS + " TEXT,"
+                + Encounters.Contract.UPLOAD_QUEUE + " TEXT,"
+                + Encounters.Contract.CREATED + " INTEGER,"
+                + Encounters.Contract.MODIFIED + " INTEGER"
                 + ");");
     }
 
@@ -294,8 +294,8 @@ public class SavedProcedureProvider extends ContentProvider {
         if (oldVersion == 1 && newVersion == 2) {
         	// Do nothing
         } else if (oldVersion <= 3 && newVersion == 4){
-        	String sql = "ALTER TABLE " + SAVED_PROCEDURE_TABLE_NAME +
-        			" ADD COLUMN " + SavedProcedureSQLFormat.SUBJECT + " INTEGER DEFAULT '-1'";
+        	String sql = "ALTER TABLE " + ENCOUNTER_TABLE +
+        			" ADD COLUMN " + Encounters.Contract.SUBJECT + " INTEGER DEFAULT '-1'";
         	db.execSQL(sql);
         }
     }
@@ -303,20 +303,20 @@ public class SavedProcedureProvider extends ContentProvider {
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(SanaDB.SAVED_PROCEDURE_AUTHORITY, "savedProcedures", SAVED_PROCEDURES);
-        sUriMatcher.addURI(SanaDB.SAVED_PROCEDURE_AUTHORITY, "savedProcedures/#", SAVED_PROCEDURE_ID);
+        sUriMatcher.addURI(Encounters.AUTHORITY, "savedProcedures", ENCOUNTERS);
+        sUriMatcher.addURI(Encounters.AUTHORITY, "savedProcedures/#", ENCOUNTER_ID);
         
-        sSavedProcedureProjectionMap = new HashMap<String, String>();
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat._ID, SavedProcedureSQLFormat._ID);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.PROCEDURE_ID, SavedProcedureSQLFormat.PROCEDURE_ID);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.GUID, SavedProcedureSQLFormat.GUID);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.PROCEDURE_STATE, SavedProcedureSQLFormat.PROCEDURE_STATE);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.FINISHED, SavedProcedureSQLFormat.FINISHED);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.UPLOADED, SavedProcedureSQLFormat.UPLOADED);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.UPLOAD_STATUS, SavedProcedureSQLFormat.UPLOAD_STATUS);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.UPLOAD_QUEUE, SavedProcedureSQLFormat.UPLOAD_QUEUE);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.CREATED_DATE, SavedProcedureSQLFormat.CREATED_DATE);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.MODIFIED_DATE, SavedProcedureSQLFormat.MODIFIED_DATE);
-        sSavedProcedureProjectionMap.put(SavedProcedureSQLFormat.SUBJECT, SavedProcedureSQLFormat.SUBJECT);
+        sProjectionMap = new HashMap<String, String>();
+        sProjectionMap.put(Encounters.Contract._ID, Encounters.Contract._ID);
+        sProjectionMap.put(Encounters.Contract.PROCEDURE, Encounters.Contract.PROCEDURE);
+        sProjectionMap.put(Encounters.Contract.UUID, Encounters.Contract.UUID);
+        sProjectionMap.put(Encounters.Contract.STATE, Encounters.Contract.STATE);
+        sProjectionMap.put(Encounters.Contract.FINISHED, Encounters.Contract.FINISHED);
+        sProjectionMap.put(Encounters.Contract.UPLOADED, Encounters.Contract.UPLOADED);
+        sProjectionMap.put(Encounters.Contract.UPLOAD_STATUS, Encounters.Contract.UPLOAD_STATUS);
+        sProjectionMap.put(Encounters.Contract.UPLOAD_QUEUE, Encounters.Contract.UPLOAD_QUEUE);
+        sProjectionMap.put(Encounters.Contract.CREATED, Encounters.Contract.CREATED);
+        sProjectionMap.put(Encounters.Contract.MODIFIED, Encounters.Contract.MODIFIED);
+        sProjectionMap.put(Encounters.Contract.SUBJECT, Encounters.Contract.SUBJECT);
     }
 }
