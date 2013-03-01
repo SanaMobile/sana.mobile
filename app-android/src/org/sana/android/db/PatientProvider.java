@@ -245,8 +245,8 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 
 	static {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		sUriMatcher.addURI(SanaDB.PATIENT_AUTHORITY, "patients", ITEMS);
-		sUriMatcher.addURI(SanaDB.PATIENT_AUTHORITY, "patients/#", ITEM_ID);
+		sUriMatcher.addURI(Patients.AUTHORITY, "patients", ITEMS);
+		sUriMatcher.addURI(Patients.AUTHORITY, "patients/#", ITEM_ID);
 
 		sPatientProjectionMap = new HashMap<String, String>();
 		sPatientProjectionMap.put(_ID, _ID);

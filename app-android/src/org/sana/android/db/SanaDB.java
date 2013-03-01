@@ -28,11 +28,6 @@ public final class SanaDB {
     public static final String SOUND_AUTHORITY = "org.sana.provider.Sound";
     
     /**
-     * The authority for the patient provider.
-     */
-    public static final String PATIENT_AUTHORITY = "org.sana.provider.Patient";
-    
-    /**
      * The authority for the event provider.
      */
     public static final String EVENT_AUTHORITY = "org.sana.provider.Event";
