@@ -33,7 +33,9 @@ import org.sana.android.db.SanaDB;
 import android.net.Uri;
 
 /**
- * This class defines the URI and data fields for the content provider storing the procedure xml.
+ * This class defines the URI and data fields for the content provider storing 
+ * the procedure xml.
+ * 
  * @author Sana Development Team
  */
 public final class Procedures {
@@ -70,25 +72,25 @@ public final class Procedures {
 	 *
 	 */
 	public static interface Contract extends BaseContract<Procedure>{
-    /**
-     * The title of the procedure.
-     */
-    public static final String TITLE = "title";
-    
-    /**
-     * The author of the procedure.
-     */
-    public static final String AUTHOR = "author";
-    
-    /**
-     * The unique ID of the procedure.
-     */
-    public static final String UUID = "uuid";
+		/**
+		 * The title of the procedure.
+		 */
+		public static final String TITLE = "title";
 
-    /**
-     *  The raw procedure text.
-     */
-    public static final String PROCEDURE = "procedure";
+		/**
+		 * The author of the procedure.
+		 */
+		public static final String AUTHOR = "author";
+
+		/**
+		 * The unique ID of the procedure.
+		 */
+		public static final String UUID = "uuid";
+
+		/**
+		 *  The raw procedure text.
+		 */
+		public static final String PROCEDURE = "procedure";
     
 	}
 }
