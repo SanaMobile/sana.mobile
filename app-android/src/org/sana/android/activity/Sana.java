@@ -3,7 +3,7 @@ package org.sana.android.activity;
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.activity.settings.Settings;
-import org.sana.android.db.SanaDB.NotificationSQLFormat;
+import org.sana.android.provider.Notifications;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
@@ -250,8 +250,8 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
     /** Starts Activity for selecting and then viewing notifications */
     private void pickNotification() {
         Intent i = new Intent(Intent.ACTION_PICK);
-        i.setType(NotificationSQLFormat.CONTENT_TYPE);
-        i.setData(NotificationSQLFormat.CONTENT_URI);
+        i.setType(Notifications.CONTENT_TYPE);
+        i.setData(Notifications.CONTENT_URI);
         startActivityForResult(i, PICK_NOTIFICATION);
     }
     

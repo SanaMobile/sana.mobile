@@ -1,7 +1,7 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.db.SanaDB.NotificationSQLFormat;
+import org.sana.android.provider.Notifications;
 
 import android.app.NotificationManager;
 import android.database.Cursor;
@@ -28,8 +28,8 @@ public class NotificationViewer extends SherlockActivity implements OnClickListe
 	private static String TAG = NotificationViewer.class.getSimpleName();
 
 	private static final String[] PROJECTION = new String[] { 
-		NotificationSQLFormat._ID, NotificationSQLFormat.PROCEDURE_ID, 
-		NotificationSQLFormat.PATIENT_ID, NotificationSQLFormat.FULL_MESSAGE};
+		Notifications.Contract._ID, Notifications.Contract.PROCEDURE_ID, 
+		Notifications.Contract.PATIENT_ID, Notifications.Contract.FULL_MESSAGE};
 	private Button dismiss, save;
 	private Uri notification;
 	
@@ -40,15 +40,15 @@ public class NotificationViewer extends SherlockActivity implements OnClickListe
         notification = getIntent().getData();
         
         Cursor cursor = managedQuery(getIntent().getData(), PROJECTION, null,
-                null, NotificationSQLFormat.DEFAULT_SORT_ORDER);
+                null, Notifications.DEFAULT_SORT_ORDER);
         
         cursor.moveToFirst();
         String procedureIdentifier = cursor.getString(cursor.getColumnIndex(
-        		NotificationSQLFormat.PROCEDURE_ID));
+        		Notifications.Contract.PROCEDURE_ID));
         String patientId = cursor.getString(cursor.getColumnIndex(
-        		NotificationSQLFormat.PATIENT_ID));
+        		Notifications.Contract.PATIENT_ID));
         String message = cursor.getString(cursor.getColumnIndex(
-        		NotificationSQLFormat.FULL_MESSAGE));
+        		Notifications.Contract.FULL_MESSAGE));
         cursor.close();
         /*
         cursor = managedQuery(SavedProcedureSQLFormat.CONTENT_URI, new String[] {SavedProcedureSQLFormat._ID, SavedProcedureSQLFormat.PROCEDURE_ID, SavedProcedureSQLFormat.PROCEDURE_STATE},

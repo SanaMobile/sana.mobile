@@ -3,7 +3,7 @@ package org.sana.android.db;
 import java.util.HashMap;
 
 import org.sana.android.db.SanaDB.DatabaseHelper;
-import org.sana.android.db.SanaDB.NotificationSQLFormat;
+import org.sana.android.provider.Notifications;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -56,7 +56,7 @@ public class NotificationProvider extends ContentProvider {
         case NOTIFICATIONS:    
             break;
         case NOTIFICATION_ID:
-            qb.appendWhere(NotificationSQLFormat._ID + "=" 
+            qb.appendWhere(Notifications.Contract._ID + "=" 
             		+ uri.getPathSegments().get(1));
             break;
         default:
@@ -65,7 +65,7 @@ public class NotificationProvider extends ContentProvider {
         
         String orderBy;
         if(TextUtils.isEmpty(sortOrder)) {
-            orderBy = NotificationSQLFormat.DEFAULT_SORT_ORDER;
+            orderBy = Notifications.DEFAULT_SORT_ORDER;
         } else {
             orderBy = sortOrder;
         }
@@ -93,7 +93,7 @@ public class NotificationProvider extends ContentProvider {
         case NOTIFICATION_ID:
             String procedureId = uri.getPathSegments().get(1);
             count = db.update(NOTIFICATION_TABLE_NAME, values, 
-            		NotificationSQLFormat._ID + "=" + procedureId 
+            		Notifications.Contract._ID + "=" + procedureId 
             		+ (!TextUtils.isEmpty(selection) ? " AND (" + selection 
             				+ ")" : ""), selectionArgs);
             break;
@@ -116,7 +116,7 @@ public class NotificationProvider extends ContentProvider {
             break;
         case NOTIFICATION_ID:
             String imageId = uri.getPathSegments().get(1); 
-            count = db.delete(NOTIFICATION_TABLE_NAME, NotificationSQLFormat._ID
+            count = db.delete(NOTIFICATION_TABLE_NAME, Notifications.Contract._ID
             		+ "=" + imageId + (!TextUtils.isEmpty(selection) 
             				? " AND (" + selection + ")" : ""), selectionArgs);
             break;
@@ -144,44 +144,44 @@ public class NotificationProvider extends ContentProvider {
         
         Long now = Long.valueOf(System.currentTimeMillis());
         
-        if(values.containsKey(NotificationSQLFormat.CREATED_DATE) == false) {
-            values.put(NotificationSQLFormat.CREATED_DATE, now);
+        if(values.containsKey(Notifications.Contract.CREATED) == false) {
+            values.put(Notifications.Contract.CREATED, now);
         }
         
-        if(values.containsKey(NotificationSQLFormat.MODIFIED_DATE) == false) {
-            values.put(NotificationSQLFormat.MODIFIED_DATE, now);
+        if(values.containsKey(Notifications.Contract.MODIFIED) == false) {
+            values.put(Notifications.Contract.MODIFIED, now);
         }
         
-        if(values.containsKey(NotificationSQLFormat.NOTIFICATION_GUID) ==false){
-            values.put(NotificationSQLFormat.NOTIFICATION_GUID, "");
+        if(values.containsKey(Notifications.Contract.UUID) ==false){
+            values.put(Notifications.Contract.UUID, "");
         }
         
-        if(values.containsKey(NotificationSQLFormat.PATIENT_ID) == false) {
-            values.put(NotificationSQLFormat.PATIENT_ID, "");
+        if(values.containsKey(Notifications.Contract.PATIENT_ID) == false) {
+            values.put(Notifications.Contract.PATIENT_ID, "");
         }
         
-        if(values.containsKey(NotificationSQLFormat.PROCEDURE_ID) == false) {
-            values.put(NotificationSQLFormat.PROCEDURE_ID, "");
+        if(values.containsKey(Notifications.Contract.PROCEDURE_ID) == false) {
+            values.put(Notifications.Contract.PROCEDURE_ID, "");
         }
         
-        if(values.containsKey(NotificationSQLFormat.MESSAGE) == false) {
-            values.put(NotificationSQLFormat.MESSAGE, "");
+        if(values.containsKey(Notifications.Contract.MESSAGE) == false) {
+            values.put(Notifications.Contract.MESSAGE, "");
         }
         
-        if(values.containsKey(NotificationSQLFormat.FULL_MESSAGE) == false) {
-            values.put(NotificationSQLFormat.FULL_MESSAGE, "");
+        if(values.containsKey(Notifications.Contract.FULL_MESSAGE) == false) {
+            values.put(Notifications.Contract.FULL_MESSAGE, "");
         }
         
-        if(values.containsKey(NotificationSQLFormat.DOWNLOADED) == false) {
-            values.put(NotificationSQLFormat.DOWNLOADED, 0);
+        if(values.containsKey(Notifications.Contract.DOWNLOADED) == false) {
+            values.put(Notifications.Contract.DOWNLOADED, 0);
         }
         
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowId = db.insert(NOTIFICATION_TABLE_NAME, 
-        		NotificationSQLFormat.PROCEDURE_ID, values);
+        		Notifications.Contract.PROCEDURE_ID, values);
         if(rowId > 0) {
             Uri notificationUri = ContentUris.withAppendedId(
-            		NotificationSQLFormat.CONTENT_URI, rowId);
+            		Notifications.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(
             		notificationUri,null);
             return notificationUri;
@@ -196,9 +196,9 @@ public class NotificationProvider extends ContentProvider {
         Log.i(TAG, "getType(uri="+uri.toString()+")");
         switch(sUriMatcher.match(uri)) {
         case NOTIFICATIONS:
-            return NotificationSQLFormat.CONTENT_TYPE;
+            return Notifications.CONTENT_TYPE;
         case NOTIFICATION_ID:
-            return NotificationSQLFormat.CONTENT_ITEM_TYPE;
+            return Notifications.CONTENT_ITEM_TYPE;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -211,15 +211,15 @@ public class NotificationProvider extends ContentProvider {
     public static void onCreateDatabase(SQLiteDatabase db) {
         Log.i(TAG, "Creating Image Table");
         db.execSQL("CREATE TABLE " + NOTIFICATION_TABLE_NAME + " ("
-                + NotificationSQLFormat._ID + " INTEGER PRIMARY KEY,"
-                + NotificationSQLFormat.NOTIFICATION_GUID + " TEXT,"
-                + NotificationSQLFormat.PATIENT_ID + " TEXT,"
-                + NotificationSQLFormat.PROCEDURE_ID + " TEXT,"
-                + NotificationSQLFormat.MESSAGE + " TEXT,"
-                + NotificationSQLFormat.FULL_MESSAGE + " TEXT,"
-                + NotificationSQLFormat.DOWNLOADED + " INTEGER,"
-                + NotificationSQLFormat.CREATED_DATE + " INTEGER,"
-                + NotificationSQLFormat.MODIFIED_DATE + " INTEGER"
+                + Notifications.Contract._ID + " INTEGER PRIMARY KEY,"
+                + Notifications.Contract.UUID + " TEXT,"
+                + Notifications.Contract.PATIENT_ID + " TEXT,"
+                + Notifications.Contract.PROCEDURE_ID + " TEXT,"
+                + Notifications.Contract.MESSAGE + " TEXT,"
+                + Notifications.Contract.FULL_MESSAGE + " TEXT,"
+                + Notifications.Contract.DOWNLOADED + " INTEGER,"
+                + Notifications.Contract.CREATED + " INTEGER,"
+                + Notifications.Contract.MODIFIED + " INTEGER"
                 + ");");
     }
 
@@ -241,19 +241,19 @@ public class NotificationProvider extends ContentProvider {
     
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(SanaDB.NOTIFICATION_AUTHORITY, "notifications", NOTIFICATIONS);
-        sUriMatcher.addURI(SanaDB.NOTIFICATION_AUTHORITY, "notifications/#", NOTIFICATION_ID);
+        sUriMatcher.addURI(Notifications.AUTHORITY, "notifications", NOTIFICATIONS);
+        sUriMatcher.addURI(Notifications.AUTHORITY, "notifications/#", NOTIFICATION_ID);
         
         sNotificationProjectionMap = new HashMap<String, String>();
-        sNotificationProjectionMap.put(NotificationSQLFormat._ID, NotificationSQLFormat._ID);
-        sNotificationProjectionMap.put(NotificationSQLFormat.NOTIFICATION_GUID, NotificationSQLFormat.NOTIFICATION_GUID);
-        sNotificationProjectionMap.put(NotificationSQLFormat.PATIENT_ID, NotificationSQLFormat.PATIENT_ID);
-        sNotificationProjectionMap.put(NotificationSQLFormat.PROCEDURE_ID, NotificationSQLFormat.PROCEDURE_ID);
-        sNotificationProjectionMap.put(NotificationSQLFormat.MESSAGE, NotificationSQLFormat.MESSAGE);
-        sNotificationProjectionMap.put(NotificationSQLFormat.FULL_MESSAGE, NotificationSQLFormat.FULL_MESSAGE);
-        sNotificationProjectionMap.put(NotificationSQLFormat.DOWNLOADED, NotificationSQLFormat.DOWNLOADED);
-        sNotificationProjectionMap.put(NotificationSQLFormat.CREATED_DATE, NotificationSQLFormat.CREATED_DATE);
-        sNotificationProjectionMap.put(NotificationSQLFormat.MODIFIED_DATE, NotificationSQLFormat.MODIFIED_DATE);
+        sNotificationProjectionMap.put(Notifications.Contract._ID, Notifications.Contract._ID);
+        sNotificationProjectionMap.put(Notifications.Contract.UUID, Notifications.Contract.UUID);
+        sNotificationProjectionMap.put(Notifications.Contract.PATIENT_ID, Notifications.Contract.PATIENT_ID);
+        sNotificationProjectionMap.put(Notifications.Contract.PROCEDURE_ID, Notifications.Contract.PROCEDURE_ID);
+        sNotificationProjectionMap.put(Notifications.Contract.MESSAGE, Notifications.Contract.MESSAGE);
+        sNotificationProjectionMap.put(Notifications.Contract.FULL_MESSAGE, Notifications.Contract.FULL_MESSAGE);
+        sNotificationProjectionMap.put(Notifications.Contract.DOWNLOADED, Notifications.Contract.DOWNLOADED);
+        sNotificationProjectionMap.put(Notifications.Contract.CREATED, Notifications.Contract.CREATED);
+        sNotificationProjectionMap.put(Notifications.Contract.MODIFIED, Notifications.Contract.MODIFIED);
     }
     
     

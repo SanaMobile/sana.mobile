@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.sana.R;
 import org.sana.android.db.NotificationMessage;
-import org.sana.android.db.SanaDB.NotificationSQLFormat;
+import org.sana.android.provider.Notifications;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -85,22 +85,22 @@ public class SMSReceive extends BroadcastReceiver {
 			Log.e(TAG, "Received mal-formed notification UUID -- none provided.");
 		}
 		
-		Cursor c = context.getContentResolver().query(NotificationSQLFormat.CONTENT_URI, 
-				new String[] { NotificationSQLFormat._ID, 
-							   NotificationSQLFormat.PATIENT_ID, 
-							   NotificationSQLFormat.PROCEDURE_ID, 
-							   NotificationSQLFormat.MESSAGE }, 
-							   NotificationSQLFormat.NOTIFICATION_GUID+"=?",
+		Cursor c = context.getContentResolver().query(Notifications.CONTENT_URI, 
+				new String[] { Notifications.Contract._ID, 
+							   Notifications.Contract.PATIENT_ID, 
+							   Notifications.Contract.PROCEDURE_ID, 
+							   Notifications.Contract.MESSAGE }, 
+							   Notifications.Contract.UUID+"=?",
 				new String[] { notificationHeader.n }, null);
 		
 		ContentValues cv = new ContentValues();
 		String patientId = null;
 		if (notificationHeader.p != null) {
 			patientId = notificationHeader.p;
-			cv.put(NotificationSQLFormat.PATIENT_ID, notificationHeader.p);
+			cv.put(Notifications.Contract.PATIENT_ID, notificationHeader.p);
 		}
 		if (notificationHeader.c != null) {
-			cv.put(NotificationSQLFormat.PROCEDURE_ID, notificationHeader.c);
+			cv.put(Notifications.Contract.PROCEDURE_ID, notificationHeader.c);
 		}
 		Uri notificationUri;
 		
@@ -110,16 +110,16 @@ public class SMSReceive extends BroadcastReceiver {
 		if (c.moveToFirst()) {
 			// Notification already exists
 			int notificationId = c.getInt(c.getColumnIndex(
-					NotificationSQLFormat._ID));
+					Notifications.Contract._ID));
 			String storedMessage = c.getString(c.getColumnIndexOrThrow(
-					NotificationSQLFormat.MESSAGE));
+					Notifications.Contract.MESSAGE));
 			
 			NotificationMessage m = g.fromJson(storedMessage, 
 					NotificationMessage.class);
 			
 			if (patientId == null) {
 				patientId = c.getString(c.getColumnIndex(
-						NotificationSQLFormat.PATIENT_ID));
+						Notifications.Contract.PATIENT_ID));
 			}
 			
 			if (notificationHeader.d != null) {
@@ -138,8 +138,8 @@ public class SMSReceive extends BroadcastReceiver {
 							sbFullMessage.append(m.messages.get(i));
 						}
 						fullMessage = sbFullMessage.toString();
-						cv.put(NotificationSQLFormat.FULL_MESSAGE, fullMessage);
-						cv.put(NotificationSQLFormat.DOWNLOADED, 1);
+						cv.put(Notifications.Contract.FULL_MESSAGE, fullMessage);
+						cv.put(Notifications.Contract.DOWNLOADED, 1);
 					}
 				}
 			} else {
@@ -150,10 +150,10 @@ public class SMSReceive extends BroadcastReceiver {
 			c.close();
 			
 			storedMessage = g.toJson(m);
-			cv.put(NotificationSQLFormat.MESSAGE, storedMessage);
+			cv.put(Notifications.Contract.MESSAGE, storedMessage);
 			
 			notificationUri = ContentUris.withAppendedId(
-					NotificationSQLFormat.CONTENT_URI, notificationId);
+					Notifications.CONTENT_URI, notificationId);
 			int rowsUpdated = context.getContentResolver().update(
 					notificationUri, cv, null, null);
 			if (rowsUpdated != 1) {
@@ -183,8 +183,8 @@ public class SMSReceive extends BroadcastReceiver {
 							sbFullMessage.append(m.messages.get(i));
 						}
 						fullMessage = sbFullMessage.toString();
-						cv.put(NotificationSQLFormat.FULL_MESSAGE, fullMessage);
-						cv.put(NotificationSQLFormat.DOWNLOADED, 1);
+						cv.put(Notifications.Contract.FULL_MESSAGE, fullMessage);
+						cv.put(Notifications.Contract.DOWNLOADED, 1);
 					}
 					
 				} else {
@@ -197,17 +197,17 @@ public class SMSReceive extends BroadcastReceiver {
 				m.totalMessages = 1;
 				m.receivedMessages = 1;
 				m.messages.put(1, message);
-				cv.put(NotificationSQLFormat.FULL_MESSAGE, message);
-				cv.put(NotificationSQLFormat.DOWNLOADED, 1);
+				cv.put(Notifications.Contract.FULL_MESSAGE, message);
+				cv.put(Notifications.Contract.DOWNLOADED, 1);
 				complete = true;
 			}
 			
 			String storedMessage = g.toJson(m);
-			cv.put(NotificationSQLFormat.MESSAGE, storedMessage);
-			cv.put(NotificationSQLFormat.NOTIFICATION_GUID, 
+			cv.put(Notifications.Contract.MESSAGE, storedMessage);
+			cv.put(Notifications.Contract.UUID, 
 					notificationHeader.n);
 			notificationUri = context.getContentResolver().insert(
-					NotificationSQLFormat.CONTENT_URI, cv);
+					Notifications.CONTENT_URI, cv);
 		}
 		
 		

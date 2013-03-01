@@ -1,6 +1,6 @@
 package org.sana.android.activity;
 
-import org.sana.android.db.SanaDB.NotificationSQLFormat;
+import org.sana.android.provider.Notifications;
 
 import android.content.ContentUris;
 import android.content.Intent;
@@ -28,8 +28,8 @@ public class NotificationList extends SherlockListActivity implements
 	private static final String TAG = NotificationList.class.getSimpleName();
 	private static int MESSAGE_LENGTH_LIMIT = 35;
 	private static final String[] PROJECTION = new String[] {
-			NotificationSQLFormat._ID, NotificationSQLFormat.PATIENT_ID,
-			NotificationSQLFormat.FULL_MESSAGE };
+			Notifications.Contract._ID, Notifications.Contract.PATIENT_ID,
+			Notifications.Contract.FULL_MESSAGE };
 	
 	/** 
 	 * Binds the cursor to either the patient or message column.
@@ -61,17 +61,17 @@ public class NotificationList extends SherlockListActivity implements
 
         Uri uri = getIntent().getData();
         if (uri == null) {
-            uri = NotificationSQLFormat.CONTENT_URI;
+            uri = Notifications.CONTENT_URI;
         }
         
         Cursor cursor = managedQuery(uri, PROJECTION, 
-        		NotificationSQLFormat.DOWNLOADED + "=1", null, 
-        		NotificationSQLFormat.DEFAULT_SORT_ORDER);
+        		Notifications.Contract.DOWNLOADED + "=1", null, 
+        		Notifications.DEFAULT_SORT_ORDER);
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 android.R.layout.two_line_list_item, cursor,
-                new String[] { NotificationSQLFormat.PATIENT_ID, 
-        					   NotificationSQLFormat.FULL_MESSAGE },
+                new String[] { Notifications.Contract.PATIENT_ID, 
+        					   Notifications.Contract.FULL_MESSAGE },
                 new int[] { android.R.id.text1, android.R.id.text2 });
         adapter.setViewBinder(this);
         setListAdapter(adapter);

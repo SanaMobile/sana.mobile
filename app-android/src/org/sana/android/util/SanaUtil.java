@@ -14,7 +14,7 @@ import org.sana.R;
 import org.sana.android.db.SanaDB;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
-import org.sana.android.db.SanaDB.NotificationSQLFormat;
+import org.sana.android.provider.Notifications;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
@@ -190,8 +190,8 @@ public class SanaUtil {
                 ImageSQLFormat._ID);
         deleteContentUri(ctx, SoundSQLFormat.CONTENT_URI,
                 SoundSQLFormat._ID);
-        deleteContentUri(ctx, NotificationSQLFormat.CONTENT_URI,
-                NotificationSQLFormat._ID);
+        deleteContentUri(ctx, Notifications.CONTENT_URI,
+                Notifications.Contract._ID);
         deleteContentUri(ctx, BinarySQLFormat.CONTENT_URI,
                 BinarySQLFormat._ID);
         if (SanaDB.DATABASE_VERSION > 4)
