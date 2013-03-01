@@ -28,44 +28,34 @@
 package org.sana.android.provider;
 
 import org.sana.Procedure;
-import org.sana.android.db.SanaDB;
 
 import android.net.Uri;
 
 /**
- * This class defines the URI and data fields for the content provider storing 
- * the procedure xml.
+ * Metadata and contract for procedures in the database.
  * 
  * @author Sana Development Team
  */
 public final class Procedures {
-    private Procedures() {
-    }
-    /**
-     * The authority for the procedures provider.
-     */
+	
+    private Procedures() {}
+    
+    /** The authority for procedures. */
     public static final String AUTHORITY = "org.sana.provider.Procedure";
-    /**
-     * The content:// style URI for this content provider.
-     */
+    
+    /** The content:// style URI for this content provider. */
     public static final Uri CONTENT_URI = Uri.parse("content://"
             + AUTHORITY + "/procedures");
-
-    /**
-     * The MIME type of CONTENT_URI providing a directory of procedures.
-     */
+    
+	/** The MIME type for a directory of procedures.  */
     public static final String CONTENT_TYPE = 
     	"vnd.android.cursor.dir/org.sana.procedure";
 
-    /**
-     * The MIME type of CONTENT_URI subdirectory of a single procedure.
-     */
+    /** The MIME type of single procedure. */
     public static final String CONTENT_ITEM_TYPE = 
     	"vnd.android.cursor.item/org.sana.procedure";
 
-    /**
-     * The default sort order.
-     */
+    /** The default sort order. */
     public static final String DEFAULT_SORT_ORDER = "modified DESC";
     
 	/**
@@ -75,24 +65,16 @@ public final class Procedures {
 	 *
 	 */
 	public static interface Contract extends BaseContract<Procedure>{
-		/**
-		 * The title of the procedure.
-		 */
+		/** The title of the procedure. */
 		public static final String TITLE = "title";
 
-		/**
-		 * The author of the procedure.
-		 */
+		/** The author of the procedure. */
 		public static final String AUTHOR = "author";
 
-		/**
-		 * The unique ID of the procedure.
-		 */
+		/** The unique ID of the procedure. */
 		public static final String UUID = "uuid";
 
-		/**
-		 *  The raw procedure text.
-		 */
+		/** The raw procedure text. */
 		public static final String PROCEDURE = "procedure";
     
 	}
