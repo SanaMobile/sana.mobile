@@ -66,9 +66,9 @@ public class NotificationViewer extends SherlockActivity implements OnClickListe
         cursor.close();
         Uri savedUri = ContentUris.withAppendedId(SavedProcedureSQLFormat.CONTENT_URI, spId);
         
-        Uri procedureUri = ContentUris.withAppendedId(ProcedureSQLFormat.CONTENT_URI, procedureId);
+        Uri procedureUri = ContentUris.withAppendedId(Procedures.CONTENT_URI, procedureId);
         Log.i(TAG, "Getting procedure " + procedureUri.toString());
-        cursor = getContentResolver().query(procedureUri, new String[] { ProcedureSQLFormat.PROCEDURE }, null, null, null);
+        cursor = getContentResolver().query(procedureUri, new String[] { Procedures.PROCEDURE }, null, null, null);
         cursor.moveToFirst();
         String procedureXml = cursor.getString(0);
         cursor.deactivate();

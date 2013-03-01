@@ -19,7 +19,6 @@ import org.sana.android.db.EventDAO;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.db.ProcedureDAO;
 import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
-import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.media.EducationResource.Audience;
 import org.sana.android.net.MDSInterface;
@@ -27,6 +26,7 @@ import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.sana.android.procedure.ValidationError;
+import org.sana.android.provider.Procedures;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.ServiceConnector;
 import org.sana.android.service.ServiceListener;
@@ -746,7 +746,7 @@ public abstract class BaseRunnerFragment extends Fragment implements View.OnClic
                 }
 
                 Uri procedureUri = ContentUris.withAppendedId(
-                        ProcedureSQLFormat.CONTENT_URI, procedureId);
+                        Procedures.CONTENT_URI, procedureId);
                 String procedureXml = ProcedureDAO.getXMLForProcedure(
                         getActivity(), procedureUri);
                 Procedure procedure = null;

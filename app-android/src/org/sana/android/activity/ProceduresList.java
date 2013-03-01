@@ -2,7 +2,7 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.db.SanaDB.ProcedureSQLFormat;
+import org.sana.android.provider.Procedures;
 
 import android.content.ContentUris;
 import android.content.Intent;
@@ -26,8 +26,8 @@ public class ProceduresList extends SherlockListActivity {
     
     private static final String TAG = ProceduresList.class.toString();
     private static final String[] PROJECTION = new String[] {
-            ProcedureSQLFormat._ID, ProcedureSQLFormat.TITLE,
-            ProcedureSQLFormat.AUTHOR
+            Procedures.Contract._ID, Procedures.Contract.TITLE,
+            Procedures.Contract.AUTHOR
     };
 
     /** {@inheritDoc} */
@@ -37,17 +37,17 @@ public class ProceduresList extends SherlockListActivity {
         Uri uri = getIntent().getData();
 
         if (uri == null) {
-            uri = ProcedureSQLFormat.CONTENT_URI;
+            uri = Procedures.CONTENT_URI;
         }
 
         Cursor cursor = managedQuery(uri, PROJECTION, null, null,
-                ProcedureSQLFormat.DEFAULT_SORT_ORDER);
+                Procedures.DEFAULT_SORT_ORDER);
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.procedure_list_row, cursor,
                 new String[] {
-                        ProcedureSQLFormat.TITLE,
-                        ProcedureSQLFormat.AUTHOR
+                        Procedures.Contract.TITLE,
+                        Procedures.Contract.AUTHOR
                 },
                 new int[] {
                         R.id.toptext, R.id.bottomtext

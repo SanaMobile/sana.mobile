@@ -8,8 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.sana.R;
-import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
+import org.sana.android.provider.Procedures;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.QueueManager;
 import org.sana.android.service.ServiceConnector;
@@ -83,9 +83,9 @@ public class SavedProcedureList extends SherlockListActivity implements
 			return procedureToName.get(procedureId);
 		}
 		
-		Cursor cur2 = getContentResolver().query(ProcedureSQLFormat.CONTENT_URI,
-				new String[] { ProcedureSQLFormat.TITLE },
-				ProcedureSQLFormat._ID + " = ?",
+		Cursor cur2 = getContentResolver().query(Procedures.CONTENT_URI,
+				new String[] { Procedures.Contract.TITLE },
+				Procedures.Contract._ID + " = ?",
 				new String[] { Integer.toString(procedureId) }, null);
 		cur2.moveToFirst();
 		String title = cur2.getString(0);

@@ -82,7 +82,7 @@ public class SMSReceive extends BroadcastReceiver {
 		Gson g = new Gson();
 		
 		if (notificationHeader.n == null) {
-			Log.e(TAG, "Received mal-formed notification GUID -- none provided.");
+			Log.e(TAG, "Received mal-formed notification UUID -- none provided.");
 		}
 		
 		Cursor c = context.getContentResolver().query(NotificationSQLFormat.CONTENT_URI, 

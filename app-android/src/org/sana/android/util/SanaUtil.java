@@ -16,7 +16,7 @@ import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.db.SanaDB.NotificationSQLFormat;
 import org.sana.android.provider.Patients;
-import org.sana.android.db.SanaDB.ProcedureSQLFormat;
+import org.sana.android.provider.Procedures;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SoundSQLFormat;
 import org.sana.android.procedure.Procedure;
@@ -46,8 +46,8 @@ public class SanaUtil {
     public static final String TAG = SanaUtil.class.toString();
 
     private static final String[] PROJECTION = new String[] {
-            ProcedureSQLFormat._ID,
-            ProcedureSQLFormat.TITLE, ProcedureSQLFormat.AUTHOR
+            Procedures.Contract._ID,
+            Procedures.Contract.TITLE, Procedures.Contract.AUTHOR
     };
 
     private static final String alphabet =
@@ -182,8 +182,8 @@ public class SanaUtil {
      * 
      * @param ctx the Context where the data is stored */
     public static void clearDatabase(Context ctx) {
-        deleteContentUri(ctx, ProcedureSQLFormat.CONTENT_URI,
-                ProcedureSQLFormat._ID);
+        deleteContentUri(ctx, Procedures.CONTENT_URI,
+                Procedures.Contract._ID);
         deleteContentUri(ctx, SavedProcedureSQLFormat.CONTENT_URI,
                 SavedProcedureSQLFormat._ID);
         deleteContentUri(ctx, ImageSQLFormat.CONTENT_URI,
@@ -229,16 +229,16 @@ public class SanaUtil {
             guid = p.getGuid();
 
             ContentValues cv = new ContentValues();
-            cv.put(ProcedureSQLFormat.TITLE, title);
-            cv.put(ProcedureSQLFormat.AUTHOR, author);
-            cv.put(ProcedureSQLFormat.GUID, guid);
+            cv.put(Procedures.Contract.TITLE, title);
+            cv.put(Procedures.Contract.AUTHOR, author);
+            cv.put(Procedures.Contract.UUID, guid);
 
-            cv.put(ProcedureSQLFormat.PROCEDURE, xmlFullProcedure);
+            cv.put(Procedures.Contract.PROCEDURE, xmlFullProcedure);
 
             if (searchDuplicateTitleAuthor(ctx, title, author))
                 Log.d(TAG, "Duplicate found!");
             else
-                ctx.getContentResolver().insert(ProcedureSQLFormat.CONTENT_URI, cv);
+                ctx.getContentResolver().insert(Procedures.CONTENT_URI, cv);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't add procedure id=" + id + ", title = " + title
                     + ", to db. Exception : " + e.toString());
@@ -275,10 +275,10 @@ public class SanaUtil {
         guid = p.getGuid();
 
         final ContentValues cv = new ContentValues();
-        cv.put(ProcedureSQLFormat.TITLE, title);
-        cv.put(ProcedureSQLFormat.AUTHOR, author);
-        cv.put(ProcedureSQLFormat.GUID, guid);
-        cv.put(ProcedureSQLFormat.PROCEDURE, xmlFullProcedure);
+        cv.put(Procedures.Contract.TITLE, title);
+        cv.put(Procedures.Contract.AUTHOR, author);
+        cv.put(Procedures.Contract.UUID, guid);
+        cv.put(Procedures.Contract.PROCEDURE, xmlFullProcedure);
 
         if (searchDuplicateTitleAuthor(ctx, title, author)) {
             Log.i(TAG, "Duplicate found!");
@@ -289,7 +289,7 @@ public class SanaUtil {
         } else {
             Log.i(TAG, "Inserting record.");
             ctx.getContentResolver().insert(
-                    ProcedureSQLFormat.CONTENT_URI, cv);
+                    Procedures.CONTENT_URI, cv);
         }
         Log.i(TAG, "Acquired procedure record from local cache.");
         return 0;
@@ -302,7 +302,7 @@ public class SanaUtil {
         Cursor cursor = null;
         try {
             cursor = ctx.getContentResolver().query(
-                    ProcedureSQLFormat.CONTENT_URI, PROJECTION,
+                    Procedures.CONTENT_URI, PROJECTION,
                     "(title LIKE\"" + title + "\")", null, null);
             if (cursor.getCount() > 0) {
                 return true;

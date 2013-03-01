@@ -3,7 +3,7 @@ package org.sana.android.db;
 import java.util.HashMap;
 
 import org.sana.android.db.SanaDB.DatabaseHelper;
-import org.sana.android.db.SanaDB.ProcedureSQLFormat;
+import org.sana.android.provider.Procedures;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -59,7 +59,7 @@ public class ProcedureProvider extends ContentProvider {
         case PROCEDURES:    
             break;
         case PROCEDURE_ID:
-            qb.appendWhere(ProcedureSQLFormat._ID + "=" 
+            qb.appendWhere(Procedures.Contract._ID + "=" 
             		+ uri.getPathSegments().get(1));
             break;
         default:
@@ -68,7 +68,7 @@ public class ProcedureProvider extends ContentProvider {
         
         String orderBy;
         if(TextUtils.isEmpty(sortOrder)) {
-            orderBy = ProcedureSQLFormat.DEFAULT_SORT_ORDER;
+            orderBy = Procedures.DEFAULT_SORT_ORDER;
         } else {
             orderBy = sortOrder;
         }
@@ -96,7 +96,7 @@ public class ProcedureProvider extends ContentProvider {
         case PROCEDURE_ID:
             String procedureId = uri.getPathSegments().get(1);
             count = db.update(PROCEDURE_TABLE_NAME, values, 
-            		ProcedureSQLFormat._ID + "=" + procedureId 
+            		Procedures.Contract._ID + "=" + procedureId 
             		+ (!TextUtils.isEmpty(selection) ? " AND (" 
             				+ selection + ")" : ""), selectionArgs);
             break;
@@ -119,7 +119,7 @@ public class ProcedureProvider extends ContentProvider {
             break;
         case PROCEDURE_ID:
             String procedureId = uri.getPathSegments().get(1); 
-            count = db.delete(PROCEDURE_TABLE_NAME, ProcedureSQLFormat._ID 
+            count = db.delete(PROCEDURE_TABLE_NAME, Procedures.Contract._ID 
             		+ "=" + procedureId + (!TextUtils.isEmpty(selection) 
             				? " AND (" + selection + ")" : ""), selectionArgs);
             break;
@@ -147,42 +147,42 @@ public class ProcedureProvider extends ContentProvider {
         
         Long now = Long.valueOf(System.currentTimeMillis());
         
-        if(values.containsKey(ProcedureSQLFormat.CREATED_DATE) == false) {
-            values.put(ProcedureSQLFormat.CREATED_DATE, now);
+        if(values.containsKey(Procedures.Contract.CREATED) == false) {
+            values.put(Procedures.Contract.CREATED, now);
         }
         
-        if(values.containsKey(ProcedureSQLFormat.MODIFIED_DATE) == false) {
-            values.put(ProcedureSQLFormat.MODIFIED_DATE, now);
+        if(values.containsKey(Procedures.Contract.MODIFIED) == false) {
+            values.put(Procedures.Contract.MODIFIED, now);
         }
         
-        if(values.containsKey(ProcedureSQLFormat.TITLE) == false) {
+        if(values.containsKey(Procedures.Contract.TITLE) == false) {
             Resources r = Resources.getSystem();
-            values.put(ProcedureSQLFormat.TITLE, r.getString(
+            values.put(Procedures.Contract.TITLE, r.getString(
             		android.R.string.untitled));
         }
         
-        if(values.containsKey(ProcedureSQLFormat.AUTHOR) == false) {
+        if(values.containsKey(Procedures.Contract.AUTHOR) == false) {
             Resources r = Resources.getSystem();
-            values.put(ProcedureSQLFormat.AUTHOR, r.getString(
+            values.put(Procedures.Contract.AUTHOR, r.getString(
             		android.R.string.untitled));
         }
         
-        if(values.containsKey(ProcedureSQLFormat.GUID) == false) {
+        if(values.containsKey(Procedures.Contract.UUID) == false) {
             Resources r = Resources.getSystem();
-            values.put(ProcedureSQLFormat.GUID, r.getString(
+            values.put(Procedures.Contract.UUID, r.getString(
             		android.R.string.untitled));
         }
         
-        if(values.containsKey(ProcedureSQLFormat.PROCEDURE) == false) {
-            values.put(ProcedureSQLFormat.PROCEDURE, "");
+        if(values.containsKey(Procedures.Contract.PROCEDURE) == false) {
+            values.put(Procedures.Contract.PROCEDURE, "");
         }
         
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowId = db.insert(PROCEDURE_TABLE_NAME, 
-        		ProcedureSQLFormat.PROCEDURE, values);
+        		Procedures.Contract.PROCEDURE, values);
         if(rowId > 0) {
             Uri noteUri = ContentUris.withAppendedId(
-            		ProcedureSQLFormat.CONTENT_URI, rowId);
+            		Procedures.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(noteUri, null);
             return noteUri;
         }
@@ -196,9 +196,9 @@ public class ProcedureProvider extends ContentProvider {
         Log.i(TAG, "getType(uri="+uri.toString()+")");
         switch(sUriMatcher.match(uri)) {
         case PROCEDURES:
-            return ProcedureSQLFormat.CONTENT_TYPE;
+            return Procedures.CONTENT_TYPE;
         case PROCEDURE_ID:
-            return ProcedureSQLFormat.CONTENT_ITEM_TYPE;
+            return Procedures.CONTENT_ITEM_TYPE;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -211,13 +211,13 @@ public class ProcedureProvider extends ContentProvider {
     public static void onCreateDatabase(SQLiteDatabase db) {
         Log.i(TAG, "Creating Procedure Table");
         db.execSQL("CREATE TABLE " + PROCEDURE_TABLE_NAME + " ("
-                + ProcedureSQLFormat._ID + " INTEGER PRIMARY KEY,"
-                + ProcedureSQLFormat.TITLE + " TEXT,"
-                + ProcedureSQLFormat.AUTHOR + " TEXT,"
-                + ProcedureSQLFormat.GUID + " TEXT,"
-                + ProcedureSQLFormat.PROCEDURE + " TEXT,"
-                + ProcedureSQLFormat.CREATED_DATE + " INTEGER,"
-                + ProcedureSQLFormat.MODIFIED_DATE + " INTEGER"
+                + Procedures.Contract._ID + " INTEGER PRIMARY KEY,"
+                + Procedures.Contract.TITLE + " TEXT,"
+                + Procedures.Contract.AUTHOR + " TEXT,"
+                + Procedures.Contract.UUID + " TEXT,"
+                + Procedures.Contract.PROCEDURE + " TEXT,"
+                + Procedures.Contract.CREATED + " INTEGER,"
+                + Procedures.Contract.MODIFIED + " INTEGER"
                 + ");");
     }
     
@@ -243,13 +243,13 @@ public class ProcedureProvider extends ContentProvider {
         sUriMatcher.addURI(SanaDB.PROCEDURE_AUTHORITY, "procedures/#", PROCEDURE_ID);
         
         sProcedureProjectionMap = new HashMap<String, String>();
-        sProcedureProjectionMap.put(ProcedureSQLFormat._ID, ProcedureSQLFormat._ID);
-        sProcedureProjectionMap.put(ProcedureSQLFormat.TITLE, ProcedureSQLFormat.TITLE);
-        sProcedureProjectionMap.put(ProcedureSQLFormat.AUTHOR, ProcedureSQLFormat.AUTHOR);
-        sProcedureProjectionMap.put(ProcedureSQLFormat.GUID, ProcedureSQLFormat.GUID);
-        sProcedureProjectionMap.put(ProcedureSQLFormat.PROCEDURE, ProcedureSQLFormat.PROCEDURE);
-        sProcedureProjectionMap.put(ProcedureSQLFormat.CREATED_DATE, ProcedureSQLFormat.CREATED_DATE);
-        sProcedureProjectionMap.put(ProcedureSQLFormat.MODIFIED_DATE, ProcedureSQLFormat.MODIFIED_DATE);
+        sProcedureProjectionMap.put(Procedures.Contract._ID, Procedures.Contract._ID);
+        sProcedureProjectionMap.put(Procedures.Contract.TITLE, Procedures.Contract.TITLE);
+        sProcedureProjectionMap.put(Procedures.Contract.AUTHOR, Procedures.Contract.AUTHOR);
+        sProcedureProjectionMap.put(Procedures.Contract.UUID, Procedures.Contract.UUID);
+        sProcedureProjectionMap.put(Procedures.Contract.PROCEDURE, Procedures.Contract.PROCEDURE);
+        sProcedureProjectionMap.put(Procedures.Contract.CREATED, Procedures.Contract.CREATED);
+        sProcedureProjectionMap.put(Procedures.Contract.MODIFIED, Procedures.Contract.MODIFIED);
     }
     
 }

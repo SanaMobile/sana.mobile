@@ -11,7 +11,7 @@ public class MDSNotification {
 	/** The MDS's ID for this notification. */
 	public String n;
 	
-	/** The saved procedure GUID to which this notification refers. */
+	/** The saved procedure UUID to which this notification refers. */
 	public String c;
 	
 	/** The patient identifier. */ 

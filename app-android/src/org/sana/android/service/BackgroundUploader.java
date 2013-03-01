@@ -3,7 +3,7 @@ package org.sana.android.service;
 import java.util.PriorityQueue;
 
 import org.sana.android.provider.Patients;
-import org.sana.android.db.SanaDB.ProcedureSQLFormat;
+import org.sana.android.provider.Procedures;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.net.MDSInterface;
 import org.sana.android.task.CheckCredentialsTask;
@@ -367,12 +367,12 @@ public class BackgroundUploader extends Service {
 			cursor.close();
 
 			Uri procedureUri = ContentUris.withAppendedId(
-					ProcedureSQLFormat.CONTENT_URI, procedureId);;
+					Procedures.CONTENT_URI, procedureId);;
 			cursor = getContentResolver().query(procedureUri, new String[] { 
-					ProcedureSQLFormat.TITLE }, null, null, null);
+					Procedures.Contract.TITLE }, null, null, null);
 			cursor.moveToFirst();
 			procedureTitle = cursor.getString(cursor.getColumnIndex(
-					ProcedureSQLFormat.TITLE));
+					Procedures.Contract.TITLE));
 			
 		} catch (Exception e) {
 			Log.e(TAG, "Failed to get procedure title for procedure " 

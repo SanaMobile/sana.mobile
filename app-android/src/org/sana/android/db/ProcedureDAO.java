@@ -1,6 +1,7 @@
 package org.sana.android.db;
 
-import org.sana.android.db.SanaDB.ProcedureSQLFormat;
+
+import org.sana.android.provider.Procedures;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -27,11 +28,11 @@ public class ProcedureDAO {
 		String procedureXml = "";
 		try {
 			cursor = context.getContentResolver().query(procedure, 
-					new String [] { ProcedureSQLFormat.PROCEDURE }, 
+					new String [] { Procedures.Contract.PROCEDURE }, 
 					null, null, null);        
 			cursor.moveToFirst();
 			procedureXml = cursor.getString(cursor.getColumnIndex(
-					ProcedureSQLFormat.PROCEDURE));
+					Procedures.Contract.PROCEDURE));
 			cursor.deactivate();
 		} catch (Exception e) {
 			EventDAO.logException(context, e);

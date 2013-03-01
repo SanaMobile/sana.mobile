@@ -76,68 +76,6 @@ public final class SanaDB {
     public static final int DATABASE_VERSION = 4; 
     
     /**
-     * This class defines the URI and data fields for the content provider storing the procedure xml.
-     * @author Sana Development Team
-     */
-    public static final class ProcedureSQLFormat implements BaseColumns {
-        private ProcedureSQLFormat() {
-        }
-
-        /**
-         * The content:// style URI for this content provider.
-         */
-        public static final Uri CONTENT_URI = Uri.parse("content://"
-                + PROCEDURE_AUTHORITY + "/procedures");
-
-        /**
-         * The MIME type of CONTENT_URI providing a directory of procedures.
-         */
-        public static final String CONTENT_TYPE = 
-        	"vnd.android.cursor.dir/org.sana.procedure";
-
-        /**
-         * The MIME type of CONTENT_URI subdirectory of a single procedure.
-         */
-        public static final String CONTENT_ITEM_TYPE = 
-        	"vnd.android.cursor.item/org.sana.procedure";
-
-        /**
-         * The default sort order.
-         */
-        public static final String DEFAULT_SORT_ORDER = "modified DESC";
-
-        /**
-         * The title of the procedure.
-         */
-        public static final String TITLE = "title";
-        
-        /**
-         * The author of the procedure.
-         */
-        public static final String AUTHOR = "author";
-        
-        /**
-         * The unique ID of the procedure.
-         */
-        public static final String GUID = "guid";
-
-        /**
-         * The procedure XML.
-         */
-        public static final String PROCEDURE = "procedure";
-
-        /**
-         * The date the procedure was created.
-         */
-        public static final String CREATED_DATE = "created";
-
-        /**
-         * The date the procedure was last modified.
-         */
-        public static final String MODIFIED_DATE = "modified";
-    }
-    
-    /**
      * This class defines the URI and data fields for the content provider 
      * storing the text for a completed procedure form, referred to as a saved 
      * procedure.

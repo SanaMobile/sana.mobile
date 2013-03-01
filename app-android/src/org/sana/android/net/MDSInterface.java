@@ -44,7 +44,6 @@ import org.sana.android.Constants;
 import org.sana.android.db.Event;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
-import org.sana.android.db.SanaDB.ProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SavedProcedureSQLFormat;
 import org.sana.android.db.SanaDB.SoundSQLFormat;
 import org.sana.android.net.ssl.SimpleSSLProtocolSocketFactory;
@@ -52,6 +51,7 @@ import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.sana.android.procedure.ProcedureElement.ElementType;
+import org.sana.android.provider.Procedures;
 import org.sana.android.util.SanaUtil;
 import org.sana.android.util.UserDatabase;
 
@@ -529,10 +529,10 @@ public class MDSInterface {
 		cursor.close();
 
 		Uri procedureUri = ContentUris.withAppendedId(
-							ProcedureSQLFormat.CONTENT_URI, procedureId);
+							Procedures.CONTENT_URI, procedureId);
 		Log.i(TAG, "Getting procedure " + procedureUri.toString());
 		cursor = context.getContentResolver().query(procedureUri, 
-				new String[] { ProcedureSQLFormat.PROCEDURE }, null,null,null);
+				new String[] { Procedures.Contract.PROCEDURE }, null,null,null);
 		cursor.moveToFirst();
 		String procedureXml = cursor.getString(0);
 		cursor.close();
@@ -714,17 +714,17 @@ public class MDSInterface {
 		cursor.close();
 
 		Uri procedureUri = ContentUris.withAppendedId(
-				ProcedureSQLFormat.CONTENT_URI, procedureId);
+				Procedures.CONTENT_URI, procedureId);
 		Log.i(TAG, "Getting procedure " + procedureUri.toString());
 		cursor = context.getContentResolver().query(procedureUri, 
-				new String[] { ProcedureSQLFormat.TITLE, 
-							   ProcedureSQLFormat.PROCEDURE },
+				new String[] { Procedures.Contract.TITLE, 
+							   Procedures.Contract.PROCEDURE },
 				null, null, null);
 		cursor.moveToFirst();
 		String procedureTitle = cursor.getString(
-				cursor.getColumnIndex(ProcedureSQLFormat.TITLE));
+				cursor.getColumnIndex(Procedures.Contract.TITLE));
 		String procedureXml = cursor.getString(
-				cursor.getColumnIndex(ProcedureSQLFormat.PROCEDURE));
+				cursor.getColumnIndex(Procedures.Contract.PROCEDURE));
 		cursor.close();
 		
 		if(!finished) {

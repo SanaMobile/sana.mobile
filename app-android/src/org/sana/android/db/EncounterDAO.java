@@ -15,7 +15,7 @@ import android.net.Uri;
 public class EncounterDAO {
 	
 	/**
-	 * Fetches an encounter GUID.
+	 * Fetches an encounter UUID.
 	 * 
 	 * @param context The application context.
 	 * @param encounterUri The Uri of an encounter.
