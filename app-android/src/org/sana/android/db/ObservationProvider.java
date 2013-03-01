@@ -200,6 +200,7 @@ public class ObservationProvider extends FileContentProvider implements Observat
             + CONCEPT + " TEXT NOT NULL,"
             + SUBJECT + " TEXT NOT NULL,"
             + ID + " TEXT NOT NULL,"
+            + PARENT + " TEXT,"
             + VALUE_TEXT + " TEXT,"
             + VALUE_COMPLEX + " TEXT,"
             + UPLOAD_PROGRESS + " INTEGER,"
