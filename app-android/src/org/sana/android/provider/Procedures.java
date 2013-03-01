@@ -83,7 +83,7 @@ public final class Procedures {
     /**
      * The unique ID of the procedure.
      */
-    public static final String UUID = "guid";
+    public static final String UUID = "uuid";
 
     /**
      *  The raw procedure text.
