@@ -203,11 +203,6 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 	}
-	
-	@Override
-	public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException{
-		return openFileHelper(uri,mode);
-	}
 
     /**
      * Creates the table.
