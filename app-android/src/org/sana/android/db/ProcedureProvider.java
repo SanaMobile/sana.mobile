@@ -239,8 +239,8 @@ public class ProcedureProvider extends ContentProvider {
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(SanaDB.PROCEDURE_AUTHORITY, "procedures", PROCEDURES);
-        sUriMatcher.addURI(SanaDB.PROCEDURE_AUTHORITY, "procedures/#", PROCEDURE_ID);
+        sUriMatcher.addURI(Procedures.AUTHORITY, "procedures", PROCEDURES);
+        sUriMatcher.addURI(Procedures.AUTHORITY, "procedures/#", PROCEDURE_ID);
         
         sProcedureProjectionMap = new HashMap<String, String>();
         sProcedureProjectionMap.put(Procedures.Contract._ID, Procedures.Contract._ID);

@@ -11,10 +11,6 @@ import android.provider.BaseColumns;
  * @author Sana Development Team
  */
 public final class SanaDB {
-    /**
-     * The authority for the procedures provider.
-     */
-    public static final String PROCEDURE_AUTHORITY = "org.sana.provider.Procedure";
     
     /**
      * The authority for the saved procedures provider.
@@ -36,11 +32,6 @@ public final class SanaDB {
      * The authority for the sound provider.
      */
     public static final String SOUND_AUTHORITY = "org.sana.provider.Sound";
-    
-    /**
-     * The authority for the notification provider.
-     */
-    public static final String NOTIFICATION_AUTHORITY = "org.sana.provider.Notification";
     
     /**
      * The authority for the patient provider.
@@ -430,85 +421,6 @@ public final class SanaDB {
          */
         public static final String MODIFIED_DATE = "modified";
     }
-    
-    /**
-     * This class defines the URI and data fields for the content provider 
-     * storing notifications. Notifications are SMS messages sent to the 
-     * Android phone. They may contain doctor recommendations or diagnoses.
-     * @author Sana Development Team
-     */
-    public static final class NotificationSQLFormat implements BaseColumns {
-        private NotificationSQLFormat() {
-        }
-
-        /**
-         * The content:// style URI for this content provider.
-         */
-        public static final Uri CONTENT_URI = Uri.parse("content://"
-                + NOTIFICATION_AUTHORITY + "/notifications");
-
-        /**
-         * The MIME type of CONTENT_URI providing a directory of notifications.
-         */
-        public static final String CONTENT_TYPE = 
-        	"vnd.android.cursor.dir/org.sana.notification";
-
-        /**
-         * The MIME type of CONTENT_URI subdirectory for a single notification.
-         */
-        public static final String CONTENT_ITEM_TYPE = 
-        	"vnd.android.cursor.item/org.sana.notification";
-
-        /**
-         * Default sort order.
-         */
-        public static final String DEFAULT_SORT_ORDER = "modified DESC";
-        
-        // COLUMNS
-        
-        /**
-         * The unique id of the notification.
-         */
-        public static final String NOTIFICATION_GUID = "notification_guid";
-
-        /**
-         * The procedure the notification is referring to.
-         */
-        public static final String PROCEDURE_ID = "procedure_id";
-
-        /**
-         * The id of the patient the notification is for.
-         */
-        public static final String PATIENT_ID = "patient_id";
-        
-        /**
-         * The message body, containing part of the transmitted message. 
-         * Messages may take more than one notification to transmit.
-         */
-        public static final String MESSAGE = "message";
-        
-        /**
-         * The entire message, including header information specifying the 
-         * patient and encounter the notification is associated with.
-         */
-        public static final String FULL_MESSAGE = "full_message";
-        
-        /**
-         * Indicates whether the entire message is downloaded.
-         */
-        public static final String DOWNLOADED = "downloaded";
-        
-        /**
-         * The date the notification was created.
-         */
-        public static final String CREATED_DATE = "created";
-
-        /**
-         * The date the notification was last modified.
-         */
-        public static final String MODIFIED_DATE = "modified";
-    }
-    
     
     /**
      * This class defines the URI and data fields for the content provider 

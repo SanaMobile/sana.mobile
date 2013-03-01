@@ -41,12 +41,15 @@ import android.net.Uri;
 public final class Procedures {
     private Procedures() {
     }
-
+    /**
+     * The authority for the procedures provider.
+     */
+    public static final String AUTHORITY = "org.sana.provider.Procedure";
     /**
      * The content:// style URI for this content provider.
      */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + SanaDB.PROCEDURE_AUTHORITY + "/procedures");
+            + AUTHORITY + "/procedures");
 
     /**
      * The MIME type of CONTENT_URI providing a directory of procedures.
