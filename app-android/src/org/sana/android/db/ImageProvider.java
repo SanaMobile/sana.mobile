@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.sana.android.db.SanaDB.DatabaseHelper;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 
 import android.content.ContentProvider;

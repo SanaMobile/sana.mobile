@@ -4,8 +4,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.sana.android.db.SanaDB.EventSQLFormat;
-import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
+import org.sana.android.provider.Events;
+import org.sana.android.provider.Events.Contract;
+import org.sana.android.provider.Events.EventType;
+
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -27,7 +29,7 @@ public class EventDAO {
 	 * @param type the event type.
 	 * @param value the event value
 	 * @param encounterRef an encounter id.
-	 * @param patientRef a patient id.
+	 * @param patientRef a subject id.
 	 * @param userRef the user.
 	 */
 	public static void registerEvent(Context c, EventType type, String value, 
@@ -37,21 +39,21 @@ public class EventDAO {
 				+ encounterRef + "' Patient: '" + patientRef + "' User: '" 
 				+ userRef + "'");
 		ContentValues cv = new ContentValues();
-		cv.put(EventSQLFormat.EVENT_TYPE, type.toString());
-		cv.put(EventSQLFormat.EVENT_VALUE, value);
+		cv.put(Contract.EVENT_TYPE, type.toString());
+		cv.put(Contract.EVENT_VALUE, value);
 		
 		if (encounterRef != null)
-			cv.put(EventSQLFormat.ENCOUNTER_REFERENCE, encounterRef);
+			cv.put(Contract.ENCOUNTER, encounterRef);
 		if (patientRef != null)
-			cv.put(EventSQLFormat.PATIENT_REFERENCE, patientRef);
+			cv.put(Contract.SUBJECT, patientRef);
 		if (userRef != null)
-			cv.put(EventSQLFormat.USER_REFERENCE, userRef);
+			cv.put(Contract.OBSERVER, userRef);
 		
-		c.getContentResolver().insert(EventSQLFormat.CONTENT_URI, cv);
+		c.getContentResolver().insert(Events.CONTENT_URI, cv);
 	}
 	
 	/**
-	 * inserts a new event with no encounter, patient, or user references.
+	 * inserts a new event with no encounter, subject, or user references.
 	 * @param c the current context.
 	 * @param type the event type.
 	 * @param value the event value
@@ -93,7 +95,7 @@ public class EventDAO {
 	 * @param c the current context.
 	 * @param e  the exception.
 	 * @param encounterRef an encounter id.
-	 * @param patientRef a patient id.
+	 * @param patientRef a subject id.
 	 * @param userRef the user.
 	 */
 	public static void logException(Context c, Throwable e, String encounterRef,

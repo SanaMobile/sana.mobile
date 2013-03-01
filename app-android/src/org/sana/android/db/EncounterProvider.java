@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.sana.android.db.SanaDB.BinarySQLFormat;
-import org.sana.android.db.SanaDB.DatabaseHelper;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.db.SanaDB.SoundSQLFormat;
 import org.sana.android.provider.Encounters;

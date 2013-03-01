@@ -3,7 +3,6 @@ package org.sana.android.db;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
-import org.sana.android.db.SanaDB.DatabaseHelper;
 import org.sana.android.db.SanaDB.EducationResourceSQLFormat;
 
 import android.content.ContentProvider;

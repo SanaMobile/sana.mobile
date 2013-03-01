@@ -2,7 +2,6 @@ package org.sana.android.db;
 
 import java.util.HashMap;
 
-import org.sana.android.db.SanaDB.DatabaseHelper;
 import org.sana.android.provider.Procedures;
 
 import android.content.ContentProvider;

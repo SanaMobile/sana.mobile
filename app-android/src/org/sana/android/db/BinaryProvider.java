@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.sana.android.db.SanaDB.BinarySQLFormat;
-import org.sana.android.db.SanaDB.DatabaseHelper;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

@@ -4,7 +4,7 @@ import org.sana.R;
 import org.sana.android.db.EncounterDAO;
 import org.sana.android.db.EventDAO;
 import org.sana.android.db.PatientInfo;
-import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
+import org.sana.android.provider.Events.EventType;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;

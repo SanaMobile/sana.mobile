@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sana.android.db.SanaDB.DatabaseHelper;
 import org.sana.android.provider.Observations;
 import org.sana.android.content.FileContentProvider;
 

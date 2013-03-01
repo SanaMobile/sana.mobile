@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 import org.sana.android.content.FileContentProvider;
-import org.sana.android.db.SanaDB.DatabaseHelper;
 import org.sana.android.provider.Patients;
 import android.content.ContentUris;
 import android.content.ContentValues;

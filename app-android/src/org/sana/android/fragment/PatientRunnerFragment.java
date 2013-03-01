@@ -12,8 +12,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.sana.R;
 import org.sana.android.db.PatientInfo;
-import org.sana.android.db.SanaDB.EventSQLFormat.EventType;
 import org.sana.android.provider.Patients;
+import org.sana.android.provider.Events.EventType;
 
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;

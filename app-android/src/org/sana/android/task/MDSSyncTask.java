@@ -4,9 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sana.android.db.Event;
-import org.sana.android.db.SanaDB.EventSQLFormat;
+import org.sana.Event;
 import org.sana.android.net.MDSInterface;
+import org.sana.android.provider.Events;
+import org.sana.android.provider.Events.Contract;
 import org.sana.android.util.SanaUtil;
 
 import android.app.ProgressDialog;
@@ -53,15 +54,15 @@ public class MDSSyncTask extends AsyncTask<Context, Void, Integer> {
 		
 		try {
 			// Get all un-uploaded events.
-			cursor = c.getContentResolver().query(EventSQLFormat.CONTENT_URI, 
-					new String[] {  EventSQLFormat._ID, 
-								    EventSQLFormat.CREATED_DATE, 
-									EventSQLFormat.EVENT_TYPE, 
-									EventSQLFormat.EVENT_VALUE, 
-									EventSQLFormat.ENCOUNTER_REFERENCE, 
-									EventSQLFormat.PATIENT_REFERENCE, 
-									EventSQLFormat.USER_REFERENCE }, 
-					EventSQLFormat.UPLOADED+"=?", new String[] { "0" }, null);
+			cursor = c.getContentResolver().query(Events.CONTENT_URI, 
+					new String[] {  Contract._ID, 
+								    Contract.CREATED, 
+									Contract.EVENT_TYPE, 
+									Contract.EVENT_VALUE, 
+									Contract.ENCOUNTER, 
+									Contract.SUBJECT, 
+									Contract.OBSERVER }, 
+					Contract.UPLOADED+"=?", new String[] { "0" }, null);
 			int numEvents = cursor.getCount();
 			
 			if (numEvents == 0) {
@@ -80,19 +81,19 @@ public class MDSSyncTask extends AsyncTask<Context, Void, Integer> {
 				
 				Event e = new Event();
 				e.event_time = cursor.getLong(cursor.getColumnIndex(
-						EventSQLFormat.CREATED_DATE));
+						Contract.CREATED));
 				e.event_type = cursor.getString(cursor.getColumnIndex(
-						EventSQLFormat.EVENT_TYPE));
+						Contract.EVENT_TYPE));
 				e.event_value = cursor.getString(cursor.getColumnIndex(
-						EventSQLFormat.EVENT_VALUE));
-				e.encounter_reference = cursor.getString(cursor.getColumnIndex(
-						EventSQLFormat.ENCOUNTER_REFERENCE));
-				e.patient_reference = cursor.getString(cursor.getColumnIndex(
-						EventSQLFormat.PATIENT_REFERENCE));
-				e.user_reference = cursor.getString(cursor.getColumnIndex(
-						EventSQLFormat.USER_REFERENCE));
+						Contract.EVENT_VALUE));
+				e.encounter = cursor.getString(cursor.getColumnIndex(
+						Contract.ENCOUNTER));
+				e.subject = cursor.getString(cursor.getColumnIndex(
+						Contract.SUBJECT));
+				e.observer = cursor.getString(cursor.getColumnIndex(
+						Contract.OBSERVER));
 				int id = cursor.getInt(cursor.getColumnIndex(
-						EventSQLFormat._ID));
+						Contract._ID));
 				events.add(e);
 				
 				sb.append(id);
@@ -110,10 +111,10 @@ public class MDSSyncTask extends AsyncTask<Context, Void, Integer> {
 			if (result) {
 				Log.i(TAG, "Successfully uploaded " + numEvents + " events.");
 				ContentValues cv = new ContentValues();
-				cv.put(EventSQLFormat.UPLOADED, 1);
+				cv.put(Contract.UPLOADED, 1);
 				int rowsUpdated = c.getContentResolver().update(
-						EventSQLFormat.CONTENT_URI, cv, 
-						EventSQLFormat._ID +" in " + sb.toString(), null);
+						Events.CONTENT_URI, cv, 
+						Contract._ID +" in " + sb.toString(), null);
 				if (rowsUpdated != numEvents) {
 					Log.w(TAG, 
 					"Didn't get as many rows updated as we thought we would.");

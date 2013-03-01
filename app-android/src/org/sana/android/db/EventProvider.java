@@ -2,8 +2,8 @@ package org.sana.android.db;
 
 import java.util.HashMap;
 
-import org.sana.android.db.SanaDB.DatabaseHelper;
-import org.sana.android.db.SanaDB.EventSQLFormat;
+import org.sana.android.provider.Events;
+import org.sana.android.provider.Events.Contract;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -32,7 +32,7 @@ public class EventProvider extends ContentProvider {
     
     private DatabaseHelper mOpenHelper;
     private static final UriMatcher sUriMatcher;
-    private static HashMap<String,String> sCounterProjectionMap;
+    private static HashMap<String,String> sProjectionMap;
 
     /** {@inheritDoc} */
     @Override
@@ -57,7 +57,7 @@ public class EventProvider extends ContentProvider {
         case EVENTS:    
             break;
         case EVENT_ID:
-            qb.appendWhere(EventSQLFormat._ID + "=" 
+            qb.appendWhere(Contract._ID + "=" 
             		+ uri.getPathSegments().get(1));
             break;
         default:
@@ -66,7 +66,7 @@ public class EventProvider extends ContentProvider {
         
         String orderBy;
         if(TextUtils.isEmpty(sortOrder)) {
-            orderBy = EventSQLFormat.DEFAULT_SORT_ORDER;
+            orderBy = Events.DEFAULT_SORT_ORDER;
         } else {
             orderBy = sortOrder;
         }
@@ -91,7 +91,7 @@ public class EventProvider extends ContentProvider {
             break;
         case EVENT_ID:
         	String eventId = uri.getPathSegments().get(1);
-            count = db.delete(EVENTS_TABLE_NAME, EventSQLFormat._ID + "=" 
+            count = db.delete(EVENTS_TABLE_NAME, Contract._ID + "=" 
             		+ eventId + (!TextUtils.isEmpty(selection) ? " AND (" 
             				+ selection + ")" : ""), selectionArgs);
             break;
@@ -109,9 +109,9 @@ public class EventProvider extends ContentProvider {
 		Log.i(TAG, "getType(uri="+uri.toString()+")");
         switch(sUriMatcher.match(uri)) {
         case EVENTS:
-            return EventSQLFormat.CONTENT_TYPE;
+            return Events.CONTENT_TYPE;
         case EVENT_ID:
-            return EventSQLFormat.CONTENT_ITEM_TYPE;
+            return Events.CONTENT_ITEM_TYPE;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -158,21 +158,21 @@ public class EventProvider extends ContentProvider {
         
         Long now = Long.valueOf(System.currentTimeMillis());
         
-        insertDefault(values, EventSQLFormat.EVENT_TYPE, "");
-        insertDefault(values, EventSQLFormat.EVENT_VALUE, "");
-        insertDefault(values, EventSQLFormat.CREATED_DATE, now);
-        insertDefault(values, EventSQLFormat.MODIFIED_DATE, now);
-        insertDefault(values, EventSQLFormat.UPLOADED, false);
-        insertDefault(values, EventSQLFormat.PATIENT_REFERENCE, "");
-        insertDefault(values, EventSQLFormat.ENCOUNTER_REFERENCE, "");
-        insertDefault(values, EventSQLFormat.USER_REFERENCE, "");
+        insertDefault(values, Contract.EVENT_TYPE, "");
+        insertDefault(values, Contract.EVENT_VALUE, "");
+        insertDefault(values, Contract.CREATED, now);
+        insertDefault(values, Contract.MODIFIED, now);
+        insertDefault(values, Contract.UPLOADED, false);
+        insertDefault(values, Contract.SUBJECT, "");
+        insertDefault(values, Contract.ENCOUNTER, "");
+        insertDefault(values, Contract.OBSERVER, "");
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long rowId = db.insert(EVENTS_TABLE_NAME, null, values);
         
         if(rowId > 0) {
             Uri eventUri = ContentUris.withAppendedId(
-            		EventSQLFormat.CONTENT_URI, rowId);
+            		Events.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(eventUri, null);
             return eventUri;
         }
@@ -195,7 +195,7 @@ public class EventProvider extends ContentProvider {
             
         case EVENT_ID:
             String procedureId = uri.getPathSegments().get(1);
-            count = db.update(EVENTS_TABLE_NAME, values, EventSQLFormat._ID 
+            count = db.update(EVENTS_TABLE_NAME, values, Contract._ID 
             		+ "=" + procedureId + (!TextUtils.isEmpty(selection) 
             				? " AND (" + selection + ")" : ""), selectionArgs);
             break;
@@ -214,15 +214,15 @@ public class EventProvider extends ContentProvider {
 	public static void onCreateDatabase(SQLiteDatabase db) {
 		Log.i(TAG, "Creating Events Table");
 		db.execSQL("CREATE TABLE " + EVENTS_TABLE_NAME + " ("
-				+ EventSQLFormat._ID + " INTEGER PRIMARY KEY,"
-				+ EventSQLFormat.EVENT_TYPE + " TEXT, "
-				+ EventSQLFormat.EVENT_VALUE + " TEXT, " 
-				+ EventSQLFormat.ENCOUNTER_REFERENCE + " TEXT, "
-				+ EventSQLFormat.PATIENT_REFERENCE + " TEXT, "
-				+ EventSQLFormat.USER_REFERENCE + " TEXT, "
-				+ EventSQLFormat.UPLOADED + " INTEGER, "
-                + EventSQLFormat.CREATED_DATE + " INTEGER,"
-                + EventSQLFormat.MODIFIED_DATE + " INTEGER"
+				+ Contract._ID + " INTEGER PRIMARY KEY,"
+				+ Contract.EVENT_TYPE + " TEXT, "
+				+ Contract.EVENT_VALUE + " TEXT, " 
+				+ Contract.ENCOUNTER + " TEXT, "
+				+ Contract.SUBJECT + " TEXT, "
+				+ Contract.OBSERVER + " TEXT, "
+				+ Contract.UPLOADED + " INTEGER, "
+                + Contract.CREATED + " INTEGER,"
+                + Contract.MODIFIED + " INTEGER"
 				+ ");");
 	}
 
@@ -246,18 +246,18 @@ public class EventProvider extends ContentProvider {
 	
 	static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(SanaDB.EVENT_AUTHORITY, "events", EVENTS);
-        sUriMatcher.addURI(SanaDB.EVENT_AUTHORITY, "events/#", EVENT_ID);
+        sUriMatcher.addURI(Events.AUTHORITY, "events", EVENTS);
+        sUriMatcher.addURI(Events.AUTHORITY, "events/#", EVENT_ID);
         
-        sCounterProjectionMap = new HashMap<String, String>();
-        sCounterProjectionMap.put(EventSQLFormat._ID, EventSQLFormat._ID);
-        sCounterProjectionMap.put(EventSQLFormat.EVENT_TYPE, EventSQLFormat.EVENT_TYPE);
-        sCounterProjectionMap.put(EventSQLFormat.EVENT_VALUE, EventSQLFormat.EVENT_VALUE);
-        sCounterProjectionMap.put(EventSQLFormat.ENCOUNTER_REFERENCE, EventSQLFormat.ENCOUNTER_REFERENCE);
-        sCounterProjectionMap.put(EventSQLFormat.PATIENT_REFERENCE, EventSQLFormat.PATIENT_REFERENCE);
-        sCounterProjectionMap.put(EventSQLFormat.USER_REFERENCE, EventSQLFormat.USER_REFERENCE);
-        sCounterProjectionMap.put(EventSQLFormat.MODIFIED_DATE, EventSQLFormat.MODIFIED_DATE);
-        sCounterProjectionMap.put(EventSQLFormat.CREATED_DATE, EventSQLFormat.CREATED_DATE);
+        sProjectionMap = new HashMap<String, String>();
+        sProjectionMap.put(Contract._ID, Contract._ID);
+        sProjectionMap.put(Contract.EVENT_TYPE, Contract.EVENT_TYPE);
+        sProjectionMap.put(Contract.EVENT_VALUE, Contract.EVENT_VALUE);
+        sProjectionMap.put(Contract.ENCOUNTER, Contract.ENCOUNTER);
+        sProjectionMap.put(Contract.SUBJECT, Contract.SUBJECT);
+        sProjectionMap.put(Contract.OBSERVER, Contract.OBSERVER);
+        sProjectionMap.put(Contract.MODIFIED, Contract.MODIFIED);
+        sProjectionMap.put(Contract.CREATED, Contract.CREATED);
     }
     
 	

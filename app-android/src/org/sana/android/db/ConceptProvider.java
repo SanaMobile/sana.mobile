@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import org.sana.Constants;
-import org.sana.android.db.SanaDB.DatabaseHelper;
 import org.sana.android.provider.Concepts;
 
 public class ConceptProvider extends ContentProvider implements Concepts.Contract{
