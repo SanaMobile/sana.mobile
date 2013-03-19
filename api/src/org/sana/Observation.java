@@ -3,15 +3,13 @@ package org.sana;
 import java.io.File;
 
 /**
- * An instance of data collected about a Subject during the execution of a 
- * Procedure on a Subject.
+ * An instance of data collected about a Subject by executing an Instruction.
  * 
  * @author Sana Development
  *
  */
-public class Observation implements Unique {
+public class Observation extends AbstractModel {
 	
-	private String uuid;
 	private String id;
 	private Encounter encounter;
 	private Concept concept;
@@ -30,18 +28,6 @@ public class Observation implements Unique {
 		this.uuid = uuid;
 	}
 	
-	/**
-	 * @return the uuid
-	 */
-	public String getUuid() {
-		return uuid;
-	}
-	/**
-	 * @param uuid the uuid to set
-	 */
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
 	/**
 	 * Gets the unique id within the Encounter.
 	 * @return the id

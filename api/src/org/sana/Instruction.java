@@ -33,7 +33,7 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Instruction {
+public class Instruction extends AbstractModel{
 	// wrapper for mime type
 	String concept;
 	// mmap to education resource can be complex

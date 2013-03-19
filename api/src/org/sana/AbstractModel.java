@@ -30,43 +30,43 @@ package org.sana;
 import java.util.Date;
 
 /**
- * Indicates a class will provide state retention of creation and modification.
+ * The basic implementation of the core behavior of the core objects in the 
+ * data model.
  * 
  * @author Sana Development
  *
  */
-public interface Temporal {
+abstract class AbstractModel implements Model{
 	
-	/** The format which will be used for persisting Date objects */
-	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	String uuid;
+	
+	Date created;
+	
+	Date modified;
+	
+	public Date getCreated() {
+		return null;
+	}
 
-	/** The date when the instance was created */
-	public static final String CREATED = "created";
-	
-	/** The date when the instance was last modified */
-	public static final String MODIFIED = "modified";
-	
-	/**
-	 * Returns a {@link java.util.Date Date} when this object was created.
-	 * @return a Date object.
-	 */
-	Date getCreated();
-	
-	/**
-	 * Sets the {@link java.util.Date Date} when this object was created.
-	 */
-	void setCreated(Date date);
-	
-	
-	/**
-	 * Returns a {@link java.util.Date Date} when this object was last modified.
-	 * @return a Date object.
-	 */
-	Date getModified();
+	public void setCreated(Date date) {
+		this.created = date;
+		
+	}
 
-	/**
-	 * Sets the {@link java.util.Date Date} when this object was last modified.
-	 */
-	void setModified(Date modified);
+	public Date getModified() {
+		return modified;
+	}
 
+	public void setModified(Date modified) {
+		this.modified = modified;
+		
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = java.util.UUID.fromString(uuid).toString();
+	}
 }

@@ -7,9 +7,8 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Device implements Unique{
+public class Device extends AbstractModel{
 	
-	private String uuid;
 	private String name; 
 		
 	/** Default Constructor */
@@ -21,20 +20,6 @@ public class Device implements Unique{
 	 * @param uuid The UUID of the instance
 	 */
 	public Device(String uuid){
-		this.uuid = uuid;
-	}
-
-	/**
-	 * @return the uuid
-	 */
-	public String getUuid() {
-		return uuid;
-	}
-
-	/**
-	 * @param uuid the uuid to set
-	 */
-	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 

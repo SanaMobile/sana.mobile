@@ -13,9 +13,8 @@ import java.util.List;
  * @author Sana Development
  *
  */
-public class Encounter implements Unique{
+public class Encounter extends AbstractModel{
 	
-	private String uuid;
 	private Subject subject;
 	private Procedure procedure;
 	private Observer observer;
@@ -32,20 +31,6 @@ public class Encounter implements Unique{
 	 * @param uuid The UUID of the instance
 	 */
 	public Encounter(String uuid){
-		this.uuid = uuid;
-	}
-
-	/**
-	 * @return the uuid
-	 */
-	public String getUuid() {
-		return uuid;
-	}
-
-	/**
-	 * @param uuid the uuid to set
-	 */
-	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 

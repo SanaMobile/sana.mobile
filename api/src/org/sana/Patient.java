@@ -6,6 +6,8 @@ package org.sana;
 import java.util.Date;
 
 /**
+ * A subject in the medical domain.
+ * 
  * @author Sana Development
  *
  */
@@ -71,6 +73,7 @@ public class Patient extends Subject{
 	public void setImage(String image) {
 		this.image = image;
 	}
+	
 	private String given_name;
 	private String family_name;
 	private Date dob;

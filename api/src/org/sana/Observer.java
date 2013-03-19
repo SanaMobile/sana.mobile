@@ -4,16 +4,17 @@
 package org.sana;
 
 /**
- * An entity that collects data about a Subject during an Encounter.
+ * An entity that collects data.
  * 
  * @author Sana Development
  *
  */
-public class Observer implements Unique{
+public class Observer extends AbstractModel{
 
 	private String uuid;
 	private String username;
 	private String password;
+	private String role;
 	
 	/** Default Constructor */
 	public Observer(){}
@@ -27,15 +28,9 @@ public class Observer implements Unique{
 		this.uuid = uuid;
 	}
 
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-
 	/**
+	 * Returns the username for an instance of this class.
+	 * 
 	 * @return the username
 	 */
 	public String getUsername() {
@@ -43,6 +38,8 @@ public class Observer implements Unique{
 	}
 
 	/**
+	 * Sets the username for an instance of this class. 
+	 *
 	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
@@ -50,6 +47,8 @@ public class Observer implements Unique{
 	}
 
 	/**
+	 * Returns the password for an instance of this class.
+	 * 
 	 * @return the password
 	 */
 	public String getPassword() {
@@ -57,10 +56,30 @@ public class Observer implements Unique{
 	}
 
 	/**
+	 * Sets the password for an instance of this class. 
+	 *
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	/**
+	 * Returns the role for an instance of this class.
+	 * 
+	 * @return the role
+	 */
+	public String getRole() {
+		return role;
+	}
+
+	/**
+	 * Sets the role for an instance of this class. 
+	 *
+	 * @param role the role to set
+	 */
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 }

@@ -12,10 +12,7 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Concept implements Unique{
-	
-	/** A universally unique identifier */
-	private String uuid;
+public class Concept extends AbstractModel{
 	
 	/** 
 	 * A machine friendly short name or identifier. <code>name</code> values
@@ -49,14 +46,6 @@ public class Concept implements Unique{
 	 * @param uuid The UUID of the instance
 	 */
 	public Concept(String uuid){
-		this.uuid = uuid;
-	}
-	
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 	

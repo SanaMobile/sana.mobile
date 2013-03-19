@@ -30,15 +30,22 @@ package org.sana;
 import java.util.Date;
 
 /**
- * Indicates a class will provide state retention of creation and modification.
+ * 
  * 
  * @author Sana Development
  *
  */
-public interface Temporal {
-	
+public interface Model {
+
 	/** The format which will be used for persisting Date objects */
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+	/** The regular expression for validating uuid Strings */ 
+	public static final String UUID_REGEX = 
+		"[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}";
+
+	/** A universally unique identifier */
+	public static final String UUID = "uuid";
 
 	/** The date when the instance was created */
 	public static final String CREATED = "created";
@@ -46,6 +53,18 @@ public interface Temporal {
 	/** The date when the instance was last modified */
 	public static final String MODIFIED = "modified";
 	
+	/** Returns a universally unique identifier */
+	String getUuid();
+	
+	/** 
+	 * Sets the instance's universally unique identifier
+	 * 
+	 * @param uuid the new UUID
+	 * @throws IllegalArgumentException if the format of the argument does not 
+	 * 	conform to {@link #UUID_REGEX}
+	 */
+	void setUuid(String uuid) throws IllegalArgumentException;
+
 	/**
 	 * Returns a {@link java.util.Date Date} when this object was created.
 	 * @return a Date object.
@@ -69,4 +88,5 @@ public interface Temporal {
 	 */
 	void setModified(Date modified);
 
+	
 }

@@ -6,6 +6,6 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Notification {
+public class Notification extends AbstractModel{
 
 }

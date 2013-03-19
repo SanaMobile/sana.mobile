@@ -11,9 +11,8 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Relationship implements Unique{
+public class Relationship extends AbstractModel{
 
-	private String uuid;
 	private Concept fromConcept;
 	private Concept toConcept;
 	private RelationshipCategory category;
@@ -21,15 +20,6 @@ public class Relationship implements Unique{
 	
 	/** Default Constructor */
 	public Relationship(){}
-
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
 	
 	/**
 	 * @return the fromConcept

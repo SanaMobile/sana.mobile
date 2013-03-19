@@ -9,8 +9,7 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Procedure implements Unique{
-	private String uuid;
+public class Procedure extends AbstractModel{
 	private String author;
 	private String version;
     private String description;
@@ -25,20 +24,6 @@ public class Procedure implements Unique{
 	 * @param uuid The UUID of the instance
 	 */
 	public Procedure(String uuid){
-		this.uuid = uuid;
-	}
-
-	/**
-	 * @return the uuid
-	 */
-	public String getUuid() {
-		return uuid;
-	}
-
-	/**
-	 * @param uuid the uuid to set
-	 */
-	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 

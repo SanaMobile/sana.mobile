@@ -6,7 +6,7 @@ package org.sana;
  * @author Sana Development Team
  *
  */
-public class Event {
+public class Event extends AbstractModel{
 	public String event_type;
 	public String event_value;
 	public long event_time;
