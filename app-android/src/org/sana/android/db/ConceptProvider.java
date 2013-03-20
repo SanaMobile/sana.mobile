@@ -2,96 +2,103 @@ package org.sana.android.db;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.ContentProvider;
-import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 
-import org.sana.Constants;
+import org.sana.R;
+import org.sana.android.content.BasicContentProvider;
 import org.sana.android.provider.Concepts;
 
-public class ConceptProvider extends ContentProvider implements Concepts.Contract{
+public class ConceptProvider extends BasicContentProvider {
 
 	static final String TAG = ConceptProvider.class.getSimpleName(); 
-	private static final String TABLE = "concept";
-	public static final String DEFAULT_SORT_ORDER = NAME + " ASC";
+	private static final String TABLE = "concepts";
+	public static final String DEFAULT_SORT_ORDER = Concepts.Contract.NAME 
+			+ " ASC";
+	private static final int ITEMS = 0;
+	private static final int ITEM_ID = 1;
 	
-    private static final int ITEMS = 0;
-    private static final int ITEM_ID = 1;
-    static final String DB = "sana.db";
-    private DatabaseHelper mOpenHelper;
-    private static final UriMatcher sUriMatcher;
+    
     private static final Map<String,String> sProjMap = new HashMap<String, String>();
-    static {
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(Concepts.AUTHORITY, "concepts", ITEMS);
-        sUriMatcher.addURI(Concepts.AUTHORITY, "concepts/#", ITEM_ID);
-    
+    private static final UriMatcher mUriMatcher = 
+    		new UriMatcher(UriMatcher.NO_MATCH);
+    static{
+    	mUriMatcher.addURI(Concepts.AUTHORITY, "concept/", ITEMS);
+    	mUriMatcher.addURI(Concepts.AUTHORITY, "concept/#", ITEM_ID);
     }
-    
-	/* (non-Javadoc)
-	 * @see android.content.ContentProvider#delete(Uri,String,String[])
-	 */
-	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
-        Log.d(TAG, ".delete(" + uri.toString() +");");
-		String whereClause = DBUtils.getWhereWithIdOrReturn(uri, sUriMatcher.match(uri), selection);
-		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		int count = db.delete(TABLE,whereClause,selectionArgs);
-		getContext().getContentResolver().notifyChange(uri, null);
-		return count;
-	}
+    /*
+    private class ConceptOpenHelper extends DatabaseOpenHelper{
 
-
-	/* (non-Javadoc)
-	 * @see android.content.ContentProvider#getType()
-	 */ 
-	@Override
-	public String getType(Uri uri) {
-        Log.d(TAG, ".getType(" + uri.toString() +");");
-        switch (sUriMatcher.match(uri)) {
-        case ITEMS:
-        	return Concepts.CONTENT_TYPE;
-        case ITEM_ID:
-        	return Concepts.CONTENT_ITEM_TYPE;
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
-        }
-	}
-
-
+		protected ConceptOpenHelper(Context arg0, String arg1, int arg2) {
+			super(arg0, arg1, arg2, null);
+		}
+		@Override
+		public void onCreate(SQLiteDatabase db){
+			super.onCreate(db);
+		}
+		
+		@Override
+		public void onCreate(SQLiteDatabase db, String[] columns) {
+			super.onCreate(db, new String[]{ 
+		            Concepts.Contract.NAME 			+ " TEXT NOT NULL",
+		            Concepts.Contract.DISPLAY_NAME 	+ " TEXT NOT NULL",
+		            Concepts.Contract.DESCRIPTION 	+ " TEXT NOT NULL",
+		            Concepts.Contract.DATA_TYPE 	+ " TEXT NOT NULL",
+		            Concepts.Contract.MEDIA_TYPE 	+ " TEXT",
+		            Concepts.Contract.CONSTRAINT 	+ " TEXT"});
+		}
+		
+		@Override
+		public String onSort(Uri uri) {
+			return DEFAULT_SORT_ORDER;
+		}
+		
+		@Override
+		public String getType(Uri uri) {
+			switch(mUriMatcher.match(uri)){
+			case(ITEMS):
+				return Concepts.CONTENT_TYPE;
+			case(ITEM_ID):
+				return Concepts.CONTENT_ITEM_TYPE;
+			default:
+				throw new IllegalArgumentException("Invalid Uri for provider");
+			}
+		}
+		
+		@Override
+		public String getTable(Uri uri) {
+			return TABLE;
+		}
+		
+		@Override
+		public String getFileColumn(Uri uri) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+    }
+    */
 	/* (non-Javadoc)
 	 * @see android.content.ContentProvider#insert(Uri,ContentValues)
 	 */
 	@Override
-	public Uri insert(Uri uri, ContentValues values) {Log.d(TAG, "insert(" + uri.toString() +", N = " 
+	public Uri insert(Uri uri, ContentValues values) {
+		Log.d(TAG, "insert(" + uri.toString() +", N = " 
         	+ String.valueOf((values == null)?0:values.size()) + " values.)");
-        
-		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		String now = new SimpleDateFormat(Constants.DATE_FORMAT).format(
-				Calendar.getInstance());
-		if(values.containsKey(CREATED) == false) {
-            values.put(CREATED, now);
-        }
 		
-        if(values.containsKey(MODIFIED) == false) {
-            values.put(MODIFIED, now);
+		if(values.containsKey(Concepts.Contract.MEDIA_TYPE) == false) {
+            values.put(Concepts.Contract.MEDIA_TYPE, "text/plain");
         }
 
-		Uri result = ContentUris.withAppendedId(uri, 
-				db.insert(TABLE, null, values));
-		getContext().getContentResolver().notifyChange(uri, null);
-		Log.d(TAG, "insert(): Successfully inserted => " + result);
-		return result;
+		return null;//super.insert(uri, values);
 	}
 
 
@@ -101,32 +108,12 @@ public class ConceptProvider extends ContentProvider implements Concepts.Contrac
 	@Override
 	public boolean onCreate() {
         Log.d(TAG, ".onCreate();");
-        mOpenHelper = new DatabaseHelper(getContext());
-        return true;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see android.content.ContentProvider#query(Uri,String[],String,String[],String) 
-	 */
-	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-        Log.d(TAG, ".query(" + uri.toString() +");");
-
-		String orderBy;
-        if(TextUtils.isEmpty(sortOrder)) {
-            orderBy = DEFAULT_SORT_ORDER;
-        } else {
-            orderBy = sortOrder;
-        }
-		SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		qb.setTables(TABLE);	
-		String whereClause = DBUtils.getWhereWithIdOrReturn(uri, sUriMatcher.match(uri), selection);
-        Cursor c = qb.query(db, projection, whereClause, selectionArgs, null,
-        		null, orderBy);
-		return c;
+        /*
+        setHelper(new ConceptOpenHelper(getContext(), 
+        		getContext().getString(R.string.db_name),
+        		getContext().getResources().getInteger(R.integer.db_version)));
+		*/
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -136,30 +123,59 @@ public class ConceptProvider extends ContentProvider implements Concepts.Contrac
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
         Log.d(TAG, ".update(" + uri.toString() +");");
-		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		String whereClause = DBUtils.getWhereWithIdOrReturn(uri, sUriMatcher.match(uri), selection);
-
-		// Always update modified time on update
-		Long now = Long.valueOf(System.currentTimeMillis());
-		values.put(MODIFIED, now);
-
-		int updated = db.update(TABLE, values, whereClause, selectionArgs);
-		getContext().getContentResolver().notifyChange(uri, null);
-		return updated;
+		return 0;//super.update(uri, values, selection, selectionArgs);
 	}
 	
     private static final String CREATE_TABLE  =
     		"CREATE TABLE " + TABLE + " ("
-            + _ID + " INTEGER PRIMARY KEY,"
-            + UUID + " TEXT,"
-            + NAME + " INTEGER NOT NULL,"
-            + DISPLAY_NAME + " TEXT NOT NULL,"
-            + DESCRIPTION + " TEXT NOT NULL,"
-            + DATA_TYPE + " TEXT NOT NULL,"
-            + MEDIA_TYPE + " TEXT,"
-            + CONSTRAINT + " TEXT,"
-            + CREATED + " INTEGER,"
-            + MODIFIED + " INTEGER"
+    		+ Concepts.Contract._ID 			+ " INTEGER PRIMARY KEY,"
+    		+ Concepts.Contract.UUID 			+ " TEXT,"
+            + Concepts.Contract.NAME 			+ " INTEGER NOT NULL,"
+            + Concepts.Contract.DISPLAY_NAME 	+ " TEXT NOT NULL,"
+            + Concepts.Contract.DESCRIPTION 	+ " TEXT NOT NULL,"
+            + Concepts.Contract.DATA_TYPE 	+ " TEXT NOT NULL,"
+            + Concepts.Contract.MEDIA_TYPE 	+ " TEXT,"
+            + Concepts.Contract.CONSTRAINT 	+ " TEXT,"
+            + Concepts.Contract.CREATED 		+ " TEXT,"
+            + Concepts.Contract.MODIFIED 		+ " TEXT"
             + ");";
+    
+    public static void onCreateDatabase(SQLiteDatabase db){
+        Log.i(TAG, "onCreateDatabase() => Executing CREATE for table: " 
+        		+ ConceptProvider.TABLE);
+    	db.execSQL(CREATE_TABLE);
+        Log.i(TAG, "onCreateDatabase() => Completed executing CREATE for table: " 
+        		+ ConceptProvider.TABLE);
+    }
 
+
+	/* (non-Javadoc)
+	 * @see android.content.ContentProvider#delete(android.net.Uri, java.lang.String, java.lang.String[])
+	 */
+	@Override
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see android.content.ContentProvider#getType(android.net.Uri)
+	 */
+	@Override
+	public String getType(Uri uri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see android.content.ContentProvider#query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
+	 */
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection,
+			String[] selectionArgs, String sortOrder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
