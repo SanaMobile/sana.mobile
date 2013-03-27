@@ -1,9 +1,12 @@
 /**
  * 
  */
-package org.sana;
+package org.sana.core;
 
 import java.util.Date;
+
+import org.sana.api.IPatient;
+
 
 /**
  * A subject in the medical domain.
@@ -11,11 +14,12 @@ import java.util.Date;
  * @author Sana Development
  *
  */
-public class Patient extends Subject{
+public class Patient extends Subject implements IPatient{
 
-	/**
-	 * @return the given_name
+	/* (non-Javadoc)
+	 * @see org.sana.core.IPatient#getGiven_name()
 	 */
+	@Override
 	public String getGiven_name() {
 		return given_name;
 	}
@@ -25,9 +29,10 @@ public class Patient extends Subject{
 	public void setGiven_name(String given_name) {
 		this.given_name = given_name;
 	}
-	/**
-	 * @return the family_name
+	/* (non-Javadoc)
+	 * @see org.sana.core.IPatient#getFamily_name()
 	 */
+	@Override
 	public String getFamily_name() {
 		return family_name;
 	}
@@ -37,9 +42,10 @@ public class Patient extends Subject{
 	public void setFamily_name(String family_name) {
 		this.family_name = family_name;
 	}
-	/**
-	 * @return the dob
+	/* (non-Javadoc)
+	 * @see org.sana.core.IPatient#getDob()
 	 */
+	@Override
 	public Date getDob() {
 		return dob;
 	}
@@ -49,9 +55,10 @@ public class Patient extends Subject{
 	public void setDob(Date dob) {
 		this.dob = dob;
 	}
-	/**
-	 * @return the gender
+	/* (non-Javadoc)
+	 * @see org.sana.core.IPatient#getGender()
 	 */
+	@Override
 	public String getGender() {
 		return gender;
 	}
@@ -61,9 +68,10 @@ public class Patient extends Subject{
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	/**
-	 * @return the image
+	/* (non-Javadoc)
+	 * @see org.sana.core.IPatient#getImage()
 	 */
+	@Override
 	public String getImage() {
 		return image;
 	}

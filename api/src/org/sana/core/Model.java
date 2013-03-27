@@ -25,55 +25,75 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.provider;
+package org.sana.core;
 
-import org.sana.core.Instruction;
+import java.util.Date;
 
-import android.net.Uri;
+import org.sana.api.IModel;
 
 /**
- * Metadata and contract for instructions in the database. Not currently 
- * implemented in the database but included for forward compatibility.
+ * The basic implementation of the core behavior of the core objects in the 
+ * data model.
  * 
- * @author Sana Development Team
+ * @author Sana Development
+ *
  */
-public class Instructions{
-
-	/** The authority for instructions. */
-	public static final String AUTHORITY = "org.sana.provider";
-
-	/** The content:// style URI for this content provider. */
-	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/instruction");
-
-	/** The MIME type for a directory of instructions.  */
-	public static final String CONTENT_TYPE = 
-			"vnd.android.cursor.dir/org.sana.instruction";
-
-	/** The MIME type of a single instruction. */
-	public static final String CONTENT_ITEM_TYPE = 
-			"vnd.android.cursor.item/org.sana.instruction";
-
-	/** The default sort order. */
-	public static final String DEFAULT_SORT_ORDER = "modified DESC";
-
+public abstract class Model implements IModel{
+	
+	String uuid;
+	
+	Date created;
+	
+	Date modified;
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.sana.api.IModel#getCreated()
+	 */
+	public Date getCreated() {
+		return null;
+	}
 
 	/**
-	 * Column definitions for the Instruction table.
-	 * 
-	 * @author Sana Development
+	 * Sets the {@link java.util.Date Date} when this object was created.
 	 */
-	public static interface Contract extends BaseContract<Instruction>{
-		/** */
-		public static final String CONCEPT = "concept";
+	public void setCreated(Date date) {
+		this.created = date;
+		
+	}
 
-		/** Additional information for the instruction */
-		public static final String HELP = "help";
-		/** User prompt */
-		public static final String HINT = "hint";
-		/** Conditional notification message */
-		public static final String ALERT = "alert";
-		/** Boolean value for whether null values are allowed */
-		public static final String REQUIRED = "required";
+	/*
+	 * (non-Javadoc)
+	 * @see org.sana.api.IModel#getModified()
+	 */
+	public Date getModified() {
+		return modified;
+	}
+
+	/**
+	 * Sets the {@link java.util.Date Date} when this object was last modified.
+	 */
+	public void setModified(Date modified) {
+		this.modified = modified;
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.sana.api.IModel#getUuid()
+	 */
+	public String getUuid() {
+		return uuid;
+	}
+	
+	/** 
+	 * Sets the instance's universally unique identifier
+	 * 
+	 * @param uuid the new UUID
+	 * @throws IllegalArgumentException if the format of the argument does not 
+	 * 	conform to {@link #UUID_REGEX}
+	 */
+	public void setUuid(String uuid) {
+		this.uuid = java.util.UUID.fromString(uuid).toString();
 	}
 }

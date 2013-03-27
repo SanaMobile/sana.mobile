@@ -1,7 +1,10 @@
 /**
  * 
  */
-package org.sana;
+package org.sana.core;
+
+import org.sana.api.IProcedure;
+
 
 /**
  * A set of instructions for collecting data.
@@ -9,7 +12,7 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Procedure extends AbstractModel{
+public class Procedure extends Model implements IProcedure{
 	private String author;
 	private String version;
     private String description;
@@ -27,9 +30,10 @@ public class Procedure extends AbstractModel{
 		this.uuid = uuid;
 	}
 
-	/**
-	 * @return the author
+	/* (non-Javadoc)
+	 * @see org.sana.core.IProcedure#getAuthor()
 	 */
+	@Override
 	public String getAuthor() {
 		return author;
 	}
@@ -41,9 +45,10 @@ public class Procedure extends AbstractModel{
 		this.author = author;
 	}
 
-	/**
-	 * @return the version
+	/* (non-Javadoc)
+	 * @see org.sana.core.IProcedure#getVersion()
 	 */
+	@Override
 	public String getVersion() {
 		return version;
 	}
@@ -55,9 +60,10 @@ public class Procedure extends AbstractModel{
 		this.version = version;
 	}
 
-	/**
-	 * @return the description
+	/* (non-Javadoc)
+	 * @see org.sana.core.IProcedure#getDescription()
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}
@@ -69,10 +75,10 @@ public class Procedure extends AbstractModel{
 		this.description = description;
 	}
 
-	/**
-	 * Gets the source uri or file path String. 
-	 * @return the src
+	/* (non-Javadoc)
+	 * @see org.sana.core.IProcedure#getSrc()
 	 */
+	@Override
 	public String getSrc() {
 		return src;
 	}

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.sana;
+package org.sana.api;
 
 /**
  * Allowed Concept data types correlating with the types recognized in the 

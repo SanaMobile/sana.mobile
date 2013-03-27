@@ -1,11 +1,17 @@
 /**
  * 
  */
-package org.sana;
+package org.sana.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.sana.api.IEncounter;
+import org.sana.api.IObservation;
+import org.sana.api.IProcedure;
+import org.sana.api.ISubject;
+
 
 /**
  * An instance of Procedure execution where Observations were collected.
@@ -13,10 +19,10 @@ import java.util.List;
  * @author Sana Development
  *
  */
-public class Encounter extends AbstractModel{
+public class Encounter extends Model implements IEncounter{
 	
-	private Subject subject;
-	private Procedure procedure;
+	private ISubject subject;
+	private IProcedure procedure;
 	private Observer observer;
 	private List<Observation> observations;
 	
@@ -34,37 +40,40 @@ public class Encounter extends AbstractModel{
 		this.uuid = uuid;
 	}
 
-	/**
-	 * @return the subject
+	/* (non-Javadoc)
+	 * @see org.sana.core.IEncounter#getSubject()
 	 */
-	public Subject getSubject() {
+	@Override
+	public ISubject getSubject() {
 		return subject;
 	}
 
 	/**
 	 * @param subject the subject to set
 	 */
-	public void setSubject(Subject subject) {
+	public void setSubject(ISubject subject) {
 		this.subject = subject;
 	}
 
-	/**
-	 * @return the procedure
+	/* (non-Javadoc)
+	 * @see org.sana.core.IEncounter#getProcedure()
 	 */
-	public Procedure getProcedure() {
+	@Override
+	public IProcedure getProcedure() {
 		return procedure;
 	}
 
 	/**
 	 * @param procedure the procedure to set
 	 */
-	public void setProcedure(Procedure procedure) {
+	public void setProcedure(IProcedure procedure) {
 		this.procedure = procedure;
 	}
 
-	/**
-	 * @return the observer
+	/* (non-Javadoc)
+	 * @see org.sana.core.IEncounter#getObserver()
 	 */
+	@Override
 	public Observer getObserver() {
 		return observer;
 	}
@@ -119,7 +128,7 @@ public class Encounter extends AbstractModel{
 	 * 
 	 * @param observations the observations to set
 	 */
-	public void removeObservation(Observation observation) {
+	public void removeObservation(IObservation observation) {
 		observations.remove(observation);
 	}
 	

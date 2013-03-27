@@ -27,7 +27,7 @@
  */
 package org.sana.analytics;
 
-import org.sana.Instruction;
+import org.sana.api.IInstruction;
 
 /**
  * An analytic model processor.
@@ -35,7 +35,7 @@ import org.sana.Instruction;
  * @author Sana Development
  * <T>
  */
-public interface Runner<T, K extends Instruction> {
+public interface Runner<T, K extends IInstruction> {
 
 	/**
 	 * Takes the currents state and returns the next instruction to execute.

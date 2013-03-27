@@ -30,13 +30,13 @@ package org.sana.android.db.impl;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.sana.Datatype;
-import org.sana.Model;
 import org.sana.android.db.IProxy;
+import org.sana.api.Datatype;
+import org.sana.api.IModel;
 
 import android.database.Cursor;
 
-public abstract class Proxy<T extends Model> implements IProxy<T>{
+public abstract class Proxy<T extends IModel> implements IProxy<T>{
 	
 	private Cursor cursor;
 	private Class<T> klazz;
@@ -84,7 +84,7 @@ public abstract class Proxy<T extends Model> implements IProxy<T>{
 		
 	}
 	
-	public static final class ProxyIterator<T extends Model> implements Iterator <Proxy<T>> {
+	public static final class ProxyIterator<T extends IModel> implements Iterator <Proxy<T>> {
 		
 		private Proxy<T> proxy;
 		

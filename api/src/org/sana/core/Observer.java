@@ -25,68 +25,84 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana;
+package org.sana.core;
 
-import java.util.Date;
+import org.sana.api.IObserver;
 
 /**
- * 
+ * An entity that collects data.
  * 
  * @author Sana Development
  *
  */
-public interface Model {
+public class Observer extends Model implements IObserver{
 
-	/** The format which will be used for persisting Date objects */
-	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-	/** The regular expression for validating uuid Strings */ 
-	public static final String UUID_REGEX = 
-		"[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}";
-
-	/** A universally unique identifier */
-	public static final String UUID = "uuid";
-
-	/** The date when the instance was created */
-	public static final String CREATED = "created";
+	private String username;
+	private String password;
+	private String role;
 	
-	/** The date when the instance was last modified */
-	public static final String MODIFIED = "modified";
+	/** Default Constructor */
+	public Observer(){}
 	
-	/** Returns a universally unique identifier */
-	String getUuid();
-	
-	/** 
-	 * Sets the instance's universally unique identifier
+	/**
+	 * Creates a new instance with a specified unique id.
 	 * 
-	 * @param uuid the new UUID
-	 * @throws IllegalArgumentException if the format of the argument does not 
-	 * 	conform to {@link #UUID_REGEX}
+	 * @param uuid The UUID of the instance
 	 */
-	void setUuid(String uuid) throws IllegalArgumentException;
+	public Observer(String uuid){
+		super();
+		setUuid(uuid);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.sana.api.IObserver#getUsername()
+	 */
+	public String getUsername() {
+		return username;
+	}
 
 	/**
-	 * Returns a {@link java.util.Date Date} when this object was created.
-	 * @return a Date object.
+	 * Sets the username for an instance of this class. 
+	 *
+	 * @param username the username to set
 	 */
-	Date getCreated();
-	
-	/**
-	 * Sets the {@link java.util.Date Date} when this object was created.
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.sana.api.IObserver#getPassword()
 	 */
-	void setCreated(Date date);
-	
-	
-	/**
-	 * Returns a {@link java.util.Date Date} when this object was last modified.
-	 * @return a Date object.
-	 */
-	Date getModified();
+	public String getPassword() {
+		return password;
+	}
 
 	/**
-	 * Sets the {@link java.util.Date Date} when this object was last modified.
+	 * Sets the password for an instance of this class. 
+	 *
+	 * @param password the password to set
 	 */
-	void setModified(Date modified);
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.sana.api.IObserver#getRole()
+	 */
+	public String getRole() {
+		return role;
+	}
+
+	/**
+	 * Sets the role for an instance of this class. 
+	 *
+	 * @param role the role to set
+	 */
+	public void setRole(String role) {
+		this.role = role;
+	}
 	
 }

@@ -1,6 +1,6 @@
 package org.sana.android.provider;
 
-import org.sana.Observation;
+import org.sana.core.Observation;
 
 import android.net.Uri;
 

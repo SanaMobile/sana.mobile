@@ -1,4 +1,7 @@
-package org.sana;
+package org.sana.core;
+
+import org.sana.api.IDevice;
+
 
 /**
  * Physical object which executes a Procedure for data collection and 
@@ -7,7 +10,7 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Device extends AbstractModel{
+public class Device extends Model implements IDevice{
 	
 	private String name; 
 		
@@ -23,9 +26,10 @@ public class Device extends AbstractModel{
 		this.uuid = uuid;
 	}
 
-	/**
-	 * @return the name
+	/* (non-Javadoc)
+	 * @see org.sana.core.IDevice#getName()
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}

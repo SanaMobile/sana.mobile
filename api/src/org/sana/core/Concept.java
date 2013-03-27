@@ -1,7 +1,10 @@
 /** 
  * 
  */
-package org.sana;
+package org.sana.core;
+
+import org.sana.api.IConcept;
+
 
 /**
  * A functional unit of meaning. All data must be annotated by at least one
@@ -12,7 +15,7 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Concept extends AbstractModel{
+public class Concept extends Model implements IConcept{
 	
 	/** 
 	 * A machine friendly short name or identifier. <code>name</code> values
@@ -35,7 +38,7 @@ public class Concept extends AbstractModel{
 	/** A validation function string to enforce on associated values
 	 *  @see Observation#setValue(Object)
 	 */
-	private String constraint;
+	private String constraints;
 	
 	/** Default Constructor */
 	public Concept(){}
@@ -122,15 +125,15 @@ public class Concept extends AbstractModel{
 	/**
 	 * @return the constraint
 	 */
-	public String getConstraint() {
-		return constraint;
+	public String getConstraints() {
+		return constraints;
 	}
 
 	/**
 	 * @param constraint the constraint to set
 	 */
-	public void setConstraint(String constraint) {
-		this.constraint = constraint;
+	public void setConstraints(String constraints) {
+		this.constraints = constraints;
 	}
 
 }

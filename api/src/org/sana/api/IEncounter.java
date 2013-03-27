@@ -25,48 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana;
+package org.sana.api;
 
-import java.util.Date;
+import org.sana.core.Observer;
 
 /**
- * The basic implementation of the core behavior of the core objects in the 
- * data model.
- * 
  * @author Sana Development
  *
  */
-abstract class AbstractModel implements Model{
-	
-	String uuid;
-	
-	Date created;
-	
-	Date modified;
-	
-	public Date getCreated() {
-		return null;
-	}
+public interface IEncounter extends IModel {
 
-	public void setCreated(Date date) {
-		this.created = date;
-		
-	}
+	/**
+	 * @return the subject
+	 */
+	public abstract ISubject getSubject();
 
-	public Date getModified() {
-		return modified;
-	}
+	/**
+	 * @return the procedure
+	 */
+	public abstract IProcedure getProcedure();
 
-	public void setModified(Date modified) {
-		this.modified = modified;
-		
-	}
+	/**
+	 * @return the observer
+	 */
+	public abstract Observer getObserver();
 
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = java.util.UUID.fromString(uuid).toString();
-	}
 }

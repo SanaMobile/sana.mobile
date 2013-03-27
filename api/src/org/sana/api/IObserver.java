@@ -25,48 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana;
-
-import java.util.Date;
+package org.sana.api;
 
 /**
- * Indicates a class will provide state retention of creation and modification.
+ * Declares the behavior for an entity that collects or processes data.
  * 
  * @author Sana Development
  *
  */
-public interface Temporal {
-	
-	/** The format which will be used for persisting Date objects */
-	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-	/** The date when the instance was created */
-	public static final String CREATED = "created";
-	
-	/** The date when the instance was last modified */
-	public static final String MODIFIED = "modified";
-	
+public interface IObserver extends IModel{
 	/**
-	 * Returns a {@link java.util.Date Date} when this object was created.
-	 * @return a Date object.
+	 * Provides the username for an Observer.
+	 * 
+	 * @return An authentication identifier'
 	 */
-	Date getCreated();
-	
-	/**
-	 * Sets the {@link java.util.Date Date} when this object was created.
-	 */
-	void setCreated(Date date);
-	
-	
-	/**
-	 * Returns a {@link java.util.Date Date} when this object was last modified.
-	 * @return a Date object.
-	 */
-	Date getModified();
+	public String getUsername();
 
 	/**
-	 * Sets the {@link java.util.Date Date} when this object was last modified.
+	 * Provides the password for an Observer.
+	 * 
+	 * @return An authentication token.
 	 */
-	void setModified(Date modified);
+	public String getPassword();
 
+	//TODO use a list?
+	/**
+	 * Provides an Observer's role.
+	 * 
+	 * @return the role
+	 */
+	public String getRole();
 }

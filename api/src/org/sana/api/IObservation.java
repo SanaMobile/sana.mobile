@@ -25,55 +25,53 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.provider;
+package org.sana.api;
 
-import org.sana.core.Instruction;
-
-import android.net.Uri;
+import org.sana.core.Concept;
 
 /**
- * Metadata and contract for instructions in the database. Not currently 
- * implemented in the database but included for forward compatibility.
- * 
- * @author Sana Development Team
+ * @author Sana Development
+ *
  */
-public class Instructions{
-
-	/** The authority for instructions. */
-	public static final String AUTHORITY = "org.sana.provider";
-
-	/** The content:// style URI for this content provider. */
-	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/instruction");
-
-	/** The MIME type for a directory of instructions.  */
-	public static final String CONTENT_TYPE = 
-			"vnd.android.cursor.dir/org.sana.instruction";
-
-	/** The MIME type of a single instruction. */
-	public static final String CONTENT_ITEM_TYPE = 
-			"vnd.android.cursor.item/org.sana.instruction";
-
-	/** The default sort order. */
-	public static final String DEFAULT_SORT_ORDER = "modified DESC";
-
+public interface IObservation extends IModel{
 
 	/**
-	 * Column definitions for the Instruction table.
-	 * 
-	 * @author Sana Development
+	 * Gets the unique id within the Encounter.
+	 * @return the id
 	 */
-	public static interface Contract extends BaseContract<Instruction>{
-		/** */
-		public static final String CONCEPT = "concept";
+	public abstract String getId();
 
-		/** Additional information for the instruction */
-		public static final String HELP = "help";
-		/** User prompt */
-		public static final String HINT = "hint";
-		/** Conditional notification message */
-		public static final String ALERT = "alert";
-		/** Boolean value for whether null values are allowed */
-		public static final String REQUIRED = "required";
-	}
+	/**
+	 * @return the encounter
+	 */
+	public abstract IEncounter getEncounter();
+
+	/**
+	 * @return the concept
+	 */
+	public abstract Concept getConcept();
+
+	/**
+	 * Returns either a File or String depending 
+	 * @return the value
+	 */
+	public abstract Object getValue();
+
+	/**
+	 * @return the value_complex
+	 */
+	public abstract String getValue_complex();
+
+	/**
+	 * @return the valueText
+	 */
+	public abstract String getValue_text();
+
+	/**
+	 * Returns whether this instance's stored valued should be treated as either
+	 * a File or String based on the mimetype of the Concept. 
+	 * @return
+	 */
+	public abstract boolean isComplex();
+
 }

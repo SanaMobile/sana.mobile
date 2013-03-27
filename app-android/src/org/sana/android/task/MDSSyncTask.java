@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sana.Event;
+import org.sana.core.Event;
 import org.sana.android.net.MDSInterface;
 import org.sana.android.provider.Events;
 import org.sana.android.provider.Events.Contract;

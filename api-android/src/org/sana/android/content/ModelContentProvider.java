@@ -56,7 +56,7 @@ import android.util.Log;
 
 /**
  * Abstract implementation of of {@link android.content.ContentProvider} for
- * classes extending {@link org.sana.Model} each of which maps to a table within
+ * classes extending {@link org.sana.api.IModel} each of which maps to a table within
  * the database. This implementation uses the 
  * {@link org.sana.android.content.ModelMatcher} for mapping the 
  * {@link android.net.Uri Uri's} to each table and extensions of the 

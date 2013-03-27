@@ -1,6 +1,10 @@
-package org.sana;
+package org.sana.core;
 
 import java.io.File;
+
+import org.sana.api.IEncounter;
+import org.sana.api.IObservation;
+
 
 /**
  * An instance of data collected about a Subject by executing an Instruction.
@@ -8,10 +12,10 @@ import java.io.File;
  * @author Sana Development
  *
  */
-public class Observation extends AbstractModel {
+public class Observation extends Model implements IObservation {
 	
 	private String id;
-	private Encounter encounter;
+	private IEncounter encounter;
 	private Concept concept;
 	private String value_complex;
 	private String valueText; 
@@ -28,10 +32,10 @@ public class Observation extends AbstractModel {
 		this.uuid = uuid;
 	}
 	
-	/**
-	 * Gets the unique id within the Encounter.
-	 * @return the id
+	/* (non-Javadoc)
+	 * @see org.sana.core.IObservation#getId()
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -41,21 +45,23 @@ public class Observation extends AbstractModel {
 	public void setId(String id) {
 		this.id = id;
 	}
-	/**
-	 * @return the encounter
+	/* (non-Javadoc)
+	 * @see org.sana.core.IObservation#getEncounter()
 	 */
-	public Encounter getEncounter() {
+	@Override
+	public IEncounter getEncounter() {
 		return encounter;
 	}
 	/**
 	 * @param encounter the encounter to set
 	 */
-	public void setEncounter(Encounter encounter) {
+	public void setEncounter(IEncounter encounter) {
 		this.encounter = encounter;
 	}
-	/**
-	 * @return the concept
+	/* (non-Javadoc)
+	 * @see org.sana.core.IObservation#getConcept()
 	 */
+	@Override
 	public Concept getConcept() {
 		return concept;
 	}
@@ -65,10 +71,10 @@ public class Observation extends AbstractModel {
 	public void setConcept(Concept concept) {
 		this.concept = concept;
 	}
-	/**
-	 * Returns either a File or String depending 
-	 * @return the value
+	/* (non-Javadoc)
+	 * @see org.sana.core.IObservation#getValue()
 	 */
+	@Override
 	public Object getValue() {
 		if(isComplex()){
 			return getValue_complex();
@@ -98,9 +104,10 @@ public class Observation extends AbstractModel {
 			setValue_text(String.valueOf(value));
 		}
 	}
-	/**
-	 * @return the value_complex
+	/* (non-Javadoc)
+	 * @see org.sana.core.IObservation#getValue_complex()
 	 */
+	@Override
 	public String getValue_complex() {
 		return value_complex;
 	}
@@ -110,9 +117,10 @@ public class Observation extends AbstractModel {
 	public void setValue_complex(String valueComplex) {
 		this.value_complex = valueComplex;
 	}
-	/**
-	 * @return the valueText
+	/* (non-Javadoc)
+	 * @see org.sana.core.IObservation#getValue_text()
 	 */
+	@Override
 	public String getValue_text() {
 		return valueText;
 	}
@@ -123,11 +131,10 @@ public class Observation extends AbstractModel {
 		this.valueText = valueText;
 	}
 	
-	/**
-	 * Returns whether this instance's stored valued should be treated as either
-	 * a File or String based on the mimetype of the Concept. 
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.sana.core.IObservation#isComplex()
 	 */
+	@Override
 	public boolean isComplex(){
 		//TODO make this more robust.
 		return !concept.getMediatype().equals("text/plain");

@@ -30,9 +30,9 @@ package org.sana.android.db.impl;
 import android.content.ContentValues;
 import android.net.Uri;
 
-import org.sana.Notification;
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Notifications.Contract;
+import org.sana.core.Notification;
 
 /**
  * A database table helper for a table of instructions.

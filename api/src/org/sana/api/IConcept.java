@@ -25,23 +25,60 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana;
+package org.sana.api;
 
 /**
- * A single step within a procedure as a representation of a Concept.
+ * Describes the behavior of a lexical unit.
  * 
  * @author Sana Development
  *
  */
-public class Instruction extends AbstractModel{
-	// wrapper for mime type
-	String concept;
-	// mmap to education resource can be complex
-	String help;
-	// map to question
-	String hint;
-	// message on fail
-	String alert;
-	boolean required;
+public interface IConcept extends IModel{
 
+	public static String NAME_REGEX = "([A-Z])+(([A-Z_])*([A-Z])+)*";
+	
+	/**
+	 * Provides a String representation of any constraints placed upon data this
+	 * Concept represents.
+	 *  
+	 * @return A data constraint string.
+	 */
+	public String getConstraints();
+
+	/**
+	 * Provides the class of data that this Concept represents.
+	 * 
+	 * @return The data class.
+	 */
+	public String getDatatype();
+	
+	/**
+	 * Provides the machine friendly, unique name of the Concept formatted 
+	 * according to {@link #NAME_REGEX}
+	 * 
+	 * @return The machine friendly name.
+	 */
+	public String getName();
+	
+	/**
+	 * Provides a human readable display name.
+	 * 
+	 * @return The display name.
+	 */
+	public String getDisplayName();
+	
+	/**
+	 * Provides a longer narrative description String
+	 * 
+	 * @return The description String.
+	 */
+	public String getDescription(); 
+	
+	
+	/**
+	 * Provides the MIME type of any collected data.
+	 * 
+	 * @return A mime type String.
+	 */
+	public String getMediatype();
 }

@@ -1,7 +1,11 @@
 /**
  * 
  */
-package org.sana;
+package org.sana.core;
+
+import org.sana.api.IRelationship;
+import org.sana.api.RelationshipCategory;
+
 
 /**
  * A classification of the relationship between two Concepts. Uniqueness must 
@@ -11,7 +15,7 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Relationship extends AbstractModel{
+public class Relationship extends Model implements IRelationship{
 
 	private Concept fromConcept;
 	private Concept toConcept;
@@ -21,9 +25,10 @@ public class Relationship extends AbstractModel{
 	/** Default Constructor */
 	public Relationship(){}
 	
-	/**
-	 * @return the fromConcept
+	/* (non-Javadoc)
+	 * @see org.sana.core.IRelationship#getFromConcept()
 	 */
+	@Override
 	public Concept getFromConcept() {
 		return fromConcept;
 	}
@@ -35,9 +40,10 @@ public class Relationship extends AbstractModel{
 		this.fromConcept = fromConcept;
 	}
 
-	/**
-	 * @return the toConcept
+	/* (non-Javadoc)
+	 * @see org.sana.core.IRelationship#getToConcept()
 	 */
+	@Override
 	public Concept getToConcept() {
 		return toConcept;
 	}
@@ -49,9 +55,10 @@ public class Relationship extends AbstractModel{
 		this.toConcept = toConcept;
 	}
 
-	/**
-	 * @return the category
+	/* (non-Javadoc)
+	 * @see org.sana.core.IRelationship#getCategory()
 	 */
+	@Override
 	public RelationshipCategory getCategory() {
 		return category;
 	}

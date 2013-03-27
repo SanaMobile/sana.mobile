@@ -6,7 +6,7 @@ package org.sana.android.db;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sana.Observation;
+import org.sana.core.Observation;
 import org.sana.R;
 import org.sana.android.content.BasicContentProvider;
 import org.sana.android.provider.Observations;

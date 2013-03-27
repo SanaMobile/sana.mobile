@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
-import org.sana.Patient;
 import org.sana.android.content.FileContentProvider;
 import org.sana.android.provider.Patients;
 import android.content.ContentUris;

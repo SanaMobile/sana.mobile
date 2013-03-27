@@ -30,7 +30,6 @@ package org.sana.android.db;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sana.Observer;
 import org.sana.R;
 import org.sana.android.content.BasicContentProvider;
 import org.sana.android.provider.Observers;

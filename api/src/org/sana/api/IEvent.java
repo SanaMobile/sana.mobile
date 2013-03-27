@@ -25,55 +25,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.provider;
-
-import org.sana.core.Instruction;
-
-import android.net.Uri;
+package org.sana.api;
 
 /**
- * Metadata and contract for instructions in the database. Not currently 
- * implemented in the database but included for forward compatibility.
- * 
- * @author Sana Development Team
+ * @author Sana Development
+ *
  */
-public class Instructions{
-
-	/** The authority for instructions. */
-	public static final String AUTHORITY = "org.sana.provider";
-
-	/** The content:// style URI for this content provider. */
-	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/instruction");
-
-	/** The MIME type for a directory of instructions.  */
-	public static final String CONTENT_TYPE = 
-			"vnd.android.cursor.dir/org.sana.instruction";
-
-	/** The MIME type of a single instruction. */
-	public static final String CONTENT_ITEM_TYPE = 
-			"vnd.android.cursor.item/org.sana.instruction";
-
-	/** The default sort order. */
-	public static final String DEFAULT_SORT_ORDER = "modified DESC";
-
+public interface IEvent extends IModel{
 
 	/**
-	 * Column definitions for the Instruction table.
+	 * Returns the event_type for an instance of this class.
 	 * 
-	 * @author Sana Development
+	 * @return the event_type
 	 */
-	public static interface Contract extends BaseContract<Instruction>{
-		/** */
-		public static final String CONCEPT = "concept";
+	public abstract String getEvent_type();
 
-		/** Additional information for the instruction */
-		public static final String HELP = "help";
-		/** User prompt */
-		public static final String HINT = "hint";
-		/** Conditional notification message */
-		public static final String ALERT = "alert";
-		/** Boolean value for whether null values are allowed */
-		public static final String REQUIRED = "required";
-	}
+	/**
+	 * Returns the event_value for an instance of this class.
+	 * 
+	 * @return the event_value
+	 */
+	public abstract String getEvent_value();
+
+	/**
+	 * Returns the event_time for an instance of this class.
+	 * 
+	 * @return the event_time
+	 */
+	public abstract long getEvent_time();
+
+	/**
+	 * Returns the encounter for an instance of this class.
+	 * 
+	 * @return the encounter
+	 */
+	public abstract String getEncounter();
+
+	/**
+	 * Returns the subject for an instance of this class.
+	 * 
+	 * @return the subject
+	 */
+	public abstract String getSubject();
+
+	/**
+	 * Returns the observer for an instance of this class.
+	 * 
+	 * @return the observer
+	 */
+	public abstract String getObserver();
+
 }

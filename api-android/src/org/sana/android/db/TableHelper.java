@@ -32,7 +32,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.sana.Model;
+import org.sana.android.provider.BaseContract;
+import org.sana.api.IModel;
 
 import android.content.ContentValues;
 import android.net.Uri;
@@ -41,7 +42,7 @@ import android.net.Uri;
  * @author Sana Development
  *
  */
-public abstract class TableHelper<T extends Model> implements  CreateHelper, InsertHelper, 
+public abstract class TableHelper<T extends IModel> implements  CreateHelper, InsertHelper, 
 	SortHelper,UpdateHelper, UpgradeHelper
 {
 	public static final String TAG = TableHelper.class.getSimpleName();
@@ -102,7 +103,7 @@ public abstract class TableHelper<T extends Model> implements  CreateHelper, Ins
 	}
 
 	/**
-	 * Returns the Model class this table represents.
+	 * Returns the IModel class this table represents.
 	 * 
 	 * @return
 	 */
@@ -123,16 +124,16 @@ public abstract class TableHelper<T extends Model> implements  CreateHelper, Ins
 	 */
 	/**
 	 * Sets the creation and modification time to the current date time 
-	 * formatted as {@link org.sana.Model#DATE_FORMAT}
+	 * formatted as {@link org.sana.api.IModel#DATE_FORMAT}
 	 */
 	@Override
 	public ContentValues onInsert(ContentValues values) {
 		ContentValues validValues = new ContentValues();
-		String value = new SimpleDateFormat(Model.DATE_FORMAT, 
+		String value = new SimpleDateFormat(IModel.DATE_FORMAT, 
 				Locale.US).format(new Date());
-		validValues.put(Model.UUID, UUID.randomUUID().toString());
-		validValues.put(Model.CREATED, value);
-		validValues.put(Model.MODIFIED, value);
+		validValues.put(BaseContract.UUID, UUID.randomUUID().toString());
+		validValues.put(BaseContract.CREATED, value);
+		validValues.put(BaseContract.MODIFIED, value);
 		validValues.putAll(values);
 		return validValues;
 	}
@@ -142,15 +143,15 @@ public abstract class TableHelper<T extends Model> implements  CreateHelper, Ins
 	 */
 	/**
 	 * Sets the modification time to the current date time if not present,
-	 * formatted as {@link org.sana.Model#DATE_FORMAT}
+	 * formatted as {@link org.sana.api.IModel#DATE_FORMAT}
 	 */
 	@Override
 	public ContentValues onUpdate(Uri uri, ContentValues values) {
 		ContentValues validValues = new ContentValues();
-		if(!values.containsKey(Model.MODIFIED)){
-			String value = new SimpleDateFormat(Model.DATE_FORMAT, 
+		if(!values.containsKey(BaseContract.MODIFIED)){
+			String value = new SimpleDateFormat(IModel.DATE_FORMAT, 
 					Locale.US).format(new Date());
-			validValues.put(Model.MODIFIED, value);
+			validValues.put(BaseContract.MODIFIED, value);
 		}
 		validValues.putAll(values);
 		return validValues;

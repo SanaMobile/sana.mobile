@@ -2,8 +2,7 @@ package org.sana.android.provider;
 
 import android.net.Uri;
 
-import org.sana.Patient;
-import org.sana.android.provider.BaseContract;
+import org.sana.core.Patient;
 
 /**
  * This class defines the URI and data fields for the content provider 

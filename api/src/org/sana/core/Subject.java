@@ -1,7 +1,10 @@
 /**
  * 
  */
-package org.sana;
+package org.sana.core;
+
+import org.sana.api.ISubject;
+
 
 /**
  * Entity about whom data is collected. Most implementations will want to 
@@ -12,6 +15,6 @@ package org.sana;
  * @author Sana Development
  *
  */
-public class Subject extends AbstractModel{
+public class Subject extends Model implements ISubject{
 	
 }

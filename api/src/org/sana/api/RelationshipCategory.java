@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.sana;
+package org.sana.api;
 
 /**
  * Description of the nature of the relationship between two Concepts.
