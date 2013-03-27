@@ -3,25 +3,21 @@
  */
 package org.sana.android.db;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sana.Observation;
+import org.sana.R;
+import org.sana.android.content.BasicContentProvider;
 import org.sana.android.provider.Observations;
-import org.sana.android.content.FileContentProvider;
 
-import android.content.ContentUris;
+import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
-import android.provider.BaseColumns;
-import android.support.v4.database.DatabaseUtilsCompat;
-import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -29,67 +25,93 @@ import android.util.Log;
  * 
  * @author Sana Development Team
  */
-public class ObservationProvider extends FileContentProvider implements Observations.Contract{
+public class ObservationProvider extends ContentProvider{
+	/*
+    private class OpenHelper extends DatabaseOpenHelper{
+
+		protected OpenHelper(Context context, String name, int version,
+				UriMatcher matcher) {
+			super(context, name, version, null);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void onCreate(SQLiteDatabase db){
+			onCreate(db, null);
+		}
+		
+		@Override
+		public void onCreate(SQLiteDatabase db, String[] columns) {
+			super.onCreate(db, new String[]{ 
+					Observations.Contract.ENCOUNTER + " INTEGER NOT NULL",
+					Observations.Contract.CONCEPT + " TEXT NOT NULL",
+					Observations.Contract.SUBJECT + " TEXT NOT NULL",
+					Observations.Contract.ID + " TEXT NOT NULL",
+					Observations.Contract.PARENT + " TEXT",
+					Observations.Contract.VALUE_TEXT + " TEXT,",
+					Observations.Contract.VALUE_COMPLEX + " TEXT,",
+					Observations.Contract.UPLOAD_PROGRESS + " INTEGER",
+					Observations.Contract.UPLOADED + " INTEGER" });
+		}
+
+		@Override
+		public String onSort(Uri uri) {
+			switch(match(uri)){
+			
+			}
+			return null;
+		}
+
+		@Override
+		public String getTable(Uri uri) {
+			switch(match(uri)){
+			
+			}
+			return null;
+		}
+
+		@Override
+		public String getFileColumn(Uri uri) {
+			switch(match(uri)){
+			
+			}
+			return null;
+		}
+
+		@Override
+		public String getType(Uri uri) {
+			switch(match(uri)){
+			
+			}
+			return null;
+		}
+    }
+	*/
 	public static final String TAG = ObservationProvider.class.getSimpleName();
 	
 	public static final String DEFAULT_SORT_ORDER = "modified DESC";
-	private static final String TABLE = "observation";
+	private static final String TABLE = "observations";
 	
     private static final int ITEMS = 0;
     private static final int ITEM_ID = 1;
-
-	static final String DB = "sana.db";
-    private DatabaseHelper mOpenHelper;
-    private static final UriMatcher sUriMatcher;
+    
+    private static final UriMatcher mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     private static final Map<String,String> sProjMap = new HashMap<String, String>();
     static {
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(Observations.AUTHORITY, "observations", ITEMS);
-        sUriMatcher.addURI(Observations.AUTHORITY, "observations/#", ITEM_ID);
-        
-        sProjMap.put(_ID, _ID);
-        sProjMap.put(UUID, UUID);
-        sProjMap.put(ENCOUNTER, ENCOUNTER);
-        sProjMap.put(CONCEPT, CONCEPT);
-        sProjMap.put(SUBJECT, SUBJECT);
-        sProjMap.put(ID, ID);
-        sProjMap.put(PARENT, PARENT);
-        sProjMap.put(VALUE_TEXT, VALUE_TEXT);
-        sProjMap.put(VALUE_COMPLEX,VALUE_COMPLEX);
-        sProjMap.put(UPLOADED, UPLOADED);
-        sProjMap.put(UPLOAD_PROGRESS, UPLOAD_PROGRESS);
-        sProjMap.put(CREATED, CREATED);
-        sProjMap.put(MODIFIED, MODIFIED);
+        sProjMap.put(Observations.Contract._ID, Observations.Contract._ID);
+        sProjMap.put(Observations.Contract.UUID, Observations.Contract.UUID);
+        sProjMap.put(Observations.Contract.ENCOUNTER, Observations.Contract.ENCOUNTER);
+        sProjMap.put(Observations.Contract.CONCEPT, Observations.Contract.CONCEPT);
+        sProjMap.put(Observations.Contract.SUBJECT, Observations.Contract.SUBJECT);
+        sProjMap.put(Observations.Contract.ID, Observations.Contract.ID);
+        sProjMap.put(Observations.Contract.PARENT, Observations.Contract.PARENT);
+        sProjMap.put(Observations.Contract.VALUE_TEXT, Observations.Contract.VALUE_TEXT);
+        sProjMap.put(Observations.Contract.VALUE_COMPLEX,Observations.Contract.VALUE_COMPLEX);
+        sProjMap.put(Observations.Contract.UPLOADED, Observations.Contract.UPLOADED);
+        sProjMap.put(Observations.Contract.UPLOAD_PROGRESS, Observations.Contract.UPLOAD_PROGRESS);
+        sProjMap.put(Observations.Contract.CREATED, Observations.Contract.CREATED);
+        sProjMap.put(Observations.Contract.MODIFIED, Observations.Contract.MODIFIED);
     }
-	
-    /* (non-Javadoc)
-	 * @see android.content.ContentProvider#delete(android.net.Uri, java.lang.String, java.lang.String[])
-	 */
-	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
-        Log.d(TAG, ".delete(" + uri.toString() +");");
-		String whereClause = DBUtils.getWhereWithIdOrReturn(uri, sUriMatcher.match(uri), selection);
-		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		int count = db.delete(TABLE,whereClause,selectionArgs);
-		getContext().getContentResolver().notifyChange(uri, null);
-		return count;
-	}
-
-	/* (non-Javadoc)
-	 * @see android.content.ContentProvider#getType(android.net.Uri)
-	 */
-	@Override
-	public String getType(Uri uri) {
-        Log.d(TAG, ".getType(" + uri.toString() +");");
-        switch (sUriMatcher.match(uri)) {
-        case ITEMS:
-        	return Observations.CONTENT_TYPE;
-        case ITEM_ID:
-        	return Observations.CONTENT_ITEM_TYPE;
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
-        }
-	}
 
 	/* (non-Javadoc)
 	 * @see android.content.ContentProvider#insert(android.net.Uri, android.content.ContentValues)
@@ -98,22 +120,15 @@ public class ObservationProvider extends FileContentProvider implements Observat
 	public Uri insert(Uri uri, ContentValues values) {
         Log.d(TAG, "insert(" + uri.toString() +", N = " 
         	+ String.valueOf((values == null)?0:values.size()) + " values.)");
-        
-		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		
-		//allow created and modified to be set manually here.
-		Long now = Long.valueOf(System.currentTimeMillis());
-		if(values.containsKey(CREATED) == false) {
-            values.put(CREATED, now);
-        }
-		
-        if(values.containsKey(MODIFIED) == false) {
-            values.put(MODIFIED, now);
+
+		if(values.containsKey(Observations.Contract.UPLOADED) == false) {
+            values.put(Observations.Contract.UPLOADED, false);
         }
 
-		Uri result = ContentUris.withAppendedId(uri, 
-				db.insert(TABLE, null, values));
-		getContext().getContentResolver().notifyChange(uri, null);
+		if(values.containsKey(Observations.Contract.UPLOAD_PROGRESS) == false) {
+            values.put(Observations.Contract.UPLOAD_PROGRESS, -1);
+        }
+		Uri result = null;//super.insert(uri, values);
 		Log.d(TAG, "insert(): Successfully inserted => " + result);
 		return result;
 	}
@@ -123,57 +138,14 @@ public class ObservationProvider extends FileContentProvider implements Observat
 	 */
 	@Override
 	public boolean onCreate() {
-        Log.d(TAG, ".onCreate();");
-        mOpenHelper = new DatabaseHelper(getContext());
-        return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see android.content.ContentProvider#query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
-	 */
-	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-        Log.d(TAG, ".query(" + uri.toString() +");");
-
-		String orderBy;
-        if(TextUtils.isEmpty(sortOrder)) {
-            orderBy = DEFAULT_SORT_ORDER;
-        } else {
-            orderBy = sortOrder;
-        }
-		SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		qb.setTables(TABLE);	
-		String whereClause = DBUtils.getWhereWithIdOrReturn(uri, sUriMatcher.match(uri), selection);
-        Cursor c = qb.query(db, projection, whereClause, selectionArgs, null,
-        		null, orderBy);
-		return c;
-	}
-
-	/* (non-Javadoc)
-	 * @see android.content.ContentProvider#update(android.net.Uri, android.content.ContentValues, java.lang.String, java.lang.String[])
-	 */
-	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
-        Log.d(TAG, ".update(" + uri.toString() +");");
-		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		String whereClause = DBUtils.getWhereWithIdOrReturn(uri, sUriMatcher.match(uri), selection);
-
-		// Always update modified time on update
-		Long now = Long.valueOf(System.currentTimeMillis());
-		values.put(MODIFIED, now);
-
-		int updated = db.update(TABLE, values, whereClause, selectionArgs);
-		getContext().getContentResolver().notifyChange(uri, null);
-		return updated;
-	}
-
-	@Override
-	public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException{
-        Log.d(TAG, ".openFile(" + uri.toString() +");");
-		return openFileHelper(uri,VALUE_COMPLEX,mode);
+	        Log.d(TAG, ".onCreate();");
+	        /*
+	        setHelper(new OpenHelper(getContext(), 
+	        		getContext().getString(R.string.db_name),
+	        		getContext().getResources().getInteger(R.integer.db_version),
+	        		mUriMatcher));
+	        */
+			return true;
 	}
 	
     /**
@@ -193,19 +165,19 @@ public class ObservationProvider extends FileContentProvider implements Observat
     // Column defs declared in Observations. interface
     private static final String CREATE_TABLE  =
     		"CREATE TABLE " + TABLE + " ("
-            + _ID + " INTEGER PRIMARY KEY,"
-            + UUID + " TEXT,"
-            + ENCOUNTER + " INTEGER NOT NULL,"
-            + CONCEPT + " TEXT NOT NULL,"
-            + SUBJECT + " TEXT NOT NULL,"
-            + ID + " TEXT NOT NULL,"
-            + PARENT + " TEXT,"
-            + VALUE_TEXT + " TEXT,"
-            + VALUE_COMPLEX + " TEXT,"
-            + UPLOAD_PROGRESS + " INTEGER,"
-            + UPLOADED + " INTEGER,"
-            + CREATED + " INTEGER,"
-            + MODIFIED + " INTEGER"
+            + Observations.Contract._ID + " INTEGER PRIMARY KEY,"
+            + Observations.Contract.UUID + " TEXT,"
+            + Observations.Contract.ENCOUNTER + " INTEGER NOT NULL,"
+            + Observations.Contract.CONCEPT + " TEXT NOT NULL,"
+            + Observations.Contract.SUBJECT + " TEXT NOT NULL,"
+            + Observations.Contract.ID + " TEXT NOT NULL,"
+            + Observations.Contract.PARENT + " TEXT,"
+            + Observations.Contract.VALUE_TEXT + " TEXT,"
+            + Observations.Contract.VALUE_COMPLEX + " TEXT,"
+            + Observations.Contract.UPLOAD_PROGRESS + " INTEGER,"
+            + Observations.Contract.UPLOADED + " INTEGER,"
+            + Observations.Contract.CREATED + " INTEGER,"
+            + Observations.Contract.MODIFIED + " INTEGER"
             + ");";
     
     /**
@@ -218,28 +190,11 @@ public class ObservationProvider extends FileContentProvider implements Observat
         Log.d(TAG, "SUCCESS! creating " +TAG+ " tables");
     }
 
-    /**
-     * @see FileContentProvider#getFileColumn.
-     * 
-     * @returns {@link org.sana.android.Observations.Contract#VALUE_COMPLEX Observations.Contract.VALUE_COMPLEX} 
-     */
-	@Override
-	protected String getFileColumn() {
-		return VALUE_COMPLEX;
-	}
 
-
-	@Override
-	protected File insertFileHelper(Uri uri, ContentValues values) throws 
-		FileNotFoundException 
-	{
-		//TODO finish this
-		return null;
-	}
 	
 	boolean isComplexObservation(Uri uri){
 		Cursor cursor;
-		cursor = getContext().getContentResolver().query(uri, new String[]{ CONCEPT },
+		cursor = getContext().getContentResolver().query(uri, new String[]{ Observations.Contract.CONCEPT },
 				null,null,null);
 		String concept = null;
 		if(cursor != null){
@@ -257,4 +212,43 @@ public class ObservationProvider extends FileContentProvider implements Observat
 		//cursor= getContext().getContentResolver().query()
 		return true;
 	}
+
+	/* (non-Javadoc)
+	 * @see android.content.ContentProvider#delete(android.net.Uri, java.lang.String, java.lang.String[])
+	 */
+	@Override
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see android.content.ContentProvider#getType(android.net.Uri)
+	 */
+	@Override
+	public String getType(Uri uri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see android.content.ContentProvider#query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
+	 */
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection,
+			String[] selectionArgs, String sortOrder) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see android.content.ContentProvider#update(android.net.Uri, android.content.ContentValues, java.lang.String, java.lang.String[])
+	 */
+	@Override
+	public int update(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

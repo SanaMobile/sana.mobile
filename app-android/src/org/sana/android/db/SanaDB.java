@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * This class defines the URI and data fields of the content providers for each of the content types uploaded to the MDS. This class also includes a subclass of the SQLiteOpenHelper class to help create the database.
+ * This class defines the URI and data fields of the content providers for each 
+ * of the content types uploaded to the MDS.
+ * 
  * @author Sana Development Team
  */
 @Deprecated

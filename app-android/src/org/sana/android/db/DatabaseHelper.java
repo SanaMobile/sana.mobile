@@ -27,18 +27,29 @@
  */
 package org.sana.android.db;
 
+import org.sana.R;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * This class helps open, create, and upgrade the database file.
+ * 
  * @author Sana Development Team
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+	/**
+	 * Creates a new instance with the database name and version set based on
+	 * the values of {@link R.string#db_name} and {@link R.integer#db_version}.
+	 * 
+	 * @param context
+	 */
     DatabaseHelper(Context context) {
-        super(context, SanaDB.DATABASE_NAME, null, SanaDB.DATABASE_VERSION);
+        super(context, context.getString(R.string.db_name), 
+        		null, 
+        		context.getResources().getInteger(R.integer.db_version));
     }
 
     /* (non-Javadoc)
@@ -50,16 +61,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        ConceptProvider.onCreateDatabase(db);
+        ObserverProvider.onCreateDatabase(db);
         ProcedureProvider.onCreateDatabase(db);
-        EncounterProvider.onCreateDatabase(db);
-        ImageProvider.onCreateDatabase(db);
-        SoundProvider.onCreateDatabase(db);
-        NotificationProvider.onCreateDatabase(db);
         PatientProvider.onCreateDatabase(db);
-        EventProvider.onCreateDatabase(db);
-        BinaryProvider.onCreateDatabase(db);
+        EncounterProvider.onCreateDatabase(db);
         ObservationProvider.onCreateDatabase(db);
         
+        EventProvider.onCreateDatabase(db);
+        NotificationProvider.onCreateDatabase(db);
+  
+        // Deprecated 
+        ImageProvider.onCreateDatabase(db);
+        SoundProvider.onCreateDatabase(db);
+        BinaryProvider.onCreateDatabase(db);
     }
 
     /* (non-Javadoc)

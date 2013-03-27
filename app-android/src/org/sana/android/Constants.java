@@ -173,6 +173,9 @@ public class Constants {
     /** Key for looking up whether education resources are visible */
     public static final String PREFERENCE_EDUCATION_RESOURCE = "s_edu_rsrc";
     
+    /** The root authority */
+    public static final String AUTHORITY = "org.sana.provider";
+    
     /** */
     public static final int DEFAULT_DATABASE_UPLOAD = 1;
     

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
+import org.sana.Patient;
 import org.sana.android.content.FileContentProvider;
 import org.sana.android.provider.Patients;
 import android.content.ContentUris;
@@ -25,7 +26,7 @@ import android.util.Log;
  * 
  * @author Sana Development Team
  */
-public class PatientProvider extends FileContentProvider implements Patients.Contract{
+public class PatientProvider extends FileContentProvider{
 
 	private static final String TAG = PatientProvider.class.getSimpleName();
 
@@ -60,7 +61,7 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 		case ITEMS:    
 			break;
 		case ITEM_ID:
-			qb.appendWhere(_ID + "=" 
+			qb.appendWhere(Patients.Contract._ID + "=" 
 					+ uri.getPathSegments().get(1));
 			break;
 		default:
@@ -95,7 +96,7 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 			break;
 		case ITEM_ID:
 			String patientId = uri.getPathSegments().get(1);
-			count = db.update(TABLE, values, _ID 
+			count = db.update(TABLE, values, Patients.Contract._ID 
 					+ "=" + patientId + (!TextUtils.isEmpty(selection) 
 							? " AND (" + selection + ")" : ""), selectionArgs);
 			break;
@@ -118,7 +119,7 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 			break;
 		case ITEM_ID:
 			String patientId = uri.getPathSegments().get(1); 
-			count = db.delete(TABLE, _ID + "=" 
+			count = db.delete(TABLE, Patients.Contract._ID + "=" 
 					+ patientId + (!TextUtils.isEmpty(selection) ? " AND (" 
 							+ selection + ")" : ""), selectionArgs);
 			break;
@@ -149,31 +150,31 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 
 		Long now = Long.valueOf(System.currentTimeMillis());
 
-		if(values.containsKey(GIVEN_NAME) == false) {
-			values.put(GIVEN_NAME, "");
+		if(values.containsKey(Patients.Contract.GIVEN_NAME) == false) {
+			values.put(Patients.Contract.GIVEN_NAME, "");
 		}
 		
-		if(values.containsKey(FAMILY_NAME) == false) {
-			values.put(FAMILY_NAME, "");
+		if(values.containsKey(Patients.Contract.FAMILY_NAME) == false) {
+			values.put(Patients.Contract.FAMILY_NAME, "");
 		}
 
-		if(values.containsKey(DOB) == false) {
-			values.put(DOB, "");
+		if(values.containsKey(Patients.Contract.DOB) == false) {
+			values.put(Patients.Contract.DOB, "");
 		}
 
-		if(values.containsKey(PATIENT_ID) == false) {
-			values.put(PATIENT_ID, now);
+		if(values.containsKey(Patients.Contract.PATIENT_ID) == false) {
+			values.put(Patients.Contract.PATIENT_ID, now);
 		}
 		
-		if(values.containsKey(GENDER) == false) {
-			values.put(GENDER, "");
+		if(values.containsKey(Patients.Contract.GENDER) == false) {
+			values.put(Patients.Contract.GENDER, "");
 		}
  
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
  
 		try {
 			long rowId = db.insertOrThrow(TABLE, 
-					GIVEN_NAME, values);
+					Patients.Contract.GIVEN_NAME, values);
 			if(rowId > 0) {
 				Uri patientUri = ContentUris.withAppendedId(
 						Patients.CONTENT_URI, rowId);
@@ -210,14 +211,14 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 	public static void onCreateDatabase(SQLiteDatabase db) {
 		Log.i(TAG, "Creating Patient Data Table");
 		db.execSQL("CREATE TABLE " + TABLE + " ("
-				+ _ID + " INTEGER PRIMARY KEY,"
-				+ PATIENT_ID + " TEXT,"
-				+ GIVEN_NAME + " TEXT,"
-				+ FAMILY_NAME + " TEXT,"
-				+ GENDER + " TEXT,"
-				+ IMAGE + " TEXT,"
-				+ STATE + " INTEGER DEFAULT '-1',"
-				+ DOB + " DATE"
+				+ Patients.Contract._ID + " INTEGER PRIMARY KEY,"
+				+ Patients.Contract.PATIENT_ID + " TEXT,"
+				+ Patients.Contract.GIVEN_NAME + " TEXT,"
+				+ Patients.Contract.FAMILY_NAME + " TEXT,"
+				+ Patients.Contract.GENDER + " TEXT,"
+				+ Patients.Contract.IMAGE + " TEXT,"
+				+ Patients.Contract.STATE + " INTEGER DEFAULT '-1',"
+				+ Patients.Contract.DOB + " DATE"
 				+ ");");
 		Log.i(TAG, "Finished Creating Patient Data TAble");
 		
@@ -237,7 +238,7 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
         	// Do nothing
         } else if (oldVersion <= 3 && newVersion == 4){
         	String sql = "ALTER TABLE " + TABLE +
-    			" ADD COLUMN " + IMAGE + " TEXT";
+    			" ADD COLUMN " + Patients.Contract.IMAGE + " TEXT";
         	db.execSQL(sql);
         }
 	}
@@ -248,13 +249,13 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 		sUriMatcher.addURI(Patients.AUTHORITY, "patients/#", ITEM_ID);
 
 		sPatientProjectionMap = new HashMap<String, String>();
-		sPatientProjectionMap.put(_ID, _ID);
-		sPatientProjectionMap.put(PATIENT_ID, PATIENT_ID);
-		sPatientProjectionMap.put(GIVEN_NAME, GIVEN_NAME);
-		sPatientProjectionMap.put(FAMILY_NAME, FAMILY_NAME);
-		sPatientProjectionMap.put(DOB, DOB);
-		sPatientProjectionMap.put(GENDER, GENDER);
-		sPatientProjectionMap.put(IMAGE, IMAGE);
+		sPatientProjectionMap.put(Patients.Contract._ID, Patients.Contract._ID);
+		sPatientProjectionMap.put(Patients.Contract.PATIENT_ID, Patients.Contract.PATIENT_ID);
+		sPatientProjectionMap.put(Patients.Contract.GIVEN_NAME, Patients.Contract.GIVEN_NAME);
+		sPatientProjectionMap.put(Patients.Contract.FAMILY_NAME, Patients.Contract.FAMILY_NAME);
+		sPatientProjectionMap.put(Patients.Contract.DOB, Patients.Contract.DOB);
+		sPatientProjectionMap.put(Patients.Contract.GENDER, Patients.Contract.GENDER);
+		sPatientProjectionMap.put(Patients.Contract.IMAGE, Patients.Contract.IMAGE);
 	}
 
 	@Override
@@ -266,6 +267,7 @@ public class PatientProvider extends FileContentProvider implements Patients.Con
 
 	@Override
 	protected String getFileColumn() {
-		return IMAGE;
+		return Patients.Contract.IMAGE;
 	}
+
 }
