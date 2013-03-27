@@ -15,5 +15,6 @@ gen/
 # Local configuration file (sdk path, etc)
 local.properties
 
-# Eclipse metadata
+# Eclipse folders
 .metadata/
+.settings/
