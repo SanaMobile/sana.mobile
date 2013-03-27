@@ -29,6 +29,7 @@ package org.sana.android.db;
 
 import java.io.FileNotFoundException;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 
@@ -43,12 +44,13 @@ public interface FileHelper {
 	/**
 	 * Opens the file for a specified row.
 	 * 
-	 * @param uri The row to open the 
+	 * @param database The row to open the 
+	 * @param id TODO
 	 * @param mode The mode to open the file in.
 	 * @return
 	 * @throws FileNotFoundException 
 	 */
-	ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException;
+	ParcelFileDescriptor openFile(SQLiteDatabase database, long id, String mode) throws FileNotFoundException;
 	
 	/**
 	 * Deletes a file stored as a path in one of the table columns.

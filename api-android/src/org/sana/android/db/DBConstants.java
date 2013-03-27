@@ -27,22 +27,19 @@
  */
 package org.sana.android.db;
 
-import android.content.ContentValues;
-import android.net.Uri;
-
 /**
+ * A collection of static fields for db operations.
+ * 
  * @author Sana Development
  *
  */
-public interface UpdateHelper {
-
-	/**
-	 * Sets default values for a table.
-	 * 
-	 * @param uri
-	 * @param values
-	 * @return
-	 */
-	ContentValues onUpdate(Uri uri, ContentValues values);
+class DBConstants {
 	
+	static final String DB = "sana.db";
+    
+	static final int ITEMS = 0;
+    
+	static final int ITEM_ID = 1;
+
+	private DBConstants(){}
 }

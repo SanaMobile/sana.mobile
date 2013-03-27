@@ -27,18 +27,21 @@
  */
 package org.sana.android.db;
 
-import android.database.sqlite.SQLiteDatabase;
 
 /**
+ * Provides the upgrade statement string for a SQL table;
+ * 
  * @author Sana Development
  *
  */
 public interface UpgradeHelper {
 	/**
-	 * Upgrades a table if the version has been incremented. 
-	 * @param db THe database to upgrade the table in.
+	 * Returns an upgrade statement for a table if the version has been 
+	 * incremented.
+	 *  
 	 * @param oldVersion The current version of the table in the database.
 	 * @param newVersion The version it will be upgraded to.
+	 * @return The statement string which will upgrade this table
 	 */
-	void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) ;
+	String onUpgrade(int oldVersion, int newVersion) ;
 }

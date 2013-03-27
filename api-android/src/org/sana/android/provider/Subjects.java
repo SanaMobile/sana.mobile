@@ -27,10 +27,27 @@
  */
 package org.sana.android.provider;
 
+import android.net.Uri;
+
 /**
  * @author Sana Development
  *
  */
 public class Subjects {
 	public static final String TAG = Subjects.class.getSimpleName();
+	
+    /** The authority for procedures. */
+    public static final String AUTHORITY = "org.sana.provider";
+    
+    /** The content:// style URI for this content provider. */
+    public static final Uri CONTENT_URI = Uri.parse("content://"
+            + AUTHORITY + "/subject");
+    
+	/** The MIME type of CONTENT_URI providing a directory of subjects. */
+	public static final String CONTENT_TYPE = 
+		"vnd.android.cursor.dir/org.sana.subject";
+	
+	/** The content type of {@link #CONTENT_URI} for a single instance. */
+	public static final String CONTENT_ITEM_TYPE = 
+		"vnd.android.cursor.item/org.sana.subject";
 }

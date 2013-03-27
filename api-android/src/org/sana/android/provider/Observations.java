@@ -11,7 +11,7 @@ import android.net.Uri;
  */
 public final class Observations {
 	
-	public static final String AUTHORITY = "org.sana.provider.Observation";
+	public static final String AUTHORITY = "org.sana.provider";
 
 	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 
@@ -27,7 +27,7 @@ public final class Observations {
 
 	/** The content style URI */
 	public static final Uri CONTENT_URI = Uri.withAppendedPath(
-			AUTHORITY_URI, "observations");
+			AUTHORITY_URI, "observation");
 	
 	/**
 	 * Contract for the Observation table in the database.

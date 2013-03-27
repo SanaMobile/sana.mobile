@@ -38,11 +38,11 @@ import android.net.Uri;
  */
 public final class Events{
 	/** The authority for the events. */
-	public static final String AUTHORITY = "org.sana.provider.Event";
+	public static final String AUTHORITY = "org.sana.provider";
 	
 	/** The content:// style URI for this content provider. */
 	public static final Uri CONTENT_URI = Uri.parse(
-			"content://" + AUTHORITY + "/events");
+			"content://" + AUTHORITY + "/event");
 	
 	/** The MIME type for a directory of events. */
 	public static final String CONTENT_TYPE = 

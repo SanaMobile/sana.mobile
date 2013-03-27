@@ -39,19 +39,19 @@ import android.net.Uri;
 public class Instructions{
 
 	/** The authority for instructions. */
-	public static final String AUTHORITY = "org.sana.provider.Instruction";
+	public static final String AUTHORITY = "org.sana.provider";
 
 	/** The content:// style URI for this content provider. */
 	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/procedures");
+			+ AUTHORITY + "/instruction");
 
 	/** The MIME type for a directory of instructions.  */
 	public static final String CONTENT_TYPE = 
-			"vnd.android.cursor.dir/org.sana.procedure";
+			"vnd.android.cursor.dir/org.sana.instruction";
 
 	/** The MIME type of a single instruction. */
 	public static final String CONTENT_ITEM_TYPE = 
-			"vnd.android.cursor.item/org.sana.procedure";
+			"vnd.android.cursor.item/org.sana.instruction";
 
 	/** The default sort order. */
 	public static final String DEFAULT_SORT_ORDER = "modified DESC";

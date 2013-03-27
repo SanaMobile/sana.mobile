@@ -16,7 +16,7 @@ import org.sana.android.provider.BaseContract;
  */
 public final class Patients{
 	
-	public static final String AUTHORITY = "org.sana.provider.Patient";
+	public static final String AUTHORITY = "org.sana.provider";
 
 	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 

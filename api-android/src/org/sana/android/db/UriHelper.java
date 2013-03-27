@@ -27,22 +27,32 @@
  */
 package org.sana.android.db;
 
-import android.content.ContentValues;
 import android.net.Uri;
 
 /**
+ * Provides per-Uri based matching for table and content operations.
+ * 
  * @author Sana Development
  *
  */
-public interface UpdateHelper {
+public interface UriHelper {
 
 	/**
-	 * Sets default values for a table.
+	 * Try to match against the path in a url. 
 	 * 
+	 * @param uri The url whose path we will match against. 
+	 * @return The code for the matched node (added using addURI), or -1 if 
+	 * 	there is no matched node.
+	 */
+	int match(Uri uri);
+	
+	/**
+	 * Handle requests for the MIME type of the data at the given URI. Returned 
+	 * MIME types should start with vnd.android.cursor.item for a single 
+	 * record, or vnd.android.cursor.dir/ for multiple items.
+	 *  
 	 * @param uri
-	 * @param values
 	 * @return
 	 */
-	ContentValues onUpdate(Uri uri, ContentValues values);
-	
+	String getType(Uri uri);
 }

@@ -42,13 +42,13 @@ public final class Notifications{
     /**
      * The authority for the notification provider.
      */
-    public static final String AUTHORITY = "org.sana.provider.Notification";
+    public static final String AUTHORITY = "org.sana.provider";
     
     /**
      * The content:// style URI for this content provider.
      */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + AUTHORITY + "/notifications");
+            + AUTHORITY + "/notification");
 
     /**
      * The MIME type of CONTENT_URI providing a directory of notifications.

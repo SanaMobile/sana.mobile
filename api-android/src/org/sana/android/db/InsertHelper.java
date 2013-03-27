@@ -28,7 +28,6 @@
 package org.sana.android.db;
 
 import android.content.ContentValues;
-import android.net.Uri;
 
 /**
  * @author Sana Development
@@ -36,5 +35,5 @@ import android.net.Uri;
  */
 public interface InsertHelper {
 
-	Uri onInsert(Uri uri, ContentValues values);
+	ContentValues onInsert(ContentValues values);
 }

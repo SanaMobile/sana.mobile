@@ -42,12 +42,12 @@ import android.net.Uri;
 public final class Encounters {
     
     /** The authority for the encounter provider. */
-	public static final String AUTHORITY = "org.sana.provider.Encounter";
+	public static final String AUTHORITY = "org.sana.provider";
     
     /** The content:// style URI for encounters.
      */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + Encounters.AUTHORITY + "/encounters");
+            + Encounters.AUTHORITY + "/encounter");
 
     /**
      * The MIME type of CONTENT_URI providing a directory of saved procedures.

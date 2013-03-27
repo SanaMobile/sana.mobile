@@ -27,19 +27,18 @@
  */
 package org.sana.android.db;
 
-import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Provides a method to create a file in a SQLite database
+ * Provides the CREATE statement for a table in a SQLite database
  * 
  * @author Sana Development
  *
  */
 public interface CreateHelper {
 	/**
-	 * Executes a table create statement.
+	 * Returns a table create statement.
 	 * 
-	 * @param db The database to create the table in.
+	 * @return A SQL CREATE statement.
 	 */
-    void onCreate(SQLiteDatabase db);
+    String onCreate();
 }

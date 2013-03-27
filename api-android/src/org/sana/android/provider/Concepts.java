@@ -11,7 +11,7 @@ import android.net.Uri;
  */
 public final class Concepts {
 	
-	public static final String AUTHORITY = "org.sana.provider.Concept";
+	public static final String AUTHORITY = "org.sana.provider";
 
 	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 
@@ -29,7 +29,7 @@ public final class Concepts {
      * The content:// style URI for this content provider.
      */
 	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/concepts");
+			+ AUTHORITY + "/concept");
 
 	private Concepts(){}
 	
@@ -60,6 +60,6 @@ public final class Concepts {
         public static final String MEDIA_TYPE = "mediatype";
 
         /** Some limitation on acceptable values */
-    	public static final String CONSTRAINT = "constraint";
+    	public static final String CONSTRAINT = "constraints";
     }
 }

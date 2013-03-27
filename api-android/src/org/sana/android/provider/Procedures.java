@@ -41,11 +41,11 @@ public final class Procedures {
     private Procedures() {}
     
     /** The authority for procedures. */
-    public static final String AUTHORITY = "org.sana.provider.Procedure";
+    public static final String AUTHORITY = "org.sana.provider";
     
     /** The content:// style URI for this content provider. */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + AUTHORITY + "/procedures");
+            + AUTHORITY + "/procedure");
     
 	/** The MIME type for a directory of procedures.  */
     public static final String CONTENT_TYPE = 
@@ -76,6 +76,12 @@ public final class Procedures {
 
 		/** The raw procedure text. */
 		public static final String PROCEDURE = "procedure";
+		
+		/** The version code */
+		public static final String VERSION = "version";
+		
+		/** A list of supported locales. */
+		public static final String LOCALE = "locale";
     
 	}
 }

@@ -25,24 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.db;
-
-import android.content.ContentValues;
-import android.net.Uri;
+package org.sana.android.db.impl;
 
 /**
  * @author Sana Development
  *
  */
-public interface UpdateHelper {
+public class ModelHelpers {
+	public static final String TAG = ModelHelpers.class.getSimpleName();
 
-	/**
-	 * Sets default values for a table.
-	 * 
-	 * @param uri
-	 * @param values
-	 * @return
-	 */
-	ContentValues onUpdate(Uri uri, ContentValues values);
-	
 }

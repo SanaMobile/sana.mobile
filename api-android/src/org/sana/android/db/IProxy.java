@@ -27,22 +27,30 @@
  */
 package org.sana.android.db;
 
-import android.content.ContentValues;
-import android.net.Uri;
+import org.sana.Model;
 
-/**
- * @author Sana Development
- *
- */
-public interface UpdateHelper {
+import android.database.Cursor;
 
-	/**
-	 * Sets default values for a table.
-	 * 
-	 * @param uri
-	 * @param values
-	 * @return
+public interface IProxy<T extends Model> extends Iterable<T>{
+	
+	
+	public Cursor getRawCursor();
+
+	/* (non-Javadoc)
+	 * @see java.util.Iterator#hasNext()
 	 */
-	ContentValues onUpdate(Uri uri, ContentValues values);
+	public boolean hasNext();
+
+
+	/* (non-Javadoc)
+	 * @see java.util.Iterator#next()
+	 */
+	public T next();
+
+
+	/* (non-Javadoc)
+	 * @see java.util.Iterator#remove()
+	 */
+	public void remove();
 	
 }
