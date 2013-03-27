@@ -54,7 +54,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import android.net.SSLCertificateSocketFactory;
 
 /**
  * <p>
