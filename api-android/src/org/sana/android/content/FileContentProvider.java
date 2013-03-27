@@ -132,7 +132,7 @@ public abstract class FileContentProvider extends ContentProvider{
         String path = (i >= 0 ? c.getString(i) : null);
         c.close();
         if (path == null) {
-            throw new FileNotFoundException("Column '" + column 
+            throw new FileNotFoundException("Annotations '" + column 
             		+ "' not found.");
         }
 
