@@ -29,12 +29,7 @@ package org.sana.android.db;
 
 import org.sana.api.IModel;
 
-import android.database.Cursor;
-
-public interface IProxy<T extends IModel> extends Iterable<T>{
-	
-	
-	public Cursor getRawCursor();
+public interface ModelIterable<T extends IModel> extends Iterable<T>{
 
 	/* (non-Javadoc)
 	 * @see java.util.Iterator#hasNext()

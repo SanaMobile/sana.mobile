@@ -25,99 +25,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.db.impl;
+package org.sana.android.content.core;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-import org.sana.android.db.IProxy;
-import org.sana.api.Datatype;
-import org.sana.api.IModel;
+import org.sana.android.db.ModelWrapper;
+import org.sana.api.IObserver;
 
 import android.database.Cursor;
 
-public abstract class Proxy<T extends IModel> implements IProxy<T>{
-	
-	private Cursor cursor;
-	private Class<T> klazz;
-	
-	public Proxy(Cursor cursor, Class<T> klazz){
-		this.cursor = cursor;
-	}
-	
-	
-	public Cursor getRawCursor(){
-		return cursor;
-	}
+/**
+ * @author Sana Development
+ *
+ */
+public class ObserverWrapper extends ModelWrapper<IObserver> implements
+		IObserver {
+	public static final String TAG = ObserverWrapper.class.getSimpleName();
 
-	public T next() {
-		if(cursor.moveToNext()){
-			return null;
-		}
-		throw new NoSuchElementException();
-	}
-
-	/* (non-Javadoc)
-	 * @see java.util.Iterator#hasNext()
+	/**
+	 * @param cursor
 	 */
-	public boolean hasNext() {
-		return !cursor.isLast();
+	public ObserverWrapper(Cursor cursor) {
+		super(cursor);
 	}
 	
-	
 	/* (non-Javadoc)
-	 * @see java.lang.Iterable#iterator()
+	 * @see org.sana.api.IObserver#getUsername()
 	 */
 	@Override
-	public Iterator<T> iterator() {
+	public String getUsername() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	public <K> K getField(String field){
-		int column = cursor.getColumnIndex(field);
-		switch(Datatype.valueOf(field)){
-			
-		}
-		//klazz.getDeclaredField(field).getClass();
+
+	/* (non-Javadoc)
+	 * @see org.sana.api.IObserver#getPassword()
+	 */
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
 		return null;
-		
 	}
-	
-	public static final class ProxyIterator<T extends IModel> implements Iterator <Proxy<T>> {
-		
-		private Proxy<T> proxy;
-		
-		public ProxyIterator(Proxy<T> proxy){
-			this.proxy = proxy;
-		}
-		
-		/* (non-Javadoc)
-		 * @see java.util.Iterator#hasNext()
-		 */
-		public boolean hasNext() {
-			return proxy.hasNext();
-		}
 
-
-		/* (non-Javadoc)
-		 * @see java.util.Iterator#next()
-		 */
-		public Proxy<T> next() {
-			// TODO Auto-generated method stub
-			if(proxy.hasNext()){
-				return proxy;
-			}
-			throw new NoSuchElementException();
-		}
-
-
-		/* (non-Javadoc)
-		 * @see java.util.Iterator#remove()
-		 */
-		public void remove() {
-			
-		}
+	/* (non-Javadoc)
+	 * @see org.sana.api.IObserver#getRole()
+	 */
+	@Override
+	public String getRole() {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.sana.android.db.ModelWrapper#getObject()
+	 */
+	@Override
+	public IObserver getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
