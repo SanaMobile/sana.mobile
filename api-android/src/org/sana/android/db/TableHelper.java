@@ -28,8 +28,11 @@
 package org.sana.android.db;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import org.sana.android.provider.BaseContract;
@@ -51,6 +54,7 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper, In
 	private final String fColumn;
 	private final String defaultExtension;
 	private final Class<T> model;
+	private Map<String,String> projection;
 	
 	protected TableHelper(Class<T> klazz){
 		this( klazz, null, null);
@@ -61,6 +65,7 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper, In
 		this.table = pluralize(klazz.getSimpleName().toLowerCase(Locale.US));
 		this.fColumn = fileColumn;
 		this.defaultExtension = extension;
+		projection = new HashMap<String,String>();
 	}
 	
 	private String pluralize(String in){
@@ -155,5 +160,19 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper, In
 		}
 		validValues.putAll(values);
 		return validValues;
+	}
+
+	/**
+	 * Provides the name projection for a column into the table
+	 * 
+	 * @param column The label to project
+	 * @return A column label within the table
+	 */
+	public String getProjection(String column){
+		return projection.get(column);
+	}
+	
+	protected void setProjection(Map<String,String> projection){
+		this.projection= Collections.unmodifiableMap(projection);
 	}
 }

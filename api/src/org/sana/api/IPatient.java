@@ -33,7 +33,7 @@ import java.util.Date;
  * @author Sana Development
  *
  */
-public interface IPatient extends IModel{
+public interface IPatient extends ISubject{
 
 	/**
 	 * @return the given_name

@@ -46,6 +46,8 @@ public abstract class Model implements IModel{
 	
 	Date modified;
 	
+	public Model(){}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.sana.api.IModel#getCreated()

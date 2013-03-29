@@ -25,46 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
-
-
 /**
- * Declares the behavior for an observation.
- * 
+ * Parcelable implementation of the core Sana model classes.
+ *	<ul>
+ *		<li>{@link org.sana.core.Concept}</li>
+ *		<li>{@link org.sana.core.Encounter}</li>
+ *		<li>{@link org.sana.core.Event}</li>
+ *		<li>{@link org.sana.core.Instruction}</li>
+ *		<li>{@link org.sana.core.Notification}</li>
+ *		<li>{@link org.sana.core.Observation}</li>
+ *		<li>{@link org.sana.core.Observer}</li>
+ *		<li>{@link org.sana.core.Procedure}</li>
+ *		<li>{@link org.sana.core.Patient}</li>
+ *		<li>{@link org.sana.core.Subject}</li>
+ *	</ul> 
+ *  
  * @author Sana Development
  *
  */
-public interface IObservation extends IModel{
-
-	/**
-	 * Gets the unique id within the Encounter.
-	 * @return the id
-	 */
-	public String getId();
-
-	/**
-	 * Provides the uuid of the encounter.
-	 * 
-	 * @return the encounter
-	 */
-	public String getEncounter();
-
-	/**
-	 * Provides the uuid of the concept.
-	 * @return the concept
-	 */
-	public String getConcept();
-
-	/**
-	 * Returns the complex value as a file path or uri.
-	 * 
-	 * @return the value_complex
-	 */
-	public String getValue_complex();
-
-	/**
-	 * @return the valueText
-	 */
-	public String getValue_text();
-
-}
+package org.sana.android.content.core;

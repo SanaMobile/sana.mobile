@@ -25,46 +25,57 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.android.content.core;
 
+import org.sana.api.ISubject;
+import org.sana.core.Subject;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
- * Declares the behavior for an observation.
- * 
+ * Parcelable implementation of Subject class.
  * @author Sana Development
  *
  */
-public interface IObservation extends IModel{
+public class SubjectParcel extends ModelParcel implements ISubject, 
+	Parcelable 
+{
+	public static final String TAG = SubjectParcel.class.getSimpleName();
+	
+	public SubjectParcel(Parcel in) {
+		super(in);
+	}
 
-	/**
-	 * Gets the unique id within the Encounter.
-	 * @return the id
+
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#describeContents()
 	 */
-	public String getId();
+	@Override
+	public int describeContents() {
+		return Subject.class.hashCode();
+	}
 
-	/**
-	 * Provides the uuid of the encounter.
-	 * 
-	 * @return the encounter
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
 	 */
-	public String getEncounter();
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		super.writeToParcel(dest, flags);
+	}
+	
+	public static final Parcelable.Creator<SubjectParcel> CREATOR = 
+			new Parcelable.Creator<SubjectParcel>() {
 
-	/**
-	 * Provides the uuid of the concept.
-	 * @return the concept
-	 */
-	public String getConcept();
+				@Override
+				public SubjectParcel createFromParcel(Parcel source) {
+					return new SubjectParcel(source);
+				}
 
-	/**
-	 * Returns the complex value as a file path or uri.
-	 * 
-	 * @return the value_complex
-	 */
-	public String getValue_complex();
-
-	/**
-	 * @return the valueText
-	 */
-	public String getValue_text();
-
+				@Override
+				public SubjectParcel[] newArray(int size) {
+					// TODO Auto-generated method stub
+					return new SubjectParcel[size];
+				}
+	};
 }

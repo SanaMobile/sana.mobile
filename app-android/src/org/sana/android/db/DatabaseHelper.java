@@ -61,7 +61,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        ConceptProvider.onCreateDatabase(db);
+    	/*
+    	ConceptProvider.onCreateDatabase(db);
         ObserverProvider.onCreateDatabase(db);
         ProcedureProvider.onCreateDatabase(db);
         PatientProvider.onCreateDatabase(db);
@@ -70,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         
         EventProvider.onCreateDatabase(db);
         NotificationProvider.onCreateDatabase(db);
-  
+    	 */
         // Deprecated 
         ImageProvider.onCreateDatabase(db);
         SoundProvider.onCreateDatabase(db);
@@ -86,14 +87,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        ProcedureProvider.onUpgradeDatabase(db, oldVersion, newVersion);
-        EncounterProvider.onUpgradeDatabase(db, oldVersion, newVersion);
+
         BinaryProvider.onUpgradeDatabase(db, oldVersion, newVersion);
         ImageProvider.onUpgradeDatabase(db, oldVersion, newVersion);
         SoundProvider.onUpgradeDatabase(db, oldVersion, newVersion);
+        /*
+        ProcedureProvider.onUpgradeDatabase(db, oldVersion, newVersion);
+        EncounterProvider.onUpgradeDatabase(db, oldVersion, newVersion);
         NotificationProvider.onUpgradeDatabase(db, oldVersion, newVersion);
         PatientProvider.onUpgradeDatabase(db, oldVersion, newVersion);
         EventProvider.onUpgradeDatabase(db, oldVersion, newVersion);
         ObservationProvider.onUpgradeDatabase(db, oldVersion, newVersion);
+        */
     }
 }

@@ -27,10 +27,14 @@
  */
 package org.sana.android.db.impl;
 
+import java.util.HashMap;
+
 import android.content.ContentValues;
 import android.net.Uri;
 
 import org.sana.android.db.TableHelper;
+import org.sana.android.provider.BaseContract;
+import org.sana.android.provider.Observations;
 import org.sana.android.provider.Observations.Contract;
 import org.sana.core.Observation;
 
@@ -44,7 +48,24 @@ public class ObservationsHelper extends TableHelper<Observation>{
 	public static final String TAG = ObservationsHelper.class.getSimpleName();
 
 	private static final ObservationsHelper HELPER = new ObservationsHelper();
-	
+    private static HashMap<String,String> map;
+	static{
+        map.put(BaseContract._ID, BaseContract._ID);
+        map.put(BaseContract.UUID, BaseContract.UUID);
+        map.put(BaseContract.CREATED, BaseContract.CREATED);
+        map.put(BaseContract.MODIFIED, BaseContract.MODIFIED);
+        
+        map.put(Observations.Contract.ID, Observations.Contract.ID);
+        map.put(Observations.Contract.ENCOUNTER, Observations.Contract.ENCOUNTER);
+        map.put(Observations.Contract.SUBJECT, Observations.Contract.SUBJECT);
+        map.put(Observations.Contract.UPLOAD_PROGRESS, Observations.Contract.UPLOAD_PROGRESS);
+        map.put(Observations.Contract.UPLOADED, Observations.Contract.UPLOADED);
+        map.put(Observations.Contract.VALUE, Observations.Contract.VALUE);
+        map.put(Observations.Contract.VALUE_TEXT, Observations.Contract.VALUE);
+        map.put(Observations.Contract.VALUE_COMPLEX, Observations.Contract.VALUE);
+        
+        HELPER.setProjection(map);
+	}
 	/**
 	 * Gets the singleton instance of this class.
 	 * 

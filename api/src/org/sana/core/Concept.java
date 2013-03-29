@@ -136,4 +136,15 @@ public class Concept extends Model implements IConcept{
 		this.constraints = constraints;
 	}
 
+
+	/**
+	 * Returns whether this instance's stored valued should be treated as either
+	 * a File or String based on the mimetype of the Concept. 
+	 * 
+	 * @return
+	 */
+	public boolean isComplex(){
+		return !getMediatype().equals("text/plain");
+	}
+	
 }

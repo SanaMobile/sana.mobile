@@ -25,46 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.android.content.core;
 
+import org.sana.core.Instruction;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
- * Declares the behavior for an observation.
- * 
  * @author Sana Development
  *
  */
-public interface IObservation extends IModel{
+public class InstructionParcel extends Instruction implements Parcelable {
+	public static final String TAG = InstructionParcel.class.getSimpleName();
 
-	/**
-	 * Gets the unique id within the Encounter.
-	 * @return the id
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#describeContents()
 	 */
-	public String getId();
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-	/**
-	 * Provides the uuid of the encounter.
-	 * 
-	 * @return the encounter
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
 	 */
-	public String getEncounter();
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
 
-	/**
-	 * Provides the uuid of the concept.
-	 * @return the concept
-	 */
-	public String getConcept();
-
-	/**
-	 * Returns the complex value as a file path or uri.
-	 * 
-	 * @return the value_complex
-	 */
-	public String getValue_complex();
-
-	/**
-	 * @return the valueText
-	 */
-	public String getValue_text();
-
+	}
 }

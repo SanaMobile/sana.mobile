@@ -25,46 +25,70 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.android.content.core;
 
+import java.text.ParseException;
+
+import org.sana.core.Notification;
+import org.sana.util.DateUtil;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
- * Declares the behavior for an observation.
- * 
  * @author Sana Development
  *
  */
-public interface IObservation extends IModel{
+public class NotificationParcel extends Notification implements Parcelable {
+	public static final String TAG = NotificationParcel.class.getSimpleName();
 
 	/**
-	 * Gets the unique id within the Encounter.
-	 * @return the id
-	 */
-	public String getId();
-
-	/**
-	 * Provides the uuid of the encounter.
 	 * 
-	 * @return the encounter
 	 */
-	public String getEncounter();
+	public NotificationParcel(Parcel in) {
+		setUuid(in.readString());
+		try {
+			setCreated(DateUtil.parseDate(in.readString()));
+			setModified(DateUtil.parseDate(in.readString()));
+		} catch (ParseException e) {			
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
+		}
+		//TODO
+	}
 
-	/**
-	 * Provides the uuid of the concept.
-	 * @return the concept
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#describeContents()
 	 */
-	public String getConcept();
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-	/**
-	 * Returns the complex value as a file path or uri.
-	 * 
-	 * @return the value_complex
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
 	 */
-	public String getValue_complex();
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(getUuid());
+		dest.writeString(DateUtil.format(getCreated()));
+		dest.writeString(DateUtil.format(getModified()));
+		// TODO
 
-	/**
-	 * @return the valueText
-	 */
-	public String getValue_text();
+	}
+	public static final Parcelable.Creator<NotificationParcel> CREATOR = 
+			new Parcelable.Creator<NotificationParcel>() {
 
+				@Override
+				public NotificationParcel createFromParcel(Parcel source) {
+					return new NotificationParcel(source);
+				}
+
+				@Override
+				public NotificationParcel[] newArray(int size) {
+					return new NotificationParcel[size];
+				}
+		
+			};
 }

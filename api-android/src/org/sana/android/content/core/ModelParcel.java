@@ -25,46 +25,66 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.android.content.core;
 
+import java.text.ParseException;
+
+import org.sana.core.Model;
+import org.sana.util.DateUtil;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
- * Declares the behavior for an observation.
+ * Parcelable implementation of Model class.
  * 
  * @author Sana Development
  *
  */
-public interface IObservation extends IModel{
+public class ModelParcel extends Model implements Parcelable {
+	public static final String TAG = ModelParcel.class.getSimpleName();
+	
+	public ModelParcel(Parcel in){
+		setUuid(in.readString());
+		try {
+			setCreated(DateUtil.parseDate(in.readString()));
+			setModified(DateUtil.parseDate(in.readString()));
+		} catch (ParseException e) {			
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
+		}
+	}
 
-	/**
-	 * Gets the unique id within the Encounter.
-	 * @return the id
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#describeContents()
 	 */
-	public String getId();
+	@Override
+	public int describeContents() {
+		return 0;
+	}
 
-	/**
-	 * Provides the uuid of the encounter.
-	 * 
-	 * @return the encounter
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
 	 */
-	public String getEncounter();
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(getUuid());
+		dest.writeString(DateUtil.format(getCreated()));
+		dest.writeString(DateUtil.format(getModified()));
+	}
 
-	/**
-	 * Provides the uuid of the concept.
-	 * @return the concept
-	 */
-	public String getConcept();
+	public static final Parcelable.Creator<ModelParcel> CREATOR = 
+		new Parcelable.Creator<ModelParcel>() 
+	{
 
-	/**
-	 * Returns the complex value as a file path or uri.
-	 * 
-	 * @return the value_complex
-	 */
-	public String getValue_complex();
+		@Override
+		public ModelParcel createFromParcel(Parcel source) {
+					return new ModelParcel(source);
+		}
 
-	/**
-	 * @return the valueText
-	 */
-	public String getValue_text();
-
+		@Override
+		public ModelParcel[] newArray(int size) {
+					return new ModelParcel[size];
+		}
+	};
 }

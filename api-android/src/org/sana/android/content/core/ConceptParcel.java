@@ -25,46 +25,72 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.android.content.core;
 
+import java.text.ParseException;
+
+import org.sana.core.Concept;
+import org.sana.util.DateUtil;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
- * Declares the behavior for an observation.
+ * Parcelable implementation of {@link org.sana.Concept}.
  * 
  * @author Sana Development
  *
  */
-public interface IObservation extends IModel{
+public class ConceptParcel extends Concept implements Parcelable{
+	public static final String TAG = ConceptParcel.class.getSimpleName();
 
 	/**
-	 * Gets the unique id within the Encounter.
-	 * @return the id
+	 * Creates an uninitialized instance.
 	 */
-	public String getId();
-
-	/**
-	 * Provides the uuid of the encounter.
-	 * 
-	 * @return the encounter
+	public ConceptParcel(){}
+	
+	public ConceptParcel(Parcel in){
+		setUuid(in.readString());
+		try {
+			setCreated(DateUtil.parseDate(in.readString()));
+			setModified(DateUtil.parseDate(in.readString()));
+		} catch (ParseException e) {			
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
+		}
+		//TODO Complete reading fields from the Parcel
+	}
+	
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#describeContents()
 	 */
-	public String getEncounter();
+	@Override
+	public int describeContents() {
+		return 0;
+	}
 
-	/**
-	 * Provides the uuid of the concept.
-	 * @return the concept
+	/* (non-Javadoc)
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
 	 */
-	public String getConcept();
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public static final Parcelable.Creator<ConceptParcel> CREATOR = 
+			new Parcelable.Creator<ConceptParcel>() {
 
-	/**
-	 * Returns the complex value as a file path or uri.
-	 * 
-	 * @return the value_complex
-	 */
-	public String getValue_complex();
+				@Override
+				public ConceptParcel createFromParcel(Parcel source) {
+					// TODO Auto-generated method stub
+					return null;
+				}
 
-	/**
-	 * @return the valueText
-	 */
-	public String getValue_text();
-
+				@Override
+				public ConceptParcel[] newArray(int size) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
 }
