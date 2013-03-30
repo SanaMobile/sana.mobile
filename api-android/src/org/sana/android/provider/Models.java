@@ -27,10 +27,17 @@
  */
 package org.sana.android.provider;
 
-import org.sana.*;
+import org.sana.core.Concept;
+import org.sana.core.Encounter;
+import org.sana.core.Event;
+import org.sana.core.Instruction;
+import org.sana.core.Notification;
+import org.sana.core.Observation;
+import org.sana.core.Observer;
+import org.sana.core.Procedure;
+import org.sana.core.Subject;
 
 import android.content.ContentResolver;
-import android.content.UriMatcher;
 import android.net.Uri;
 
 /**

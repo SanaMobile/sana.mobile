@@ -30,9 +30,9 @@ package org.sana.android.db.impl;
 import android.content.ContentValues;
 import android.net.Uri;
 
-import org.sana.Procedure;
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Procedures.Contract;
+import org.sana.core.Procedure;
 
 /**
  * A database table helper for a table of procedures.

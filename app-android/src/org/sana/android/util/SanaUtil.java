@@ -1,4 +1,3 @@
-
 package org.sana.android.util;
 
 import java.io.FileInputStream;
@@ -22,6 +21,7 @@ import org.sana.android.provider.Notifications;
 import org.sana.android.provider.Observations;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
+
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;

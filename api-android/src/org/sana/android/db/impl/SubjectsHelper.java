@@ -30,9 +30,9 @@ package org.sana.android.db.impl;
 import android.content.ContentValues;
 import android.net.Uri;
 
-import org.sana.Subject;
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Patients.Contract;
+import org.sana.core.Subject;
 
 /**
  * A database table helper for a table of subjects.

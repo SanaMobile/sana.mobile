@@ -28,7 +28,7 @@
 package org.sana.android.provider;
 
 
-import org.sana.Encounter;
+import org.sana.core.Encounter;
 
 import android.net.Uri;
 

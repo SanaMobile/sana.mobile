@@ -40,7 +40,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.sana.Event;
+import org.sana.core.Event;
 import org.sana.android.Constants;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;

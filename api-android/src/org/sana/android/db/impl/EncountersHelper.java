@@ -30,9 +30,9 @@ package org.sana.android.db.impl;
 import android.content.ContentValues;
 import android.net.Uri;
 
-import org.sana.Encounter;
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Encounters;
+import org.sana.core.Encounter;
 /**
  * A database table helper for a table of encounters.
  * 

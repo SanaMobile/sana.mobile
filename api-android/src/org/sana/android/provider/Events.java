@@ -27,7 +27,7 @@
  */
 package org.sana.android.provider;
 
-import org.sana.Event;
+import org.sana.core.Event;
 
 import android.net.Uri;
 

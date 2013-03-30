@@ -27,7 +27,8 @@
  */
 package org.sana.android.provider;
 
-import org.sana.Instruction;
+import org.sana.core.Instruction;
+
 import android.net.Uri;
 
 /**

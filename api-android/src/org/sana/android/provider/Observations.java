@@ -1,6 +1,6 @@
 package org.sana.android.provider;
 
-import org.sana.Observation;
+import org.sana.core.Observation;
 
 import android.net.Uri;
 
@@ -61,11 +61,14 @@ public final class Observations {
 		/** File URI for Blob observation data. */
 		public static final String VALUE_COMPLEX = "value_complex";
 
+		/** The observation data. */
+		public static final String VALUE = "_data";
+		
 		/** The number of packetized bytes successfully uploaded to the MDS. */
-	    public static final String UPLOAD_PROGRESS = "_upload_progress";
+	    public static final String UPLOAD_PROGRESS = "upload_progress";
 
 	    /** Indicates whether a Blob is completely uploaded */
-	    public static final String UPLOADED = "_uploaded";
+	    public static final String UPLOADED = "uploaded";
 	    
 	}
 

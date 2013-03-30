@@ -27,7 +27,7 @@
  */
 package org.sana.android.provider;
 
-import org.sana.Notification;
+import org.sana.core.Notification;
 
 import android.net.Uri;
 

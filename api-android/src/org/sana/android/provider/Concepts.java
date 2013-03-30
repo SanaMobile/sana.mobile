@@ -1,6 +1,6 @@
 package org.sana.android.provider;
 
-import org.sana.Concept;
+import org.sana.core.Concept;
 
 import android.net.Uri;
 
