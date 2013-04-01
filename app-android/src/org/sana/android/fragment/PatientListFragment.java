@@ -24,11 +24,6 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
 
     private static final int PATIENTS_LOADER = 0;
     
-    private static final String[] PROJECTION = new String[] {
-        Patients.Contract._ID, Patients.Contract.GIVEN_NAME,
-        Patients.Contract.FAMILY_NAME
-    };
-    
     private PatientsList mActivity;
     private Uri mUri;
     private SimpleCursorAdapter mAdapter;
@@ -75,7 +70,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     /** {@inheritDoc} */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-        CursorLoader loader = new CursorLoader(mActivity, mUri, PROJECTION, 
+        CursorLoader loader = new CursorLoader(mActivity, mUri, 
+        		Patients.Projection.DISPLAY_NAME,
                 null, null, Patients.DEFAULT_SORT_ORDER);
         return loader;
     }

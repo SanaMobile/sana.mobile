@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.sana.android.provider.BaseContract;
-import org.sana.android.provider.Concepts;
 import org.sana.api.IModel;
 import org.sana.util.DateUtil;
 

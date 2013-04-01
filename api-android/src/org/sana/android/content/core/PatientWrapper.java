@@ -30,6 +30,7 @@ package org.sana.android.content.core;
 import java.util.Date;
 
 import org.sana.android.db.ModelWrapper;
+import org.sana.android.provider.Patients;
 import org.sana.api.IPatient;
 
 import android.database.Cursor;
@@ -46,7 +47,6 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	 */
 	public PatientWrapper(Cursor cursor) {
 		super(cursor);
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -54,8 +54,7 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	 */
 	@Override
 	public String getGiven_name() {
-		// TODO Auto-generated method stub
-		return null;
+		return getStringField(Patients.Contract.GIVEN_NAME);
 	}
 
 	/* (non-Javadoc)
@@ -63,8 +62,7 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	 */
 	@Override
 	public String getFamily_name() {
-		// TODO Auto-generated method stub
-		return null;
+		return getStringField(Patients.Contract.FAMILY_NAME);
 	}
 
 	/* (non-Javadoc)
@@ -72,8 +70,7 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	 */
 	@Override
 	public Date getDob() {
-		// TODO Auto-generated method stub
-		return null;
+		return getDateField(Patients.Contract.DOB);
 	}
 
 	/* (non-Javadoc)
@@ -81,8 +78,7 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	 */
 	@Override
 	public String getGender() {
-		// TODO Auto-generated method stub
-		return null;
+		return getStringField(Patients.Contract.GENDER);
 	}
 
 	/* (non-Javadoc)
@@ -90,8 +86,7 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	 */
 	@Override
 	public String getImage() {
-		// TODO Auto-generated method stub
-		return null;
+		return getStringField(Patients.Contract.IMAGE);
 	}
 
 	/* (non-Javadoc)
@@ -99,7 +94,6 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	 */
 	@Override
 	public IPatient getObject() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 }

@@ -39,9 +39,19 @@ public final class Patients{
 	public static final String DEFAULT_SORT_ORDER = Contract.FAMILY_NAME + "  ASC";
 	
     private Patients() {}
+
+    /**
+     * Projections for the Patient table.
+     * @author Sana Development
+     */
+    public static interface Projection extends BaseProjection<Patient> {
     	
-
-
+    	/** Projection to obtain ID and name of the patient. */
+    	public static final String[] DISPLAY_NAME = new String[] {
+    		Contract._ID, Contract.GIVEN_NAME, Contract.FAMILY_NAME
+    	};
+    }
+    
 	/**
 	 * Contract for the Patient table in the database.
 	 * 
@@ -92,6 +102,6 @@ public final class Patients{
         // 5 - Upload failed
         // 6 - Upload stalled - username/password incorrect
     	public static final String STATE = "_state";
-    }
-    	
+	}
+
 }
