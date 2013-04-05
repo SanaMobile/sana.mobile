@@ -68,7 +68,6 @@ public class ModelMatcher implements UriHelper {
 	public static final int ITEM_ID = 1;
 	public static final int ITEM_UUID = 3;
 	
-
 	// object codes
 	public static final class Code{
 		private Code(){}

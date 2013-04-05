@@ -221,6 +221,6 @@ public abstract class DatabaseOpenHelper extends SQLiteOpenHelper
 				sql = reader.readLine();
 		}
 	}
-
+	
 	
 }

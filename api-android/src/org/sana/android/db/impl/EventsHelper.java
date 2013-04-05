@@ -29,6 +29,7 @@ package org.sana.android.db.impl;
 
 import android.content.ContentValues;
 import android.net.Uri;
+import android.util.Log;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Events.Contract;
@@ -93,6 +94,7 @@ public class EventsHelper extends TableHelper<Event>{
 	 */
 	@Override
 	public String onCreate() {
+		Log.i(TAG, "onCreate()");
 		return "CREATE TABLE " + getTable() + " ("
 				+ Contract._ID + " INTEGER PRIMARY KEY,"
 				+ Contract.EVENT_TYPE + " TEXT, "

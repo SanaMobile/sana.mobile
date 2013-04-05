@@ -28,10 +28,10 @@
 package org.sana.android.db.impl;
 
 import org.sana.android.db.DatabaseOpenHelper;
-import org.sana.android.db.TableHelper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * @author Sana Development
@@ -48,13 +48,14 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
 	 */
 	public DatabaseOpenHelperImpl(Context context, String name, int version) {
 		super(context, name, version);
-		// TODO Auto-generated constructor stub
+		
 	}
 	/* (non-Javadoc)
 	 * @see android.database.sqlite.SQLiteOpenHelper#onCreate(android.database.sqlite.SQLiteDatabase)
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		Log.i(TAG, "onCreate()");
 		String[] create = new String[]{ 
 				ConceptsHelper.getInstance().onCreate(),
 				EncountersHelper.getInstance().onCreate(),

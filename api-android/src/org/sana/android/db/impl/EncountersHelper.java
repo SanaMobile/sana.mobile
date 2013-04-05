@@ -29,6 +29,7 @@ package org.sana.android.db.impl;
 
 import android.content.ContentValues;
 import android.net.Uri;
+import android.util.Log;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Encounters;
@@ -98,7 +99,7 @@ public class EncountersHelper extends TableHelper<Encounter>{
 	 */
 	@Override
 	public String onCreate() {
-		// TODO Auto-generated method stub
+		Log.i(TAG, "onCreate()");
 		return "CREATE TABLE " + getTable() + " ("
                 + Encounters.Contract._ID + " INTEGER PRIMARY KEY,"
                 + Encounters.Contract.UUID + " TEXT,"
@@ -107,10 +108,10 @@ public class EncountersHelper extends TableHelper<Encounter>{
                 + Encounters.Contract.STATE + " TEXT,"
                 + Encounters.Contract.FINISHED + " INTEGER,"
                 + Encounters.Contract.UPLOADED + " INTEGER,"
-                + Encounters.Contract.UPLOAD_STATUS + " TEXT,"
-                + Encounters.Contract.UPLOAD_QUEUE + " TEXT,"
-                + Encounters.Contract.CREATED + " INTEGER,"
-                + Encounters.Contract.MODIFIED + " INTEGER"
+                + Encounters.Contract.UPLOAD_STATUS + " INTEGER,"
+                + Encounters.Contract.UPLOAD_QUEUE + " INTEGER,"
+                + Encounters.Contract.CREATED + " TEXT,"
+                + Encounters.Contract.MODIFIED + " TEXT"
                 + ");";
 	}
 

@@ -31,6 +31,7 @@ import java.util.HashMap;
 
 import android.content.ContentValues;
 import android.net.Uri;
+import android.util.Log;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.BaseContract;
@@ -48,7 +49,7 @@ public class ObservationsHelper extends TableHelper<Observation>{
 	public static final String TAG = ObservationsHelper.class.getSimpleName();
 
 	private static final ObservationsHelper HELPER = new ObservationsHelper();
-    private static HashMap<String,String> map;
+    private static HashMap<String,String> map = new HashMap<String,String>();
 	static{
         map.put(BaseContract._ID, BaseContract._ID);
         map.put(BaseContract.UUID, BaseContract.UUID);
@@ -100,7 +101,7 @@ public class ObservationsHelper extends TableHelper<Observation>{
 	 */
 	@Override
 	public String onCreate() {
-		// TODO Auto-generated method stub
+		Log.i(TAG, "onCreate()");
 		return "CREATE TABLE " + getTable() + " ("
 			+ Contract._ID 			+ " INTEGER PRIMARY KEY,"
 			+ Contract.UUID 			+ " TEXT NOT NULL,"
