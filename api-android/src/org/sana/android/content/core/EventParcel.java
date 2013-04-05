@@ -58,4 +58,20 @@ public class EventParcel extends Event implements Parcelable {
 		// TODO Auto-generated method stub
 
 	}
+
+	public static final Parcelable.Creator<EventParcel> CREATOR = 
+			new Parcelable.Creator<EventParcel>() {
+
+				@Override
+				public EventParcel createFromParcel(Parcel source) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public EventParcel[] newArray(int size) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+	};
 }

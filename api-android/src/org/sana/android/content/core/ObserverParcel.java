@@ -56,4 +56,20 @@ public class ObserverParcel extends Observer implements Parcelable {
 		// TODO Auto-generated method stub
 
 	}
+
+	public static final Parcelable.Creator<ObserverParcel> CREATOR = 
+			new Parcelable.Creator<ObserverParcel>() {
+
+				@Override
+				public ObserverParcel createFromParcel(Parcel source) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public ObserverParcel[] newArray(int size) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
 }
