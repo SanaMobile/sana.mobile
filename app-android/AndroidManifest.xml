@@ -30,34 +30,10 @@
             android:enabled="true"
             android:icon="@drawable/icon2"
             android:label="@string/title_upload_service" />
-
-        <!--
-        <provider 
-            android:name="org.sana.android.db.ConceptProvider"
-            android:authorities="org.sana.provider.Concept" />
-        <provider
-            android:name="org.sana.android.db.EncounterProvider"
-            android:authorities="org.sana.provider.Encounter" />
-        <provider
-            android:name="org.sana.android.db.EventProvider"
-            android:authorities="org.sana.provider.Event" />
-        <provider
-            android:name="org.sana.android.db.NotificationProvider"
-            android:authorities="org.sana.provider.Notification" />
-        <provider
-            android:name="org.sana.android.db.ObserverProvider"
-            android:authorities="org.sana.provider.Observer" />
-        <provider
-            android:name="org.sana.android.db.PatientProvider"
-            android:authorities="org.sana.provider.Patient" />
-        <provider 
-            android:name="org.sana.android.db.ObservationProvider"
-            android:authorities="org.sana.provider.Observation" />
-        <provider
-            android:name="org.sana.android.db.ProcedureProvider"
-            android:authorities="org.sana.provider.Procedure" />
-        -->
-        <!--  Providers below here is deprecated -->
+        
+        <provider android:authorities="org.sana.provider" 
+            android:name=".android.db.impl.ModelContentProviderImpl"/>
+        <!--  Providers below here are deprecated -->
         <provider
             android:name="org.sana.android.db.ImageProvider"
             android:authorities="org.sana.provider.Image" />
@@ -269,7 +245,6 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <provider android:authorities="org.sana.provider" android:name=".android.db.impl.ModelContentProviderImpl" android:grantUriPermissions="true" android:exported="false"></provider>
     </application>
 
 </manifest>
