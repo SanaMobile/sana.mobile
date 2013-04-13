@@ -1,12 +1,10 @@
 package org.sana.android.fragment;
 
-import org.sana.R;
 import org.sana.android.db.EncounterDAO;
 import org.sana.android.db.EventDAO;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.provider.Events.EventType;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 
 /**
@@ -27,12 +25,6 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 
             logEvent(EventType.ENCOUNTER_LOAD_STARTED, "");
             new ProcedureLoaderTask().execute(request);
-            
-            loadProgressDialog = new ProgressDialog(getActivity());
-            loadProgressDialog.setMessage(getString(R.string.dialog_loading_procedure));
-            loadProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            if (!getActivity().isFinishing())
-                loadProgressDialog.show();
         }
     }
     

@@ -56,6 +56,7 @@
     <string name="dialog_no_reload_db_warn">Warning: reloading the database will clear all saved procedures and notifications. Proceed?</string>
     <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number</string>
     <string name="dialog_loading_procedure">Loading Procedure.</string>
+    <string name="dialog_look_up_patient">Looking up patient \"%d\"</string>
 	
 	<!-- Menu options strings -->
 	<string name="menu_new_patient">New Patient</string>

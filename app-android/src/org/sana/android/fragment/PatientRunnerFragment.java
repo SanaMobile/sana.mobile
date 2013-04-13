@@ -12,15 +12,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.sana.R;
 import org.sana.android.db.PatientInfo;
-import org.sana.android.provider.Patients;
-import org.sana.android.provider.Events.EventType;
-
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
+import org.sana.android.provider.Events.EventType;
+import org.sana.android.provider.Patients;
 import org.xml.sax.SAXException;
 
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,12 +42,6 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
 
             logEvent(EventType.ENCOUNTER_LOAD_STARTED, "");
             new CreatePatientTask().execute(request);
-
-            loadProgressDialog = new ProgressDialog(getActivity());
-            loadProgressDialog.setMessage(getString(R.string.dialog_loading_procedure));
-            loadProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            if (!getActivity().isFinishing())
-                loadProgressDialog.show();
         }
     }
     
@@ -165,7 +157,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
             if (instance == null && !intent.hasExtra("savedProcedureUri")) {
                 
                 // New Patient
-                Uri procedure = intent.getData();
+                Uri procedureUri = intent.getData();
                 String procedureXml = "";
                 try {
                     InputStream rs = getActivity().getResources()
@@ -189,7 +181,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
                 thisSavedProcedure = getActivity().getContentResolver().insert(
                 		Patients.CONTENT_URI, cv);
                 
-                Log.i(TAG, "onCreate() : uri = " + procedure.toString()
+                Log.i(TAG, "onCreate() : uri = " + procedureUri.toString()
                         + " savedUri = " + thisSavedProcedure);
                 
                 Procedure p = null;
@@ -227,7 +219,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
 
                 result.p = p;
                 result.success = p != null;
-                result.procedureUri = procedure;
+                result.procedureUri = procedureUri;
                 result.savedProcedureUri = thisSavedProcedure;
             } else {
                 // TODO: saved patient scenario. should have a tab section for
