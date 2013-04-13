@@ -56,4 +56,20 @@ public class EncounterParcel extends Encounter implements Parcelable{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public static final Parcelable.Creator<EncounterParcel> CREATOR = 
+			new Parcelable.Creator<EncounterParcel>() {
+
+				@Override
+				public EncounterParcel createFromParcel(Parcel source) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				@Override
+				public EncounterParcel[] newArray(int size) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			};
 }

@@ -29,6 +29,7 @@ package org.sana.android.db.impl;
 
 import android.content.ContentValues;
 import android.net.Uri;
+import android.util.Log;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Concepts;
@@ -82,7 +83,7 @@ public class ConceptsHelper extends TableHelper<Concept>{
 	 */
 	@Override
 	public String onCreate() {
-		// TODO Auto-generated method stub
+		Log.i(TAG, "onCreate()");
 		return "CREATE TABLE " + getTable() + " ("
 		+ Concepts.Contract._ID 			+ " INTEGER PRIMARY KEY,"
 		+ Concepts.Contract.UUID 			+ " TEXT,"

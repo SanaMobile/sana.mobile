@@ -29,6 +29,7 @@ package org.sana.android.db.impl;
 
 import android.content.ContentValues;
 import android.net.Uri;
+import android.util.Log;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Procedures.Contract;
@@ -79,7 +80,7 @@ public class ProceduresHelper extends TableHelper<Procedure>{
 	 */
 	@Override
 	public String onCreate() {
-		// TODO Auto-generated method stub
+		Log.i(TAG, "onCreate()");
 		return "CREATE TABLE " + getTable() + " ("
 				+ Contract._ID 		+ " INTEGER PRIMARY KEY,"
 				+ Contract.UUID 	+ " TEXT NOT NULL, "

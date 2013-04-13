@@ -27,30 +27,12 @@
  */
 package org.sana.android.content;
 
-import org.sana.android.db.DBUtils;
-import org.sana.android.db.DatabaseOpenHelper;
-import org.sana.android.db.UriHelper;
-
-import android.content.ContentProvider;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
+import android.os.Parcelable;
 
 /**
  * @author Sana Development
  *
  */
-public abstract class BasicContentProvider extends ContentProvider {
+public interface ModelParcelable extends Parcelable {
 
-	static final String TAG = BasicContentProvider.class.getSimpleName();
-	
-	protected DatabaseOpenHelper openHelper;
-	protected UriHelper mMatcher;
-	
-	public void  setHelper(DatabaseOpenHelper helper){
-		openHelper = helper;
-	}
-	
 }

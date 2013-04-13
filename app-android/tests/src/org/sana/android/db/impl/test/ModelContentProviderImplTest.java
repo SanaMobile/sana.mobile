@@ -99,17 +99,10 @@ public class ModelContentProviderImplTest extends
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        if(mOpener != null){
-        	try{
-        		mOpener.close();
-        	} catch(Exception e){
-        		Log.e(TAG, e.getMessage());
-        		e.printStackTrace();
-        	}
-        }
         for(String name: getContext().databaseList()){
         	getContext().deleteDatabase(name);
         }
+        
     }
     
     /**
@@ -160,6 +153,7 @@ public class ModelContentProviderImplTest extends
 		mOpener = new DatabaseOpenHelperImpl(getContext(),name, version);
 		SQLiteDatabase db = getContext().openOrCreateDatabase(name, 0, null);
 		mOpener.onCreate(db);
+		mOpener.close();
     }
     
     /**
@@ -172,6 +166,7 @@ public class ModelContentProviderImplTest extends
 		
 		// this should invoke the onCreate method		
 		mOpener.getReadableDatabase();
+		mOpener.close();
     }
     
     /**
@@ -184,6 +179,7 @@ public class ModelContentProviderImplTest extends
 		
 		// this should invoke the onCreate method		
 		mOpener.getWritableDatabase();
+		mOpener.close();
     }
     
     
@@ -294,9 +290,4 @@ public class ModelContentProviderImplTest extends
     	assertEquals(Subjects.CONTENT_ITEM_TYPE, mMockResolver.getType(uri));
     	
     }
-    
-
-	
-    
-    
 }

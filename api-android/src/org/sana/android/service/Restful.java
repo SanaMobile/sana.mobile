@@ -25,58 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.db.impl;
+package org.sana.android.service;
 
-import org.sana.android.db.DatabaseOpenHelper;
-
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import android.os.ParcelUuid;
+import android.os.Parcelable;
 
 /**
+ * REST like service which provides basic CRUD methods for accessing objects
+ * which are considered unique and identified by UUID
+ * 
  * @author Sana Development
  *
  */
-public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
+public interface Restful<T extends Parcelable> {
 
-	public static final String TAG = DatabaseOpenHelperImpl.class
-			.getSimpleName();
 	/**
-	 * @param context
-	 * @param name
-	 * @param version
+	 * Creates an object.
+	 * 
+	 * @param t
+	 * @return The uuid if successful
+	 * @throws IllegalArgumentException if t is not valid for creation. 
 	 */
-	public DatabaseOpenHelperImpl(Context context, String name, int version) {
-		super(context, name, version);
-		
-	}
-	/* (non-Javadoc)
-	 * @see android.database.sqlite.SQLiteOpenHelper#onCreate(android.database.sqlite.SQLiteDatabase)
+	public ParcelUuid create(T t);
+	
+	/**
+	 * Fetches a unique object by uuid.
+	 * 
+	 * @param uuid The uuid of the object to fetch.
+	 * @return The Parcelable representation of the object.
 	 */
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		Log.i(TAG, "onCreate()");
-		String[] create = new String[]{ 
-				ConceptsHelper.getInstance().onCreate(),
-				EncountersHelper.getInstance().onCreate(),
-				EventsHelper.getInstance().onCreate(),
-				InstructionsHelper.getInstance().onCreate(),
-				NotificationsHelper.getInstance().onCreate(),
-				ObservationsHelper.getInstance().onCreate(),
-				ObserversHelper.getInstance().onCreate(),
-				ProceduresHelper.getInstance().onCreate(),
-				SubjectsHelper.getInstance().onCreate()
-		};
-		for(String sql:create){
-			db.execSQL(sql);
-		}
-	}
-	/* (non-Javadoc)
-	 * @see android.database.sqlite.SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+	public T read(ParcelUuid uuid);
+	
+	/**
+	 * Updates the an object whose uuid matches that of the parameter t.
+	 * 
+	 * @param t The object and values to update.
+	 * @return true if successful
+	 * @throws IllegalArgumentException if t is not valid for updating. 
 	 */
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-		
-	}
+	public boolean update(T t);
+	
+	/**
+	 * Deletes an object by uuid
+	 * @param uuid The uuid String of the object to delete.
+	 * 
+	 * @return true if successful
+	 */
+	public boolean delete(ParcelUuid uuid);
 }

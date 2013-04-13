@@ -182,6 +182,7 @@ public class SanaUtil {
      * 
      * @param ctx the Context where the data is stored */
     public static void clearDatabase(Context ctx) {
+    	/*
         deleteContentUri(ctx, Procedures.CONTENT_URI,
                 Procedures.Contract._ID);
         deleteContentUri(ctx, Encounters.CONTENT_URI,
@@ -197,12 +198,15 @@ public class SanaUtil {
         if (SanaDB.DATABASE_VERSION > 4)
             deleteContentUri(ctx, Observations.CONTENT_URI, 
             		Observations.Contract._ID);
+        */
     }
 
     /** Removes all stored patient information
      * 
      * @param ctx the Context where the data is stored */
-    public static void clearPatientData(Context ctx) {
+
+
+    	public static void clearPatientData(Context ctx) {
         deleteContentUri(ctx, Patients.CONTENT_URI,
                 Patients.Contract._ID);
     }

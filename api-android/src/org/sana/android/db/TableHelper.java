@@ -62,7 +62,7 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper, In
 	
 	protected TableHelper( Class<T> klazz, String fileColumn, String extension){
 		this.model = klazz;
-		this.table = pluralize(klazz.getSimpleName().toLowerCase(Locale.US));
+		this.table = klazz.getSimpleName().toLowerCase(Locale.US);
 		this.fColumn = fileColumn;
 		this.defaultExtension = extension;
 		projection = new HashMap<String,String>();
