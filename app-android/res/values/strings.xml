@@ -176,4 +176,10 @@
     
     <!-- Patients Related -->
     <string name="msg_no_patients">No Patients</string>
+    
+    <!-- Authentication Screen -->
+    <string name="authentication_sana">Sana</string>
+    <string name="authentication_username">Username</string>
+    <string name="authentication_password">Password</string>
+    <string name="authentication_login">Log-In</string>
 </resources>

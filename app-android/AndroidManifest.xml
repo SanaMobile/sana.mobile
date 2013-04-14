@@ -30,10 +30,11 @@
             android:enabled="true"
             android:icon="@drawable/icon2"
             android:label="@string/title_upload_service" />
-        
-        <provider android:authorities="org.sana.provider" 
-            android:name=".android.db.impl.ModelContentProviderImpl"/>
-        <!--  Providers below here are deprecated -->
+
+        <provider
+            android:name=".android.db.impl.ModelContentProviderImpl"
+            android:authorities="org.sana.provider" />
+        <!-- Providers below here are deprecated -->
         <provider
             android:name="org.sana.android.db.ImageProvider"
             android:authorities="org.sana.provider.Image" />
@@ -59,7 +60,6 @@
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.patient" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="org.sana.android.activity.PatientsList"
             android:label="@string/title_patients_list" >
@@ -231,7 +231,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.Sana"      
+            android:name="org.sana.android.activity.Sana"
+            android:label="@string/app_name" />
+        <activity
+            android:name="org.sana.android.activity.AuthenticationActivity"
+            android:theme="@style/Theme.Sherlock.Light.NoActionBar" />
+        <activity
+            android:name="org.sana.android.activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
