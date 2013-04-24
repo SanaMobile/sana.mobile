@@ -39,6 +39,11 @@ import java.util.regex.Pattern;
 public class UUIDUtil {
 	
 	public static final String NAMESPACE_OID = "6ba7b812-9dad-11d1-80b4-00c04fd430c8";
+	public static final String ENCOUNTER_UUID = "22f73cbc-a66d-3567-a074-607341b35757";
+	public static final String OBSERVATION_UUID = "22f73cbc-a66d-3567-a074-607341b35757";
+	public static final String OBSERVER_UUID = "14034c9f-09b1-349c-b633-127e6e10357c";
+	public static final String SUBJECT_UUID = "12edc2564-46b9-3da0-8156-79ff18456bce";
+	
 	public static UUID EMPTY = UUID.fromString(NAMESPACE_OID);
 			
 	static final Pattern PATTERN =Pattern.compile(
@@ -83,6 +88,24 @@ public class UUIDUtil {
 			e.printStackTrace();
 			return EMPTY;
 		}		
+	}
+	
+	public static UUID generateObserverUUID(String username){
+		return UUIDUtil.uuid3(UUID.fromString(OBSERVER_UUID), username);
+	}
+	
+	public static UUID generateObservationUUID(UUID encounter, String id){
+		return UUIDUtil.uuid3(encounter, "observation/" + id);
+	}	
+	
+	public static UUID generateEncounterUUID(UUID procedure, String subject,
+			String date)
+	{
+		return UUIDUtil.uuid3(UUIDUtil.uuid3(procedure, subject), date);
+	}
+	
+	public static UUID generatePatientUUID(String systemID){
+		return UUIDUtil.uuid3(UUID.fromString(SUBJECT_UUID), systemID);
 	}
 	
 	public static void main(String[] ... args){
