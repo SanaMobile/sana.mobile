@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.sana.R;
 import org.sana.core.Event;
 import org.sana.android.Constants;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
@@ -239,6 +241,7 @@ public class MDSInterface {
 		HttpPost post = new HttpPost(mUrl);
 		Log.d(TAG, "doPost(): " + mUrl + ", " + postData.size());
 		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postData, "UTF-8");
+		post.setEntity(entity);
 		return MDSInterface.doExecute(ctx, post);
 	}
 	
@@ -1257,5 +1260,47 @@ public class MDSInterface {
 		post.add(new BasicNameValuePair("events", g.toJson(eventsList)));
 		MDSResult postResponse = MDSInterface.doPost(c, mUrl, post);
 		return (postResponse != null)? postResponse.succeeded(): false;
+	}
+	
+	// returns the scheme basef on the "Use secure transmission" setting.
+	static String getScheme(SharedPreferences preferences){
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, false))
+			return "https";
+		else
+			return "http";
+	}
+	
+	// returns the host which can be set in the preferences
+	static String getHost(SharedPreferences preferences){
+		return preferences.getString(Constants.PREFERENCE_MDS_URL,
+				Constants.DEFAULT_DISPATCH_SERVER);
+	}
+	
+	// Retuns the port value from net.xml
+	static int getPort(Context c){
+		return c.getResources().getInteger(R.integer.port_mds);
+	}
+	
+	/**
+	 * Generates a POST request to mds.
+	 * 
+	 * @param c the Context used for getting request params
+	 * @param username
+	 * @param password
+	 * @return a POST request.
+	 */
+	public static HttpPost createSessionRequest(Context c, String username, 
+			String password)
+	{
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(c);
+		String scheme = getScheme(preferences);
+		String host = getHost(preferences);
+		int port = getPort(c);
+		String path = c.getString(R.string.path_root) + c.getString(R.string.path_session);
+		List<NameValuePair> postData = new ArrayList<NameValuePair>();
+		postData.add(new BasicNameValuePair("username", username));
+		postData.add(new BasicNameValuePair("password", password));
+		return HttpRequestFactory.getPostRequest(scheme, host, port, path, postData);
 	}
 }
