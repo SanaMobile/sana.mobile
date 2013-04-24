@@ -42,6 +42,7 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 public abstract class ModelWrapper<T extends IModel> extends CursorWrapper implements ModelIterable<T>, IModel{
 	
@@ -311,8 +312,14 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 			String[] fields, String[] vals, String order)
 	{
 		StringBuilder selection = new StringBuilder();
-		SQLiteQueryBuilder.appendColumns(selection, fields);
-		return resolver.query(contentUri,null, selection.toString(), vals, order);
+		int index = 0;
+		for(String field:fields){
+			if(index > 0)
+				selection.append(" AND ");
+			selection.append(field + " = ?");
+			index++;
+		}
+		return resolver.query(contentUri, null, selection.toString(), vals, order);
 	}
 	
 	/**
