@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:icon="@drawable/icon"
@@ -251,6 +252,15 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+        <service android:name=".android.service.impl.SessionService" 
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="org.sana.service.SessionService.START"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.sana.service.SessionService.BIND_REMOTE"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
