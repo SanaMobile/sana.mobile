@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Resource values used for connecting to the dispatch server -->
+    <integer name="port_mds">80</integer>
+    <string name="scheme_mds">http</string>
+    <string name="host_mds">demo.sana.csail.mit.edu</string>
+    <!-- Path values. Should all end with a trailing slash -->
+    <string name="path_root">mds/</string>
+    <string name="path_session">json/validate/credentials/</string>
+    <string name="path_encounter"></string>
+    <string name="path_notification"></string>
+    <string name="path_observation"></string>
+    <string name="path_procedure"></string>
+    <string name="path_subject"></string>
+    <string name="path_sch_encounter">sch/encounter/</string>
+</resources>
