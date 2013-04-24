@@ -16,6 +16,7 @@ public class MDSResult {
 	private static final String SUCCESS_STRING = "SUCCESS";
 	private static final String FAILURE_STRING = "FAILURE";
 	
+	
 	private String status;
 	private String code;
 	private String data;
@@ -81,4 +82,6 @@ public class MDSResult {
 		return procedure_guid;
 	}
 
+	public static MDSResult NOSERVICE = new MDSResult();
+	
 }
