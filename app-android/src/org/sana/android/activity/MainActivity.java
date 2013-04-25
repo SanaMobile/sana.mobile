@@ -134,21 +134,27 @@ public class MainActivity extends BaseActivity {
     }
     
     @Override
-    protected void onStart(){
-    	super.onStart();
-    	Log.d(TAG, "onStart()");
+    protected void onPause() {
+        super.onPause();
+    	Log.d(TAG, "onPause()");
+    	// kill the session service if there is nothing else bound
+    	stopService(new Intent(SessionService.ACTION_START));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    	Log.d(TAG, "onResume()");
         // We want the session service to be running if Main has been started 
     	// and until after it stops.
     	startService(new Intent(SessionService.ACTION_START));
-        runner.next(this, null);
     }
-    
+
     @Override
-    protected void onStop(){
-    	super.onStop();
-    	Log.d(TAG, "onStop()");
-    	// kill the session service if there is nothing else bound
-    	stopService(new Intent(SessionService.ACTION_START));
+    protected void onStart(){
+    	super.onStart();
+    	Log.d(TAG, "onStart()");
+        runner.next(this, null);
     }
 	
     /**
