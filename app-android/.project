@@ -3,6 +3,7 @@
 	<name>sana-app-android</name>
 	<comment></comment>
 	<projects>
+		<project>api</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
