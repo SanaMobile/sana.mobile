@@ -48,7 +48,7 @@ public final class Patients{
     	
     	/** Projection to obtain ID and name of the patient. */
     	public static final String[] DISPLAY_NAME = new String[] {
-    		Contract._ID, Contract.GIVEN_NAME, Contract.FAMILY_NAME
+    		Contract._ID, Contract.GIVEN_NAME, Contract.FAMILY_NAME, Contract.IMAGE
     	};
     }
     

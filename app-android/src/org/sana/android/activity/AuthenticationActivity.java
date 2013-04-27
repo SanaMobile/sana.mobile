@@ -2,15 +2,10 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.content.core.ObserverParcel;
-import org.sana.android.net.HttpTask;
-import org.sana.android.service.IRemoteService;
 import org.sana.android.service.ISessionCallback;
 import org.sana.android.service.ISessionService;
-import org.sana.android.service.IStringCallback;
 import org.sana.android.service.impl.SessionService;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

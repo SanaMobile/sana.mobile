@@ -1,9 +1,12 @@
+
 package org.sana.android.fragment;
 
 import org.sana.R;
-import org.sana.android.activity.PatientsList;
+import org.sana.android.content.core.PatientWrapper;
 import org.sana.android.provider.Patients;
+import org.sana.util.StringUtil;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,51 +14,51 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.CursorAdapter;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Fragment displaying all patients.
- *
+ * 
  * @author Sana Development Team
  */
 public class PatientListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
     private static final int PATIENTS_LOADER = 0;
-    
-    private PatientsList mActivity;
+
     private Uri mUri;
-    private SimpleCursorAdapter mAdapter;
+    private PatientCursorAdapter mAdapter;
     private OnPatientSelectedListener mListener;
-    
+
+    //
+    // Activity Methods
+    //
+
     /** {@inheritDoc} */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        
-        mActivity = (PatientsList) getActivity();
-        
-        mUri = mActivity.getIntent().getData();
+
+        mUri = getActivity().getIntent().getData();
         if (mUri == null) {
             mUri = Patients.CONTENT_URI;
         }
-        
-        mAdapter = new SimpleCursorAdapter(mActivity, 
-                R.layout.patient_list_row, null, 
-                new String[] { Patients.Contract.FAMILY_NAME, 
-                               Patients.Contract.GIVEN_NAME },
-                new int[] { R.id.last_name, R.id.first_name }, 
-                SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+
+        mAdapter = new PatientCursorAdapter(getActivity(), null);
         setListAdapter(mAdapter);
-                                   
+
         getLoaderManager().initLoader(PATIENTS_LOADER, null, this);
     }
 
@@ -67,11 +70,14 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         }
     }
 
+    //
+    // Loader Callbacks
+    //
+
     /** {@inheritDoc} */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
-        CursorLoader loader = new CursorLoader(mActivity, mUri, 
-        		Patients.Projection.DISPLAY_NAME,
+        CursorLoader loader = new CursorLoader(getActivity(), mUri, Patients.Projection.DISPLAY_NAME,
                 null, null, Patients.DEFAULT_SORT_ORDER);
         return loader;
     }
@@ -79,7 +85,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     /** {@inheritDoc} */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        
+
         if (cursor == null || cursor.getCount() == 0) {
             setEmptyText(getString(R.string.msg_no_patients));
         }
@@ -95,16 +101,18 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
 
     /**
      * Events specific to this PatientListFragment
-     *
+     * 
      * @author Sana Development Team
      */
     public interface OnPatientSelectedListener {
-        /** Callback when a patient is selected in the list. 
+        /**
+         * Callback when a patient is selected in the list.
+         * 
          * @param patientId The selected patient's ID.
          */
         public void onPatientSelected(long patientId);
     }
-    
+
     /**
      * Sets a listener to this fragment.
      * 
@@ -112,5 +120,38 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
      */
     public void setOnPatientSelectedListener(OnPatientSelectedListener listener) {
         mListener = listener;
+    }
+
+    /**
+     * Adapter for patient information
+     * 
+     * @author Sana Development Team
+     */
+    public static class PatientCursorAdapter extends CursorAdapter {
+
+        public PatientCursorAdapter(Context context, Cursor c) {
+            super(context, c, true);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            PatientWrapper wrapper = new PatientWrapper(cursor);
+
+            // TODO retrieve patient image
+            ImageView image = (ImageView)view.findViewById(R.id.image);
+
+            TextView displayName = (TextView)view.findViewById(R.id.name);
+            displayName.setText(StringUtil.formatPatientDisplayName(wrapper.getGiven_name(),
+                    wrapper.getFamily_name()));
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.patient_list_item, null);
+            bindView(view, context, cursor);
+            return view;
+        }
+
     }
 }
