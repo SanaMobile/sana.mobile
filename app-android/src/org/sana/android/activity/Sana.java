@@ -15,6 +15,7 @@ import org.sana.android.service.ServiceListener;
 import org.sana.android.task.MDSSyncTask;
 import org.sana.android.task.ResetDatabaseTask;
 import org.sana.android.util.SanaUtil;
+import org.sana.android.util.UriUtil;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -41,7 +42,7 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  * @author Sana Dev Team
  */
-public class Sana extends SherlockActivity implements View.OnClickListener {
+public class Sana extends BaseActivity implements View.OnClickListener {
     public static final String TAG = Sana.class.getSimpleName();
 
     // Option menu codes
@@ -182,6 +183,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
         intentWithProcedureInfo.setAction(Intent.ACTION_PICK);
         intentWithProcedureInfo.setType(Patients.CONTENT_TYPE);
         intentWithProcedureInfo.setData(Patients.CONTENT_URI);
+		onSaveAppState(intentWithProcedureInfo);
         startActivityForResult(intentWithProcedureInfo, PICK_PATIENT);
     }
     
@@ -199,6 +201,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
         intentWithPatientId.setAction(Intent.ACTION_PICK);
         intentWithPatientId.setType(Procedures.CONTENT_TYPE);
         intentWithPatientId.setData(Procedures.CONTENT_URI);
+		onSaveAppState(intentWithPatientId);
         startActivityForResult(intentWithPatientId, PICK_PROCEDURE);
     }
     
@@ -207,6 +210,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
     	Intent i = new Intent(Intent.ACTION_PICK);
     	i.setType(Encounters.CONTENT_TYPE);
     	i.setData(Encounters.CONTENT_URI);
+		onSaveAppState(i);
     	startActivityForResult(i, PICK_SAVEDPROCEDURE);
     }
 
@@ -215,6 +219,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
         Intent i = new Intent(Intent.ACTION_PICK);
         i.setType(Notifications.CONTENT_TYPE);
         i.setData(Notifications.CONTENT_URI);
+		onSaveAppState(i);
         startActivityForResult(i, PICK_NOTIFICATION);
     }
     
@@ -267,21 +272,27 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
         	}
             break;
         case RESULT_OK:
+        	// update selected subject
+        	onUpdateAppState(data);
+        	
         	Uri uri = null;
         	if(data != null) {
         		uri = data.getData();
         	}
         	if(requestCode == PICK_PROCEDURE) {
-        		assert(uri != null);
+        		//assert(uri != null);
         		//TODO use the patient UUID from the subject extra
         		long patientId = data.getLongExtra(PatientsList.EXTRA_PATIENT_ID, PatientsList.INVALID_PATIENT_ID);
-        		if (patientId == PatientsList.INVALID_PATIENT_ID) {
+        		mProcedure = uri;
+        		if(UriUtil.isEmpty(mSubject)){
+        		//if (patientId == PatientsList.INVALID_PATIENT_ID) {
         		    pickPatient(data);
         		} else {
         		    doPerformProcedureForPatient(uri, patientId);
         		}
         	} else if(requestCode == PICK_SAVEDPROCEDURE) {
         		assert(uri != null);
+        		mEncounter = uri;
         		doResumeProcedure(uri);
         	} else if(requestCode == PICK_NOTIFICATION) {
         		assert(uri != null);
@@ -291,12 +302,13 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
         		pickSavedProcedure();
         	} else if (requestCode == PICK_PATIENT) {
         	    long patientId = data.getLongExtra(PatientsList.EXTRA_PATIENT_ID, PatientsList.INVALID_PATIENT_ID);
-        	    assert(patientId != PatientsList.INVALID_PATIENT_ID);
-        	    Uri procedureUri = data.getParcelableExtra(ProceduresList.EXTRA_PROCEDURE_URI);
-        	    if (procedureUri == null) {
+        	    //assert(patientId != PatientsList.INVALID_PATIENT_ID);
+        	    //Uri procedureUri = data.getParcelableExtra(ProceduresList.EXTRA_PROCEDURE_URI);
+        	    mSubject = uri;
+        	    if (UriUtil.isEmpty(mProcedure)) {
         	        pickProcedure(data);
         	    } else {
-        	        doPerformProcedureForPatient(procedureUri, patientId);
+        	        doPerformProcedureForPatient(mProcedure, patientId);
         	    }
         	}
             break;
@@ -317,6 +329,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
                 	// Dismiss dialog and return to settings                	
                 	Intent i = new Intent(Intent.ACTION_PICK);
                     i.setClass(Sana.this, Settings.class);
+            		onSaveAppState(i);
                     startActivityForResult(i, SETTINGS);
                 	setResult(RESULT_OK, null);
                 	dialog.dismiss();
@@ -357,6 +370,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
                 	// Dismiss dialog and return to settings                	
                 	Intent i = new Intent(Intent.ACTION_PICK);
                     i.setClass(Sana.this, Settings.class);
+            		onSaveAppState(i);
                     startActivityForResult(i, SETTINGS);
                 	setResult(RESULT_OK, null);
                 	dialog.dismiss();
@@ -400,6 +414,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
     	try {
     		Intent i = new Intent(Intent.ACTION_VIEW, uri);
     		i.putExtra("savedProcedureUri", uri.toString());
+    		onSaveAppState(i);
     		startActivityForResult(i, RESUME_PROCEDURE);
     	} catch(Exception e) {
     		Log.e(TAG, "While resuming procedure " 
@@ -417,6 +432,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
         try {
         	Intent i = new Intent(Intent.ACTION_VIEW, uri);
         	i.putExtra(PatientsList.EXTRA_PATIENT_ID, patientId);
+    		onSaveAppState(i);
     		startActivityForResult(i, RUN_PROCEDURE);
         } catch (Exception e) {
             SanaUtil.errorAlert(this, e.toString());
