@@ -41,6 +41,7 @@ import org.sana.android.db.impl.InstructionsHelper;
 import org.sana.android.db.impl.NotificationsHelper;
 import org.sana.android.db.impl.ObservationsHelper;
 import org.sana.android.db.impl.ObserversHelper;
+import org.sana.android.db.impl.ProceduresHelper;
 import org.sana.android.db.impl.SubjectsHelper;
 
 import android.content.ContentProvider;
@@ -103,6 +104,8 @@ public abstract class ModelContentProvider extends ContentProvider {
 			return ObservationsHelper.getInstance();
 		case(Code.OBSERVER):
 			return ObserversHelper.getInstance();
+		case(Code.PROCEDURE):
+			return ProceduresHelper.getInstance();
 		case(Code.SUBJECT):
 			return SubjectsHelper.getInstance();
 		default:
