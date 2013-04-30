@@ -149,6 +149,9 @@ public class ModelMatcher implements UriHelper {
 		mMatcher.addURI(Models.AUTHORITY, "subject/", SUBJECT_DIR);
 		mMatcher.addURI(Models.AUTHORITY, "subject/#", SUBJECT_ITEM);
 		mMatcher.addURI(Models.AUTHORITY, "subject/*", SUBJECT_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "patient/", SUBJECT_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "patient/#", SUBJECT_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "patient/*", SUBJECT_UUID);
 		
 	}
 	
