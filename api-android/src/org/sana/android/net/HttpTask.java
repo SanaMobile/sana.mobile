@@ -35,8 +35,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
@@ -58,10 +56,17 @@ public class HttpTask extends AsyncTask<HttpUriRequest,Integer,MDSResult>{
 	public static final int SUCCEED = 1;
 	public static final int NO_SERVICE = 2;
 	
+	private final int timeout;
+	
 	NetworkTaskListener<MDSResult> listener = null;
 	
 	public HttpTask(NetworkTaskListener<MDSResult> listener){
+		this(listener, -1);
+	}
+	
+	public HttpTask(NetworkTaskListener<MDSResult> listener, int timeout){
 		this.listener = listener;
+		this.timeout = timeout;
 	}
 	
 	public void setListener(NetworkTaskListener<MDSResult> listener){
@@ -74,19 +79,20 @@ public class HttpTask extends AsyncTask<HttpUriRequest,Integer,MDSResult>{
 	@Override
 	protected MDSResult doInBackground(HttpUriRequest... params) {
 		HttpUriRequest method = params[0];
-		HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, 1000);
-		HttpConnectionParams.setSoTimeout(httpParams, 1000);
-		HttpClient client = new DefaultHttpClient(httpParams);
+		HttpClient client = new DefaultHttpClient();
+		HttpParams httpParams = client.getParams();
+		if(timeout > 0){
+			HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+			HttpConnectionParams.setSoTimeout(httpParams, timeout);
+		}
 		MDSResult response = MDSResult.NOSERVICE;
 		HttpResponse httpResponse = null;
 		String responseString = null;
 		try {
-			Log.i(TAG, "About to execute request...");
+			Log.i(TAG, "doInBackground(): About to execute request...");
 			httpResponse = client.execute(method);
 			responseString = EntityUtils.toString(httpResponse.getEntity());
-			Log.i(TAG, "Received from MDS:" + responseString.length()+" chars");
-			Log.d(TAG, "    " + responseString);
+			Log.d(TAG, "Received from MDS:" + responseString.length()+" chars");
 			Gson gson = new Gson();
 			response = gson.fromJson(responseString, MDSResult.class);
 		} catch (ClientProtocolException e) {
