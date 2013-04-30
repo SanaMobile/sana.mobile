@@ -129,14 +129,14 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.savedProcedure" />
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:mimeType="vnd.android.cursor.item/org.sana.savedProcedure" />
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
             </intent-filter>
         </activity>
         <activity
@@ -199,14 +199,14 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:mimeType="vnd.android.cursor.item/org.sana.savedProcedure" />
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:mimeType="vnd.android.cursor.item/org.sana.savedProcedure" />
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
             </intent-filter>
         </activity>
         <activity
