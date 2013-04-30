@@ -3,11 +3,14 @@ package org.sana.android.activity;
 
 import org.sana.R;
 import org.sana.android.provider.Patients;
+import org.sana.android.app.State.Keys;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
 import org.sana.android.util.SanaUtil;
 
+import android.content.ContentUris;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -99,7 +102,10 @@ public class PatientsList extends SherlockFragmentActivity implements
     @Override
     public void onPatientSelected(long patientId) {
         // A patient was selected so return to caller activity.
-        Intent data = getIntent();
+        //Intent data = getIntent();
+    	Uri uri = ContentUris.withAppendedId(Patients.CONTENT_URI,patientId);
+        Intent data = new Intent();
+        data.setDataAndType(uri,Patients.CONTENT_ITEM_TYPE);
         data.putExtra(EXTRA_PATIENT_ID, patientId);
         setResult(RESULT_OK, data);
         finish();
