@@ -2,12 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry exported="true" kind="lib" path="../libs/gson-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="../libs/apache-mime4j-core-0.7.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="../libs/commons-codec-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="../libs/httpmime-4.1.3.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/api"/>
+	<classpathentry exported="true" kind="lib" path="/api/libs/apache-mime4j-core-0.7.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="/api/libs/commons-codec-1.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="/api/libs/gson-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="/api/libs/httpmime-4.1.3.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
