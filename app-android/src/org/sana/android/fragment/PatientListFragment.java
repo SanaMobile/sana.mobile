@@ -15,6 +15,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,7 +140,13 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
 
             // TODO retrieve patient image
             ImageView image = (ImageView)view.findViewById(R.id.image);
-
+            String imageUri = wrapper.getImage();
+            if(!TextUtils.isEmpty(imageUri)){
+            	image.setImageURI(Uri.parse(imageUri));
+            } else {
+            	image.setImageResource(R.drawable.unknown);
+            }
+            
             TextView displayName = (TextView)view.findViewById(R.id.name);
             displayName.setText(StringUtil.formatPatientDisplayName(wrapper.getGiven_name(),
                     wrapper.getFamily_name()));
