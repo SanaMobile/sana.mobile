@@ -97,6 +97,7 @@ public class EventsHelper extends TableHelper<Event>{
 		Log.i(TAG, "onCreate()");
 		return "CREATE TABLE " + getTable() + " ("
 				+ Contract._ID + " INTEGER PRIMARY KEY,"
+				+ Contract.UUID + " TEXT, "
 				+ Contract.EVENT_TYPE + " TEXT, "
 				+ Contract.EVENT_VALUE + " TEXT, " 
 				+ Contract.ENCOUNTER + " TEXT, "
