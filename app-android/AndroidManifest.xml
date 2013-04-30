@@ -60,6 +60,14 @@
 
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.patient" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.INSERT" />
+                <action android:name="android.intent.action.INSERT_OR_EDIT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.subject" />
+            </intent-filter>
         </activity>
         <activity
             android:name="org.sana.android.activity.PatientsList"
@@ -72,11 +80,25 @@
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.patient" />
             </intent-filter>
             <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.subject" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="vnd.android.cursor.item/org.sana.patient" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.GET_CONTENT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.subject" />
             </intent-filter>
         </activity>
         <activity
