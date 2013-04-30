@@ -33,7 +33,7 @@ public final class Patients{
      * The content:// style URI for this content provider.
      */
 	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/patients");
+			+ AUTHORITY + "/patient");
 	
 	/** Default sort order. */
 	public static final String DEFAULT_SORT_ORDER = Contract.FAMILY_NAME + "  ASC";
