@@ -12,10 +12,8 @@ import org.sana.android.procedure.Procedure;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.ServiceConnector;
 import org.sana.android.service.ServiceListener;
-import org.sana.android.task.CheckCredentialsTask;
 import org.sana.android.task.MDSSyncTask;
 import org.sana.android.task.ResetDatabaseTask;
-import org.sana.android.task.ValidationListener;
 import org.sana.android.util.SanaUtil;
 
 import android.app.AlertDialog;
@@ -83,7 +81,6 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
     
     private ServiceConnector mConnector = new ServiceConnector();
     private BackgroundUploader mUploadService = null;
-    private CheckCredentialsTask mCredentialsTask;
     private ResetDatabaseTask mResetDatabaseTask;
     private MDSSyncTask mSyncTask;
     
@@ -112,41 +109,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
 			mUploadService = null;
 		}
     }
-    
-    /**
-     * Background listener to signal that credentials have been validated with
-     * the permanent data store.
-     * 
-     * @author Sana Development Team
-     */
-    private class CredentialsValidatedListener implements ValidationListener {
-    	/**
-         * Called when CheckCredentialsTask completes
-         */
-    	public void onValidationComplete(int validationResult) {
-    		switch(validationResult){
-    		case(CheckCredentialsTask.CREDENTIALS_NO_CONNECTION):
-    			Log.i(TAG, "Cannot validate EMR credentials -"+
-					"no network connectivity!");
-    			if(!isFinishing())
-    				showDialog(DIALOG_NO_CONNECTIVITY);
-    			break;
-    		case(CheckCredentialsTask.CREDENTIALS_INVALID):
-    			Log.i(TAG, "Could not validate EMR username/password");
-				if (mUploadService != null) {
-					mUploadService.onCredentialsChanged(false);
-				}
-    			break;
-    		case(CheckCredentialsTask.CREDENTIALS_VALID):
-    			Log.i(TAG, "Username/Password for EMR correct");
-				if (mUploadService != null) {
-					mUploadService.onCredentialsChanged(true);
-				}
-    			break;
-    		}
-    	}
-    }
-
+	
     /** {@inheritDoc} */
 	@Override
 	public void onDestroy() {
@@ -301,15 +264,6 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
         			if(!isFinishing())
         				showDialog(DIALOG_NO_PHONE_NAME);
         		}
-        		// Attempt to validate the credentials changed in the settings.
-        		if(mCredentialsTask != null) 
-        			if(mCredentialsTask.getStatus() == Status.FINISHED)
-        			{
-        				mCredentialsTask = new CheckCredentialsTask();
-        				mCredentialsTask.setValidationListener(
-        								new CredentialsValidatedListener());
-        				mCredentialsTask.execute(this);
-        			}
         	}
             break;
         case RESULT_OK:
@@ -319,6 +273,7 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
         	}
         	if(requestCode == PICK_PROCEDURE) {
         		assert(uri != null);
+        		//TODO use the patient UUID from the subject extra
         		long patientId = data.getLongExtra(PatientsList.EXTRA_PATIENT_ID, PatientsList.INVALID_PATIENT_ID);
         		if (patientId == PatientsList.INVALID_PATIENT_ID) {
         		    pickPatient(data);
@@ -537,11 +492,6 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
     }
     
     private void saveLocalTaskState(Bundle outState){
-    	final CheckCredentialsTask task = mCredentialsTask;
-        if (task != null && task.getStatus() != Status.FINISHED) {
-        	task.cancel(true);
-        	outState.putBoolean(STATE_CHECK_CREDENTIALS, true);
-        }
     	final MDSSyncTask mTask = mSyncTask;
         if (mTask != null && mTask.getStatus() != Status.FINISHED) {
         	mTask.cancel(true);
@@ -563,12 +513,6 @@ public class Sana extends SherlockActivity implements View.OnClickListener {
     
     /** Restores any tasks running on this thread */
     private void restoreLocalTaskState(Bundle savedInstanceState){
-    	if (savedInstanceState.getBoolean(STATE_CHECK_CREDENTIALS)){
-			final CheckCredentialsTask task = new CheckCredentialsTask();
-			task.setValidationListener(
-						new CredentialsValidatedListener());
-			mCredentialsTask = (CheckCredentialsTask) task.execute(this);
-    	}
     	if (savedInstanceState.getBoolean(STATE_MDS_SYNC))
     		mSyncTask = (MDSSyncTask) new MDSSyncTask(this).execute(this);
     	if (savedInstanceState.getBoolean(STATE_RESET_DB))

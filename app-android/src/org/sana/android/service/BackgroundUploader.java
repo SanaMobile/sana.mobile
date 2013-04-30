@@ -6,8 +6,6 @@ import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
 import org.sana.android.net.MDSInterface;
-import org.sana.android.task.CheckCredentialsTask;
-import org.sana.android.task.ValidationListener;
 import org.sana.android.util.SanaUtil;
 
 import android.app.Application;
@@ -49,8 +47,8 @@ public class BackgroundUploader extends Service {
 	
 	private PriorityQueue<Uri> queue = null;
 
-	private CredentialStatus credentialStatus = CredentialStatus.UNKNOWN;
-	private CheckCredentialsTask checkCredentialsTask = null;
+	private CredentialStatus credentialStatus = CredentialStatus.VALID;
+	//private CheckCredentialsTask checkCredentialsTask = null;
 	
 	/**
 	 * Provides a Binder to the BackgoundUploader Service.
@@ -81,29 +79,6 @@ public class BackgroundUploader extends Service {
 			}
 			// Tell the BackgroundUploader the data connection state changed.
 			BackgroundUploader.this.onConnectionChanged();
-		}
-	}
-	
-	private class CredentialValidationListener implements ValidationListener {
-		public void onValidationComplete(int validationResult) {
-			checkCredentialsTask = null;
-			if (validationResult == CheckCredentialsTask.CREDENTIALS_INVALID) {
-				credentialStatus = CredentialStatus.INVALID;
-			} else if (
-				validationResult == CheckCredentialsTask.CREDENTIALS_VALID){
-				credentialStatus = CredentialStatus.VALID;
-			} else if (
-				validationResult == CheckCredentialsTask.CREDENTIALS_NO_CONNECTION){
-				// Leave credentialStatus as it is.
-			}
-			
-			if (credentialStatus.equals(CredentialStatus.VALID)) {
-				// Process the queue, since the credentials were valid. Only
-				// call this if they are valid because this callback is
-				// called as a result of a request from processUploadQueue(), so
-				// prevent a loop.
-				processUploadQueue();
-			}
 		}
 	}
 
@@ -254,23 +229,6 @@ public class BackgroundUploader extends Service {
 		boolean credentialsValid = CredentialStatus.VALID.equals(
 				credentialStatus);
 		boolean connectionAvailable = updateQueueStatusAndCheckConnection();
-		
-		if (!credentialsValid) {
-			if (CredentialStatus.UNKNOWN.equals(credentialStatus)) {
-				if (checkCredentialsTask == null) {
-					// Spawn worker to check
-					checkCredentialsTask = new CheckCredentialsTask();
-					checkCredentialsTask.setValidationListener(
-							new CredentialValidationListener());
-					checkCredentialsTask.execute(this);
-				}
-			} else {
-				Log.i(TAG, "OpenMRS username/password incorrect - will not " +
-						"attempt to upload");
-			}
-			return;
-		} 
-		
 		if (!queue.isEmpty() && connectionAvailable) {
 			Log.i(TAG, "Queue not empty and connection is available, so " +
 					"spawning upload worker.");
