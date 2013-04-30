@@ -31,7 +31,15 @@ import android.net.Uri;
 
 public final class UriUtil {
 
-
+	/**
+	 * Returns true if the Uri is null or equal to Uri.EMPTY 
+	 * @param uri
+	 * @return
+	 */
+	public static boolean isEmpty(Uri uri){
+		return (uri == null)? true: uri == Uri.EMPTY;
+	}
+	
 	/**
 	 * Copy constructor utility.
 	 * 
