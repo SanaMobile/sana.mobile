@@ -88,6 +88,7 @@ public class ProceduresHelper extends TableHelper<Procedure>{
 				+ Contract.MODIFIED + " DATE, "
 				+ Contract.TITLE 	+ " TEXT NOT NULL, "
 				+ Contract.AUTHOR 	+ " TEXT NOT NULL, "
+				+ Contract.PROCEDURE+ " TEXT, "
 				+ Contract.VERSION 	+ " TEXT, "
 				+ Contract.LOCALE 	+ " TEXT "
         		+ ");";
