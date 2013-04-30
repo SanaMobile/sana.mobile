@@ -89,6 +89,7 @@ public class MainActivity extends BaseActivity {
     			this.state = State.LOGIN;
     			intent = new Intent();
     	        intent.setClass(context, AuthenticationActivity.class);
+				onSaveAppState(intent);
     	        break;
     	    // Successful login we launch Sana
     		case LOGIN:
@@ -97,6 +98,7 @@ public class MainActivity extends BaseActivity {
     			this.state = State.HOME;
     			intent = new Intent();
     	        intent.setClass(context, Sana.class);
+				onSaveAppState(intent);
     	        break;
     		case COMPLETE:
     		default:
@@ -122,6 +124,7 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
     	switch(resultCode){
     	case RESULT_OK:
+    		onUpdateAppState(data);
     		runner.next(this, data);
     	case RESULT_CANCELED:
     		finish();
@@ -163,6 +166,8 @@ public class MainActivity extends BaseActivity {
     void showHomeActivity() {
         Intent intent = new Intent();
         intent.setClass(this, Sana.class);
+        // pass the app state fields
+        onSaveAppState(intent);
         startActivityForResult(intent, State.HOME.ordinal());
     }
     
@@ -172,6 +177,8 @@ public class MainActivity extends BaseActivity {
     void showAuthenticationActivity() {
         Intent intent = new Intent();
         intent.setClass(this, AuthenticationActivity.class);
+        // pass the app state fields
+        onSaveAppState(intent);
         startActivityForResult(intent, State.LOGIN.ordinal());
     }
 

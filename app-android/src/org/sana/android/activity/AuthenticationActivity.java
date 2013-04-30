@@ -72,7 +72,10 @@ public class AuthenticationActivity extends BaseActivity {
 			mBound = false;
 		}
 	};
-		
+	
+	// This is the handler which responds to the SessionService
+	// It expects a Message with msg.what = FAILURE or SUCCESS
+	// and a Bundle with the new session key if successful.
     private Handler mHandler = new Handler() {
     	
         @Override public void handleMessage(Message msg) {
@@ -91,9 +94,9 @@ public class AuthenticationActivity extends BaseActivity {
         	case SessionService.SUCCESS:
         		loginsRemaining = 0;
         		Bundle b = msg.getData();
+        		onUpdateAppState(b);
         		Intent data = new Intent();
-        		data.putExtra(INSTANCE_KEY, b.getString(INSTANCE_KEY));
-        		data.putExtra(SESSION_KEY, b.getString(SESSION_KEY));
+        		onSaveAppState(data);
         		setResult(RESULT_OK,data);
         		break;
         	default:
@@ -133,13 +136,13 @@ public class AuthenticationActivity extends BaseActivity {
         loginsRemaining = getResources().getInteger(R.integer.max_login_attempts);
     }
     
-    void disableInput(){
+    private void disableInput(){
     	mInputUsername.setEnabled(false);
     	mInputPassword.setEnabled(false);
     	mBtnLogin.setEnabled(false);
     }
     
-    void enableInput(){
+    private void enableInput(){
     	mInputUsername.setEnabled(true);
     	mInputPassword.setEnabled(true);
     	mBtnLogin.setEnabled(true);
@@ -154,7 +157,7 @@ public class AuthenticationActivity extends BaseActivity {
     	String username = mInputUsername.getText().toString();
     	String password = mInputPassword.getText().toString();
     	
-    	if(isBound() && 
+    	if(mBound && 
    			validUsernameAndPasswordFormat(username, password)){
     			Log.d(TAG, "login(): user name and password format valid");
     			try {
@@ -167,13 +170,16 @@ public class AuthenticationActivity extends BaseActivity {
     	}
     }
     
+    /**
+     * Validates that the credentials are valid.
+     * 
+     * @param username The username credential.
+     * @param password The password credential.
+     * @return
+     */
     protected boolean validUsernameAndPasswordFormat(String username,
     		String password){
     	return !(TextUtils.isEmpty(username) || TextUtils.isEmpty(password));
-    }
-    
-    protected boolean isBound(){
-    	return mBound;
     }
     
     /*
@@ -200,7 +206,6 @@ public class AuthenticationActivity extends BaseActivity {
     private void bindSessionService(){
     	Log.i(TAG, "bindSessionService()");
     	if(!mBound){
-        	Log.d(TAG, "mBound = " + mBound);
     		if(mService == null){
     	    	Log.d(TAG, "mService binder is null"); 
     			bindService(new Intent(SessionService.ACTION_START), mConnection, Context.BIND_AUTO_CREATE);
@@ -220,13 +225,13 @@ public class AuthenticationActivity extends BaseActivity {
         			Log.e(TAG, "Failure unbinding Sessionservice",e);
         		}
         	// Detach
-    		//unbindService(mCallbackConnection);
     		unbindService(mConnection);
             mBound = false;
         }
     }
 
-    void registerCallback(){
+    // Registers the callback using the instance key
+    private void registerCallback(){
     	try {
 			mService.registerCallback(mCallback, getInstanceKey());
 		} catch (RemoteException e) {
