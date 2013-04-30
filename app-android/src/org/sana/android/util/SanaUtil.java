@@ -43,7 +43,7 @@ import android.util.Log;
  * 
  * @author Sana Development Team */
 public class SanaUtil {
-    public static final String TAG = SanaUtil.class.toString();
+    public static final String TAG = SanaUtil.class.getSimpleName();
 
     private static final String[] PROJECTION = new String[] {
             Procedures.Contract._ID,
