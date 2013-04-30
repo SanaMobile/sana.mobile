@@ -62,17 +62,17 @@ public final class Encounters {
     /**
      * The default sort order.
      */
-    public static final String DEFAULT_SORT_ORDER = "modified DESC";
+    public static final String DEFAULT_SORT_ORDER = Contract.MODIFIED +" DESC";
     
     /**
      * Sort by descending created column
      */
-    public static final String CREATED_SORT_ORDER = "created DESC";
+    public static final String CREATED_SORT_ORDER = Contract.CREATED +" DESC";
     
     /**
      * Sort by ascending upload_queue column
      */
-    public static final String QUEUE_SORT_ORDER = "upload_queue ASC";
+    public static final String QUEUE_SORT_ORDER = Contract.UPLOAD_QUEUE +" ASC";
 
 	private Encounters() {}
 	
