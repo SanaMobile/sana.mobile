@@ -138,7 +138,6 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         public void bindView(View view, Context context, Cursor cursor) {
             PatientWrapper wrapper = new PatientWrapper(cursor);
 
-            // TODO retrieve patient image
             ImageView image = (ImageView)view.findViewById(R.id.image);
             String imageUri = wrapper.getImage();
             if(!TextUtils.isEmpty(imageUri)){

@@ -2,10 +2,9 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.provider.Patients;
-import org.sana.android.app.State.Keys;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
+import org.sana.android.provider.Patients;
 import org.sana.android.util.SanaUtil;
 
 import android.content.ContentUris;
