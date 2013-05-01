@@ -2,6 +2,7 @@ package org.sana.android.activity;
 
 import java.util.UUID;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ public abstract class BaseActivity extends SherlockActivity {
     
 	public static final String TAG = BaseActivity.class.getSimpleName();
 
+    // Dialog for prompting the user that a long operation is being performed.
+    ProgressDialog mWaitDialog;
+    
 	/**
      * Finishes the calling activity and launches the activity contained in
      * <code>intent</code>
@@ -234,5 +238,34 @@ public abstract class BaseActivity extends SherlockActivity {
     	// get the fields from the launch intent extras
     	if(intent != null)
     		onUpdateAppState(intent);
+    }
+
+    
+    /**
+     * Displays a progress dialog fragment with the provided message.
+     * @param message
+     */
+    void showProgressDialogFragment(String message) {
+        
+        if (mWaitDialog != null && mWaitDialog.isShowing()) {
+            hideProgressDialogFragment();
+        }
+        
+        mWaitDialog = new ProgressDialog(this);
+        mWaitDialog.setMessage(message);
+        mWaitDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mWaitDialog.show();
+    }
+    
+    /**
+     * Hides the progress dialog if it is shown.
+     */
+    void hideProgressDialogFragment() {
+        
+        if (mWaitDialog == null) {
+            return;
+        }
+        
+        mWaitDialog.hide();
     }
 }

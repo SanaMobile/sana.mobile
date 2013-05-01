@@ -81,6 +81,7 @@ public class AuthenticationActivity extends BaseActivity {
         @Override public void handleMessage(Message msg) {
     		int state = msg.what;
     		Log.i(TAG, "handleMessage(): " + msg.what);
+    		hideProgressDialogFragment();
         	switch(state){
         	case SessionService.FAILURE:
         		loginsRemaining--;
@@ -160,9 +161,9 @@ public class AuthenticationActivity extends BaseActivity {
     	if(mBound && 
    			validUsernameAndPasswordFormat(username, password)){
     			Log.d(TAG, "login(): user name and password format valid");
+    			showProgressDialogFragment(getString(R.string.dialog_logging_in));
     			try {
     				mService.create(getInstanceKey(), username,password);// register the callback to the username
-
     			} catch (RemoteException e) {
     				Log.e(TAG, "login()" + e.toString());
     				e.printStackTrace();

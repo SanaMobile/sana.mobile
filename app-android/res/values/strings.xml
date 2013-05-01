@@ -57,6 +57,7 @@
     <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number</string>
     <string name="dialog_loading_procedure">Loading Procedure.</string>
     <string name="dialog_look_up_patient">Looking up patient \"%d\"</string>
+    <string name="dialog_logging_in">Logging in.</string>
 	
 	<!-- Menu options strings -->
 	<string name="menu_new_patient">New Patient</string>
