@@ -79,7 +79,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         CursorLoader loader = new CursorLoader(getActivity(), mUri, Patients.Projection.DISPLAY_NAME,
-                null, null, Patients.DEFAULT_SORT_ORDER);
+                null, null, Patients.GIVEN_NAME_SORT_ORDER);
         return loader;
     }
 
@@ -146,7 +146,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             	image.setImageResource(R.drawable.unknown);
             }
             
-            TextView displayName = (TextView)view.findViewById(R.id.name);
+            TextView displayName = (TextView) view.findViewById(R.id.name);
             displayName.setText(StringUtil.formatPatientDisplayName(wrapper.getGiven_name(),
                     wrapper.getFamily_name()));
         }

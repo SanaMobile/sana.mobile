@@ -38,6 +38,9 @@ public final class Patients{
 	/** Default sort order. */
 	public static final String DEFAULT_SORT_ORDER = Contract.FAMILY_NAME + "  ASC";
 	
+	/** Sort patients by first name. */
+	public static final String GIVEN_NAME_SORT_ORDER = Contract.GIVEN_NAME + " ASC";
+	
     private Patients() {}
 
     /**

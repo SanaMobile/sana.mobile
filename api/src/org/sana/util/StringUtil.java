@@ -14,9 +14,9 @@ public class StringUtil {
      */
     public static String formatPatientDisplayName(String firstName, String lastName) {
         StringBuilder sb = new StringBuilder();
-        sb.append(lastName);
-        sb.append(", ");
         sb.append(firstName);
+        sb.append(" ");
+        sb.append(lastName);
         return sb.toString();
     }
 }
