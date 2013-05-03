@@ -1,6 +1,8 @@
 
 package org.sana.android.fragment;
 
+import java.util.Locale;
+
 import org.sana.R;
 import org.sana.android.content.core.PatientWrapper;
 import org.sana.android.provider.Patients;
@@ -19,6 +21,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AlphabetIndexer;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -130,25 +133,105 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
      */
     public static class PatientCursorAdapter extends CursorAdapter {
 
+        private int[] mRowStates;
+        private AlphabetIndexer mAlphaIndexer;
+        private PatientWrapper mWrapper;
+        
+        private static final int STATE_UNKNOWN = 0;
+        private static final int STATE_LABELED = 1;
+        private static final int STATE_UNLABELED = 2;
+        
+        private static final String ALPHABET = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        
         public PatientCursorAdapter(Context context, Cursor c) {
             super(context, c, true);
+            init(c);
+        }
+
+        private void init(Cursor c) {
+            if (c == null) {
+                return;
+            }
+            mWrapper = new PatientWrapper(c);
+            mRowStates = new int[c.getCount()];
+            mAlphaIndexer = new AlphabetIndexer(c, 
+                    c.getColumnIndex(Patients.Contract.GIVEN_NAME), 
+                    ALPHABET);
+        }
+        
+        @Override
+        public Cursor swapCursor(Cursor newCursor) {
+            init(newCursor);
+            return super.swapCursor(newCursor);
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            PatientWrapper wrapper = new PatientWrapper(cursor);
-
+            
+            // Set patient name and image
             ImageView image = (ImageView)view.findViewById(R.id.image);
-            String imageUri = wrapper.getImage();
+            String imageUri = mWrapper.getImage();
             if(!TextUtils.isEmpty(imageUri)){
             	image.setImageURI(Uri.parse(imageUri));
             } else {
             	image.setImageResource(R.drawable.unknown);
             }
             
-            TextView displayName = (TextView) view.findViewById(R.id.name);
-            displayName.setText(StringUtil.formatPatientDisplayName(wrapper.getGiven_name(),
-                    wrapper.getFamily_name()));
+            String displayName = StringUtil.formatPatientDisplayName(mWrapper.getGiven_name(), mWrapper.getFamily_name());
+            TextView name = (TextView) view.findViewById(R.id.name);
+            name.setText(displayName);
+            
+            // Alphabet divider
+            boolean needsSeparator = false;
+            int pos = cursor.getPosition();
+
+            displayName = displayName.trim();
+            if (!TextUtils.isEmpty(displayName)) {
+                displayName = displayName.substring(0, 1).toLowerCase(Locale.getDefault());
+            } else {
+                displayName = " ";
+            }
+
+            switch (mRowStates[pos]) {
+                case STATE_LABELED:
+                    needsSeparator = true;
+                    break;
+                case STATE_UNLABELED:
+                    needsSeparator = false;
+                    break;
+                case STATE_UNKNOWN:
+                default:
+                    // First cell always needs to be sectioned
+                    if (pos == 0) {
+                        needsSeparator = true;
+                    } else {
+                        cursor.moveToPosition(pos - 1);
+
+                        String prevName = StringUtil.formatPatientDisplayName(mWrapper.getGiven_name(), mWrapper.getFamily_name());
+                        prevName = prevName.trim();
+                        if (!TextUtils.isEmpty(prevName)) {
+                            prevName = prevName.substring(0, 1).toLowerCase(Locale.getDefault());
+                        } else {
+                            prevName = " ";
+                        }
+
+                        if (prevName.charAt(0) != displayName.charAt(0)) {
+                            needsSeparator = true;
+                        }
+
+                        cursor.moveToPosition(pos);
+                    }
+                    break;
+            }
+
+            if (needsSeparator) {
+                view.findViewById(R.id.header).setVisibility(View.VISIBLE);
+                TextView label = (TextView) view.findViewById(R.id.txt_section);
+                label.setText(("" + displayName.charAt(0)).toUpperCase(Locale.getDefault()));
+            } else {
+                view.findViewById(R.id.header).setVisibility(View.GONE);
+            }
+
         }
 
         @Override
