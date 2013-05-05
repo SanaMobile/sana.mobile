@@ -2,6 +2,7 @@
 package org.sana.android.activity;
 
 import org.sana.R;
+import org.sana.android.Constants;
 import org.sana.android.service.ISessionCallback;
 import org.sana.android.service.ISessionService;
 import org.sana.android.service.impl.SessionService;
@@ -10,11 +11,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -94,6 +97,10 @@ public class AuthenticationActivity extends BaseActivity {
         		break;
         	case SessionService.SUCCESS:
         		loginsRemaining = 0;
+        		SharedPreferences pref = 
+        		        PreferenceManager.getDefaultSharedPreferences(AuthenticationActivity.this);
+        		pref.edit().putString(Constants.PREFERENCE_EMR_USERNAME, mInputUsername.getText().toString());
+        		pref.edit().putString(Constants.PREFERENCE_EMR_PASSWORD, mInputPassword.getText().toString());
         		Bundle b = msg.getData();
         		onUpdateAppState(b);
         		Intent data = new Intent();
@@ -135,6 +142,12 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
         loginsRemaining = getResources().getInteger(R.integer.max_login_attempts);
+        
+        if (savedInstanceState == null) {
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            String savedUsername = pref.getString(Constants.PREFERENCE_EMR_USERNAME, "");
+            mInputUsername.setText(savedUsername);
+        }
     }
     
     private void disableInput(){
@@ -185,21 +198,21 @@ public class AuthenticationActivity extends BaseActivity {
     
     /*
      * (non-Javadoc)
-     * @see android.app.Activity#onStart()
+     * @see android.app.Activity#onResume()
      */
 	@Override
-    protected void onStart(){
-    	super.onStart();
+    protected void onResume(){
+    	super.onResume();
     	bindSessionService();
     }
     
     /*
      * (non-Javadoc)
-     * @see com.actionbarsherlock.app.SherlockActivity#onStop()
+     * @see com.actionbarsherlock.app.SherlockActivity#onPause()
      */
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         unbindSessionService();
     }
     
