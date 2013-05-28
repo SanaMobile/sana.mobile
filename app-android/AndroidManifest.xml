@@ -210,6 +210,31 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="org.sana.android.activity.tablet.ProcedureTabletRunner"
+            android:label="@string/title_procedure_runner" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="org.sana.android.activity.NotificationViewer"
             android:label="@string/title_notification_viewer" >
             <intent-filter>

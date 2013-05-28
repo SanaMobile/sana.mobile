@@ -2,15 +2,16 @@ package org.sana.android.activity;
 
 import java.util.UUID;
 
+import org.sana.android.app.State.Keys;
+import org.sana.android.util.DeviceUtil;
+import org.sana.android.util.UriUtil;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockActivity;
-
-import org.sana.android.app.State.Keys;
-import org.sana.android.util.UriUtil;
 /**
  * Base class that contains basic functionalities and behaviors that all
  * activities should do. 
@@ -234,13 +235,15 @@ public abstract class BaseActivity extends SherlockActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
     	super.onCreate(savedInstanceState);
+    	
+    	DeviceUtil.enableOnlyDeviceSpecificActivities(this);
+    	
     	Intent intent = getIntent();
     	// get the fields from the launch intent extras
     	if(intent != null)
     		onUpdateAppState(intent);
     }
 
-    
     /**
      * Displays a progress dialog fragment with the provided message.
      * @param message

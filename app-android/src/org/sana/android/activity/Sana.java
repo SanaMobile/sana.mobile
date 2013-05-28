@@ -3,12 +3,12 @@ package org.sana.android.activity;
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.activity.settings.Settings;
+import org.sana.android.media.EducationResource;
+import org.sana.android.procedure.Procedure;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Notifications;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
-import org.sana.android.media.EducationResource;
-import org.sana.android.procedure.Procedure;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.ServiceConnector;
 import org.sana.android.service.ServiceListener;
@@ -31,7 +31,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 

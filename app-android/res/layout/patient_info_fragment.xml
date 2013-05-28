@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:orientation="horizontal"
+    android:layout_height="fill_parent" >
+
+    <FrameLayout
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="3" >
+        <ImageView
+            android:id="@+id/patient_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/unknown" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="7" >
+
+        <TextView
+            android:id="@+id/txt_patient_name"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="Patient Name"
+            android:lines="1" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
