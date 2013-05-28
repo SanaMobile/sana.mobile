@@ -34,7 +34,6 @@ import android.view.KeyEvent;
 import android.view.Window;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
@@ -44,7 +43,7 @@ import com.actionbarsherlock.view.MenuItem;
  * reloading, and uploading.
  * 
  * @author Sana Development Team */
-public abstract class BaseRunner extends SherlockFragmentActivity {
+public abstract class BaseRunner extends BaseActivity {
 
     public static final String TAG = BaseRunner.class.getSimpleName();
     public static final String INTENT_KEY_STRING = "intentKey";

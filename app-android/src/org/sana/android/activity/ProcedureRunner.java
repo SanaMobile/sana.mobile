@@ -20,7 +20,7 @@ public class ProcedureRunner extends BaseRunner
     public static final String TAG = ProcedureRunner.class.getSimpleName();
 
     // Fragment
-    private ProcedureRunnerFragment mProcedureRunnerFragment;
+    ProcedureRunnerFragment mProcedureRunnerFragment;
 
     /** {@inheritDoc} */
     @Override

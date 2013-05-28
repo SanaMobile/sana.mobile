@@ -11,13 +11,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 /**
  * Base class that contains basic functionalities and behaviors that all
  * activities should do. 
  * @author Sana Dev Team
  */
-public abstract class BaseActivity extends SherlockActivity {
+public abstract class BaseActivity extends SherlockFragmentActivity {
     
 	public static final String TAG = BaseActivity.class.getSimpleName();
 
@@ -64,6 +64,14 @@ public abstract class BaseActivity extends SherlockActivity {
 	 */
     protected String getSessionKey(){
     	return mSessionKey;
+    }
+    
+    /**
+     * Returns the URI for the selected subject.
+     * @return
+     */
+    public Uri getSubject() {
+        return mSubject;
     }
     
     /**

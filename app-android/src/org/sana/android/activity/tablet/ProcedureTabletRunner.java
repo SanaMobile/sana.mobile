@@ -2,9 +2,8 @@ package org.sana.android.activity.tablet;
 
 import org.sana.R;
 import org.sana.android.activity.BaseRunner;
-import org.sana.android.activity.PatientsList;
-import org.sana.android.fragment.SubjectInfoFragment;
 import org.sana.android.fragment.ProcedureRunnerFragment;
+import org.sana.android.fragment.SubjectInfoFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,8 +19,8 @@ public class ProcedureTabletRunner extends BaseRunner {
     public static final String TAG = ProcedureTabletRunner.class.getSimpleName();
     
     // Fragments
-    private ProcedureRunnerFragment mProcedureRunnerFragment;
-    private SubjectInfoFragment mPatientInfoFragment;
+    ProcedureRunnerFragment mProcedureRunnerFragment;
+    SubjectInfoFragment mPatientInfoFragment;
     
     /** {@inheritDoc} */
     @Override
@@ -31,9 +30,7 @@ public class ProcedureTabletRunner extends BaseRunner {
         Log.i(TAG, "onCreate() triggered.");
         
         if (savedInstanceState == null) {
-            // TODO: load patient ID here
-            long patientId = -1;//= getIntent().getLongExtra(PatientsList.EXTRA_PATIENT_ID, -1);
-            mPatientInfoFragment = SubjectInfoFragment.newInstance(patientId);
+            mPatientInfoFragment = SubjectInfoFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                 .add(R.id.patient_info_container, mPatientInfoFragment)
                 .commit();
