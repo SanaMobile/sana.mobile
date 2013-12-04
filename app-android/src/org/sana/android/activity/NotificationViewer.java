@@ -3,6 +3,7 @@ package org.sana.android.activity;
 import org.sana.R;
 import org.sana.android.provider.Notifications;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,8 +15,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
 /**
  * NotificationViewer builds the interface for viewing a single received 
  * notification. This displays the diagnosis, pertaining patient, and allows the
@@ -23,7 +22,7 @@ import com.actionbarsherlock.app.SherlockActivity;
  * 
  * @author Sana Dev Team
  */
-public class NotificationViewer extends SherlockActivity implements OnClickListener {
+public class NotificationViewer extends Activity implements OnClickListener {
 	
 	private static String TAG = NotificationViewer.class.getSimpleName();
 

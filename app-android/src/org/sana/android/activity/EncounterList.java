@@ -16,12 +16,15 @@ import org.sana.android.service.ServiceConnector;
 import org.sana.android.service.ServiceListener;
 import org.sana.android.util.SanaUtil;
 
+import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ListAdapter;
@@ -29,16 +32,12 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
 /**
  * Displays a list of previous encounters and their status.
  * 
  * @author Sana Development Team
  */
-public class EncounterList extends SherlockListActivity implements 
+public class EncounterList extends ListActivity implements 
 	SimpleCursorAdapter.ViewBinder 
 {
 	private static final String TAG = EncounterList.class.getSimpleName();

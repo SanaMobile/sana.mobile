@@ -4,6 +4,7 @@ package org.sana.android.activity;
 import org.sana.R;
 import org.sana.android.provider.Procedures;
 
+import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,12 +15,10 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-
 /** Displays a list of Procedures.
  * 
  * @author Sana Development Team */
-public class ProceduresList extends SherlockListActivity {
+public class ProceduresList extends ListActivity {
 
     /** Intent extra for a procedure. */
     public static final String EXTRA_PROCEDURE_URI = "uri_procedure";

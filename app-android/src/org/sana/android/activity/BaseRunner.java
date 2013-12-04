@@ -29,14 +29,13 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 /** Base class activity for containing a BaseRunnerFragment. Additional logic is
  * built into this class to handle launching and capturing returned values from
@@ -44,7 +43,7 @@ import com.actionbarsherlock.view.MenuItem;
  * reloading, and uploading.
  * 
  * @author Sana Development Team */
-public abstract class BaseRunner extends SherlockFragmentActivity {
+public abstract class BaseRunner extends FragmentActivity {
 
     public static final String TAG = BaseRunner.class.getSimpleName();
     public static final String INTENT_KEY_STRING = "intentKey";

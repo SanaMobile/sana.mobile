@@ -2,6 +2,7 @@ package org.sana.android.activity;
 
 import org.sana.android.provider.Notifications;
 
+import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,8 +13,6 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-
 /**
  * NotificationList is the activity that allows a user to browse all of the 
  * current notifications (generally physician-issued diagnoses) that have yet to
@@ -22,7 +21,7 @@ import com.actionbarsherlock.app.SherlockListActivity;
  * 
  * @author Sana Dev Team
  */
-public class NotificationList extends SherlockListActivity implements 
+public class NotificationList extends ListActivity implements 
 	SimpleCursorAdapter.ViewBinder 
 {
 	private static final String TAG = NotificationList.class.getSimpleName();

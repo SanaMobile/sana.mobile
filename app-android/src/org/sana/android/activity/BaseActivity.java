@@ -6,8 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import com.actionbarsherlock.app.SherlockActivity;
+import android.support.v7.app.ActionBarActivity;
 
 import org.sana.android.app.State.Keys;
 import org.sana.android.util.UriUtil;
@@ -16,7 +15,7 @@ import org.sana.android.util.UriUtil;
  * activities should do. 
  * @author Sana Dev Team
  */
-public abstract class BaseActivity extends SherlockActivity {
+public abstract class BaseActivity extends ActionBarActivity {
     
 	public static final String TAG = BaseActivity.class.getSimpleName();
 

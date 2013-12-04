@@ -19,6 +19,7 @@ import org.sana.android.media.EducationResourceParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -32,14 +33,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-
 /**
  * Activity which displays a list of available media
  * 
  * @author Sana Development Team
  */
-public class EducationResourceList extends SherlockListActivity {
+public class EducationResourceList extends ListActivity {
     private static final String TAG = EducationResourceList.class.getSimpleName();
     // set the text color for various audience types
     private static final int error = Color.argb(225, 225, 127, 127);

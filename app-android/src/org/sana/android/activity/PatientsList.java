@@ -12,16 +12,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
 /** Activity for creating new and display existing patients. The resulting
  * patient selected or created, will be returned to the calling Activity.
  * 
  * @author Sana Development Team */
-public class PatientsList extends SherlockFragmentActivity implements
+public class PatientsList extends FragmentActivity implements
         OnPatientSelectedListener {
 
     public static final String TAG = PatientsList.class.getSimpleName();
@@ -73,7 +72,7 @@ public class PatientsList extends SherlockFragmentActivity implements
     /** {@inheritDoc} */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.patients_list_menu, menu);
+        getMenuInflater().inflate(R.menu.patients_list_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
