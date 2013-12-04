@@ -10,43 +10,41 @@ Contents:
     external plugin apps. 
 3.  app-android - Sana mobile client
 4.  libs - Additional libraries required by the projects.
-5.  libs-android - Additional android support libraries.
 
 Development Requirements
 ------------------------
 1.  Git
 2.  JDK(latest 1.6 release)
-3.  Android SDK + API 7
-4.  Ecipse IDE. Get the Java EE Version.
-5.  Eclipse Egit plugin
-6.  Eclipse ADT plugin
-7.  Android emulator or phone which supports API 7
+3.  Android ADT Bundle
+      http://developer.android.com/sdk/index.html
+4.  Android Support Library(Install using SDK manager)
+      http://developer.android.com/tools/support-library/setup.html
+5.  Android virtual device or phone which supports API 7
 
 Code installation instructions.
 -------------------------------
-1.  Create a new workspace for Sana code
-2.  Import the source code as a general project using the following url for the
-    repository: https://code.google.com/p/sana.mobile/
-3.  Import the projects.
-    a.  Import the Java library project in sana.mobile/api
-	b.  Import the Android library project in sana.mobile/api-android
-	c.  Import the actionbarsherlock library project from
-	    sana.mobile/libs-android/actionbarsherlock
-	d.  Import the Android client application project
-	
-Additional support libraries.
-The projects above include additional support libraries included in the
-sana.mobile/libs directory. 
+1.  Create directory named sana
+3.  Change into sana directory
+2.  Checkout the source code
+      git clone https://code.google.com/p/sana.mobile/
+2.  Start Eclipse and create new workspace in sana/workspace/.
+3.  Add android-support-v7-appcompat project to your workspace copy into workspace
+      http://developer.android.com/tools/support-library/setup.html#libs-with-res
+    Be certain to select Android Private Libraries in Export tab of 
+    Java build path
 
+*IMPORTANT! For steps 4-6 Do not copy sana projects
+4.  Import api project using. Do not copy
+      Import --> General --> Existing Projects into Workspace
+5.  Import api-android into workspace
+6.  Import app-android and app-android-tests into workspace
 
 Troubleshooting
 ---------------
 A.  Missing Android dependencies. Use the "Android SDK Manager" to add any 
     missing API levels. In Eclipse, it can be launched by selecting
         Window --> Android SDK Manager 
-B.  Missing libraries. Please see the section on "Additional support libraries."
-    above.
-C.  "NoClassDefFoundError" when running the client application. By default, the 
+B.  "NoClassDefFoundError" when running the client application. By default, the 
     ADT plugin does not export libraries included in the build. To correct this
     issue, right click on the project in Eclipse and open the Properties window.
     Select 
