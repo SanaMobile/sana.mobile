@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>sana-app-android-tests</name>
+	<name>app-android-tests</name>
 	<comment></comment>
 	<projects>
-		<project>sana-app-android</project>
+		<project>app-android</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
