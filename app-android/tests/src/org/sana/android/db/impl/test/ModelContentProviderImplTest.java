@@ -34,6 +34,7 @@ import org.sana.android.db.DatabaseOpenHelper;
 import org.sana.android.db.TableHelper;
 import org.sana.android.db.impl.ConceptsHelper;
 import org.sana.android.db.impl.DatabaseOpenHelperImpl;
+import org.sana.android.db.impl.EncounterTasksHelper;
 import org.sana.android.db.impl.EncountersHelper;
 import org.sana.android.db.impl.EventsHelper;
 import org.sana.android.db.impl.InstructionsHelper;
@@ -44,6 +45,7 @@ import org.sana.android.db.impl.ObserversHelper;
 import org.sana.android.db.impl.ProceduresHelper;
 import org.sana.android.db.impl.SubjectsHelper;
 import org.sana.android.provider.Concepts;
+import org.sana.android.provider.EncounterTasks;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Events;
 import org.sana.android.provider.Instructions;
@@ -110,7 +112,7 @@ public class ModelContentProviderImplTest extends
      */
     public void testTableHelperOnCreate(){
 		String name = getContext().getString(R.string.db_name);//DATABASE;
-		int version = getContext().getResources().getInteger(R.integer.db_version);
+		int version = getContext().getResources().getInteger(R.integer.cfg_db_version_value);
 		SQLiteDatabase db = getContext().openOrCreateDatabase(name, 0, null);
 		
 		// Concept table
@@ -139,6 +141,9 @@ public class ModelContentProviderImplTest extends
 
 		// Subject table
 		db.execSQL(SubjectsHelper.getInstance().onCreate());
+
+		// Subject table
+		db.execSQL(EncounterTasksHelper.getInstance().onCreate());
 		
 		db.close();
     }
@@ -149,7 +154,7 @@ public class ModelContentProviderImplTest extends
      */
     public void testProvideronCreate(){
 		String name = getContext().getString(R.string.db_name);//DATABASE;
-		int version = getContext().getResources().getInteger(R.integer.db_version);
+		int version = getContext().getResources().getInteger(R.integer.cfg_db_version_value);
 		mOpener = new DatabaseOpenHelperImpl(getContext(),name, version);
 		SQLiteDatabase db = getContext().openOrCreateDatabase(name, 0, null);
 		mOpener.onCreate(db);
@@ -161,7 +166,7 @@ public class ModelContentProviderImplTest extends
      */
     public void testDatabaseOpenHelperCreateOnGetReadable(){
 		String name = getContext().getString(R.string.db_name);//DATABASE;
-		int version = getContext().getResources().getInteger(R.integer.db_version);
+		int version = getContext().getResources().getInteger(R.integer.cfg_db_version_value);
 		mOpener = new DatabaseOpenHelperImpl(getContext(),name, version);
 		
 		// this should invoke the onCreate method		
@@ -174,7 +179,7 @@ public class ModelContentProviderImplTest extends
      */
     public void testDatabaseOpenHelperCreateOnGetWritable(){
 		String name = getContext().getString(R.string.db_name);//DATABASE;
-		int version = getContext().getResources().getInteger(R.integer.db_version);
+		int version = getContext().getResources().getInteger(R.integer.cfg_db_version_value);
 		mOpener = new DatabaseOpenHelperImpl(getContext(),name, version);
 		
 		// this should invoke the onCreate method		
@@ -289,5 +294,15 @@ public class ModelContentProviderImplTest extends
     	uri = Uri.withAppendedPath(Subjects.CONTENT_URI, uuid);
     	assertEquals(Subjects.CONTENT_ITEM_TYPE, mMockResolver.getType(uri));
     	
+    	// EncounterTasks
+    	// DIR type
+    	uri = EncounterTasks.CONTENT_URI;
+    	assertEquals(EncounterTasks.CONTENT_TYPE, mMockResolver.getType(uri));
+    	// ITEM type
+    	uri = Uri.withAppendedPath(EncounterTasks.CONTENT_URI, "1");
+    	assertEquals(EncounterTasks.CONTENT_ITEM_TYPE, mMockResolver.getType(uri));
+    	// ITEM type from UUID
+    	uri = Uri.withAppendedPath(EncounterTasks.CONTENT_URI, uuid);
+    	assertEquals(EncounterTasks.CONTENT_ITEM_TYPE, mMockResolver.getType(uri));
     }
 }
