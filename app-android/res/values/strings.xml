@@ -28,6 +28,9 @@
 	<string name="button_main_view_notifications">Notifications</string>
 	<string name="button_main_view_patients">Patients</string>
 	<string name="button_main_view_scheduled_tasks">Assigned tasks</string>
+    <string name="button_main_register_patients">Register Patient</string>
+    <string name="button_main_select_procedure">Select Procedure</string>
+    <string name="button_main_select_patient">Select Patient</string>
 		
 	<!--  General Phrases -->
 	<string name="general_ok">Okay</string>
@@ -148,10 +151,12 @@
 	<string name="question_standard_view_resource">View Resource</string>
     <string name="question_standard_capture">Capture Data</string>
     <string name="question_standard_binary_element">Capture Data</string>
+    <string name="btn_add_photo">Add Picture</string>
+    <string name="question_standard_picture_element">Attach a picture</string>
     
     <!-- GPS element -->
     <string name="question_standard_gps_element">Please enter GPS coordinates:</string>
-	<string name="gps_element_acquire_waiting">Waiting for GPS...</string>
+	<string name="gps_element_acquire_waiting">Waiting for GPS&#8230;</string>
     <string name="gps_element_acquire_unavailable">GPS service not available. Try again.</string>
     <string name="gps_element_acquire_fail">Could not acquire location. Try again.</string>
     <string name="gps_element_default_answer">Coordinates not acquired.</string>
@@ -208,7 +213,5 @@
     <string name="authentication_username">Username</string>
     <string name="authentication_password">Password</string>
     <string name="authentication_login">Log-In</string>
-    <string name="button_main_register_patients">Register Patient</string>
-    <string name="button_main_select_procedure">Select Procedure</string>
-    <string name="button_main_select_patient">Select Patient</string>
+    <string name="msg_login_failed">Login attempt failed!</string>
 </resources>

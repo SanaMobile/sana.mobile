@@ -3,6 +3,7 @@ package org.sana.android.procedure;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.sana.R;
 import org.sana.android.ImagePreviewDialog;
 import org.sana.android.ScalingImageAdapter;
 import org.sana.android.db.SanaDB;
@@ -91,9 +92,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
         //imageGrid.setTranscriptMode(imageGrid.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         
         cameraButton = new Button(c);
-        //TODO
-        cameraButton.setText("Add Picture");
-        //cameraButton.setText("Add Foto");
+        cameraButton.setText(R.string.btn_add_photo);
         cameraButton.setOnClickListener(this);
         
         imageReview = new ImagePreviewDialog(c);

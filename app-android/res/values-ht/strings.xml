@@ -28,6 +28,9 @@
 	<string name="button_main_view_notifications">Notifikasyon</string>
 	<string name="button_main_view_patients">Pasyan</string>
 	<string name="button_main_view_scheduled_tasks">Pwograme vizit</string>
+    <string name="button_main_register_patients">Add Pasyan</string>
+    <string name="button_main_select_procedure">Chwazi Pwosedi</string>
+    <string name="button_main_select_patient">Chwazi Pasyan</string>
 		
 	<!--  General Phrases -->
 	<string name="general_ok">Oke</string>
@@ -147,10 +150,12 @@
 	<string name="question_standard_view_resource">View Resource</string>
     <string name="question_standard_capture">Capture Data</string>
     <string name="question_standard_binary_element">Capture Data</string>
+    <string name="btn_add_photo">Add Foto</string>
+    <string name="question_standard_picture_element">Attach a picture</string>
     
     <!-- GPS element -->
     <string name="question_standard_gps_element">Tanpri antre GPS kowòdone:</string>
-	<string name="gps_element_acquire_waiting">Ap tann pou GPS...</string>
+	<string name="gps_element_acquire_waiting">Ap tann pou GPS&#8230;</string>
     <string name="gps_element_acquire_unavailable">GPS sèvis pa disponib. Eseye ankò.</string>
     <string name="gps_element_acquire_fail">Pa t \'kapab jwenn kote. Eseye ankò.</string>
     <string name="gps_element_default_answer">Kowòdone pa akeri.</string>
@@ -207,4 +212,5 @@
     <string name="authentication_username">Itilizatè</string>
     <string name="authentication_password">Modpas</string>
     <string name="authentication_login">Konekte</string>
+    <string name="msg_login_failed">Tantativ Login echwe!</string>
 </resources>
