@@ -5,9 +5,11 @@ import org.sana.android.db.PatientInfo;
 import org.sana.android.provider.Patients;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.BaseColumns;
 import android.util.Log;
 
 /**
@@ -72,9 +74,26 @@ public class UserDatabase {
 				newuser.put(Patients.Contract.DOB, birthdate);
 				newuser.put(Patients.Contract.PATIENT_ID, id);
 				newuser.put(Patients.Contract.GENDER, gender);
-				cr.insert(Patients.CONTENT_URI, newuser);
+				int count = 0;
+				Cursor c = null;
+				try{
+					c= cr.query(Patients.CONTENT_URI, 
+						new String[]{ BaseColumns._ID },
+						Patients.Contract.PATIENT_ID + " = ?" , 
+						new String[]{ id }, null);
+					count = ((c != null) && (c.moveToFirst()))? c.getInt(0):0;
+				} finally {
+					if(c != null) c.close();
+				}
+				if(count == 0) {
+					cr.insert(Patients.CONTENT_URI, newuser);
+					Log.i(TAG, "added new patient to database");
+				} else {
+					cr.update(ContentUris.withAppendedId(Patients.CONTENT_URI, count),
+							newuser, null,null);
+					Log.i(TAG, "updated patient in database: " + id);
+				}
 				newuser.clear();
-				Log.i(TAG, "added new patient to database");
 			} catch (Exception e) {
 				Log.i(TAG, "Exception while processing:" + record + " : "
 						+ e.toString());

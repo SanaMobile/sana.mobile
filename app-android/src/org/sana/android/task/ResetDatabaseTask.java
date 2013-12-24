@@ -18,7 +18,7 @@ public class ResetDatabaseTask extends AsyncTask<Context, Void, Integer> {
 	
 	private ProgressDialog progressDialog;
 	private Context mContext = null; // TODO context leak?
-	
+	private boolean quiet = false;
 	/**
 	 * A new task for resetting the database.
 	 * @param c the current Context.
@@ -27,6 +27,15 @@ public class ResetDatabaseTask extends AsyncTask<Context, Void, Integer> {
 		this.mContext = c;
 	}
 
+	/**
+	 * A new task for resetting the database.
+	 * @param c the current Context.
+	 */
+	public ResetDatabaseTask(Context c, boolean quiet) {
+		this.mContext = c;
+		this.quiet = quiet;
+	}
+	
 	/** {@inheritDoc} */
 	@Override
 	protected Integer doInBackground(Context... params) {
@@ -45,6 +54,7 @@ public class ResetDatabaseTask extends AsyncTask<Context, Void, Integer> {
 	@Override
 	protected void onPreExecute() {
 		Log.i(TAG, "About to execute ResetDatabaseTask");
+		if(quiet) return;
 		if (progressDialog != null) {
     		progressDialog.dismiss();
     		progressDialog = null;
@@ -59,6 +69,7 @@ public class ResetDatabaseTask extends AsyncTask<Context, Void, Integer> {
 	@Override
 	protected void onPostExecute(Integer result) {
 		Log.i(TAG, "Completed ResetDatabaseTask");
+		if(quiet) return;
 		if (progressDialog != null) {
     		progressDialog.dismiss();
     		progressDialog = null;

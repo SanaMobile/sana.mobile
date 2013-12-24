@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.sana.R;
+import org.sana.android.app.Locales;
 import org.sana.android.db.SanaDB;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
@@ -47,7 +48,9 @@ public class SanaUtil {
 
     private static final String[] PROJECTION = new String[] {
             Procedures.Contract._ID,
-            Procedures.Contract.TITLE, Procedures.Contract.AUTHOR
+            Procedures.Contract.TITLE, 
+            Procedures.Contract.AUTHOR,
+            Procedures.Contract.VERSION
     };
 
     private static final String alphabet =
@@ -204,9 +207,7 @@ public class SanaUtil {
     /** Removes all stored patient information
      * 
      * @param ctx the Context where the data is stored */
-
-
-    	public static void clearPatientData(Context ctx) {
+    public static void clearPatientData(Context ctx) {
         deleteContentUri(ctx, Patients.CONTENT_URI,
                 Patients.Contract._ID);
     }
@@ -220,6 +221,7 @@ public class SanaUtil {
         String title = SanaUtil.randomString("Procedure ", 10);
         String author = "";
         String guid = "";
+        String version = "1.0";
         String xmlFullProcedure;
         try {
             InputStream rs = ctx.getResources().openRawResource(id);
@@ -231,21 +233,26 @@ public class SanaUtil {
             title = p.getTitle();
             author = p.getAuthor();
             guid = p.getGuid();
-
+            version = p.getVersion();
+            
             ContentValues cv = new ContentValues();
             cv.put(Procedures.Contract.TITLE, title);
             cv.put(Procedures.Contract.AUTHOR, author);
             cv.put(Procedures.Contract.UUID, guid);
-
+            cv.put(Procedures.Contract.VERSION, version);
             cv.put(Procedures.Contract.PROCEDURE, xmlFullProcedure);
 
-            if (searchDuplicateTitleAuthor(ctx, title, author))
+            if (searchDuplicateTitleAuthor(ctx, title, author)){
                 Log.d(TAG, "Duplicate found!");
-            else
+            	ctx.getContentResolver().update(Procedures.CONTENT_URI,
+                    cv, 
+                    "(title LIKE\"" + title + "\")", null);
+            }else
                 ctx.getContentResolver().insert(Procedures.CONTENT_URI, cv);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't add procedure id=" + id + ", title = " + title
                     + ", to db. Exception : " + e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -264,6 +271,7 @@ public class SanaUtil {
         String title = SanaUtil.randomString("Procedure ", 10);
         String author = "";
         String guid = "";
+        String version = "1.0";
         String xmlFullProcedure;
         Log.v(TAG, location);
 
@@ -277,18 +285,23 @@ public class SanaUtil {
         title = p.getTitle();
         author = p.getAuthor();
         guid = p.getGuid();
+        version = p.getVersion();
 
         final ContentValues cv = new ContentValues();
         cv.put(Procedures.Contract.TITLE, title);
         cv.put(Procedures.Contract.AUTHOR, author);
         cv.put(Procedures.Contract.UUID, guid);
+        cv.put(Procedures.Contract.VERSION, version);
         cv.put(Procedures.Contract.PROCEDURE, xmlFullProcedure);
 
         if (searchDuplicateTitleAuthor(ctx, title, author)) {
-            Log.i(TAG, "Duplicate found!");
+            Log.i(TAG, "Duplicate found! Updating...");
             // TODO Versioning
             ctx.getContentResolver().update(p.getInstanceUri(),
-                    cv, null, null);
+                    cv, 
+                    "(title LIKE\"" + title + "\")", 
+                    null);
+            Log.i(TAG, "Updated");
             return 0;
         } else {
             Log.i(TAG, "Inserting record.");
@@ -302,7 +315,6 @@ public class SanaUtil {
     private static boolean searchDuplicateTitleAuthor(Context ctx, String title,
             String author)
     {
-
         Cursor cursor = null;
         try {
             cursor = ctx.getContentResolver().query(
@@ -320,6 +332,8 @@ public class SanaUtil {
         return false;
     }
 
+    
+    
     /** Loading Sana with XML-described procedures is currently hard-coded. New
      * files can be added or removed here. */
     public static void loadDefaultDatabase(Context ctx) {
@@ -340,7 +354,8 @@ public class SanaUtil {
          * R.raw.oral_cancer);
          */
         // insertProcedure(ctx, R.raw.cvd_protocol);
-        insertProcedure(ctx, R.raw.api_test);
+        //insertProcedure(ctx, R.raw.api_test);
+        insertProcedure(ctx, R.raw.ssi);
         // insertProcedure(ctx, R.raw.audio_upload_test);
     }
 
@@ -388,6 +403,7 @@ public class SanaUtil {
      * @return a new AlertDialog with a specified listener */
     public static AlertDialog createAlertMessage(Context c, String alertMessage,
             DialogInterface.OnClickListener listener) {
+    	Locales.updateLocale(c, c.getString(R.string.force_locale));
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setMessage(alertMessage).setCancelable(false)
                 .setPositiveButton(
