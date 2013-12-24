@@ -33,6 +33,7 @@ import org.sana.api.IObservation;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 
 /**
  * @author Sana Development
@@ -95,6 +96,14 @@ public class ObservationWrapper extends ModelWrapper<IObservation> implements
 	@Override
 	public IObservation getObject() {
 		return this;
+	}
+	
+	public static Uri getReferenceByEncounterAndId(ContentResolver resolver, 
+			String encounter, String id){
+		return ModelWrapper.getOneReferenceByFields(
+				Observations.CONTENT_URI,
+				new String[]{ Observations.Contract.ENCOUNTER, Observations.Contract.ID }, 
+				new String[]{ encounter, id }, resolver);
 	}
 	
 	/**

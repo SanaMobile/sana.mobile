@@ -71,5 +71,11 @@ public class Observers{
 
 		/** The raw procedure text. */
 		public static final String ROLE = "role";
+		
+		/** Primary contact information for this person */
+		public static final String CONTACT1 = "contact1";
+
+		/** Secondary contact information for this person */
+		public static final String CONTACT2 = "contact2";
 	}
 }

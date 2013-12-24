@@ -39,14 +39,18 @@ import org.sana.android.provider.BaseContract;
 import org.sana.api.IModel;
 
 import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 /**
  * @author Sana Development
  *
  */
-public abstract class TableHelper<T extends IModel> implements  CreateHelper, InsertHelper, 
-	SortHelper,UpdateHelper, UpgradeHelper
+public abstract class TableHelper<T extends IModel> implements  CreateHelper, 
+	DeleteHelper, InsertHelper, QueryHelper, SortHelper,UpdateHelper, 
+	UpgradeHelper
 {
 	public static final String TAG = TableHelper.class.getSimpleName();
 
@@ -136,7 +140,9 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper, In
 		ContentValues validValues = new ContentValues();
 		String value = new SimpleDateFormat(IModel.DATE_FORMAT, 
 				Locale.US).format(new Date());
-		validValues.put(BaseContract.UUID, UUID.randomUUID().toString());
+		if(!values.containsKey(BaseContract.UUID))
+			throw new IllegalArgumentException("Can not insert without uuid");
+		//validValues.put(BaseContract.UUID, UUID.randomUUID().toString());
 		validValues.put(BaseContract.CREATED, value);
 		validValues.put(BaseContract.MODIFIED, value);
 		validValues.putAll(values);
@@ -174,5 +180,22 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper, In
 	
 	protected void setProjection(Map<String,String> projection){
 		this.projection= Collections.unmodifiableMap(projection);
+	}
+	
+	@Override
+	public int onDelete(SQLiteDatabase db, String selection, String[] selectionArgs){
+		return db.delete(getTable(), selection, selectionArgs);
+	}
+	
+	/**
+	 * Default Implementation which provides a thin wrapper around {@link android.database.sqlite.SQLiteQueryBuilder#query(SQLiteDatabase, String[], String, String[], String, String, String) SQLiteQueryBuilder.query()}
+	 */
+	@Override
+	public Cursor onQuery(SQLiteDatabase db, String[] projection, 
+			String selection, String[] selectionArgs, String sortOrder)
+	{
+		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+		qb.setTables(getTable());
+		return qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 	}
 }

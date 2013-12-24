@@ -86,8 +86,10 @@ public class ObserversHelper extends TableHelper<Observer>{
 		+ Contract.UUID 	+ " TEXT NOT NULL,"
         + Contract.CREATED 	+ " DATE,"
         + Contract.MODIFIED + " DATE,"
-		+ Contract.USERNAME + " TEXT NOT NULL,"
-		+ Contract.PASSWORD + " TEXT NOT NULL,"
+		+ Contract.USERNAME + " TEXT,"
+		+ Contract.PASSWORD + " TEXT,"
+		+ Contract.CONTACT1 + " TEXT,"
+		+ Contract.CONTACT2 + " TEXT,"
 		+ Contract.ROLE + " TEXT"
         + ");";
 		

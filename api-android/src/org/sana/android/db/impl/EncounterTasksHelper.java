@@ -27,44 +27,59 @@
  */
 package org.sana.android.db.impl;
 
+import java.util.UUID;
+
+import org.sana.android.db.TableHelper;
+import org.sana.android.provider.EncounterTasks.Contract;
+import org.sana.api.task.EncounterTask;
+import org.sana.api.task.Status;
+
 import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
 
-import org.sana.android.db.TableHelper;
-import org.sana.android.provider.Patients.Contract;
-import org.sana.core.Subject;
-
 /**
- * A database table helper for a table of subjects.
- * 
  * @author Sana Development
  *
  */
-public class SubjectsHelper extends TableHelper<Subject>{
-	public static final String TAG = SubjectsHelper.class.getSimpleName();
+public class EncounterTasksHelper extends TableHelper<EncounterTask>{
+	
+	public static final String SELECT_COMPOUND = "SELECT"
+		+ "encountertask._id AS encountertask_id,"
+		+ "encountertask.uuid AS encountertask_uuid,"
+		+ "encountertask.due_on AS ,"
+		+ "encountertask.modified AS modified,"
+		+ "patient._id AS patient_id,"
+		+ "patient.uuid AS patient_uuid,"
+		+ "patient.given_name AS patient_given_name,"
+		+ "patient.family_name AS patient_family_name,"
+		+ "procedure._id AS procedure_id,"
+		+ "procedure.uuid AS procedure_uuid,"
+		+ "procedure.title AS procedure_title"
+		+ " FROM"
+		+ " encountertask"
+		+ " LEFT JOIN patient ON encountertask.patient = patient.uuid"
+		+ " LEFT JOIN procedure ON encountertask.procedure = procedure.uuid";
+	
+	private EncounterTasksHelper(){
+		super(EncounterTask.class);
+	}
+	
 
-	private static final SubjectsHelper HELPER = new SubjectsHelper();
-	
-	/**
-	 * Gets the singleton instance of this class.
-	 * 
-	 * @return An instance of this class.
-	 */
-	public static SubjectsHelper getInstance(){
-		return HELPER;
-	}
-	
-	protected SubjectsHelper(){
-		super(Subject.class);
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.sana.android.db.InsertHelper#onInsert(android.net.Uri, android.content.ContentValues)
 	 */
 	@Override
 	public ContentValues onInsert(ContentValues values) {
-		return super.onInsert(values);
+		ContentValues vals = new ContentValues();
+		vals.put(Contract.UUID, UUID.randomUUID().toString());
+        vals.put(Contract.STATUS, Status.ACCEPTED.toString());
+        vals.put( Contract.OBSERVER, "");
+        vals.put(Contract.ENCOUNTER, "");
+        vals.put( Contract.PROCEDURE, "");
+        vals.put( Contract.SUBJECT, "");
+        vals.putAll(values);
+		return super.onInsert(vals);
 	}
 
 	/* (non-Javadoc)
@@ -72,7 +87,13 @@ public class SubjectsHelper extends TableHelper<Subject>{
 	 */
 	@Override
 	public ContentValues onUpdate(Uri uri, ContentValues values) {
-		return super.onUpdate(uri, values);
+		ContentValues vals = new ContentValues();
+        vals.put( Contract.OBSERVER, "");
+        vals.put(Contract.STATUS, "");
+        vals.put(Contract.SUBJECT, "");
+        vals.put( Contract.PROCEDURE, "");
+        vals.put(Contract.ENCOUNTER, "");
+		return super.onUpdate(uri, vals);
 	}
 
 	/* (non-Javadoc)
@@ -82,19 +103,17 @@ public class SubjectsHelper extends TableHelper<Subject>{
 	public String onCreate() {
 		Log.i(TAG, "onCreate()");
 		return "CREATE TABLE " + getTable() + " ("
-		+ Contract._ID 			+ " INTEGER PRIMARY KEY,"
-		+ Contract.UUID 		+ " TEXT NOT NULL,"
-        + Contract.CREATED 		+ " DATE,"
-        + Contract.MODIFIED 	+ " DATE,"
-		+ Contract.PATIENT_ID 	+ " TEXT,"
-		+ Contract.GIVEN_NAME 	+ " TEXT NOT NULL,"
-		+ Contract.FAMILY_NAME	+ " TEXT NOT NULL,"
-		+ Contract.GENDER 		+ " TEXT NOT NULL,"
-		+ Contract.IMAGE 		+ " TEXT,"
-		+ Contract.STATE 		+ " INTEGER DEFAULT '-1',"
-		+ Contract.DOB 			+ " DATE, "
-		+ Contract.LOCATION		+ " TEXT"
-        + ");";
+				+ Contract._ID + " INTEGER PRIMARY KEY,"
+				+ Contract.UUID + " TEXT, "
+				+ Contract.OBSERVER + " TEXT, "
+				+ Contract.STATUS + " TEXT, "
+				+ Contract.DUE_DATE + " DATE, "
+				+ Contract.ENCOUNTER + " TEXT, "
+				+ Contract.PROCEDURE + " TEXT, "
+				+ Contract.SUBJECT + " TEXT, "
+                + Contract.CREATED + " INTEGER,"
+                + Contract.MODIFIED + " INTEGER"
+				+ ");";
 		
 	}
 
@@ -103,8 +122,16 @@ public class SubjectsHelper extends TableHelper<Subject>{
 	 */
 	@Override
 	public String onUpgrade(int oldVersion, int newVersion) {
-		Log.i(TAG, "onUpgrade()");
+		if(oldVersion < newVersion){
+			
+		}
 		return null;
 	}
 	
+
+	private static final EncounterTasksHelper HELPER = new EncounterTasksHelper();
+	
+	public static EncounterTasksHelper getInstance(){
+		return HELPER;
+	}
 }

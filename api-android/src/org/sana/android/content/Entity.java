@@ -25,19 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.db;
+package org.sana.android.content;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import java.util.ArrayList;
+
+import android.content.ContentValues;
+import android.net.Uri;
 
 /**
- * Provides a helper method to validate and perform a query.
- * 
  * @author Sana Development
  *
  */
-public interface QueryHelper {
+public final class Entity {
 
-	Cursor onQuery(SQLiteDatabase db, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder);
+	public static class NamedContentValues{
+		public final Uri uri;
+		public final ContentValues values;	
+		public NamedContentValues(Uri uri, ContentValues values){
+			this.uri = uri;
+			this.values = values;
+		}
+	}
+
+	ContentValues values;
+	public Entity(ContentValues values){
+		this.values = new ContentValues(values);
+	}
+	
+	public void addSubValue(Uri uri, ContentValues values){
+		
+	}
+	
+	public ContentValues getEntityValues(){
+		return values;
+	}
+	
+	public ArrayList<Entity.NamedContentValues>	getSubValues(){
+		return null;
+	}
+	
+	
 }

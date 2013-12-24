@@ -27,11 +27,14 @@
  */
 package org.sana.android.content.core;
 
+import java.net.URI;
 import java.util.Date;
 
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.provider.Patients;
+import org.sana.api.ILocation;
 import org.sana.api.IPatient;
+import org.sana.core.Location;
 
 import android.database.Cursor;
 
@@ -85,8 +88,12 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	 * @see org.sana.api.IPatient#getImage()
 	 */
 	@Override
-	public String getImage() {
-		return getStringField(Patients.Contract.IMAGE);
+	public URI getImage() {
+		try{
+			return URI.create(getStringField(Patients.Contract.IMAGE));
+		} catch(Exception e){
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -95,5 +102,15 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 	@Override
 	public IPatient getObject() {
 		return this;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sana.api.IPatient#getLocation()
+	 */
+	@Override
+	public ILocation getLocation() {
+		Location location = new Location();
+		location.setName(getStringField(Patients.Contract.LOCATION));
+		return location;
 	}
 }

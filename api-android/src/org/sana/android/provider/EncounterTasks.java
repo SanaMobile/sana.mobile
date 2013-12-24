@@ -25,19 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.db;
+package org.sana.android.provider;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import org.sana.api.task.EncounterTask;
+
+import android.net.Uri;
 
 /**
- * Provides a helper method to validate and perform a query.
- * 
  * @author Sana Development
  *
  */
-public interface QueryHelper {
+public class EncounterTasks {
 
-	Cursor onQuery(SQLiteDatabase db, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder);
+	/**
+     * The MIME type of CONTENT_URI providing a directory of objects of this 
+     * type.
+     */
+	public static final String CONTENT_TYPE = 
+		"vnd.android.cursor.dir/org.sana.task.encounterTask";
+	
+	/** The content type of {@link #CONTENT_URI} for a single instance. */
+	public static final String CONTENT_ITEM_TYPE = 
+		"vnd.android.cursor.item/org.sana.task.encounterTask";
+
+	/**
+     * The content:// style URI for objects of this type.
+     */
+	public static final Uri CONTENT_URI = Uri.parse("content://"
+			+ Tasks.AUTHORITY + "/encounter");
+	
+	private EncounterTasks(){}
+	
+	public static interface Contract extends Tasks.Contract<EncounterTask>{
+		public static final String ENCOUNTER = "encounter";
+		public static final String PROCEDURE = "procedure";
+		public static final String SUBJECT = "subject";
+	}
 }

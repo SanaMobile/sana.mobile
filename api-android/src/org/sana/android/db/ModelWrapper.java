@@ -32,20 +32,28 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.sana.android.content.Uris;
 import org.sana.android.provider.BaseContract;
 import org.sana.api.IModel;
 import org.sana.util.DateUtil;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 
 public abstract class ModelWrapper<T extends IModel> extends CursorWrapper implements ModelIterable<T>, IModel{
-	
+
+	public static interface BaseProjection{
+		public static String[] ID_PROJECTION = new String[] { BaseContract._ID };
+		public static String[] UUID_PROJECTION = new String[] { BaseContract._ID };
+	}
 	public ModelWrapper(Cursor cursor){
 		super(cursor);
 	}
@@ -174,6 +182,18 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 		public void remove() {
 			throw new UnsupportedOperationException("Removal not supported");
 		}
+	}
+	
+	public static String constructSelectionClause(String[] fields){
+		StringBuilder selection = new StringBuilder();
+		int index = 0;
+		for(String field:fields){
+			if(index > 0)
+				selection.append(" AND ");
+			selection.append(field + " = ?");
+			index++;
+		}
+		return selection.toString();
 	}
 	
 	/**
@@ -380,5 +400,139 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 		return resolver.query(contentUri,null, null,null, order);
 	}
 	
+	/**
+	 * Creates or updates an entry.
+	 * 
+	 * @param uri
+	 * @param values
+	 * @param resolver
+	 * @return
+	 */
+	public static boolean insertOrUpdate(Uri uri, ContentValues values, ContentResolver resolver){
+		Cursor c = null;
+		boolean exists = false;
+		String uuid = (values.containsKey(BaseContract.UUID))?
+				values.getAsString(BaseContract.UUID): null;
+		if(uuid != null){
+			try{
+				c = ModelWrapper.getOneByUuid(uri, resolver, uuid);
+				if(c != null && c.moveToFirst() && c.getCount() == 1){
+					exists = true;
+				}
+			} catch(Exception e){
+
+			} finally {
+				if(c!=null)
+					c.close();
+			}
+		}
+		try{
+			if(exists){
+				if(values.containsKey(BaseContract.UUID))
+						values.remove(BaseContract.UUID);
+				resolver.update(uri, values, null, null);
+			} else {
+				resolver.insert(uri, values);
+			}
+		} catch (Exception e){
+			return false;
+		}
+		return true;
+	}
+
+	public static Uri getOneReferenceByFields(Uri contentUri, String[] fields, 
+			String[] vals, ContentResolver resolver)
+	{
+		Uri uri = contentUri;
+		Cursor c = null;
+		try{
+			c = ModelWrapper.getOneByFields(contentUri, resolver, fields, vals);
+			if(c != null && c.moveToFirst() && c.getCount() == 1){
+				long id = c.getLong(c.getColumnIndex(BaseColumns._ID));
+				uri = ContentUris.withAppendedId(contentUri, id);
+			} 
+		}catch(Exception e){
+
+		} finally { if(c!=null) c.close(); }
+		return uri;
+	}
 	
+	/**
+	 * Returns whether an item is unique and exists in the database
+	 * @param resolver
+	 * @param uri
+	 * @param selection
+	 * @param selectionArgs
+	 * @return
+	 */
+	private static Uri exists(ContentResolver resolver,
+			Uri uri,
+			String selection,
+			String[] selectionArgs)
+	{
+		Uri result = null;
+		Cursor c = null;
+		boolean exists = false;
+		// allows for appending uuid query
+		if(selection == null && selectionArgs == null){
+			String uuid = uri.getQueryParameter(BaseContract.UUID);
+			selection = BaseContract.UUID + "=?";
+			selectionArgs = new String[]{ uuid };
+		}
+		try{  
+			c = resolver.query(uri, 
+						BaseProjection.ID_PROJECTION, 
+						selection, 
+						selectionArgs, null);
+			if(c != null && c.moveToFirst() && c.getCount() == 1){
+				exists = true;
+			}
+		} catch(Exception e){
+			throw new IllegalArgumentException("Errror inserting", e);
+		} finally { if(c!=null) c.close(); }
+		return result;
+	}
+	
+	/**
+	 * Inserts or updates and returns
+	 * @param uri
+	 * @param values
+	 * @param resolver
+	 * @return
+	 */
+	public static Uri getOrCreate(Uri uri,  
+			ContentValues values,
+			ContentResolver resolver)
+	{
+		Uri result = Uri.EMPTY;
+		Cursor c = null;
+		switch(Uris.getTypeDescriptor(uri)){
+		case Uris.ITEM_UUID:
+		case Uris.ITEM_ID:
+			//if(exists(resolver, uri, null, null) != null){
+				resolver.update(uri, values, null, null);
+			//} else {
+			//	throw new IllegalArgumentException("Error updating. Item does not exist: " + uri);
+			//}
+			break;
+		case Uris.ITEMS:
+			if(uri.getQuery() != null){
+				String uuid = uri.getQueryParameter(BaseContract.UUID);
+				String selection = BaseContract.UUID + "=?";
+				String[] selectionArgs = new String[]{ uuid };
+				result = exists(resolver, uri, selection, selectionArgs);
+				if(!Uris.isEmpty(result)){
+					resolver.update(uri, values, null, null);
+				} else {
+					result = resolver.insert(uri, values);
+				}
+			} else {
+				result = resolver.insert(uri, values);
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("Error updating. Unrecognized uri: " + uri);
+		}
+		return result;
+	}
 }

@@ -27,6 +27,7 @@
  */
 package org.sana.android.content.core;
 
+import java.net.URI;
 import java.text.ParseException;
 
 import org.sana.core.Patient;
@@ -61,7 +62,7 @@ public class PatientParcel extends Patient implements Parcelable {
 		setGiven_name(in.readString());
 		setFamily_name(in.readString());
 		setGender(in.readString());
-		setImage(in.readString());
+		setImage(URI.create(in.readString()));
 
 	}
 
@@ -85,7 +86,7 @@ public class PatientParcel extends Patient implements Parcelable {
 		dest.writeString(getGiven_name());
 		dest.writeString(getFamily_name());
 		dest.writeString(getGender());
-		dest.writeString(getImage());
+		dest.writeString(getImage().toString());
 	}
 	
 	public static final Parcelable.Creator<PatientParcel> CREATOR = 

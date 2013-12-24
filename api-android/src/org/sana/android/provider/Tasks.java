@@ -25,19 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.db;
+package org.sana.android.provider;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 /**
- * Provides a helper method to validate and perform a query.
- * 
  * @author Sana Development
  *
  */
-public interface QueryHelper {
+public interface Tasks {
 
-	Cursor onQuery(SQLiteDatabase db, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder);
+	public static final String AUTHORITY = "org.sana.task.provider";
+
+	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
+
+	public static interface Contract<T> extends BaseContract<T>{
+		
+		public static final String DUE_DATE = "due_date";
+		public static final String OBSERVER = "observer";
+		public static final String STATUS = "status";
+		
+	}
+
 }

@@ -177,9 +177,10 @@ public abstract class DatabaseOpenHelper extends SQLiteOpenHelper
 	}
 	*/
 	
-	/*
-	 * (non-Javadoc)
-	 * @see android.database.sqlite.SQLiteOpenHelper#onCreate(android.database.sqlite.SQLiteDatabase)
+	/**
+	 * 
+	 * @param db
+	 * @param in
 	 */
 	public void onCreate(SQLiteDatabase db, InputStream in){
 		Log.d(TAG, "Attempting database creation.");
@@ -193,8 +194,12 @@ public abstract class DatabaseOpenHelper extends SQLiteOpenHelper
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see android.database.sqlite.SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+	/**
+	 * 
+	 * @param db
+	 * @param oldVersion
+	 * @param newVersion
+	 * @param in
 	 */
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion, InputStream in) {
         if(oldVersion < newVersion){

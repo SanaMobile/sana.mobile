@@ -27,6 +27,8 @@
  */
 package org.sana.android.db.impl;
 
+import java.util.UUID;
+
 import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
@@ -65,12 +67,14 @@ public class EventsHelper extends TableHelper<Event>{
 	@Override
 	public ContentValues onInsert(ContentValues values) {
 		ContentValues vals = new ContentValues();
+		vals.put(Contract.UUID, UUID.randomUUID().toString());
         vals.put(Contract.EVENT_TYPE, "");
         vals.put(Contract.EVENT_VALUE, "");
         vals.put(Contract.UPLOADED, false);
         vals.put( Contract.SUBJECT, "");
         vals.put(Contract.ENCOUNTER, "");
         vals.put( Contract.OBSERVER, "");
+        vals.putAll(values);
 		return super.onInsert(vals);
 	}
 

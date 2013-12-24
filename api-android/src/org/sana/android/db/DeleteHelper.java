@@ -27,6 +27,7 @@
  */
 package org.sana.android.db;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 
@@ -40,11 +41,11 @@ public interface DeleteHelper {
 	 * Deletes one or more rows from a database along with any file content
 	 * referenced in the tables columns.
 	 * 
-	 * @param uri
+	 * @param db
 	 * @param selection
 	 * @param selectionArgs
 	 * @return
 	 */
-	int onDelete(Uri uri, String selection, String[] selectionArgs);
+	int onDelete(SQLiteDatabase db, String selection, String[] selectionArgs);
 	
 }

@@ -34,6 +34,7 @@ import android.util.Log;
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Encounters;
 import org.sana.core.Encounter;
+import org.sana.util.UUIDUtil;
 /**
  * A database table helper for a table of encounters.
  * 
@@ -43,6 +44,23 @@ import org.sana.core.Encounter;
 public class EncountersHelper extends TableHelper<Encounter>{
 	public static final String TAG = EncountersHelper.class.getSimpleName();
 
+	public static final String SELECT_COMPOUND = "SELECT"
+			+ "encountertask._id AS encountertask_id,"
+			+ "encountertask.uuid AS encountertask_uuid,"
+			+ "encountertask.due_on AS ,"
+			+ "encountertask.modified AS modified,"
+			+ "patient._id AS patient_id,"
+			+ "patient.uuid AS patient_uuid,"
+			+ "patient.given_name AS patient_given_name,"
+			+ "patient.family_name AS patient_family_name,"
+			+ "procedure._id AS procedure_id,"
+			+ "procedure.uuid AS procedure_uuid,"
+			+ "procedure.title AS procedure_title"
+			+ " FROM"
+			+ " encountertask"
+			+ " LEFT JOIN patient ON encountertask.patient = patient.uuid"
+			+ " LEFT JOIN procedure ON encountertask.procedure = procedure.uuid";
+	
 	private static final EncountersHelper HELPER = new EncountersHelper();
 	
 	/**

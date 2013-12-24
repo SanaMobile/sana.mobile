@@ -51,7 +51,8 @@ public final class Patients{
     	
     	/** Projection to obtain ID and name of the patient. */
     	public static final String[] DISPLAY_NAME = new String[] {
-    		Contract._ID, Contract.GIVEN_NAME, Contract.FAMILY_NAME, Contract.IMAGE
+    		Contract._ID, Contract.GIVEN_NAME, Contract.FAMILY_NAME, Contract.IMAGE,
+    		Contract.PATIENT_ID
     	};
     }
     
@@ -105,6 +106,9 @@ public final class Patients{
         // 5 - Upload failed
         // 6 - Upload stalled - username/password incorrect
     	public static final String STATE = "_state";
+    	
+    	/** An image of the patient */
+    	public static final String LOCATION = "location";
 	}
 
 }

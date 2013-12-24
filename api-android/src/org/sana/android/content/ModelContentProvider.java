@@ -30,11 +30,11 @@ package org.sana.android.content;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.sana.android.content.ModelMatcher.Code;
 import org.sana.android.db.DBUtils;
 import org.sana.android.db.DatabaseOpenHelper;
 import org.sana.android.db.TableHelper;
 import org.sana.android.db.impl.ConceptsHelper;
+import org.sana.android.db.impl.EncounterTasksHelper;
 import org.sana.android.db.impl.EncountersHelper;
 import org.sana.android.db.impl.EventsHelper;
 import org.sana.android.db.impl.InstructionsHelper;
@@ -59,12 +59,11 @@ import android.util.Log;
  * Abstract implementation of of {@link android.content.ContentProvider} for
  * classes extending {@link org.sana.api.IModel} each of which maps to a table within
  * the database. This implementation uses the 
- * {@link org.sana.android.content.ModelMatcher} for mapping the 
+ * {@link org.sana.android.content.Uris Uris} for mapping the 
  * {@link android.net.Uri Uri's} to each table and extensions of the 
  * {@link org.sana.android.db.TableHelper} class to handle interactions for
  * each table. Extending classes should only need to implement the {@link #onCreate()}
- * method which instantiates the {@link ModelMatcher} and provide the database 
- * name and version.
+ * method which provide the database name and version.
  * 
  * @author Sana Development
  *
@@ -87,27 +86,29 @@ public abstract class ModelContentProvider extends ContentProvider {
 		return getTableHelper(uri).getTable();
 	}
 	
-	private TableHelper<?> getTableHelper(Uri uri){
-		int match = mMatcher.matchObject(uri);
+	protected TableHelper<?> getTableHelper(Uri uri){
+		int match = Uris.getContentDescriptor(uri);
 		switch(match){
-		case(Code.CONCEPT):
+		case(Uris.CONCEPT):
 			return ConceptsHelper.getInstance();
-		case(Code.ENCOUNTER):
+		case(Uris.ENCOUNTER):
 			return EncountersHelper.getInstance();
-		case(Code.EVENT):
+		case(Uris.EVENT):
 			return EventsHelper.getInstance();
-		case(Code.INSTRUCTION):
+		case(Uris.INSTRUCTION):
 			return InstructionsHelper.getInstance();
-		case(Code.NOTIFICATION):
+		case(Uris.NOTIFICATION):
 			return NotificationsHelper.getInstance();
-		case(Code.OBSERVATION):
+		case(Uris.OBSERVATION):
 			return ObservationsHelper.getInstance();
-		case(Code.OBSERVER):
+		case(Uris.OBSERVER):
 			return ObserversHelper.getInstance();
-		case(Code.PROCEDURE):
+		case(Uris.PROCEDURE):
 			return ProceduresHelper.getInstance();
-		case(Code.SUBJECT):
+		case(Uris.SUBJECT):
 			return SubjectsHelper.getInstance();
+		case(Uris.ENCOUNTER_TASK):
+			return EncounterTasksHelper.getInstance();
 		default:
 			throw new IllegalArgumentException("Invalid uri in "
 						+"getTableHelper(): " + uri.toString());
@@ -121,10 +122,12 @@ public abstract class ModelContentProvider extends ContentProvider {
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
         Log.d(TAG, ".delete(" + uri.toString() +");");
 		String whereClause = DBUtils.getWhereClause(uri, 
-				mMatcher.match(uri), 
+				Uris.getDescriptor(uri), 
 				selection);
 		SQLiteDatabase db = mOpener.getWritableDatabase();
-		int count = db.delete(getTable(uri), whereClause, selectionArgs);
+		
+		int count = getTableHelper(uri).onDelete(db, whereClause, selectionArgs);
+		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
 	}
 
@@ -133,7 +136,7 @@ public abstract class ModelContentProvider extends ContentProvider {
 	 */
 	@Override
 	public String getType(Uri uri) {
-		return mMatcher.getType(uri);
+		return Uris.getType(uri);
 	}
 
 	/* (non-Javadoc)
@@ -168,18 +171,16 @@ public abstract class ModelContentProvider extends ContentProvider {
         
         // set query and execute
         sortOrder = (TextUtils.isEmpty(sortOrder))? helper.onSort(uri): sortOrder;
-		switch(mMatcher.matchContent(uri)){
-		case(ModelMatcher.ITEM_ID):
+		switch(Uris.getTypeDescriptor(uri)){
+		case(Uris.ITEM_ID):
 			selection = DBUtils.getWhereClauseWithID(uri, selection);
 			break;
-		case(ModelMatcher.ITEM_UUID):
+		case(Uris.ITEM_UUID):
 			selection = DBUtils.getWhereClauseWithUUID(uri, selection);
 		default:
 		}
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		qb.setTables(helper.getTable());
-        Cursor cursor = qb.query(db, projection, selection, selectionArgs, null,
-        		null, sortOrder);
+        Cursor cursor = helper.onQuery(db, projection, selection, selectionArgs, sortOrder);
+        //cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
 	}
 
@@ -197,11 +198,11 @@ public abstract class ModelContentProvider extends ContentProvider {
 		values = helper.onUpdate(uri, values);
 		
 		// set selection and execute
-		switch(mMatcher.matchContent(uri)){
-		case(ModelMatcher.ITEM_ID):
+		switch(Uris.getTypeDescriptor(uri)){
+		case(Uris.ITEM_ID):
 			selection = DBUtils.getWhereClauseWithID(uri, selection);
 			break;
-		case(ModelMatcher.ITEM_UUID):
+		case(Uris.ITEM_UUID):
 			selection = DBUtils.getWhereClauseWithUUID(uri, selection);
 		default:
 		}
