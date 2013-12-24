@@ -6,21 +6,28 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 
+import org.sana.R;
+import org.sana.android.app.Locales;
 import org.sana.android.app.State.Keys;
+import org.sana.android.content.Intents;
+import org.sana.android.content.Uris;
+import org.sana.android.fragment.AuthenticationDialogFragment.AuthenticationDialogListener;
+import org.sana.android.util.Logf;
 import org.sana.android.util.UriUtil;
 /**
  * Base class that contains basic functionalities and behaviors that all
  * activities should do. 
  * @author Sana Dev Team
  */
-public abstract class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends FragmentActivity implements AuthenticationDialogListener{
     
 	public static final String TAG = BaseActivity.class.getSimpleName();
 
     // Dialog for prompting the user that a long operation is being performed.
-    ProgressDialog mWaitDialog;
+    ProgressDialog mWaitDialog = null;
     
 	/**
      * Finishes the calling activity and launches the activity contained in
@@ -89,10 +96,10 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected void onSaveAppState(Bundle outState){
     	outState.putString(Keys.INSTANCE_KEY, mInstanceKey);
     	outState.putString(Keys.SESSION_KEY, mSessionKey);
-    	outState.putParcelable(Keys.ENCOUNTER, mEncounter);
-    	outState.putParcelable(Keys.SUBJECT, mSubject);
-    	outState.putParcelable(Keys.PROCEDURE, mProcedure);
-    	outState.putParcelable(Keys.OBSERVER, mObserver);
+    	outState.putParcelable(Intents.EXTRA_ENCOUNTER, mEncounter);
+    	outState.putParcelable(Intents.EXTRA_SUBJECT, mSubject);
+    	outState.putParcelable(Intents.EXTRA_PROCEDURE, mProcedure);
+    	outState.putParcelable(Intents.EXTRA_OBSERVER, mObserver);
     }
     
     /**
@@ -111,10 +118,10 @@ public abstract class BaseActivity extends ActionBarActivity {
     protected void onSaveAppState(Intent outState){
     	outState.putExtra(Keys.INSTANCE_KEY, mInstanceKey);
     	outState.putExtra(Keys.SESSION_KEY, mSessionKey);
-    	outState.putExtra(Keys.ENCOUNTER, mEncounter);
-    	outState.putExtra(Keys.SUBJECT, mSubject);
-    	outState.putExtra(Keys.PROCEDURE, mProcedure);
-    	outState.putExtra(Keys.OBSERVER, mObserver);
+    	outState.putExtra(Intents.EXTRA_ENCOUNTER, mEncounter);
+    	outState.putExtra(Intents.EXTRA_SUBJECT, mSubject);
+    	outState.putExtra(Intents.EXTRA_PROCEDURE, mProcedure);
+    	outState.putExtra(Intents.EXTRA_OBSERVER, mObserver);
     }
     
     /**
@@ -141,19 +148,19 @@ public abstract class BaseActivity extends ActionBarActivity {
     	if(k!=null)
     		mSessionKey = new String(k);
     	
-    	Uri temp = inState.getParcelableExtra(Keys.ENCOUNTER);
+    	Uri temp = inState.getParcelableExtra(Intents.EXTRA_ENCOUNTER);
     	if(temp != null)
     		mEncounter = UriUtil.copyInstance(temp);
     	
-    	temp = inState.getParcelableExtra(Keys.SUBJECT);
+    	temp = inState.getParcelableExtra(Intents.EXTRA_SUBJECT);
     	if(temp != null)
     		mSubject = UriUtil.copyInstance(temp);
     	
-    	temp = inState.getParcelableExtra(Keys.PROCEDURE);
+    	temp = inState.getParcelableExtra(Intents.EXTRA_PROCEDURE);
     	if(temp != null)
     		mProcedure = UriUtil.copyInstance(temp);
     	
-    	temp = inState.getParcelableExtra(Keys.OBSERVER);
+    	temp = inState.getParcelableExtra(Intents.EXTRA_OBSERVER);
     	if(temp != null)
     		mObserver = UriUtil.copyInstance(temp);
     }
@@ -180,19 +187,19 @@ public abstract class BaseActivity extends ActionBarActivity {
     	if(k!=null)
     		mSessionKey = new String(k);
     	
-    	Uri temp = inState.getParcelable(Keys.ENCOUNTER);
+    	Uri temp = inState.getParcelable(Intents.EXTRA_ENCOUNTER);
     	if(temp != null)
     		mEncounter = UriUtil.copyInstance(temp);
     	
-    	temp = inState.getParcelable(Keys.SUBJECT);
+    	temp = inState.getParcelable(Intents.EXTRA_SUBJECT);
     	if(temp != null)
     		mSubject = UriUtil.copyInstance(temp);
     	
-    	temp = inState.getParcelable(Keys.PROCEDURE);
+    	temp = inState.getParcelable(Intents.EXTRA_PROCEDURE);
     	if(temp != null)
     		mProcedure = UriUtil.copyInstance(temp);
     	
-    	temp = inState.getParcelable(Keys.OBSERVER);
+    	temp = inState.getParcelable(Intents.EXTRA_OBSERVER);
     	if(temp != null)
     		mObserver = UriUtil.copyInstance(temp);
     }
@@ -206,6 +213,12 @@ public abstract class BaseActivity extends ActionBarActivity {
      */
     protected void setResultAppData(Intent data){
     	onSaveAppState(data);
+    }
+    
+    public Bundle getState(){
+    	Bundle state = new Bundle();
+    	onSaveAppState(state);
+    	return state;
     }
     
     /*
@@ -237,8 +250,8 @@ public abstract class BaseActivity extends ActionBarActivity {
     	// get the fields from the launch intent extras
     	if(intent != null)
     		onUpdateAppState(intent);
+    	Locales.updateLocale(this, getString(R.string.force_locale));
     }
-
     
     /**
      * Displays a progress dialog fragment with the provided message.
@@ -249,7 +262,9 @@ public abstract class BaseActivity extends ActionBarActivity {
         if (mWaitDialog != null && mWaitDialog.isShowing()) {
             hideProgressDialogFragment();
         }
-        
+        // No need to create dialog if this is finishing
+        if(isFinishing())
+        	return;
         mWaitDialog = new ProgressDialog(this);
         mWaitDialog.setMessage(message);
         mWaitDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -264,7 +279,77 @@ public abstract class BaseActivity extends ActionBarActivity {
         if (mWaitDialog == null) {
             return;
         }
-        
-        mWaitDialog.hide();
+        // dismiss if finishing
+        if(isFinishing())
+        	mWaitDialog.dismiss();
+        else
+        	mWaitDialog.hide();
+    }
+    
+    final void cancelProgressDialogFragment(){
+    	if(mWaitDialog != null)
+    		mWaitDialog.dismiss();
+    }
+    
+    public void setData(Uri uri){
+		int code = Uris.getTypeDescriptor(uri);
+		setData(code, uri);
+	}
+	
+	public void setData(int code, Uri uri){
+		switch(code){
+		case Uris.ENCOUNTER_DIR:
+		case Uris.ENCOUNTER_ITEM:
+		case Uris.ENCOUNTER_UUID:
+			mEncounter = uri;
+			break;
+		case Uris.OBSERVER_DIR:
+		case Uris.OBSERVER_ITEM:
+		case Uris.OBSERVER_UUID:
+			mObserver = uri;
+			break;
+		case Uris.PROCEDURE_DIR:
+		case Uris.PROCEDURE_ITEM:
+		case Uris.PROCEDURE_UUID:
+			mProcedure = uri;
+			break;
+		case Uris.SUBJECT_DIR:
+		case Uris.SUBJECT_ITEM:
+		case Uris.SUBJECT_UUID:
+			mSubject = uri;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	protected void onPause(){
+		super.onPause();
+		if(isFinishing())
+			cancelProgressDialogFragment();
+	}
+	
+
+
+	/* (non-Javadoc)
+	 * @see org.sana.android.fragment.AuthenticationDialogFragment.AuthenticationDialogListener#onDialogPositiveClick(android.support.v4.app.DialogFragment)
+	 */
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sana.android.fragment.AuthenticationDialogFragment.AuthenticationDialogListener#onDialogNegativeClick(android.support.v4.app.DialogFragment)
+	 */
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		throw new UnsupportedOperationException();
+	}
+	
+    protected void dump(){
+    	Logf.D(TAG,"dump()", String.format("{ 'encounter': '%s',"
+    			+" 'observer': '%s', 'subject': '%s', 'procedure': '%s' }",
+    			mEncounter, mObserver, mSubject, mProcedure));
     }
 }

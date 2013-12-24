@@ -2,8 +2,12 @@
 package org.sana.android.activity;
 
 import org.sana.R;
+import org.sana.android.app.Locales;
 import org.sana.android.fragment.ProcedureRunnerFragment;
+import org.sana.android.service.impl.InstrumentationService;
 
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -20,22 +24,37 @@ public class ProcedureRunner extends BaseRunner
     public static final String TAG = ProcedureRunner.class.getSimpleName();
 
     // Fragment
-    private ProcedureRunnerFragment mProcedureRunnerFragment;
+    private ProcedureRunnerFragment mProcedureRunnerFragment = null;
 
     /** {@inheritDoc} */
     @Override
     public void onCreate(Bundle instance) {
         super.onCreate(instance);
         setContentView(R.layout.procedure_runner_activity);
+    	Locales.updateLocale(this, getString(R.string.force_locale));
     }
 
     /** {@inheritDoc} */
     @Override
     public void onAttachFragment(Fragment fragment) {
+    	Locales.updateLocale(this, getString(R.string.force_locale));
         super.onAttachFragment(fragment);
         if (fragment.getClass() == ProcedureRunnerFragment.class) {
             mProcedureRunnerFragment = (ProcedureRunnerFragment) fragment;
         }
     }
+    
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+    	super.onConfigurationChanged(newConfig);
+    }
+    
+    @Override
+    public void onDestroy(){
+    	if(isFinishing()){
+    		stopService(new Intent(getBaseContext(), InstrumentationService.class));
+    	}
+    	super.onDestroy();
+    }
 }

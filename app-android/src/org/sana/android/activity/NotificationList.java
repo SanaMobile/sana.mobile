@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+//import com.actionbarsherlock.app.SherlockListActivity;
+
 /**
  * NotificationList is the activity that allows a user to browse all of the 
  * current notifications (generally physician-issued diagnoses) that have yet to

@@ -2,19 +2,35 @@
 package org.sana.android.activity;
 
 import org.sana.R;
+import org.sana.android.app.Locales;
+import org.sana.android.content.Intents;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
 import org.sana.android.provider.Patients;
+import org.sana.android.provider.Procedures;
+import org.sana.android.provider.Subjects;
+import org.sana.android.service.impl.DispatchService;
 import org.sana.android.util.SanaUtil;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /** Activity for creating new and display existing patients. The resulting
  * patient selected or created, will be returned to the calling Activity.
@@ -40,14 +56,18 @@ public class PatientsList extends FragmentActivity implements
     /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+    	Log.d(TAG, "onStart()");
         super.onCreate(savedInstanceState);
+    	Locales.updateLocale(this, getString(R.string.force_locale));
         setContentView(R.layout.patient_list_activity);
     }
 
     /** {@inheritDoc} */
     @Override
     public void onAttachFragment(Fragment fragment) {
+    	Log.d(TAG, "onStart()");
         super.onAttachFragment(fragment);
+    	Locales.updateLocale(this, getString(R.string.force_locale));
         if (fragment.getClass() == PatientListFragment.class) {
             mFragmentPatientList = (PatientListFragment) fragment;
             mFragmentPatientList.setOnPatientSelectedListener(this);
@@ -93,7 +113,8 @@ public class PatientsList extends FragmentActivity implements
         Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
         intent.setType(Patients.CONTENT_TYPE);
         intent.setData(Patients.CONTENT_URI);
-        startActivityForResult(intent, CREATE_PATIENT);
+        Toast.makeText(this, "Not available.", Toast.LENGTH_LONG);
+        // startActivityForResult(intent, CREATE_PATIENT);
     }
 
     /** {@inheritDoc} */
@@ -105,8 +126,33 @@ public class PatientsList extends FragmentActivity implements
         Intent data = new Intent();
         data.setDataAndType(uri,Patients.CONTENT_ITEM_TYPE);
         data.putExtra(EXTRA_PATIENT_ID, patientId);
+        data.putExtra(Intents.EXTRA_SUBJECT, uri);
         setResult(RESULT_OK, data);
         finish();
     }
+ 
+    @Override
+    public void onStart(){
+    	super.onStart();
+    	Log.d(TAG, "onStart()");
+    	//bindService(new Intent(Intent.ACTION_SYNC, Subjects.CONTENT_URI), null, 0);
+    }
 
+    Binder mBinder = null;
+    boolean mBound = false;
+ 	protected ServiceConnection mConnection = new ServiceConnection(){
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mBinder = (Binder) service;
+			mBound = true;
+		}
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mBinder = null;
+			mBound = false;
+		}
+ 		
+ 	};
 }

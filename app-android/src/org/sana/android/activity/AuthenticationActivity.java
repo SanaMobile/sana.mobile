@@ -2,7 +2,10 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.Constants;
+import org.sana.android.app.Locales;
+import org.sana.android.content.Intents;
+import org.sana.android.content.Uris;
+import org.sana.android.provider.Observers;
 import org.sana.android.service.ISessionCallback;
 import org.sana.android.service.ISessionService;
 import org.sana.android.service.impl.SessionService;
@@ -11,13 +14,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +45,7 @@ public class AuthenticationActivity extends BaseActivity {
 	protected boolean mBound = false;
 	protected ISessionService mService = null;
 	
-	// The cacllback to get data from the asynchronous calls
+	// The callback to get data from the asynchronous calls
 	private ISessionCallback mCallback = new ISessionCallback.Stub() {
 		
 		@Override
@@ -52,9 +54,12 @@ public class AuthenticationActivity extends BaseActivity {
 			Log.d(TAG,  ".mCallback.onValueChanged( " +arg0 +", "+arg1+ 
 					", " + arg2+ " )");
 			Bundle data = new Bundle();
-			data.putString(INSTANCE_KEY, arg1);
-			data.putString(SESSION_KEY, arg2);
-			mHandler.sendMessage(mHandler.obtainMessage(arg0, data));
+			data.putString(Intents.EXTRA_INSTANCE, arg1);
+			data.putString(Intents.EXTRA_OBSERVER, arg2);
+			Message response = Message.obtain(mHandler);
+			response.setData(data);
+			response.what = arg0;
+			response.sendToTarget();
 		}
 
 	};
@@ -84,7 +89,7 @@ public class AuthenticationActivity extends BaseActivity {
         @Override public void handleMessage(Message msg) {
     		int state = msg.what;
     		Log.i(TAG, "handleMessage(): " + msg.what);
-    		hideProgressDialogFragment();
+    		cancelProgressDialogFragment();
         	switch(state){
         	case SessionService.FAILURE:
         		loginsRemaining--;
@@ -97,13 +102,20 @@ public class AuthenticationActivity extends BaseActivity {
         		break;
         	case SessionService.SUCCESS:
         		loginsRemaining = 0;
-        		SharedPreferences pref = 
-        		        PreferenceManager.getDefaultSharedPreferences(AuthenticationActivity.this);
-        		pref.edit().putString(Constants.PREFERENCE_EMR_USERNAME, mInputUsername.getText().toString());
-        		pref.edit().putString(Constants.PREFERENCE_EMR_PASSWORD, mInputPassword.getText().toString());
-        		Bundle b = msg.getData();
+        		Bundle b = msg.getData(); //(Bundle)msg.obj;
+        		Log.i(TAG+".mHandler.handleMessage(...)","SUCCESS: ");
+        		for(String key:b.keySet())
+            		Log.d(TAG+".mHandler.handleMessage(...)", "...."+key +":"+ String.valueOf(b.get(key)));
+        		String uuid = b.getString(Intents.EXTRA_OBSERVER);
+        		Log.i(TAG+".mHandler.handleMessage(...)","SUCCESS: " + uuid);
+        		Uri uri = Uris.withAppendedUuid(Observers.CONTENT_URI, uuid);
+        		Log.i(TAG, uri.toString());
+        		b.remove(Intents.EXTRA_OBSERVER);
+        		b.putParcelable(Intents.EXTRA_OBSERVER, uri);
         		onUpdateAppState(b);
         		Intent data = new Intent();
+        		data.setData(uri);
+        		data.putExtras(b);
         		onSaveAppState(data);
         		setResult(RESULT_OK,data);
         		break;
@@ -129,6 +141,7 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    	Locales.updateLocale(this, getString(R.string.force_locale));
         setContentView(R.layout.activity_authentication);
         
         mInputUsername = (EditText) findViewById(R.id.input_username);
@@ -142,12 +155,15 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
         loginsRemaining = getResources().getInteger(R.integer.max_login_attempts);
-        
-        if (savedInstanceState == null) {
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-            String savedUsername = pref.getString(Constants.PREFERENCE_EMR_USERNAME, "");
-            mInputUsername.setText(savedUsername);
-        }
+        loadCredentials();
+    }
+    
+    /* Loads the debug credentials from res/values/debug.xml if debug_credentials = true */
+    private final void loadCredentials(){
+    	if(Boolean.valueOf(this.getString(R.string.debug_credentials))){
+    		mInputUsername.setText(getString(R.string.debug_user));
+    		mInputPassword.setText(getString(R.string.debug_password));
+    	}
     }
     
     private void disableInput(){
@@ -174,6 +190,7 @@ public class AuthenticationActivity extends BaseActivity {
     	if(mBound && 
    			validUsernameAndPasswordFormat(username, password)){
     			Log.d(TAG, "login(): user name and password format valid");
+    	        Locales.updateLocale(this, getString(R.string.force_locale));
     			showProgressDialogFragment(getString(R.string.dialog_logging_in));
     			try {
     				mService.create(getInstanceKey(), username,password);// register the callback to the username
@@ -198,21 +215,21 @@ public class AuthenticationActivity extends BaseActivity {
     
     /*
      * (non-Javadoc)
-     * @see android.app.Activity#onResume()
+     * @see android.app.Activity#onStart()
      */
 	@Override
-    protected void onResume(){
-    	super.onResume();
+    protected void onStart(){
+    	super.onStart();
     	bindSessionService();
     }
     
     /*
      * (non-Javadoc)
-     * @see com.actionbarsherlock.app.SherlockActivity#onPause()
+     * @see com.actionbarsherlock.app.SherlockActivity#onStop()
      */
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         unbindSessionService();
     }
     

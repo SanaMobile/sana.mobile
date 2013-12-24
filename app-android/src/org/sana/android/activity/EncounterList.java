@@ -8,7 +8,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.sana.R;
+import org.sana.android.app.Locales;
+import org.sana.android.net.MDSInterface;
 import org.sana.android.provider.Encounters;
+import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.QueueManager;
@@ -22,6 +25,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +35,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
 
 /**
  * Displays a list of previous encounters and their status.
@@ -44,11 +49,15 @@ public class EncounterList extends ListActivity implements
 	private static final String[] PROJECTION = { Encounters.Contract._ID,
 			Encounters.Contract.UUID, 
 			Encounters.Contract.PROCEDURE, 
+			Encounters.Contract.SUBJECT, 
 			Encounters.Contract.STATE, 
 			Encounters.Contract.UPLOAD_STATUS,
-			Encounters.Contract.UPLOAD_QUEUE };
+			Encounters.Contract.UPLOAD_QUEUE,
+			Encounters.Contract.MODIFIED };
 	private HashMap<Integer, String> procedureToName = 
 		new HashMap<Integer, String>();
+	private HashMap<String, String[]> patientToName = 
+			new HashMap<String, String[]>();
 
     private ServiceConnector mConnector = new ServiceConnector();
     private BackgroundUploader mUploadService = null;
@@ -160,6 +169,88 @@ public class EncounterList extends ListActivity implements
 		return message;
 	}
 	
+	private String getUploadStatus2(int queueStatus, int queuePosition) {
+		String message = "";
+		if (queueStatus == 0) 
+			message = getString(R.string.not_uploaded);
+		else if (queueStatus == QueueManager.UPLOAD_STATUS_WAITING) {
+			message = "Waiting in the queue to be uploaded, " + queuePosition;
+			if (queuePosition == -1) 
+				message = "Waiting in the queue to be uploaded";
+			else if (queuePosition == 1) 
+				message += "st in line";
+			else if (queuePosition == 2) 
+				message += "nd in line";
+			else if (queuePosition == 3) 
+				message += "rd in line";
+			else 
+				message += "th in line";
+		} else if (queueStatus == QueueManager.UPLOAD_STATUS_SUCCESS) 
+			message = getString(R.string.upload_success);
+		else if (queueStatus == QueueManager.UPLOAD_STATUS_IN_PROGRESS) 
+			message = "Upload in progress";
+		else if (queueStatus == QueueManager.UPLOAD_NO_CONNECTIVITY) 
+			message = "Upload stalled - Waiting for connectivity";
+		else if (queueStatus == QueueManager.UPLOAD_STATUS_FAILURE) 
+			message = getString(R.string.upload_fail);
+		else if (queueStatus == QueueManager.UPLOAD_STATUS_CREDENTIALS_INVALID) 
+			message = "Upload stalled - username/password incorrect";
+		else Log.i(TAG, "Not a valid number stored in database.");
+		Log.i(TAG, "Message being set as the status of the procedure: " 
+				+ message);
+		return message;
+	}
+	
+	private String getPatientNameFromTable(String uuid) {
+		String[] row = new String[4];
+		String[] projection = new String[] { Patients.Contract.PATIENT_ID, 
+				Patients.Contract.UUID,
+				Patients.Contract.GIVEN_NAME,
+				Patients.Contract.FAMILY_NAME };
+		Uri uri = Patients.CONTENT_URI;
+		String selection = Patients.Contract._ID + " = ?";
+		String[] selectionArgs = new String[] { uuid };
+		// Handle any 
+		if(uuid.startsWith("content")){
+			Log.w(TAG, "uuid value is a uri: " + uuid ); 
+			uri = Uri.parse(uuid);
+			selectionArgs = null;
+			selection = null;
+		} else {
+			Log.d(TAG, "uuid value: " + uuid ); 
+		}
+		
+		if(patientToName.containsKey(uuid)) {
+			row = patientToName.get(uuid);
+		} else {
+			row = new String[4];
+			try{
+				Cursor cur2 = getContentResolver().query(uri,
+					projection,
+					selection,
+					selectionArgs, null);
+				if(cur2 != null && cur2.moveToFirst()){
+					for(int i=0; i < 4; i++){
+						row[i] = cur2.getString(i);
+					}
+				}
+				if(cur2 != null) cur2.close();
+				patientToName.put(uuid, row);
+			} catch (Exception e){
+			
+			}
+		}
+	
+		StringBuilder result = new StringBuilder(row[0]);
+        if(!TextUtils.isEmpty(row[2])) {
+        	result.append(" - ");
+        	result.append(row[2]);
+        	result.append(" ");
+        	result.append(row[3]);
+        }
+        return result.toString();
+	}
+	
 	/**
 	 * Binds the cursor columns to the text views as follows
 	 * [ Procedure name, Patient name, Upload Status ]
@@ -172,21 +263,24 @@ public class EncounterList extends ListActivity implements
 				((TextView)v).setText(cur.getString(columnIndex));
 				switch(columnIndex) {
 				case 2:
-					int procedureId = cur.getInt(columnIndex);
+					int procedureId = cur.getInt(cur.getColumnIndex(Encounters.Contract.PROCEDURE));
 					String procedureName = lookupProcedureName(procedureId);
 					((TextView)v).setText(procedureName);
 					break;
 				case 3:
-					String jsonData = cur.getString(columnIndex);
-					String patientName = getPatientNameFromData(jsonData);
+					String patientUuid = cur.getString(cur.getColumnIndex(Encounters.Contract.SUBJECT));
+					Log.i(TAG, "Setting patient name for patient. " + patientUuid);
+					String patientName = getPatientNameFromTable(patientUuid);
 					((TextView)v).setText(patientName);
 					break;
-				case 4:
+				case 5:
 					Log.i(TAG, "Setting upload queue status in text view.");
-					int queueStatus = cur.getInt(columnIndex);
-					int queuePosition = cur.getInt(5);
-					String message = getUploadStatus(queueStatus, 
+					Locales.updateLocale(this, getString(R.string.force_locale));
+					int queueStatus = cur.getInt(cur.getColumnIndex(Encounters.Contract.UPLOAD_STATUS));
+					int queuePosition = cur.getInt(cur.getColumnIndex(Encounters.Contract.UPLOAD_QUEUE));
+					String message = getUploadStatus2(queueStatus, 
 							queuePosition + 1);
+					Log.d(TAG, "Setting upload status to : " + message);
 					((TextView)v).setText(message);
 					break;
 				}
@@ -219,12 +313,11 @@ public class EncounterList extends ListActivity implements
         Cursor cursor = managedQuery(Encounters.CONTENT_URI, 
         		PROJECTION, null, null, 
         		Encounters.DEFAULT_SORT_ORDER);
-
         try {
 	        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,	                
 	        		R.layout.row, cursor,
 	                new String[] { Encounters.Contract.PROCEDURE, 
-	        					   Encounters.Contract.STATE, 
+	        					   Encounters.Contract.SUBJECT, 
 	        					   Encounters.Contract.UPLOAD_STATUS },
 	                new int[] { R.id.toptext, R.id.bottomtext, 
 	        					R.id.queue_status });
@@ -262,6 +355,7 @@ public class EncounterList extends ListActivity implements
         {
             // The caller is waiting for us to return a note selected by
             // the user.  The have clicked on one, so return it now.
+        	MDSInterface.logObservations(this, uri.toString());
             setResult(RESULT_OK, new Intent().setData(uri));
             finish();
         } else {
@@ -280,9 +374,9 @@ public class EncounterList extends ListActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, SELECT_ALL, 0, "Select All");
-		menu.add(0, DELETE, 1, "Delete");
-		menu.add(0, RESEND, 2, "Resend");
+		menu.add(0, SELECT_ALL, 0, getString(R.string.menu_select_all));
+		menu.add(0, DELETE, 1, getString(R.string.menu_delete));
+		menu.add(0, RESEND, 2, getString(R.string.menu_resend));
 		//menu.add(0, CANCEL_UPLOAD, 2, "Cancel Upload");
 		return true;
 	}

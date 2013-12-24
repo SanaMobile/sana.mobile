@@ -3,11 +3,11 @@ package org.sana.android.activity;
 import org.sana.R;
 import org.sana.android.provider.Notifications;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +22,7 @@ import android.widget.TextView;
  * 
  * @author Sana Dev Team
  */
-public class NotificationViewer extends Activity implements OnClickListener {
+public class NotificationViewer extends FragmentActivity implements OnClickListener {
 	
 	private static String TAG = NotificationViewer.class.getSimpleName();
 

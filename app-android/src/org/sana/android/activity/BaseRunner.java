@@ -6,6 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.sana.R;
 import org.sana.android.Constants;
+import org.sana.android.app.Locales;
 import org.sana.android.db.BinaryDAO;
 import org.sana.android.db.EncounterDAO;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
@@ -14,6 +15,7 @@ import org.sana.android.media.EducationResource.Audience;
 import org.sana.android.procedure.PictureElement;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.provider.Events.EventType;
+import org.sana.android.provider.Observations;
 import org.sana.android.service.PluginService;
 import org.sana.android.task.ImageProcessingTask;
 import org.sana.android.task.ImageProcessingTaskRequest;
@@ -36,6 +38,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
+
 
 /** Base class activity for containing a BaseRunnerFragment. Additional logic is
  * built into this class to handle launching and capturing returned values from
@@ -67,6 +70,7 @@ public abstract class BaseRunner extends FragmentActivity {
     public static final int INFO_INTENT_REQUEST_CODE = 7;
     public static final int PLUGIN_INTENT_REQUEST_CODE = 4;
     public static final int IMPLICIT_PLUGIN_INTENT_REQUEST_CODE = 8;
+    public static final int OBSERVATION_RESULT_CODE = 16;
 
     // State instance fields
     private static String[] params;
@@ -74,14 +78,16 @@ public abstract class BaseRunner extends FragmentActivity {
     private Uri thisSavedProcedure;
     private Intent mEncounterState = new Intent();
     private boolean wasOnDonePage = false;
+    
 
-    private BaseRunnerFragment mRunnerFragment;
+    private BaseRunnerFragment mRunnerFragment = null;
 
     /** {@inheritDoc} */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
+    	Locales.updateLocale(this, getString(R.string.force_locale));
     }
 
     /** {@inheritDoc} */
@@ -97,9 +103,10 @@ public abstract class BaseRunner extends FragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, OPTION_SAVE_EXIT, 0, "Save & Exit");
-        menu.add(0, OPTION_DISCARD_EXIT, 1, "Discard & Exit");
-        menu.add(0, OPTION_VIEW_PAGES, 2, "View Pages");
+        Locales.updateLocale(this, getString(R.string.force_locale));
+        menu.add(0, OPTION_SAVE_EXIT, 0, getString(R.string.menu_save_exit));
+        menu.add(0, OPTION_DISCARD_EXIT, 1, getString(R.string.menu_discard_exit));
+        menu.add(0, OPTION_VIEW_PAGES, 2, getString(R.string.menu_view_pages));
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
                 Constants.PREFERENCE_EDUCATION_RESOURCE, false))
             menu.add(0, OPTION_HELP, 3, "Help");
@@ -182,13 +189,13 @@ public abstract class BaseRunner extends FragmentActivity {
     /** Handles launching data capture Activities. */
     @Override
     protected void onNewIntent(Intent intent) {
+        Log.i(TAG, "data: " + intent.toUri(Intent.URI_INTENT_SCHEME));
         int description = intent.getExtras().getInt(INTENT_KEY_STRING);
         Log.i(TAG, "description = " + description);
         try {
             switch (description) {
                 case 0: // intent comes from PictureElement to launch camera app
                     params = intent.getStringArrayExtra(PictureElement.PARAMS_NAME);
-
                     // For Android 1.1:
                     // Intent cameraIntent = new
                     // Intent("android.media.action.IMAGE_CAPTURE");
@@ -204,7 +211,11 @@ public abstract class BaseRunner extends FragmentActivity {
                     // camera.
                     // With vanilla Android, it's a bug in 1.6.
 
-                    Uri tempImageUri = Uri.fromFile(getTemporaryImageFile());
+                    //Uri tempImageUri = Uri.fromFile(getTemporaryImageFile());
+                    Uri tempImageUri = Uri.fromFile(getTemporaryImageFile(params[0],params[1], params[2]));
+                    Log.d(TAG, "tempImageUri: " + tempImageUri);
+                    mEncounterState = new Intent();
+                    mEncounterState.setDataAndType(tempImageUri, "image/jpg");
                     // This extra tells the camera to return a larger image -
                     // only works in >=1.5
                     cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageUri);
@@ -229,6 +240,14 @@ public abstract class BaseRunner extends FragmentActivity {
                     Log.d(TAG, "Plug: " + plug.toUri(Intent.URI_INTENT_SCHEME));
                     startActivityForResult(plug, PLUGIN_INTENT_REQUEST_CODE);
                     break;
+                case OBSERVATION_RESULT_CODE:
+                	String id = intent.getStringExtra("id");
+                	int page = intent.getIntExtra("page", -1);
+                	String obs = intent.getStringExtra(Observations.Contract.VALUE);
+                	Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id,obs));
+                	setValue(page, id, obs);
+                	storeCurrentProcedure(false, true);
+                	break;
                 default:
                     break;
             }
@@ -240,12 +259,14 @@ public abstract class BaseRunner extends FragmentActivity {
                     Toast.LENGTH_SHORT).show();
         }
     }
-
+    Uri tempImageUri = Uri.EMPTY;
+    
     /** Handles the results of Activities launched for data capture. */
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
             final Intent data)
     {
+        Log.i(TAG, "data: " + ((data != null) ? data.toUri(Intent.URI_INTENT_SCHEME):"null"));
         Log.d(TAG, "Returned. requestCode: " + requestCode);
         Log.d(TAG, "......... resultCode : " + resultCode);
         Log.d(TAG, "......... obs        : " + mEncounterState.getData());
@@ -270,8 +291,10 @@ public abstract class BaseRunner extends FragmentActivity {
                                     new ImageProcessingTaskRequest();
                             request.savedProcedureId = params[0];
                             request.elementId = params[1];
-                            request.tempImageFile = getTemporaryImageFile();
+                            //request.tempImageFile = getTemporaryImageFile();
+                            request.tempImageFile = getTemporaryImageFile(params[0],params[1], params[2]);
                             request.c = this;
+                            
                             request.intent = data;
                             Log.i(TAG, "savedProcedureId " + request.savedProcedureId
                                     + " and elementId " + request.elementId);
@@ -313,18 +336,33 @@ public abstract class BaseRunner extends FragmentActivity {
                                         rData, type);
                                 Log.d(TAG, "Binary insert uri: " + uri.toString());
                                 answer = BinaryDAO.getUUID(uri);
+                                p.current().setElementValue(
+                                        mEncounterState.getData().getPathSegments().get(2),
+                                        answer);
                             }
                             break;
+
+                        case OBSERVATION_RESULT_CODE:
+                        	String id = data.getStringExtra("id");
+                        	int page = data.getIntExtra("page", -1);
+                        	String obs = data.getStringExtra(Observations.Contract.VALUE);
+                        	Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id,obs));
+                        	p.setValue(page, id, obs);
+                        	break;
                         default:
                             Log.e(TAG, "Unknown activity");
                             answer = "";
+                            p.current().setElementValue(
+                                    mEncounterState.getData().getPathSegments().get(2),
+                                    answer);
                             break;
                     }
 
-                    p.current().setElementValue(
-                            mEncounterState.getData().getPathSegments().get(2),
-                            answer);
                     Log.d(TAG, "Got answer: " + answer);
+                    Log.w(TAG, mEncounterState.toUri(0));
+                    //p.current().setElementValue(
+                    //        mEncounterState.getData().getPathSegments().get(2),
+                    //        answer);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "Error capturing answer from RESULT_OK: "
@@ -338,10 +376,39 @@ public abstract class BaseRunner extends FragmentActivity {
 
     }
 
+    public boolean setValue(int pageIndex, String elementId, String value){
+    	boolean result = false;
+    	if (mRunnerFragment != null && mRunnerFragment instanceof BaseRunnerFragment) {
+            result = mRunnerFragment.setValue(pageIndex, elementId, value);
+    	}
+    	return result;
+    }
+    
+    public void storeCurrentProcedure(boolean finished, boolean skipHidden){
+        if (mRunnerFragment != null) {
+        	mRunnerFragment.storeCurrentProcedure(finished, skipHidden);
+        }
+    }
+    
     /** A static temporary image file
      * 
      * @return */
     protected static File getTemporaryImageFile() {
         return new File(Environment.getExternalStorageDirectory(), "sana.jpg");
+    }
+    
+    protected static File getTemporaryImageFile(String encounter, String obsId, String objId) {
+    	File dir = new File(Environment.getExternalStorageDirectory(), "sana/tmp/");
+    	if(!dir.exists())
+    		dir.mkdirs();
+        return new File(dir, String.format("%s_%s-%s.jpg", encounter, obsId, objId));
+    }
+    
+    protected static boolean removeTemporaryImageFile(String encounter, String obsId) {
+    	File dir = new File(Environment.getExternalStorageDirectory(), "sana/tmp/");
+    	if(!dir.exists())
+    		dir.mkdirs();
+        File tmp =  new File(dir, String.format("%s_%s.jpg", encounter, obsId));
+        return tmp.delete();
     }
 }

@@ -2,10 +2,13 @@
 package org.sana.android.activity;
 
 import org.sana.R;
+import org.sana.android.app.Locales;
+import org.sana.android.content.Intents;
 import org.sana.android.provider.Procedures;
 
 import android.app.ListActivity;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,7 +31,12 @@ public class ProceduresList extends ListActivity {
             Procedures.Contract._ID, Procedures.Contract.TITLE,
             Procedures.Contract.AUTHOR
     };
-
+    
+    private static final String[] PROJECTION2 = new String[] {
+        Procedures.Contract._ID, Procedures.Contract.TITLE,
+        Procedures.Contract.VERSION
+    };
+    
     /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,19 +46,21 @@ public class ProceduresList extends ListActivity {
         if (uri == null) {
             uri = Procedures.CONTENT_URI;
         }
-
-        Cursor cursor = managedQuery(uri, PROJECTION, null, null,
+        sync(this,uri);
+        Cursor cursor = managedQuery(uri, PROJECTION2, null, null,
                 Procedures.DEFAULT_SORT_ORDER);
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.procedure_list_row, cursor,
                 new String[] {
                         Procedures.Contract.TITLE,
-                        Procedures.Contract.AUTHOR
+                        Procedures.Contract.VERSION
+                        //Procedures.Contract.AUTHOR
                 },
                 new int[] {
                         R.id.toptext, R.id.bottomtext
                 });
+    	Locales.updateLocale(this, getString(R.string.force_locale));
         setListAdapter(adapter);
     }
 
@@ -67,11 +77,18 @@ public class ProceduresList extends ListActivity {
             Intent intent = getIntent();
             intent.setData(uri);
             intent.putExtra(EXTRA_PROCEDURE_URI, uri);
+            intent.putExtra(Intents.EXTRA_PROCEDURE, uri);
             setResult(RESULT_OK, intent);
             finish();
         } else {
             // Launch activity to view/edit the currently selected item
             startActivity(new Intent(Intent.ACTION_EDIT, uri));
         }
+    }
+    
+
+    final void sync(Context context, Uri uri){
+    	Intent intent = new Intent(context.getString(R.string.intent_action_read),uri);
+    	context.startService(intent);
     }
 }
