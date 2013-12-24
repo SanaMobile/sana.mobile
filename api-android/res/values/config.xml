@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cfg_db_init">cfg_db_init</string>
+    <string name="cfg_db_init_value">false</string>
+    <string name="cfg_db_version">cfg_db_version</string>
+    <integer name="cfg_db_version_value">2</integer>
+    <string name="cfg_format_date">cfg_format_date</string>
+    <string name="cfg_format_date_value">yyyy-MM-dd HH:mm:ss</string>
+</resources>
