@@ -19,25 +19,34 @@ Development Requirements
       http://developer.android.com/sdk/index.html
 4.  Android Support Library(Install using SDK manager)
       http://developer.android.com/tools/support-library/setup.html
+    Should be included with ADT
+5.  Add API 7 using SDK manager
 5.  Android virtual device or phone which supports API 7
 
 Code installation instructions.
 -------------------------------
-1.  Create directory named sana
-3.  Change into sana directory
-2.  Checkout the source code
-      git clone https://code.google.com/p/sana.mobile/
-2.  Start Eclipse and create new workspace in sana/workspace/.
-3.  Add android-support-v7-appcompat project to your workspace copy into workspace
-      http://developer.android.com/tools/support-library/setup.html#libs-with-res
-    Be certain to select Android Private Libraries in Export tab of 
-    Java build path
-
-*IMPORTANT! For steps 4-6 Do not copy sana projects
-4.  Import api project using. Do not copy
-      Import --> General --> Existing Projects into Workspace
-5.  Import api-android into workspace
-6.  Import app-android and app-android-tests into workspace
+1.  Start Eclipse bundled with ADT 
+2.  Import the sana code projects:
+    a. File --> Import --> Git --> Projects from Git
+    b. Use following URI for import
+        https://code.google.com/p/sana.mobile/
+    c. Select all branches
+    d. Use defaults for local destination
+    e. Select all of the projects
+       api
+       api-android
+       app-android
+       app-android-tests
+3.  Add android-support-v7-appcompat project to your workspace
+    *** The sana.mobile code assumes it has been copied into the workspace.
+    *** If you do not copy you will need to update the library reference later.
+    Important:
+    a. Add to Java Build Path
+         android-support-v4.jar
+         android-support-v7-appcompat.jar
+    b. Select Android Private Libraries in Export tab of Java build path
+    For more info:
+        http://developer.android.com/tools/support-library/setup.html#libs-with-res
 
 Troubleshooting
 ---------------
@@ -47,7 +56,11 @@ A.  Missing Android dependencies. Use the "Android SDK Manager" to add any
 B.  "NoClassDefFoundError" when running the client application. By default, the 
     ADT plugin does not export libraries included in the build. To correct this
     issue, right click on the project in Eclipse and open the Properties window.
-    Select 
+    Select: Java Build Path --> Order and Export 
+C.  Path issues with v7-appcompat library reference in api-android. Open
+    Project Properties --> Android and check the Library references at the 
+    bottom of the window. A large red x by the v7-appcompat indicates the path needs to
+    be corrected. Remove and re-add the appcompat project from your workspace.
     
 Licensing
 ---------
