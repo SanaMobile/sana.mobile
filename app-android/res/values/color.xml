@@ -2,5 +2,7 @@
 <resources>
     <color name="light_gray">#CCCCCC</color>
     <color name="light_blue">#60c5eb</color>
+    <color name="light_goldenrod">#EEDD82</color>
+    <color name="goldenrod">#DAA520</color>
     
 </resources>

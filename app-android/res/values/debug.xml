@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="debug_user">admin</string>
+    <string name="debug_password">Sanamobile1</string>
+    <string name="debug_credentials">true</string> 
+</resources>

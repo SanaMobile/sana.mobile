@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <color name="alt_bg_color">#000000</color>
     <color name="alt_fg_color">#ffffff</color>
     <color name="alt_border_color">#00d700</color>
+    
+    
     <style name="Widget.Button.Alt" parent="@android:style/Widget.Button">
         <item name="android:layout_width">240px</item>
         <item name="android:layout_height">wrap_content</item>
@@ -13,4 +15,28 @@
         <item name="android:textAppearance">?android:attr/textAppearanceSmallInverse</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
+    
+    
+    <style name="Widget.CompoundButton.RadioButton.Large" parent="@android:style/Widget.CompoundButton.RadioButton">
+    	<item name="android:layout_width">wrap_content</item>
+    	<item name="android:layout_height">wrap_content</item>
+    	<item name="android:layout_gravity">center_vertical</item>
+   	 	<item name="android:duplicateParentState">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryDisableOnly</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:background">@drawable/btn_radio_label_background_s</item>
+        <item name="android:drawableLeft">@drawable/btn_radio_off</item>
+        <item name="android:checked">false</item>
+        <item name="android:button">@drawable/btn_radio</item>
+    </style>
+    
+    <style name="RadioGroup" >
+    	<item name="android:layout_width">match_parent</item>
+    	<item name="android:layout_height">wrap_content</item>
+    	<item name="android:layout_gravity">center_vertical</item>
+    </style>
+    
 </resources>

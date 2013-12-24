@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="admin_username">admin</string>
-    <string name="admin_password">password</string>
+    <string name="admin_password">Sanamobile1</string>
     <string name="keypass">Sanamobile1</string>
-    
 </resources>

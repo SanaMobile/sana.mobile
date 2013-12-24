@@ -7,91 +7,90 @@
     <string name="app_name">Sana</string>
     
     <!--  Activity titles  -->
-    <string name="title_register_new_patient">Register New Patient</string>
-    <string name="title_patients_list">All Patients</string>
-    <string name="title_procedures_list">Available Procedures</string>
-    <string name="title_savedprocedure_list">Saved Procedures</string>
-	<string name="title_procedure_runner">Sana Perform Procedure</string>
-	<string name="title_notification_viewer">Sana Notification Viewer</string>
-	<string name="title_notifications_list">Notifications List (by Patient ID)</string>
-    <string name="title_help_list">Help List</string>
-	<string name="title_settings">Sana Settings</string>
-    <string name="title_network_settings">Sana Network Settings</string>
-    <string name="title_resource_settings">Sana Resource Settings</string>
-	<string name="title_upload_service">Sana Upload Service</string>
-	<string name="title_patient_list">Patient List</string>
+    <string name="title_register_new_patient">Pasyan New</string>
+    <string name="title_patients_list">Tout pasyan</string>
+    <string name="title_procedures_list">Pwosedi pou Disponib</string>
+    <string name="title_savedprocedure_list">Rankont pou</string>
+	<string name="title_procedure_runner">Fè pwosedi</string>
+	<string name="title_notification_viewer">Notifikasyon Viewer</string>
+	<string name="title_notifications_list">Lis notifikasyon</string>
+    <string name="title_help_list">Ede lis</string>
+	<string name="title_settings">Anviwònman</string>
+    <string name="title_network_settings">Rezo Anviwònman</string>
+    <string name="title_resource_settings">Resous Anviwònman</string>
+	<string name="title_upload_service">Voye sèvis</string>
+	<string name="title_patient_list">Pasyan lis</string>
 	
 	<!-- Main menu buttons  -->
-    <string name="button_main_education">Education Resources</string>
-	<string name="button_main_new_encounter">Encounters</string>
-	<string name="button_main_view_prior_encounters">View Prior Encounters</string>
-	<string name="button_main_view_notifications">Notifications</string>
-	<string name="button_main_view_patients">Patients</string>
-	<string name="button_main_view_scheduled_tasks">Assigned tasks</string>
+    <string name="button_main_education">Edikasyon resous</string>
+	<string name="button_main_new_encounter">Rankont pou</string>
+	<string name="button_main_view_prior_encounters">View Rankont Anvan</string>
+	<string name="button_main_view_notifications">Notifikasyon</string>
+	<string name="button_main_view_patients">Pasyan</string>
+	<string name="button_main_view_scheduled_tasks">Pwograme vizit</string>
 		
 	<!--  General Phrases -->
-	<string name="general_ok">Okay</string>
-	<string name="general_cancel">Cancel</string>
-	<string name="general_yes">Yes</string>
-	<string name="general_no">No</string>
-    <string name="general_save">Save</string>
-    <string name="general_dismiss">Dismiss</string>
-	<string name="general_discard">Discard</string>
-	<string name="general_alert">Alert!</string>
-    <string name="general_capture_data">Capture Data</string>
-    <string name="general_view_data">View Data</string>
-    <string name="general_zoom_in">Zoom In</string>
-    <string name="general_zoom_out">Zoom Out</string>
-    <string name="general_back">Back</string>
-    <string name="general_keep">Keep</string>
-    <string name="general_center">Center</string>
-    <string name="general_error">Error</string>
-    <string name="general_change_settings">Change Settings</string>
-    <string name="general_input_required">Input required</string>
-    <string name="general_question_id">Question id</string>
-    <string name="general_concept">Concept</string>
-    <string name="general_value">Value</string>
+	<string name="general_ok">Oke</string>
+	<string name="general_cancel">Anile</string>
+	<string name="general_yes">Oui</string>
+	<string name="general_no">Non</string>
+    <string name="general_save">Sove</string>
+    <string name="general_dismiss">Rejte</string>
+	<string name="general_discard">Jete</string>
+	<string name="general_alert">Avètisman!</string>
+    <string name="general_capture_data">Kaptire</string>
+    <string name="general_view_data">Wè</string>
+    <string name="general_zoom_in">rale nan</string>
+    <string name="general_zoom_out">rale soti</string>
+    <string name="general_back">Anvan</string>
+    <string name="general_keep">Kenbe</string>
+    <string name="general_center">Sant</string>
+    <string name="general_error">Erè</string>
+    <string name="general_change_settings">Chanje Anviwònman</string>
+    <string name="general_input_required">Antre egzije</string>
+    <string name="general_question_id">Id kesyon</string>
+    <string name="general_concept">Konsèp</string>
+    <string name="general_value">Valè</string>
     <string name="general_no_value">No Value</string>
-    <string name="general_no_response">No response</string>
-    <string name="general_response">Response</string>
-    <string name="general_procedure">Procedure</string>
-    <string name="general_patient_id">Patient Id</string>
-    <string name="general_observation_list">Observation List</string>
-    <string name="general_date_completed">Date Completed</string>
-    <string name="general_synchronized">Synchronized</string>
-    
+    <string name="general_no_response">Pa gen okenn repons</string>
+    <string name="general_response">Repons</string>
+    <string name="general_procedure">Pwosedi</string>
+    <string name="general_patient_id">Id Pasyan</string>
+    <string name="general_observation_list">Lis Repons</string>
+    <string name="general_date_completed">Konplete sou</string>
+    <string name="general_synchronized">Senkronize</string>
 	
 	<!--  Dialog Strings -->
-	<string name="dialog_already_uploaded">This procedure has already been uploaded.</string>
-	<string name="dialog_exit_procedure">Exit Current Procedure</string>
+	<string name="dialog_already_uploaded">Sa a te pwosedi deja te Uploaded.</string>
+	<string name="dialog_exit_procedure">Sòti Kouran Pwosedi</string>
 	<string name="dialog_save_changes">Save Changes</string>
 	<string name="dialog_incorrect_credentials">Could not upload: OpenMRS username/password incorrect!</string>
 	<string name="dialog_no_help_available">No help Available</string>
     <string name="dialog_no_network">Could not check username/password - no network connection.</string>
     <string name="dialog_no_reload_db_warn">Warning: reloading the database will clear all saved procedures and notifications. Proceed?</string>
     <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number</string>
-    <string name="dialog_loading_procedure">Loading Procedure.</string>
-    <string name="dialog_look_up_patient">Looking up patient \"%d\"</string>
-    <string name="dialog_logging_in">Logging in.</string>
+    <string name="dialog_loading_procedure">Loading Pwosedi</string>
+    <string name="dialog_look_up_patient">Leve je l \'pasyan \"%d\"</string>
+    <string name="dialog_logging_in">Otantifye</string>
 	
 	<!-- Menu options strings -->
-	<string name="menu_new_patient">New Patient</string>
+	<string name="menu_new_patient">Pasyan New</string>
 	<string name="menu_reload_db">Reload Database</string>
 	<string name="menu_settings">Settings</string>
 	<string name="menu_sync">Sync</string>
-	<string name="menu_select_all">Select All</string>
-	<string name="menu_delete">Delete</string>
-	<string name="menu_resend">Resend</string>
-	<string name="menu_save_exit">Save &amp; Exit</string>
-	<string name="menu_discard_exit">Discard &amp; Exit</string>
-	<string name="menu_jump_to_question">Jump To A Question</string>
-	<string name="menu_exit">Exit</string>
-	<string name="menu_view_pages">View pages</string>
+	<string name="menu_select_all">Chwazi tout</string>
+	<string name="menu_delete">Efase</string>
+	<string name="menu_resend">Ranvwaye</string>
+	<string name="menu_save_exit">Sove &amp; Fini</string>
+	<string name="menu_discard_exit">Jete ak sòti</string>
+	<string name="menu_jump_to_question">Ale nan yon kesyon</string>
+	<string name="menu_exit">Fini</string>
+	<string name="menu_view_pages">wè paj</string>
 	
 	<!-- Settings Activity Strings -->
-	<string name="settings_title">Sana Configuration</string>
-    <string name="settings_network_title">Sana Configuration</string>
-    <string name="settings_resource_title">Sana Configuration</string>
+	<string name="settings_title">Sana konfigirasyon</string>
+    <string name="settings_network_title">Sana konfigirasyon</string>
+    <string name="settings_resource_title">Sana konfigirasyon</string>
 	<string name="setting_mds_url">Mobile Dispatch Server URL</string>
     <string name="setting_mds_url_summary">IP address of MDS, do NOT add a trailing /</string>
     <string name="setting_secure">Secure Transmission</string>
@@ -133,8 +132,8 @@
     <string name="setting_network_summary">Configure network settings</string>
     
 	<!-- Strings describing standard questions and common UI elements once inside a Procedure -->
-	<string name="next">Next</string>
-	<string name="previous">Previous</string>
+	<string name="next">Pwochen</string>
+	<string name="previous">Anvan</string>
 	<string name="question_standard_new_mrn">Enter New Patient\'s Medical Record Number</string>
 	<string name="question_standard_firstname">Enter Patient\'s First Name</string>
 	<string name="question_standard_lastname">Last Name</string>
@@ -150,23 +149,23 @@
     <string name="question_standard_binary_element">Capture Data</string>
     
     <!-- GPS element -->
-    <string name="question_standard_gps_element">Please enter GPS coordinates:</string>
-	<string name="gps_element_acquire_waiting">Waiting for GPS...</string>
-    <string name="gps_element_acquire_unavailable">GPS service not available. Try again.</string>
-    <string name="gps_element_acquire_fail">Could not acquire location. Try again.</string>
-    <string name="gps_element_default_answer">Coordinates not acquired.</string>
+    <string name="question_standard_gps_element">Tanpri antre GPS kowòdone:</string>
+	<string name="gps_element_acquire_waiting">Ap tann pou GPS...</string>
+    <string name="gps_element_acquire_unavailable">GPS sèvis pa disponib. Eseye ankò.</string>
+    <string name="gps_element_acquire_fail">Pa t \'kapab jwenn kote. Eseye ankò.</string>
+    <string name="gps_element_default_answer">Kowòdone pa akeri.</string>
     
 	<!--Procedure Runner related  -->
-	<string name="procedurerunner_formdone">All Done. What would you like to do?</string>
-	<string name="procedurerunner_viewpagelist">View Page List</string>
-	<string name="procedurerunner_goback">Go Back</string>
-	<string name="procedurerunner_upload">Save &amp; Upload to Server</string>
-	<string name="procedurerunner_saveforlater">Save for Later Upload</string>
-	<string name="procedurerunner_next">Next</string>
-	<string name="procedurerunner_previous">Prev</string>
-	<string name="procedurerunner_done">Done</string>
+	<string name="procedurerunner_formdone">Ranpli. Ki sa ou ta renmen fè?</string>
+	<string name="procedurerunner_viewpagelist">View Lis Page</string>
+	<string name="procedurerunner_goback">Anvan</string>
+	<string name="procedurerunner_upload">Sove &amp; Voye</string>
+	<string name="procedurerunner_saveforlater">Sove</string>
+	<string name="procedurerunner_next">Pwochen</string>
+	<string name="procedurerunner_previous">Anvan</string>
+	<string name="procedurerunner_done">Fini</string>
 	<string name="procedurerunner_scan_id">Scan ID</string>
-    <string name="procedurerunner_info">Info</string>
+    <string name="procedurerunner_info">Enfòmasyon</string>
 	
 	<!-- SD card Procedure updater -->
 	<string name="sd_import_empty">No new procedures found. Check settings?</string>
@@ -185,14 +184,14 @@
     <string name="msg_err_no_data">No data available.</string>
     <string name="msg_err_no_answer">Answer not set.</string>
     <string name="msg_err_reset_db">Error resetting database.</string>
-    <string name="not_uploaded">Not uploaded</string>
-    <string name="upload_fail">Upload failed</string>
-    <string name="upload_success">Upload successful</string>
-    <string name="upload_status">Upload status</string>
-    <string name="download_fail">Download failed</string>
-    <string name="download_success">Download successful</string>
-    <string name="download_status">Download status</string>
-    <string name="network_alert">Network Alert</string>
+    <string name="not_uploaded">Pa voye</string>
+    <string name="upload_fail">Voye echwe</string>
+    <string name="upload_success">Voye siksè</string>
+    <string name="upload_status">Voye sitiyasyon</string>
+    <string name="download_fail">Download echwe</string>
+    <string name="download_success">Download siksè</string>
+    <string name="download_status">Voye sitiyasyon</string>
+    <string name="network_alert">rezo alèt</string>
     
     <!-- PatientInfoDialog Activity  -->
     <string name="patient_out_of_sync">Patient information does not match database</string>
@@ -201,14 +200,11 @@
     <string name="note_pt_diagnosis">Diagnosis for Patient</string>
     
     <!-- Patients Related -->
-    <string name="msg_no_patients">No Patients</string>
+    <string name="msg_no_patients">Pa gen Pasyan</string>
     
     <!-- Authentication Screen -->
     <string name="authentication_sana">Sana</string>
-    <string name="authentication_username">Username</string>
-    <string name="authentication_password">Password</string>
-    <string name="authentication_login">Log-In</string>
-    <string name="button_main_register_patients">Register Patient</string>
-    <string name="button_main_select_procedure">Select Procedure</string>
-    <string name="button_main_select_patient">Select Patient</string>
+    <string name="authentication_username">Itilizatè</string>
+    <string name="authentication_password">Modpas</string>
+    <string name="authentication_login">Konekte</string>
 </resources>
