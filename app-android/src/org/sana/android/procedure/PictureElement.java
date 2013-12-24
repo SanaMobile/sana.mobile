@@ -100,7 +100,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
         picContainer.setOrientation(LinearLayout.VERTICAL);
 
         if(question == null) {
-            question = "Attach a picture:";
+            question = c.getString(R.string.question_standard_picture_element);
         }
         
         //Set question
