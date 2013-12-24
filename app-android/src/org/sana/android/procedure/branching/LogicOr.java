@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.sana.BuildConfig;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.w3c.dom.Node;
@@ -25,13 +26,15 @@ public class LogicOr extends Criteria {
     }
     
     public boolean criteriaMet() {
-    	Log.d(TAG, "criterionMet(): OR: Begin:");
+    	if(BuildConfig.DEBUG)
+    		Log.d(TAG, "criterionMet(): OR: Begin:");
     	boolean result = false;
         for(Criteria c : criteria) {
             if (c.criteriaMet())
                 result = result || true;
         }
-    	Log.d(TAG, "criterionMet(): OR: Result:" + result);
+    	if(BuildConfig.DEBUG)
+    		Log.d(TAG, "criterionMet(): OR: Result:" + result);
     	return result;
     }
     /**

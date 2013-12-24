@@ -1,17 +1,24 @@
 package org.sana.android.procedure;
 
+import java.net.URISyntaxException;
+
 import org.sana.R;
 import org.sana.android.media.AudioPlayer;
 import org.sana.android.media.EducationResource;
 import org.sana.android.util.SanaUtil;
 import org.w3c.dom.Node;
 
+import com.google.gson.Gson;
+
 import android.content.Context;
+import android.content.Intent;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -95,7 +102,8 @@ public abstract class ProcedureElement {
         /** Provides access to 3rd party tools for data capture where the data
          *  is not returned directly and must be manually entered by the user. 
          */
-        ENTRY_PLUGIN("");
+        ENTRY_PLUGIN(""),
+        HIDDEN("");
     	
         private String filename;
         private ElementType(String filename) {
@@ -110,11 +118,13 @@ public abstract class ProcedureElement {
         	return filename;
         }
     }
-
+    public static String CHOICE_DELIMITER = "\\|";
+    
     protected String id;
     protected String question;
     protected String answer;
     protected String concept;
+    protected String action = null;
     
     // Resource of a corresponding figure for this element.
     protected String figure;
@@ -264,6 +274,10 @@ public abstract class ProcedureElement {
     	this.helpText = helpText;
     }
     
+    public String getAction(){
+    	return action;
+    }
+    
     /**
      * Whether this element is valid.
      * @return true if not required or required and answer is not empty
@@ -307,6 +321,8 @@ public abstract class ProcedureElement {
     }
 
     protected void appendOptionalAttributes(StringBuilder sb){
+    	if(!TextUtils.isEmpty(action))
+    		sb.append("action=\"" + action+ "\" ");
     	return;
     }
     
@@ -411,6 +427,11 @@ public abstract class ProcedureElement {
         	el = PluginEntryElement.fromXML(idStr, questionStr, answerStr, 
         			conceptStr, figureStr, audioStr, node);
         	break;
+
+        case HIDDEN:
+            el = HiddenElement.fromXML(idStr, questionStr, answerStr, conceptStr, 
+            		figureStr, audioStr, node);
+            break;
         case INVALID:
         default:
             throw new ProcedureParseException("Got invalid node type : " 
@@ -437,8 +458,17 @@ public abstract class ProcedureElement {
         			"attribute invalid for id " + idStr 
         			+ ". Must be \'true\' or \'false\'");
         }
+        
         return el;
     }
+    
+    public static void parseOptionalAttributes(Node node, ProcedureElement el){
+    	String actionStr = SanaUtil.getNodeAttributeOrDefault(node, 
+        		"action", "");
+        if(!TextUtils.isEmpty(actionStr))
+        	el.action = actionStr;
+    }
+    
     
     /** @return The value of the id attribute */
     public String getId() {
@@ -506,12 +536,22 @@ public abstract class ProcedureElement {
      * 		object.
      */
     public View encapsulateQuestion(Context c, View v) {
+    	
+    	// Add question view
     	TextView textView = new TextView(c);
-    	textView.setText(this.question);
+    	textView.setSingleLine(false);
+		String q = question.replace("\\n", "\n");
+    	if(!getType().equals(ElementType.TEXT)){
+    		textView.setText(String.format("%s: %s",  getId(), q));
+    	}else{
+        	textView.setGravity(Gravity.LEFT);
+        	textView.setText(q);
+    	}
     	textView.setGravity(Gravity.CENTER_HORIZONTAL);
     	textView.setTextAppearance(c, android.R.style.TextAppearance_Large);
     	View questionView = textView;
     	
+    	// Add image if provided
         ImageView imageView = null;
         
         //Set accompanying figure
@@ -535,6 +575,7 @@ public abstract class ProcedureElement {
 	        }
         }
         
+        // Add audio prompt if provided
         if (hasAudioPrompt()) {
         	try {
         		String resourcePath = c.getPackageName() + ":" + audioPrompt;
@@ -565,7 +606,9 @@ public abstract class ProcedureElement {
         				+ e.toString());
         	}
         }
-        Log.d(TAG, "Loaded: " +this.toString());
+
+    		
+        //Log.d(TAG, "Loaded: " +this.toString());
     	LinearLayout ll = new LinearLayout(c);
     	ll.setOrientation(LinearLayout.VERTICAL);
 
@@ -573,14 +616,26 @@ public abstract class ProcedureElement {
     	ll.addView(questionView);
     	if (imageView != null)
     		ll.addView(imageView);
+
+    	// Add Buttons if provided
+    	if(!TextUtils.isEmpty(action)){
+    		View actionView = getActions(c);
+    		ll.addView(actionView);
+    	} else {
+            //Log.w(TAG, "Empty action string!");	
+    	}
+    	
     	if(v != null){
     		LinearLayout viewHolder = new LinearLayout(c);
+    		
     		viewHolder.addView(v);
     		viewHolder.setGravity(Gravity.CENTER_HORIZONTAL);
-    		ll.addView(viewHolder);
+    		ll.addView(viewHolder, new LayoutParams(LayoutParams.MATCH_PARENT,
+        			LayoutParams.WRAP_CONTENT));
     	}
+    		
     	ll.setGravity(Gravity.CENTER);
-    	ll.setPadding(10, 0, 10, 0);
+    	ll.setPadding(5, 0, 5, 0);
     	ll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
     			LayoutParams.WRAP_CONTENT));
         return ll;
@@ -588,10 +643,56 @@ public abstract class ProcedureElement {
     
     @Override
     public String toString(){
+    	/*
+    	Gson gson = new Gson();
+    	return gson.toJson(this);
+    	*/
     	return String.format("ProcedureElement: type=%s, concept=%s, "
-    		+"required=%s, id=%s, question=%s, figure=%s, audio=%s, answer=%s",
+    		+"required=%s, id=%s, question=%s, figure=%s, audio=%s, answer=%s,"
+    		+"action=%s",
     	    getType(), concept, bRequired, id, question, figure, audioPrompt, 
-    	    answer);
+    	    answer,action);
+    }
+    
+    /**
+     * Returns a 
+     * @return
+     */
+    public View getActions(Context c){
+		Log.d(TAG, "action=" + action);
+    	LinearLayout ll = new LinearLayout(c);
+    	ll.setOrientation(LinearLayout.VERTICAL);
+    	ll.setGravity(Gravity.CENTER);
+    	ll.setPadding(5, 0, 5, 0);
+    	ll.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+    			LayoutParams.WRAP_CONTENT));
+    	
+    	// Get the intent 
+    	for(String intentStr: action.split(",")){
+    		Log.d(TAG, intentStr);
+    		Button button = new Button(c);
+    		button.setText("????");
+    		try {
+				Intent buttonAction = Intent.parseUri(intentStr, Intent.URI_INTENT_SCHEME);
+	    		button.setTag(buttonAction);
+	    		button.setText(buttonAction.getStringExtra(Intent.EXTRA_TITLE));
+	    		button.setOnClickListener(new View.OnClickListener(){
+					@Override
+					public void onClick(View v) {
+						Intent action = (Intent) v.getTag();
+						ProcedureElement.this.getContext().startActivity(action);
+						
+					}});
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		ll.addView(button, new LayoutParams(LayoutParams.MATCH_PARENT,
+        			LayoutParams.WRAP_CONTENT));
+    	}
+    	
+    	
+    	return ll;
     }
     
     /** 

@@ -3,13 +3,21 @@ package org.sana.android.procedure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sana.R;
 import org.sana.android.util.SanaUtil;
 import org.w3c.dom.Node;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.util.Xml;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -39,21 +47,22 @@ public class RadioElement extends ProcedureElement {
     public ElementType getType() {
         return ElementType.RADIO;
     }
-
+    
     /** {@inheritDoc} */
     @Override
     protected View createView(Context c) {
+        
+        
         ScrollView radioView = new ScrollView(c);
         RadioGroup rg = new RadioGroup(c);
         rg.setOrientation(LinearLayout.VERTICAL);
         choicelist = java.util.Arrays.asList(choices);
         rblist = new ArrayList<RadioButton>();
-
+        
         if(answer == null)
         	answer = "";
         RadioButton checked = null;
         for(Object choice : choicelist) {
-            
             RadioButton rb = new RadioButton(c);
             rb.setText((String)choice);
             rg.addView(rb);
@@ -64,7 +73,10 @@ public class RadioElement extends ProcedureElement {
         }
         if(checked != null)
             checked.setChecked(true);
-        radioView.addView(rg, new ViewGroup.LayoutParams(-1,-1));
+        radioView.addView(rg, new ViewGroup.LayoutParams(
+        		LayoutParams.MATCH_PARENT,
+        		LayoutParams.WRAP_CONTENT));
+        
         return encapsulateQuestion(c, radioView);
     }
     
@@ -100,7 +112,7 @@ public class RadioElement extends ProcedureElement {
     /** Appends <code>choices</code> attribute */
     @Override
     protected void appendOptionalAttributes(StringBuilder sb){
-        sb.append("\" choices=\"" + TextUtils.join(",", choices));
+        sb.append("\" choices=\"" + TextUtils.join(ProcedureElement.CHOICE_DELIMITER, choices)+ "\"");
     }
     
     /** Default constructor */
@@ -119,7 +131,8 @@ public class RadioElement extends ProcedureElement {
         String choicesStr = SanaUtil.getNodeAttributeOrDefault(node, 
         		"choices", "");
         return new RadioElement(id, question, answer, concept, figure, audio, 
-        		choicesStr.split(","));
+        		choicesStr.split(ProcedureElement.CHOICE_DELIMITER));
     }
+    
     
 }

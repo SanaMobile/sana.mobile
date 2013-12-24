@@ -58,6 +58,7 @@ public class Procedure {
     private ViewAnimator viewAnimator;
     private PatientInfo patientInfo = null;
 
+    private String version = "1.0";
     /**
      * Constructs a new Procedure.
      * 
@@ -264,6 +265,25 @@ public class Procedure {
 		PatientValidator.populateSpecialElements(this, patientInfo);
     }
    
+    public ProcedurePage advanceNext() {
+        if (!hasNext())
+            return null;
+        currentPage = pagesIterator.next();
+        viewAnimator.showNext();
+        // Fill in default values for data from patient in the database
+		PatientValidator.populateSpecialElements(this, patientInfo);
+		return currentPage;
+    }
+    
+    public ProcedurePage advancePrev() {
+        if (!hasPrev())
+            return null;
+        currentPage = pagesIterator.previous();
+        viewAnimator.showPrevious();
+        // Fill in default values for data from patient in the database
+		PatientValidator.populateSpecialElements(this, patientInfo);
+		return currentPage;
+    }
     /**
      * Regresses the current page to the previous show-able page in the 
      * sequence, skipping over non-show-able pages, given user selections thus 
@@ -278,7 +298,7 @@ public class Procedure {
         pagesIterator.previous();
         pp = pages.get(pagesIterator.previousIndex());
         viewAnimator.showPrevious();
-        while (hasPrev() && !pp.shouldDisplay()) {
+        while (hasPrev() && !pp.displayForeground()) {
             pagesIterator.previous();
             pp = pages.get(pagesIterator.previousIndex());
             viewAnimator.showPrevious();
@@ -420,6 +440,10 @@ public class Procedure {
     	return guid;
     }
     
+    public String getVersion(){
+    	return version;
+    }
+    
     /**
      * Writes the procedure, including all of its child elements, to an XML 
      * String. 
@@ -432,13 +456,36 @@ public class Procedure {
         return sb.toString();
     }
     
+    // ugly way to do this
+    //TODO use a proper data dictionary for obs value
+    public void setValue(String elementId, String value){
+    	for(ProcedurePage page:pages){
+    		page.setElementValue(elementId, value);
+    	}
+    }
+    // a bit better but still hacky
+    public boolean setValue(int pageIndex, String elementId, String value){
+    	boolean result = false;
+    	if(pageIndex > -1 && pageIndex < pages.size()){
+    		pages.get(pageIndex).setElementValue(elementId, value);
+    		result = true;
+    	} else {
+    		Log.w(TAG, "setValue(). Index Out of bounds. " + pageIndex );
+    	}
+    	return result;
+    }
+    
     /**
      * Writes the xml for this procedure to a StringBuilder object.
      * @param sb The builder to write to.
      */
     public void buildXML(StringBuilder sb) {
-    	sb.append("<Procedure title =\"" + title + "\" author =\"" + author 
-    			+ "\" guid =\"" + guid + "\">\n");
+    	sb.append("<Procedure title =\"" + title 
+    			+ "\" author =\"" + author 
+    			+ "\" guid =\"" + guid 
+    			+ "\" version=\"" + version
+    			+ "\" uuid=\"" + guid
+    			+ "\">\n");
         
         for (ProcedurePage p : pages) {
             p.buildXML(sb);
@@ -535,7 +582,16 @@ public class Procedure {
             
         }
         
+        String version = "";
+        Node n = node.getAttributes().getNamedItem("guid");
+        if(n != null) {
+        	version = n.getNodeValue();
+            Log.i(TAG, "Version: " + version);
+            
+        }
+        
         Procedure procedure = new Procedure(title, author, guid, pages, elts);
+        procedure.version = version;
         return procedure;
     }
     

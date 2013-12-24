@@ -1,5 +1,6 @@
 package org.sana.android.procedure.branching;
 
+import org.sana.BuildConfig;
 import org.sana.android.procedure.MultiSelectElement;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
@@ -45,9 +46,9 @@ public class Criterion {
         		(critType == CriterionType.LESS)) 
         {
             try {
-                Integer.parseInt(val);
+                Double.parseDouble(val);
             } catch (NumberFormatException e) {
-                throw new ProcedureParseException("Cannot compare non-integer "
+                throw new ProcedureParseException("Cannot compare non-numeric "
                 		+"value. Cannot create criterion for element " 
                 		+ elmt.getId());
             }
@@ -70,12 +71,12 @@ public class Criterion {
             userVal = element.getAnswer();
         } catch (NullPointerException e) {
             // play it safe and show the page
-            return true;
+            return false;
         }           
         // check if it is empty
         if ((userVal == "") || (userVal== null)) {
             // empty user response, lets play it safe and show the page
-            return true;
+            return false;
         }
         // special case MULTI-SELECT
         if (element.getType() == ElementType.MULTI_SELECT) {
@@ -98,7 +99,7 @@ public class Criterion {
     	boolean result = false;
         switch(criterionType) {
         case EQUALS:
-            if (value.equals(userVal)) {
+            if (value.compareToIgnoreCase(userVal) == 0) {
                 result = true;
             }
             break;
@@ -117,9 +118,12 @@ public class Criterion {
             } catch (NumberFormatException e) {return true;}
             break;
         }
+        /*
+    	if(BuildConfig.DEBUG)
     	Log.d(TAG, "criterionMetHelper(): " + criterionType 
     			+ "(Criterion,User Value): (" +value +"," + userVal + ") "
     			+ " result = " + result);
+    	*/
         return result;
     }
 }

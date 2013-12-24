@@ -91,7 +91,9 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
         //imageGrid.setTranscriptMode(imageGrid.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         
         cameraButton = new Button(c);
+        //TODO
         cameraButton.setText("Add Picture");
+        //cameraButton.setText("Add Foto");
         cameraButton.setOnClickListener(this);
         
         imageReview = new ImagePreviewDialog(c);
@@ -104,7 +106,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
         
         //Set question
         TextView tv = new TextView(c);
-        tv.setText(question);
+        tv.setText(String.format("%s: %s", id, question));
         tv.setGravity(Gravity.CENTER);
         tv.setTextAppearance(c, android.R.style.TextAppearance_Medium);
         
@@ -130,7 +132,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
 		 if (v == cameraButton) {
 			 String procedureId = 
 				 getProcedure().getInstanceUri().getPathSegments().get(1); //which procedure its part of
-			 String[] params = {procedureId, id};
+			 String[] params = {procedureId, id, String.valueOf(imageAdapter.getCount() + 1)};
 		
 			 imageCaptureIntent = new Intent(getContext(), ((Activity) getContext()).getClass());
 			 imageCaptureIntent.putExtra(PARAMS_NAME, params)

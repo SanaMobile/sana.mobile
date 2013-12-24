@@ -1,5 +1,6 @@
 package org.sana.android.procedure;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 
 import org.sana.android.activity.EducationResourceList;
+import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.db.PatientValidator;
 import org.sana.android.media.EducationResource;
 import org.sana.android.media.EducationResource.Audience;
@@ -17,6 +19,8 @@ import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -238,6 +242,14 @@ public class ProcedurePage {
 		return criteria.criteriaMet();
 	}
 
+	public boolean displayForeground(){
+		boolean show = false;
+		for(ProcedureElement el: elements){
+			show = el.isViewActive() || show;
+		}
+		return shouldDisplay() && show;
+	}
+	
 	/**
 	 * Maps all of the child elements to a map using their id as a key.
 	 * @param elementMap The map to place the elements into.
@@ -425,6 +437,27 @@ public class ProcedurePage {
 		}
 	}
 
+	public List<Intent> hiddenActions(){
+		List<Intent> actions = new ArrayList<Intent>();
+		for(ProcedureElement s : elements) {
+			
+    		if(s.getType() == ElementType.HIDDEN && !TextUtils.isEmpty(s.action)){
+    			HiddenElement h = (HiddenElement) s;
+    			Intent intent = h.getIntent();
+    			if(intent != null) actions.add(intent);
+    		}	
+		}
+		return actions;
+	}
+	
+	public boolean hasHiddenActions(){
+		boolean actionable = false;
+		for(ProcedureElement s : elements){
+			actionable = actionable ||(s.getType() == ElementType.HIDDEN && !TextUtils.isEmpty(s.action));
+		}
+		return actionable;
+	}
+	
 	/**
 	 * Create a ProcedurePage from a node in an XML procedure description.
 	 */

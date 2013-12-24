@@ -1,8 +1,15 @@
 package org.sana.android.procedure;
 
+import java.net.URISyntaxException;
+
+import org.sana.android.content.core.ObservationWrapper;
+import org.sana.android.provider.Observations;
 import org.w3c.dom.Node;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 
 /**
@@ -16,7 +23,7 @@ import android.view.View;
  * 
  * @author Sana Dev Team
  */
-public class TextElement extends ProcedureElement {
+public class HiddenElement extends ProcedureElement {
 	
     /** {@inheritDoc} */
     @Override
@@ -27,7 +34,7 @@ public class TextElement extends ProcedureElement {
     /** {@inheritDoc} */
     @Override
     public ElementType getType() {
-        return ElementType.TEXT;
+        return ElementType.HIDDEN;
     }
 
     /** {@inheritDoc} */
@@ -38,19 +45,37 @@ public class TextElement extends ProcedureElement {
         return "";
     }
     
+    @Override
+    public boolean isViewActive(){
+    	return false;
+    }
+    
+    public Intent getIntent(){
+
+		Intent intent = null;
+		try {
+			intent = Intent.parseUri(action, Intent.URI_INTENT_SCHEME);
+			intent.putExtra(Observations.Contract.ID, id);
+			intent.putExtra(Observations.Contract.CONCEPT, concept);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return intent;
+    }
+    
     /** Default constructor */
-    private TextElement(String id, String question, String answer, 
+    private HiddenElement(String id, String question, String answer, 
     		String concept, String figure, String audio) 
     {
         super(id, question, answer, concept, figure, audio);
     }
     
     /** @see ProcedureElement#fromXML(String, String, String, String, String, String, Node) */
-    public static TextElement fromXML(String id, String question, String answer,
+    public static HiddenElement fromXML(String id, String question, String answer,
     	String concept, String figure, String audio, Node node)    
 		throws ProcedureParseException 
     {
-    	TextElement el = new TextElement(id, question, answer, concept, figure, audio);
+    	HiddenElement el = new HiddenElement(id, question, answer, concept, figure, audio);
     	ProcedureElement.parseOptionalAttributes(node, el);
     	return el;
     }

@@ -2,6 +2,7 @@ package org.sana.android.procedure.branching;
 
 import java.util.HashMap;
 
+import org.sana.BuildConfig;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.w3c.dom.Node;
@@ -76,16 +77,16 @@ public class Criteria {
     {
         Criteria c = new Criteria();
         if (child.getNodeName().equals("Criteria")) {
-        	Log.d(TAG, "switchOnCriteria(): Child Node Name: " + "Criteria");
+        	//if(BuildConfig.DEBUG) Log.d(TAG, "switchOnCriteria(): Child Node Name: " + "Criteria");
             c = LogicBase.fromXML(child, elts);
         } else if (child.getNodeName().equals("and")) {
-        	Log.d(TAG, "switchOnCriteria(): Child Node Name: " + "and");
+        	//if(BuildConfig.DEBUG) Log.d(TAG, "switchOnCriteria(): Child Node Name: " + "and");
             c = LogicAnd.fromXML(child, elts);
         } else if (child.getNodeName().equals("or")) {
-        	Log.d(TAG, "switchOnCriteria(): Child Node Name: " + "or");
+        	//if(BuildConfig.DEBUG) Log.d(TAG, "switchOnCriteria(): Child Node Name: " + "or");
             c = LogicOr.fromXML(child, elts);
         } else if (child.getNodeName().equals("not")) {
-        	Log.d(TAG, "switchOnCriteria(): Child Node Name: " + "not");
+        	//if(BuildConfig.DEBUG) Log.d(TAG, "switchOnCriteria(): Child Node Name: " + "not");
             c = LogicNot.fromXML(child, elts);
         }
         return c;
