@@ -38,7 +38,17 @@ public class BaseFragment extends Fragment {
         if (mWaitDialog == null) {
             return;
         }
-        
-        mWaitDialog.hide();
+        if(getActivity() != null)
+        	if(getActivity().isFinishing())
+        		mWaitDialog.cancel();
+        	else
+        		mWaitDialog.cancel();
     }
+    
+    @Override
+    public void onPause(){
+    	super.onPause();
+    	hideProgressDialogFragment();
+    }
+    
 }

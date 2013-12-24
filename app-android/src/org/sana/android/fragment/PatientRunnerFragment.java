@@ -64,7 +64,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
      */
     @Override
     public void storeCurrentProcedure(boolean finished) {
-        if (mProcedure != null && thisSavedProcedure != null) {
+        if (mProcedure != null && uEncounter != null) {
             
             PatientInfo patientInfo = mProcedure.getPatientInfo();
             
@@ -126,7 +126,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
                 cv.put(Patients.Contract.STATE, 1);
 
             int updatedObjects = getActivity().getContentResolver()
-                    .update(thisSavedProcedure, cv, null, null);
+                    .update(uEncounter, cv, null, null);
             Log.i(TAG, "patientInfo updated " + updatedObjects
                     + " objects. (SHOULD ONLY BE 1)");
         }
@@ -178,11 +178,11 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
                 ContentValues cv = new ContentValues();
                 cv.put(Patients.Contract.STATE, 0);
                 
-                thisSavedProcedure = getActivity().getContentResolver().insert(
+                uEncounter = getActivity().getContentResolver().insert(
                 		Patients.CONTENT_URI, cv);
                 
                 Log.i(TAG, "onCreate() : uri = " + procedureUri.toString()
-                        + " savedUri = " + thisSavedProcedure);
+                        + " savedUri = " + uEncounter);
                 
                 Procedure p = null;
                 try {
@@ -214,13 +214,13 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
                     logException(e);
                 }
                 if (p != null) {
-                    p.setInstanceUri(thisSavedProcedure);
+                    p.setInstanceUri(uEncounter);
                 }
 
                 result.p = p;
                 result.success = p != null;
                 result.procedureUri = procedureUri;
-                result.savedProcedureUri = thisSavedProcedure;
+                result.savedProcedureUri = uEncounter;
             } else {
                 // TODO: saved patient scenario. should have a tab section for
                 // saved patients
@@ -229,4 +229,13 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
             return result;
         }
     }
+
+	/* (non-Javadoc)
+	 * @see org.sana.android.fragment.BaseRunnerFragment#storeCurrentProcedure(boolean, boolean)
+	 */
+	@Override
+	public void storeCurrentProcedure(boolean finished, boolean skipHidden) {
+		// TODO Auto-generated method stub
+		
+	}
 }
