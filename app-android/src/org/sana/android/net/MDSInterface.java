@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,10 +30,8 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -43,16 +42,19 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.sana.R;
 import org.sana.core.Event;
+import org.sana.net.MDSResult;
 import org.sana.android.Constants;
+import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.db.SanaDB.SoundSQLFormat;
-import org.sana.android.net.ssl.SimpleSSLProtocolSocketFactory;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.sana.android.procedure.ProcedureElement.ElementType;
 import org.sana.android.provider.Encounters;
+import org.sana.android.provider.Observations;
+import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
 import org.sana.android.util.SanaUtil;
 import org.sana.android.util.UserDatabase;
@@ -213,16 +215,20 @@ public class MDSInterface {
 	 * @param ctx The application context.
 	 * @return The mds url with correct scheme.
 	 */
-	private static String getMDSUrl(SharedPreferences preferences){
-		String host = preferences.getString(Constants.PREFERENCE_MDS_URL,
+	private static String getMDSUrl(Context context){
+		String host = context.getString(R.string.cfg_mds_host);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		host = preferences.getString(Constants.PREFERENCE_MDS_URL,
 											Constants.DEFAULT_DISPATCH_SERVER);
 		// Takes care of legacy issues
-		host.replace("moca.mit.edu", "demo.sana.csail.mit.edu");
+		//host.replace("moca.mit.edu", "demo.sana.csail.mit.edu");
 		boolean useSecure = preferences.getBoolean(
 				Constants.PREFERENCE_SECURE_TRANSMISSION, false);
+
 		String scheme = (useSecure)? "https": "http";
-		String url = scheme + "://" + host;
-		return url +"/"+ Constants.PATH_MDS;
+		String url = scheme + "://" + host +"/"+ Constants.PATH_MDS;
+		Log.d(TAG, "mds url: " + url);
+		return url;
 	}
 
 	/**
@@ -345,15 +351,18 @@ public class MDSInterface {
 	{
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
-		String mdsURL = getMDSUrl(preferences);
-		mdsURL = checkMDSUrl(mdsURL);
+		String mdsURL = getMDSUrl(c);
+		Log.d(TAG, "mds url: " + mdsURL);
+		//mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructProcedureSubmitURL(mdsURL);
 		String phoneId = preferences.getString("s_phone_name", 
 				Constants.PHONE_ID);
+		
 		String username = preferences.getString(
 				Constants.PREFERENCE_EMR_USERNAME, Constants.DEFAULT_USERNAME);
 		String password = preferences.getString(
 				Constants.PREFERENCE_EMR_PASSWORD, Constants.DEFAULT_PASSWORD);
+		
 		List<NameValuePair> postData = new ArrayList<NameValuePair>();
 		postData.add(new BasicNameValuePair("savedproc_guid", savedProcedureGuid));
 		postData.add(new BasicNameValuePair("procedure_guid", Integer.toString(0)));
@@ -389,7 +398,7 @@ public class MDSInterface {
 
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
-		String mdsURL = getMDSUrl(preferences);
+		String mdsURL = getMDSUrl(c);
 		mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructBinaryChunkHackSubmitURL(mdsURL);
 		
@@ -464,7 +473,7 @@ public class MDSInterface {
 	{
 		SharedPreferences preferences = 
 			PreferenceManager.getDefaultSharedPreferences(c);
-		String mdsUrl = getMDSUrl(preferences);
+		String mdsUrl = getMDSUrl(c);
 		mdsUrl = checkMDSUrl(mdsUrl);
 		String mUrl = constructBinaryChunkSubmitURL(mdsUrl);
 		MultipartEntity entity = new MultipartEntity();
@@ -939,6 +948,8 @@ public class MDSInterface {
 				thisProgress++;
 			}
 		}
+
+		logObservations(context,savedProcedureGUID);
 		// TODO Tag entire procedure in db as done transmitting
 		return true;   
 	}
@@ -1120,7 +1131,7 @@ public class MDSInterface {
 		Log.i(TAG, "validateCredentials()");
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
-		String mdsURL = getMDSUrl(preferences);
+		String mdsURL = getMDSUrl(c);
 		mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructValidateCredentialsURL(mdsURL);
 		String username = preferences.getString(
@@ -1150,7 +1161,7 @@ public class MDSInterface {
 		Log.i(TAG, "updatePatientDatabase():");
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
-		String mdsURL = getMDSUrl(preferences);
+		String mdsURL = getMDSUrl(c);
 		mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructDatabaseDownloadURL(mdsURL);
 		String username = preferences.getString(
@@ -1170,6 +1181,7 @@ public class MDSInterface {
 		
 				//the following line needs to be uncommented eventually
 				UserDatabase.addDataToUsers(cr, toparse);
+				cr.notifyChange(Patients.CONTENT_URI,null);
 			}
 		} catch (Exception e){
 			result = false;
@@ -1178,6 +1190,26 @@ public class MDSInterface {
 		return result;
 	}
 
+	public static HttpUriRequest updatePatientDatabase(Context c) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(c);
+		String scheme = getScheme(preferences);
+		String host = getHost(preferences);
+		String path = c.getString(R.string.path_root) + c.getString(R.string.path_subject_sync);
+		int port = getPort(c);
+		String mdsURL = getMDSUrl(c);
+		mdsURL = checkMDSUrl(mdsURL);
+		String username = preferences.getString(
+				Constants.PREFERENCE_EMR_USERNAME, Constants.DEFAULT_USERNAME);
+		String password = preferences.getString(
+				Constants.PREFERENCE_EMR_PASSWORD, Constants.DEFAULT_PASSWORD);
+
+		List<NameValuePair> postData = new ArrayList<NameValuePair>();
+		postData.add(new BasicNameValuePair("username", username));
+		postData.add(new BasicNameValuePair("password", password));
+		return HttpRequestFactory.getPostRequest(scheme, host, port, path, postData);
+	}
+	
 	/**
 	 * Gets patient database from MRS
 	 * 
@@ -1190,7 +1222,7 @@ public class MDSInterface {
 		Log.i(TAG, "getUserInfo(): " + userid);
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
-		String mdsURL = getMDSUrl(preferences);
+		String mdsURL = getMDSUrl(c);
 		mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructUserInfoURL(mdsURL,userid);
 		String username = preferences.getString(
@@ -1242,7 +1274,7 @@ public class MDSInterface {
 
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
-		String mdsURL = getMDSUrl(preferences);
+		String mdsURL = getMDSUrl(c);
 		mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructEventLogUrl(mdsURL);
 		String phoneId = preferences.getString("s_phone_name", 
@@ -1276,9 +1308,21 @@ public class MDSInterface {
 				Constants.DEFAULT_DISPATCH_SERVER);
 	}
 	
+	static String getHost(SharedPreferences preferences, String val){
+		return preferences.getString(Constants.PREFERENCE_MDS_URL, val);
+	}
+	
 	// Retuns the port value from net.xml
 	static int getPort(Context c){
 		return c.getResources().getInteger(R.integer.port_mds);
+	}
+	
+	public static URI getRoot(Context c){
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(c);
+		String url = preferences.getString(Constants.PREFERENCE_MDS_URL,
+				c.getString(R.string.cfg_mds_url));
+		return URI.create(url);
 	}
 	
 	/**
@@ -1295,12 +1339,75 @@ public class MDSInterface {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(c);
 		String scheme = getScheme(preferences);
-		String host = getHost(preferences);
+		String host = getHost(preferences, c.getString(R.string.host_mds));
 		int port = getPort(c);
 		String path = c.getString(R.string.path_root) + c.getString(R.string.path_session);
 		List<NameValuePair> postData = new ArrayList<NameValuePair>();
 		postData.add(new BasicNameValuePair("username", username));
 		postData.add(new BasicNameValuePair("password", password));
 		return HttpRequestFactory.getPostRequest(scheme, host, port, path, postData);
+	}
+	
+	/**
+	 * Generates a POST request to mds.
+	 * 
+	 * @param c the Context used for getting request params
+	 * @param username
+	 * @param password
+	 * @return a POST request.
+	 */
+	public static HttpGet createSubjectRequest(Context c)
+	{
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(c);
+		String scheme = getScheme(preferences);
+		String host = getHost(preferences, c.getString(R.string.host_mds));
+		int port = getPort(c);
+		String path = c.getString(R.string.path_root) + c.getString(R.string.path_subject);
+		List<NameValuePair> postData = new ArrayList<NameValuePair>();
+		return HttpRequestFactory.getHttpGetRequest(scheme, host, port, path, postData, null);
+	}
+	
+	/**
+	 * Generates an observation list from the old SavedProcedures
+	 * @param context
+	 * @param encounter
+	 * @return
+	 */ 
+	public static List<?> generateObservations(Context context, Uri encounter){
+		return null;
+	}
+	
+	/**
+	 * Generates an 
+	 * @param ctx
+	 * @param savedProcedure
+	 * @return
+	 */
+	public static List<NameValuePair> generateEncounter(Context ctx, Uri encounter){
+		List<NameValuePair> postData = new ArrayList<NameValuePair>();
+		return postData;
+	}
+	
+	public static void logObservations(Context context, String uuid){
+		Cursor cursor = context.getContentResolver().query(
+				Observations.CONTENT_URI,
+				null,
+				Observations.Contract.ENCOUNTER + " = ?", 
+				new String[]{ uuid } ,
+				Observations.Contract.ID + " ASC");
+		StringBuilder obs = new StringBuilder("{ 'encounter': "+ uuid + ", 'observations[");
+		if(cursor != null){
+			while(cursor.moveToNext()){
+				obs.append("{");
+				obs.append("'"+ Observations.Contract._ID+ "': " + cursor.getLong(cursor.getColumnIndex(Observations.Contract._ID)) +", ");
+				obs.append("'"+ Observations.Contract.ID+ "': " + cursor.getString(cursor.getColumnIndex(Observations.Contract.ID)) +", ");
+				obs.append("'"+ Observations.Contract.CONCEPT+ "': " + cursor.getString(cursor.getColumnIndex(Observations.Contract.CONCEPT)) +", ");
+				obs.append("'"+ Observations.Contract.VALUE+ "': " + cursor.getString(cursor.getColumnIndex(Observations.Contract.VALUE)) +", ");
+				obs.append("}");
+			}
+		}
+		obs.append("]}");
+		Log.i(TAG, obs.toString());
 	}
 }
