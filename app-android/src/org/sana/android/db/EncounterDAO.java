@@ -29,7 +29,7 @@ public class EncounterDAO {
 			cursor = context.getContentResolver().query(encounterUri, 
 					new String [] { Encounters.Contract.UUID }, null, null, 
 					null);
-			if (cursor.moveToFirst()) {
+			if (cursor != null && cursor.moveToFirst()) {
 				guid = cursor.getString(cursor.getColumnIndex(
 						Encounters.Contract.UUID));
 			}

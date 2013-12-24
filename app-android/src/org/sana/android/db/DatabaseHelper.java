@@ -49,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     DatabaseHelper(Context context) {
         super(context, context.getString(R.string.db_name), 
         		null, 
-        		context.getResources().getInteger(R.integer.db_version));
+        		context.getResources().getInteger(R.integer.cfg_db_version_value));
     }
 
     /* (non-Javadoc)

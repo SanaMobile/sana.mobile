@@ -27,7 +27,11 @@
  */
 package org.sana.android.db.impl;
 
+import org.sana.android.db.BinaryProvider;
 import org.sana.android.db.DatabaseOpenHelper;
+import org.sana.android.db.ImageProvider;
+import org.sana.android.db.SoundProvider;
+import org.sana.android.db.TableHelper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -59,6 +63,7 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
 		String[] create = new String[]{ 
 				ConceptsHelper.getInstance().onCreate(),
 				EncountersHelper.getInstance().onCreate(),
+				EncounterTasksHelper.getInstance().onCreate(),
 				EventsHelper.getInstance().onCreate(),
 				InstructionsHelper.getInstance().onCreate(),
 				NotificationsHelper.getInstance().onCreate(),
@@ -70,13 +75,45 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
 		for(String sql:create){
 			db.execSQL(sql);
 		}
+        // Deprecated 
+        ImageProvider.onCreateDatabase(db);
+        SoundProvider.onCreateDatabase(db);
+        BinaryProvider.onCreateDatabase(db);
 	}
 	/* (non-Javadoc)
 	 * @see android.database.sqlite.SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
 	 */
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-		
+		Log.i(TAG, String.format("onUpgrade(int,int) -> (%d, %d)",oldVersion, newVersion));
+		// No bump in version - return quietly
+		if(newVersion > oldVersion){
+			TableHelper<?>[] helpers = new TableHelper<?>[]{
+				ConceptsHelper.getInstance(),
+				EncountersHelper.getInstance(),
+				EncounterTasksHelper.getInstance(),
+				EventsHelper.getInstance(),
+				InstructionsHelper.getInstance(),
+				NotificationsHelper.getInstance(),
+				ObservationsHelper.getInstance(),
+				ObserversHelper.getInstance(),
+				ProceduresHelper.getInstance(),
+				SubjectsHelper.getInstance() };
+
+			db.acquireReference();
+			for(TableHelper<?> helper:helpers){
+				if(oldVersion <= 2){
+					db.execSQL("DROP TABLE " + helper.getTable() + " IF EXISTS;");
+					db.execSQL(helper.onCreate());
+				} else {
+					String sql = helper.onUpgrade(oldVersion, newVersion);
+					Log.i(TAG, String.format("onUpgrade(int,int)", ((sql == null)?"NULL":sql)));
+					if(sql != null)
+						db.execSQL(helper.onUpgrade(oldVersion, newVersion));
+				}
+			}
+			db.releaseReference();
+			
+		}
 	}
 }

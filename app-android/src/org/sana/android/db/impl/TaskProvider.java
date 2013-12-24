@@ -27,32 +27,37 @@
  */
 package org.sana.android.db.impl;
 
-import org.sana.R;
 import org.sana.android.content.ModelContentProvider;
+import org.sana.android.content.Uris;
+import org.sana.android.db.TableHelper;
 
-import android.util.Log;
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 
 /**
- * Concrete implementation of the {@link org.sana.android.db.ModelContentProvider 
- * ModelContentProvider} class.
- * 
  * @author Sana Development
  *
  */
-public class ModelContentProviderImpl extends ModelContentProvider {
-	public static final String TAG = ModelContentProviderImpl.class.getSimpleName();
-	
+public abstract class TaskProvider extends ModelContentProvider {
 
-	/* (non-Javadoc)
-	 * @see android.content.ContentProvider#onCreate()
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.sana.android.content.ModelContentProvider#getTableHelper(android.net.Uri)
 	 */
 	@Override
-	public boolean onCreate() {
-		Log.i(TAG, "onCreate() called");
-		String name = getContext().getString(R.string.db_name);
-		int version = getContext().getResources().getInteger(org.sana.api.R.integer.cfg_db_version_value);
-		Log.i(TAG, "onCreate(). version:" + version);
-		mOpener = new DatabaseOpenHelperImpl(getContext(),name, version);
-		return true;
+	protected TableHelper<?> getTableHelper(Uri uri) {
+		int match = Uris.getContentDescriptor(uri);
+		switch(match){
+		case(Uris.ENCOUNTER_TASK):
+			return EncounterTasksHelper.getInstance();
+		case(Uris.OBSERVATION_TASK):
+			
+		default:
+			throw new IllegalArgumentException("Invalid uri in "
+					+"getTableHelper(): " + uri.toString());
+		}
 	}
 }
