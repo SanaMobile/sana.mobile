@@ -24,14 +24,23 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.scheme.LayeredSchemeSocketFactory;
+import org.apache.http.conn.scheme.LayeredSocketFactory;
 import org.apache.http.conn.scheme.SchemeSocketFactory;
+import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
@@ -44,29 +53,69 @@ import org.apache.http.params.HttpParams;
  *          $
  * @since 1.2.3
  */
-public class EasySSLSocketFactory implements SchemeSocketFactory,
-		LayeredSchemeSocketFactory {
+public class EasySSLSocketFactory implements SocketFactory,
+		LayeredSocketFactory {
 
 	private SSLContext sslcontext = null;
+	private final TrustManager trustManager;
+	
+	private static TrustManager TRUST_ALL = new X509TrustManager() {
 
-	private static SSLContext createEasySSLContext() throws IOException {
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+		public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			// do nothing
+		}
+
+		public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+			// do nothing
+		}
+
+	};
+	
+	private static SSLContext createEasySSLContext(TrustManager manager) throws IOException {
 		try {
 			SSLContext context = SSLContext.getInstance("TLS");
-			context.init(null, new TrustManager[] { new EasyX509TrustManager(
-					null) }, null);
+			context.init(null, new TrustManager[] { manager }, null);
 			return context;
 		} catch (Exception e) {
 			throw new IOException(e.getMessage());
 		}
 	}
 
+	// Returns a context that will trust all certs
+    private static SSLContext createEasySSLContext() throws IOException {
+        try {
+                SSLContext context = SSLContext.getInstance("TLS");
+                
+                // Create a trust manager that does not validate certificate chains     
+                context.init(null, new TrustManager[]{ new EasyX509TrustManager(null) } , new SecureRandom ());
+                return context;
+        } catch (Exception e) {
+                throw new IOException(e.getMessage());
+        }
+    }
+	
 	private SSLContext getSSLContext() throws IOException {
 		if (this.sslcontext == null) {
-			this.sslcontext = createEasySSLContext();
+			if(trustManager == null)
+				this.sslcontext = createEasySSLContext();
+			else
+				this.sslcontext = createEasySSLContext(trustManager);
 		}
 		return this.sslcontext;
 	}
-
+	
+	
+	public EasySSLSocketFactory(){
+		this(null);
+	}
+	
+	public EasySSLSocketFactory(TrustManager trustManager){
+		this.trustManager = trustManager;
+	}	
 	/**
 	 * @see org.apache.http.conn.scheme.SocketFactory#connectSocket(java.net.Socket,
 	 *      java.lang.String, int, java.net.InetAddress, int,
@@ -117,7 +166,7 @@ public class EasySSLSocketFactory implements SchemeSocketFactory,
 	 */
 	public Socket createSocket(Socket socket, String host, int port,
 			boolean autoClose) throws IOException, UnknownHostException {
-		return getSSLContext().getSocketFactory().createSocket();
+		return getSSLContext().getSocketFactory().createSocket(socket, host, port, autoClose);
 	}
 
 	// -------------------------------------------------------------------
@@ -138,7 +187,7 @@ public class EasySSLSocketFactory implements SchemeSocketFactory,
 	/* (non-Javadoc)
 	 * @see org.apache.http.conn.scheme.SchemeSocketFactory#connectSocket(java.net.Socket, java.net.InetSocketAddress, java.net.InetSocketAddress, org.apache.http.params.HttpParams)
 	 */
-	@Override
+	//@Override
 	public Socket connectSocket(Socket arg0, InetSocketAddress arg1,
 			InetSocketAddress arg2, HttpParams arg3) throws IOException,
 			UnknownHostException, ConnectTimeoutException {
@@ -148,7 +197,7 @@ public class EasySSLSocketFactory implements SchemeSocketFactory,
 	/* (non-Javadoc)
 	 * @see org.apache.http.conn.scheme.SchemeSocketFactory#createSocket(org.apache.http.params.HttpParams)
 	 */
-	@Override
+	//@Override
 	public Socket createSocket(HttpParams arg0) throws IOException {
 		return createSocket();
 	}
@@ -156,7 +205,7 @@ public class EasySSLSocketFactory implements SchemeSocketFactory,
 	/* (non-Javadoc)
 	 * @see org.apache.http.conn.scheme.LayeredSchemeSocketFactory#createLayeredSocket(java.net.Socket, java.lang.String, int, boolean)
 	 */
-	@Override
+	//@Override
 	public Socket createLayeredSocket(Socket arg0, String arg1, int arg2,
 			boolean arg3) throws IOException, UnknownHostException {
 		return this.createSocket(arg0,arg1,arg2,arg3);

@@ -19,6 +19,8 @@ package org.sana.net.http.ssl;
  * under the License.
  */
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -90,4 +92,13 @@ public class EasyX509TrustManager
         return this.standardTrustManager.getAcceptedIssuers();
     }
 
+    public static EasyX509TrustManager getInstance(String type, 
+    		InputStream keystore, String keypass) throws KeyStoreException, 
+    		NoSuchAlgorithmException, CertificateException, IOException
+    {
+    	KeyStore ks = KeyStore.getInstance(type);
+    	ks.load(keystore, keypass.toCharArray());
+    	return new EasyX509TrustManager(ks);
+    }
+    
 }
