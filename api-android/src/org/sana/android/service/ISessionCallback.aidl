@@ -1,5 +1,6 @@
 package org.sana.android.service;
 
+import android.net.Uri;
 import org.sana.android.content.core;
 
 oneway interface ISessionCallback{

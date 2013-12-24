@@ -35,7 +35,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import org.sana.R;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
