@@ -18,3 +18,6 @@ local.properties
 # Eclipse folders
 .metadata/
 .settings/
+
+# Android libs
+/android-support-v7-appcompat
