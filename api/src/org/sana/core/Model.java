@@ -40,11 +40,11 @@ import org.sana.api.IModel;
  */
 public abstract class Model implements IModel{
 	
-	String uuid;
+	public String uuid;
 	
-	Date created;
+	public Date created;
 	
-	Date modified;
+	public Date modified;
 	
 	public Model(){}
 	

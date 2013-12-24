@@ -12,7 +12,7 @@ import org.sana.api.IDevice;
  */
 public class Device extends Model implements IDevice{
 	
-	private String name; 
+	public String name; 
 		
 	/** Default Constructor */
 	public Device(){}

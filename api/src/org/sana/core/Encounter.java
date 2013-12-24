@@ -21,10 +21,10 @@ import org.sana.api.ISubject;
  */
 public class Encounter extends Model implements IEncounter{
 	
-	private ISubject subject;
-	private IProcedure procedure;
-	private Observer observer;
-	private List<Observation> observations;
+	public Subject subject;
+	public Procedure procedure;
+	public Observer observer;
+	public List<Observation> observations;
 	
 	/** Default Constructor */
 	public Encounter(){
@@ -51,7 +51,7 @@ public class Encounter extends Model implements IEncounter{
 	/**
 	 * @param subject the subject to set
 	 */
-	public void setSubject(ISubject subject) {
+	public void setSubject(Subject subject) {
 		this.subject = subject;
 	}
 
@@ -66,7 +66,7 @@ public class Encounter extends Model implements IEncounter{
 	/**
 	 * @param procedure the procedure to set
 	 */
-	public void setProcedure(IProcedure procedure) {
+	public void setProcedure(Procedure procedure) {
 		this.procedure = procedure;
 	}
 

@@ -25,41 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.api.task;
 
 import java.util.Date;
+
+import org.sana.api.IModel;
+import org.sana.api.IObserver;
 
 /**
  * @author Sana Development
  *
  */
-public interface IPatient extends ISubject{
+public interface ITask extends IModel{
 
 	/**
-	 * @return the given_name
+	 * The date by which the task should be completed.
+	 * @return
 	 */
-	public abstract String getGiven_name();
+	public Date getDueDate();
 
 	/**
-	 * @return the family_name
+	 * The entity responsible for executing the instruction
+	 * @return
 	 */
-	public abstract String getFamily_name();
-
-	/**
-	 * @return the dob
-	 */
-	public abstract Date getDob();
-
-	/**
-	 * @return the gender
-	 */
-	public abstract String getGender();
-
-	/**
-	 * @return the image
-	 */
-	public abstract java.net.URI getImage();
+	public IObserver getObserver();
 	
-	public abstract ILocation getLocation();
-
+	/**
+	 * The current status of the task.
+	 *  
+	 * @return
+	 */
+	public String getStatus();
 }

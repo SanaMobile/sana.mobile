@@ -25,41 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.api.task;
 
-import java.util.Date;
+import org.sana.api.IEncounter;
+import org.sana.api.IProcedure;
+import org.sana.api.ISubject;
+import org.sana.core.Encounter;
+import org.sana.core.Procedure;
+import org.sana.core.Subject;
+
+import com.google.gson.annotations.Expose;
 
 /**
  * @author Sana Development
  *
  */
-public interface IPatient extends ISubject{
+public class EncounterTask extends Task implements IEncounterTask{
 
-	/**
-	 * @return the given_name
-	 */
-	public abstract String getGiven_name();
+	public Encounter encounter;
+	public Procedure procedure;
+	public Subject subject;
 
-	/**
-	 * @return the family_name
+	/* (non-Javadoc)
+	 * @see org.sana.api.task.IEncounterTask#getEncounter()
 	 */
-	public abstract String getFamily_name();
+	@Override
+	public IEncounter getEncounter() {
+		return encounter;
+	}
 
-	/**
-	 * @return the dob
-	 */
-	public abstract Date getDob();
 
-	/**
-	 * @return the gender
+	/* (non-Javadoc)
+	 * @see org.sana.api.task.IEncounterTask#getProcedure()
 	 */
-	public abstract String getGender();
+	@Override
+	public IProcedure getProcedure() {
+		return procedure;
+	}
 
-	/**
-	 * @return the image
+
+	/* (non-Javadoc)
+	 * @see org.sana.api.task.IEncounterTask#getSubject()
 	 */
-	public abstract java.net.URI getImage();
-	
-	public abstract ILocation getLocation();
+	@Override
+	public ISubject getSubject() {
+		return subject;
+	}
 
 }

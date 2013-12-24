@@ -38,19 +38,19 @@ import org.sana.api.IInstruction;
  */
 public class Instruction extends Model implements IInstruction{
 	// wrapper for mime type
-	String concept;
+	public Concept concept;
 	// mmap to education resource can be complex
-	String help;
+	public String help;
 	// map to question
-	String hint;
+	public String hint;
 	// message on fail
-	String alert;
+	public String alert;
 	boolean required;
 	/* (non-Javadoc)
 	 * @see org.sana.core.IInstruction#getConcept()
 	 */
 	@Override
-	public String getConcept() {
+	public Concept getConcept() {
 		return concept;
 	}
 	/**
@@ -58,7 +58,7 @@ public class Instruction extends Model implements IInstruction{
 	 *
 	 * @param concept the concept to set
 	 */
-	public void setConcept(String concept) {
+	public void setConcept(Concept concept) {
 		this.concept = concept;
 	}
 	/* (non-Javadoc)

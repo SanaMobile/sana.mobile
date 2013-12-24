@@ -3,9 +3,13 @@
  */
 package org.sana.core;
 
+import java.net.URI;
 import java.util.Date;
 
+import org.sana.api.ILocation;
 import org.sana.api.IPatient;
+
+import com.google.gson.annotations.Expose;
 
 
 /**
@@ -72,21 +76,40 @@ public class Patient extends Subject implements IPatient{
 	 * @see org.sana.core.IPatient#getImage()
 	 */
 	@Override
-	public String getImage() {
+	public URI getImage() {
 		return image;
 	}
 	/**
 	 * @param image the image to set
 	 */
-	public void setImage(String image) {
+	public void setImage(URI image) {
 		this.image = image;
 	}
+	@Expose
+	public String given_name;
+	@Expose
+	public String family_name;
+	@Expose
+	public Date dob;
+	@Expose
+	public String gender;
+	@Expose
+	public URI image;
+	@Expose
+	public Location location;
+	@Expose
+	public String system_id;
 	
-	private String given_name;
-	private String family_name;
-	private Date dob;
-	private String gender;
-	private String image;
+	/* (non-Javadoc)
+	 * @see org.sana.api.IPatient#getLocation()
+	 */
+	@Override
+	public ILocation getLocation() {
+		return location;
+	}
 	
+	public void setLocation(Location location){
+		this.location = location;
+	}
 	
 }

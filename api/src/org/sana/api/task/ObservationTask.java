@@ -25,41 +25,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.api.task;
 
-import java.util.Date;
+import org.sana.api.IEncounter;
+import org.sana.api.IInstruction;
+import org.sana.api.IObservation;
+import org.sana.core.Encounter;
+import org.sana.core.Instruction;
+import org.sana.core.Observation;
 
 /**
  * @author Sana Development
  *
  */
-public interface IPatient extends ISubject{
+public class ObservationTask extends Task implements IObservationTask{
 
-	/**
-	 * @return the given_name
-	 */
-	public abstract String getGiven_name();
-
-	/**
-	 * @return the family_name
-	 */
-	public abstract String getFamily_name();
-
-	/**
-	 * @return the dob
-	 */
-	public abstract Date getDob();
-
-	/**
-	 * @return the gender
-	 */
-	public abstract String getGender();
-
-	/**
-	 * @return the image
-	 */
-	public abstract java.net.URI getImage();
+	Encounter encounter;
+	Instruction instruction;
+	Observation parent;
 	
-	public abstract ILocation getLocation();
+
+	/* (non-Javadoc)
+	 * @see org.sana.api.task.IObservationTask#getEncounter()
+	 */
+	@Override
+	public IEncounter getEncounter() {
+		return encounter;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sana.api.task.IObservationTask#getInstruction()
+	 */
+	@Override
+	public IInstruction getInstruction() {
+		return instruction;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sana.api.task.IObservationTask#getParent()
+	 */
+	@Override
+	public IObservation getParent() {
+		return parent;
+	}
+
+	
+
+	
 
 }

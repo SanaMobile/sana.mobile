@@ -25,41 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
-
-import java.util.Date;
+package org.sana.api.task;
 
 /**
  * @author Sana Development
  *
  */
-public interface IPatient extends ISubject{
-
-	/**
-	 * @return the given_name
-	 */
-	public abstract String getGiven_name();
-
-	/**
-	 * @return the family_name
-	 */
-	public abstract String getFamily_name();
-
-	/**
-	 * @return the dob
-	 */
-	public abstract Date getDob();
-
-	/**
-	 * @return the gender
-	 */
-	public abstract String getGender();
-
-	/**
-	 * @return the image
-	 */
-	public abstract java.net.URI getImage();
-	
-	public abstract ILocation getLocation();
-
+public enum Status {
+	ASSIGNED,
+	ACCEPTED,
+	REJECTED,
+	COMPLETED
 }

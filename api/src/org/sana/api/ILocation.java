@@ -27,39 +27,11 @@
  */
 package org.sana.api;
 
-import java.util.Date;
-
 /**
  * @author Sana Development
  *
  */
-public interface IPatient extends ISubject{
+public interface ILocation extends IModel {
 
-	/**
-	 * @return the given_name
-	 */
-	public abstract String getGiven_name();
-
-	/**
-	 * @return the family_name
-	 */
-	public abstract String getFamily_name();
-
-	/**
-	 * @return the dob
-	 */
-	public abstract Date getDob();
-
-	/**
-	 * @return the gender
-	 */
-	public abstract String getGender();
-
-	/**
-	 * @return the image
-	 */
-	public abstract java.net.URI getImage();
-	
-	public abstract ILocation getLocation();
-
+	public abstract String getName();
 }

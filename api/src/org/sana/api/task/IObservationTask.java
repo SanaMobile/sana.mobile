@@ -25,41 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.api.task;
 
-import java.util.Date;
+import org.sana.api.IEncounter;
+import org.sana.api.IInstruction;
+import org.sana.api.IObservation;
 
 /**
+ * An instruction which will yield one or more observations that must be 
+ * executed.
+ * 
  * @author Sana Development
  *
  */
-public interface IPatient extends ISubject{
-
-	/**
-	 * @return the given_name
-	 */
-	public abstract String getGiven_name();
-
-	/**
-	 * @return the family_name
-	 */
-	public abstract String getFamily_name();
-
-	/**
-	 * @return the dob
-	 */
-	public abstract Date getDob();
-
-	/**
-	 * @return the gender
-	 */
-	public abstract String getGender();
-
-	/**
-	 * @return the image
-	 */
-	public abstract java.net.URI getImage();
+public interface IObservationTask extends ITask {
 	
-	public abstract ILocation getLocation();
+	/**
+	 * The original encounter to which any observations collected using this
+	 * task are associated.
+	 * 
+	 * @return
+	 */
+	public IEncounter getEncounter();
+	
+	/**
+	 * A simple or compound instruction that will be executed to collect one or 
+	 * more observations.
+	 * @return
+	 */
+	public IInstruction getInstruction();
 
+	/**
+	 * A single observation with which any additional observations created
+	 * using this tasks instruction will be associated such as when annotating
+	 * a previously collected observation.
+	 * 
+	 * @return
+	 */
+	public IObservation getParent();
+	
 }

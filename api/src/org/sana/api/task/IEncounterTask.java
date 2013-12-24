@@ -25,41 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api;
+package org.sana.api.task;
 
-import java.util.Date;
+import org.sana.api.IEncounter;
+import org.sana.api.IProcedure;
+import org.sana.api.ISubject;
 
 /**
+ * An assignable task during which a {@link org.sana.api.IProcedure IProcedure} 
+ * will be executed to create an {@link org.sana.api.task.IEncounter IEncounter}
  * @author Sana Development
  *
  */
-public interface IPatient extends ISubject{
-
-	/**
-	 * @return the given_name
-	 */
-	public abstract String getGiven_name();
-
-	/**
-	 * @return the family_name
-	 */
-	public abstract String getFamily_name();
-
-	/**
-	 * @return the dob
-	 */
-	public abstract Date getDob();
-
-	/**
-	 * @return the gender
-	 */
-	public abstract String getGender();
-
-	/**
-	 * @return the image
-	 */
-	public abstract java.net.URI getImage();
+public interface IEncounterTask extends ITask {
 	
-	public abstract ILocation getLocation();
+	/**
+	 * The original encounter to which any observations collected using this
+	 * task are associated.
+	 * 
+	 * @return
+	 */
+	public IEncounter getEncounter();
+	
+	/**
+	 * The Procedure that will be executed.
+	 * 
+	 * @return
+	 */
+	public IProcedure getProcedure();
+	
+	/**
+	 * The subject on who this will be executed.
+	 * @return
+	 */
+	public ISubject getSubject();
 
 }

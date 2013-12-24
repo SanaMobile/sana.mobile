@@ -21,24 +21,24 @@ public class Concept extends Model implements IConcept{
 	 * A machine friendly short name or identifier. <code>name</code> values
 	 * should be formatted as [A-Z](_?[A-Z])*? 
 	 */
-	private String name;
+	public String name;
 	
 	/** Human-readable name */
-	private String display_name;
+	public String display_name;
 
 	/** Longer human-readable, narrative description. */
-	private String description;
+	public String description;
 	
 	/** XML compliant data type. @see org.sana.Datatype */
-	private String datatype;
+	public String datatype;
 	
 	/** Mime type. Default should be text/plain.  */
-	private String mediatype;
+	public String mediatype;
 	
 	/** A validation function string to enforce on associated values
 	 *  @see Observation#setValue(Object)
 	 */
-	private String constraints;
+	public String constraints;
 	
 	/** Default Constructor */
 	public Concept(){}

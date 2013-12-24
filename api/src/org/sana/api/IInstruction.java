@@ -27,6 +27,8 @@
  */
 package org.sana.api;
 
+import org.sana.core.Concept;
+
 /**
  * @author Sana Development
  *
@@ -38,7 +40,7 @@ public interface IInstruction extends IModel{
 	 * 
 	 * @return the concept
 	 */
-	public abstract String getConcept();
+	public abstract Concept getConcept();
 
 	/**
 	 * Returns the help for an instance of this class.
