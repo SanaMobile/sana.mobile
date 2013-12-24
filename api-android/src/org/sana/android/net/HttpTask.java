@@ -28,20 +28,38 @@
 package org.sana.android.net;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.concurrent.Callable;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.sana.net.Response;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.ResultReceiver;
 import android.util.Log;
 
 /**
@@ -49,7 +67,7 @@ import android.util.Log;
  * @param <T>
  *
  */
-public class HttpTask extends AsyncTask<HttpUriRequest,Integer,MDSResult>{
+public class HttpTask<T> extends AsyncTask<HttpUriRequest,Integer, Response<T>>{
 	public static final String TAG = HttpTask.class.getSimpleName();
 	
 	public static final int FAIL = 0;
@@ -58,26 +76,39 @@ public class HttpTask extends AsyncTask<HttpUriRequest,Integer,MDSResult>{
 	
 	private final int timeout;
 	
-	NetworkTaskListener<MDSResult> listener = null;
+	NetworkTaskListener<Response<T>> listener = null;
+	Messenger handler = null;
+	Message message = null;
+	public HttpTask(){
+		this(null,-1);
+	}
 	
-	public HttpTask(NetworkTaskListener<MDSResult> listener){
+	public HttpTask(NetworkTaskListener<Response<T>> listener){
 		this(listener, -1);
 	}
 	
-	public HttpTask(NetworkTaskListener<MDSResult> listener, int timeout){
+	public HttpTask(NetworkTaskListener<Response<T>> listener, int timeout){
 		this.listener = listener;
 		this.timeout = timeout;
 	}
 	
-	public void setListener(NetworkTaskListener<MDSResult> listener){
+	public void setListener(NetworkTaskListener<Response<T>> listener){
 		this.listener = listener;
+	}
+	
+	public void setHandler(Messenger messenger){
+		this.handler = messenger;
+	}
+	
+	public void setReplyTo(Message message){
+		this.message = Message.obtain(message);
 	}
 	
 	/* (non-Javadoc)
 	 * @see android.os.AsyncTask#doInBackground(Params[])
 	 */
 	@Override
-	protected MDSResult doInBackground(HttpUriRequest... params) {
+	protected Response<T> doInBackground(HttpUriRequest... params) {
 		HttpUriRequest method = params[0];
 		HttpClient client = new DefaultHttpClient();
 		HttpParams httpParams = client.getParams();
@@ -85,19 +116,27 @@ public class HttpTask extends AsyncTask<HttpUriRequest,Integer,MDSResult>{
 			HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
 			HttpConnectionParams.setSoTimeout(httpParams, timeout);
 		}
-		MDSResult response = MDSResult.NOSERVICE;
+		
 		HttpResponse httpResponse = null;
 		String responseString = null;
+		Response<T> response = Response.empty();
 		try {
 			Log.i(TAG, "doInBackground(): About to execute request...");
 			httpResponse = client.execute(method);
 			responseString = EntityUtils.toString(httpResponse.getEntity());
-			Log.d(TAG, "Received from MDS:" + responseString.length()+" chars");
-			Gson gson = new Gson();
-			response = gson.fromJson(responseString, MDSResult.class);
+			Log.d(TAG, String.format("Response. \n...code: %d\n...chars: %d",
+					httpResponse.getStatusLine().getStatusCode(),
+					responseString.length()));
+			//Log.d(TAG, "Received from MDS:" + responseString);
+			if(message != null){
+				message.obj = responseString;
+				message.sendToTarget();
+			} else {
+				Type type = new TypeToken<Response<T>>(){}.getType();
+				response = new Gson().fromJson(responseString, type);
+			}
 		} catch (ClientProtocolException e) {
 			Log.e(TAG, "ClientProtocolException: " + e.getMessage());
-			e.printStackTrace();
 		} catch (IOException e) {
 			Log.e(TAG, "IOException: " + e.getMessage());
 			e.printStackTrace();
@@ -111,8 +150,11 @@ public class HttpTask extends AsyncTask<HttpUriRequest,Integer,MDSResult>{
 		return response;
 	}
 	
-	protected void onPostExecute(MDSResult result){
-		if(listener != null)
+	
+	protected void onPostExecute(Response<T> result){
+		if(listener != null){
 			listener.onTaskComplete(result);
+		}
 	}
+
 }
