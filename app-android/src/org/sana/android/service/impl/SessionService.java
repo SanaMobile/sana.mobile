@@ -35,10 +35,10 @@ import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.content.core.ObserverWrapper;
 import org.sana.android.db.ModelWrapper;
-import org.sana.android.net.HttpRequestFactory;
 import org.sana.android.net.HttpTask;
 import org.sana.android.net.MDSInterface;
-import org.sana.android.net.MDSResult;
+import org.sana.net.MDSResult;
+import org.sana.net.Response;
 import org.sana.android.net.NetworkTaskListener;
 import org.sana.android.provider.Observers;
 import org.sana.android.service.ISessionCallback;
@@ -132,7 +132,6 @@ public class SessionService extends Service{
 		
 	};
 	
-
 	//TODO refactor this out
 	/**
 	 * Simple callback interface for HttpSessions
@@ -155,6 +154,29 @@ public class SessionService extends Service{
 				// MDSResult should return the actual session key
 				handleSessionAuthResult(SUCCESS, tempKey, t.getData());
 			} else if(TextUtils.isEmpty(t.getCode())){
+				handleSessionAuthResult(INDETERMINATE, tempKey, INVALID.toString());
+			} else {
+				// data should be some informative message
+				handleSessionAuthResult(FAILURE, tempKey, INVALID.toString());
+			}
+		}
+	}
+	
+	private class AuthListener implements NetworkTaskListener<Response<String>>{
+		
+		String tempKey = null;
+		
+		AuthListener(String key){
+			this.tempKey = key;
+		}
+		
+		@Override
+		public void onTaskComplete(Response<String> t) {
+			// TODO Auto-generated method stub
+			if(t.succeeded()){
+				// MDSResult should return the actual session key
+				handleSessionAuthResult(SUCCESS, tempKey, t.getMessage());
+			} else if (t.getCode() == -1){
 				handleSessionAuthResult(INDETERMINATE, tempKey, INVALID.toString());
 			} else {
 				// data should be some informative message
@@ -220,21 +242,22 @@ public class SessionService extends Service{
 		String password = credentials[1];
 		String session = INVALID.toString();
 		if(isLocalUsername(username)){
-			IObserver o = ObserverWrapper.getOneByAuth(
-				getContentResolver(), username, password);
+			try{
+				Log.d(TAG, "auth: " + username + " pass: " + password);
+				ObserverWrapper o = (ObserverWrapper) ObserverWrapper.getOneByAuth(
+						getContentResolver(), username, password);
 		
-			// user exists and was validated locally
-			if(o != null){
-				try{
+				// user exists and was validated locally
+				if(o != null && o.getCount() == 1){
 					session = o.getUuid();
 					handleSessionAuthResult(SUCCESS, tempKey, session);
-				} catch (Exception e){
+					// the user was good but password didn't match, return a fail
+				} else {
+					handleSessionAuthResult(FAILURE, tempKey, username);
+				}
+			} catch (Exception e){
 					Log.e(TAG, e.getMessage());
 					handleSessionAuthResult(FAILURE, tempKey, INVALID.toString());
-				}
-			// the user was good but password didn't match, return a fail
-			} else {
-				handleSessionAuthResult(FAILURE, tempKey, username);
 			}
 		
 		// Try the admin backdoor for local connection only
@@ -255,7 +278,7 @@ public class SessionService extends Service{
 			String[] credentials = tempSessions.get(tempKey);
 			HttpPost post = MDSInterface.createSessionRequest(this, 
 					credentials[0], credentials[1]);
-			new HttpTask(new HttpSessionAuthListener(tempKey)).execute(post);
+			new HttpTask<String>(new AuthListener(tempKey)).execute(post);
 		} catch(Exception e){
 			Log.e(TAG, e.getMessage());
 			e.printStackTrace();
@@ -304,10 +327,19 @@ public class SessionService extends Service{
 			} else { 
 				ContentValues values = new ContentValues();
 				values.put(Observers.Contract.USERNAME, username);
-				values.put(Observers.Contract.UUID, tempKey);
+				values.put(Observers.Contract.UUID, sessionKey);
+				values.put(Observers.Contract.PASSWORD, encrypt(password));
 				getContentResolver().insert(Observers.CONTENT_URI,
 						values);
 			}
+			SharedPreferences preferences = PreferenceManager
+					.getDefaultSharedPreferences(this.getBaseContext());
+			preferences.edit().putString(
+					Constants.PREFERENCE_EMR_USERNAME, username);
+			preferences.edit().putString(
+					Constants.PREFERENCE_EMR_PASSWORD, password);
+			preferences.edit().commit();
+			
 			// send result to the call back (INVALID, user uuid)
 			removeTempSession(tempKey);
 			addAuthenticatedSession(sessionKey, credentials);
@@ -356,7 +388,8 @@ public class SessionService extends Service{
 		try{
 			c = ModelWrapper.getOneByField(Observers.CONTENT_URI,
 				getContentResolver(),Observers.Contract.USERNAME,username);
-			isValid = true;
+			if(c != null && c.moveToFirst() && c.getCount() == 1)
+				isValid = true;
 		} finally {
 			if(c != null)
 				c.close();
