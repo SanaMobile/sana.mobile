@@ -27,12 +27,20 @@
  */
 package org.sana.android.db.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Encounters;
+import org.sana.android.provider.Patients;
 import org.sana.core.Encounter;
 import org.sana.util.UUIDUtil;
 /**
@@ -60,6 +68,13 @@ public class EncountersHelper extends TableHelper<Encounter>{
 			+ " encountertask"
 			+ " LEFT JOIN patient ON encountertask.patient = patient.uuid"
 			+ " LEFT JOIN procedure ON encountertask.procedure = procedure.uuid";
+	
+	static final Map<String, String> sProjectionMap = new HashMap<String, String>();
+	
+	static{
+		sProjectionMap.put(Encounters.Contract.STATE, Encounters.Contract.STATE);
+		
+	}
 	
 	private static final EncountersHelper HELPER = new EncountersHelper();
 	
@@ -123,6 +138,7 @@ public class EncountersHelper extends TableHelper<Encounter>{
                 + Encounters.Contract.UUID + " TEXT,"
                 + Encounters.Contract.PROCEDURE + " TEXT NOT NULL,"
                 + Encounters.Contract.SUBJECT + " TEXT NOT NULL,"
+                + Encounters.Contract.OBSERVER + " TEXT NOT NULL,"
                 + Encounters.Contract.STATE + " TEXT,"
                 + Encounters.Contract.FINISHED + " INTEGER,"
                 + Encounters.Contract.UPLOADED + " INTEGER,"
@@ -141,4 +157,21 @@ public class EncountersHelper extends TableHelper<Encounter>{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	/*
+	@Override
+	public Cursor onQuery(SQLiteDatabase db, String[] projection, 
+			String selection, String[] selectionArgs, String sortOrder){
+		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+		if(TextUtils.isEmpty(selection)){
+			String[] tables = new String[] { getTable(), SubjectsHelper.getInstance().getTable()};
+			selection = String.format("%s LEFT OUTER JOIN %s ON %s = %s",
+					tables[0], tables[1], Encounters.Contract.SUBJECT, Patients.Contract.UUID);
+			qb.setTables(tables[0]+","+tables[1]);
+		} else {
+			qb.setTables(getTable());
+		}
+		Cursor cursor = qb.query(db, projection, selection, selectionArgs, null,null, sortOrder);
+		return cursor;
+	}
+	*/
 }
