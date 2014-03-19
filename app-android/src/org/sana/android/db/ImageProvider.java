@@ -205,6 +205,7 @@ public class ImageProvider extends ContentProvider {
     /** {@inheritDoc} */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+    	Log.i(TAG, "delete(): uri="+ uri+", selection="+selection);
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
