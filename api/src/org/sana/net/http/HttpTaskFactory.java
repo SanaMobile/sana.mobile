@@ -55,6 +55,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
@@ -157,14 +158,10 @@ public class HttpTaskFactory {
 	        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 	        // https scheme
 	        schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(), 443));
-
-	        HttpParams params = new BasicHttpParams();
-            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-            HttpProtocolParams.setContentCharset(params, "UTF-8");
-            HttpProtocolParams.setUseExpectContinue(params, true);
-			   
-			 ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
-		     return new DefaultHttpClient(cm, params);
+	        
+			HttpParams params = basicParams();
+			ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+		    return new DefaultHttpClient(cm, params);
 		}
 
 		@Override
@@ -176,10 +173,7 @@ public class HttpTaskFactory {
 		        SSLSocketFactory sf = SSLSocketFactory.getSocketFactory();
 		        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-		        HttpParams params = new BasicHttpParams();
-		        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-		        HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
+				HttpParams params = basicParams();
 		        SchemeRegistry registry = new SchemeRegistry();
 		        registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 		        registry.register(new Scheme("https", sf, 443));
@@ -190,6 +184,16 @@ public class HttpTaskFactory {
 		    } catch (Exception e) {
 		        return new DefaultHttpClient();
 		    }
+		}
+		
+		protected HttpParams basicParams(){
+			HttpParams params = new BasicHttpParams();
+	        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+	        HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+    		// Make sure this connection will timeout
+            HttpConnectionParams.setConnectionTimeout(params, 10000);
+            HttpConnectionParams.setSoTimeout(params, 10000);
+            return params;
 		}
 		
 	};
