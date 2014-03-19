@@ -8,6 +8,7 @@ import org.sana.android.app.Locales;
 import org.sana.android.content.core.PatientWrapper;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Patients.Contract;
+import org.sana.android.util.Bitmaps;
 import org.sana.android.util.Logf;
 
 import org.sana.util.StringUtil;
@@ -21,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -34,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.AlphabetIndexer;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 /**
@@ -56,10 +59,10 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     
     private Uri mUri;
     private PatientCursorAdapter mAdapter;
-    private SimpleCursorAdapter uAdapter;
     private OnPatientSelectedListener mListener;
     Handler mHandler; 
     private boolean doSync = false;
+    private int delta =1000;
     //
     // Activity Methods
     //
@@ -84,14 +87,13 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             mUri = Patients.CONTENT_URI;
         }
     	Log.d(TAG, "onActivityCreated(): sync?");
-        getLoaderManager().initLoader(PATIENTS_LOADER, null, this);
         mAdapter = new PatientCursorAdapter(getActivity(), null, 0);
         setListAdapter(mAdapter);
-        
-        if(!doSync){
-        	sync(getActivity(),mUri);
-        	doSync = true;
-        }
+        // Do we sync with server
+        delta = getActivity().getResources().getInteger(R.integer.sync_delta_subjects);
+        sync(getActivity(), Patients.CONTENT_URI);
+    	LoaderManager.enableDebugLogging(true);
+        getActivity().getSupportLoaderManager().initLoader(PATIENTS_LOADER, null, this);
     }
 
     /** {@inheritDoc} */
@@ -121,17 +123,22 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
     	Log.d(TAG, "onLoadFinished() "); 
-
+    	
         if (cursor == null || (cursor !=null && cursor.getCount() == 0)) {
             setEmptyText(getString(R.string.msg_no_patients));
         }
-        //mAdapter.swapCursor(cursor);
-        ((PatientCursorAdapter) this.getListAdapter()).swapCursor(cursor);
+        if(cursor != null)
+            //mAdapter.swapCursor(cursor);
+        	((PatientCursorAdapter) this.getListAdapter()).swapCursor(cursor);
     }
 
-    /** {@inheritDoc} */
+    /*
+     * (non-Javadoc)
+     * @see android.support.v4.app.LoaderManager.LoaderCallbacks#onLoaderReset(android.support.v4.content.Loader)
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    	Log.d(TAG, "onLoaderReset() ");
     	//mAdapter.swapCursor(null);
     	((PatientCursorAdapter) this.getListAdapter()).swapCursor(null);
     }
@@ -159,26 +166,25 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         mListener = listener;
     }
 
+    static class ViewHolder{
+        ImageView image;
+        TextView name;
+        TextView systemId;
+        TextView location;
+        TextView label;
+        int position = 1;
+    }
+    
     /**
      * Adapter for patient information
      * 
      * @author Sana Development Team
      */
-    public static class PatientCursorAdapter extends CursorAdapter {
-
-    	static class ViewHolder {
-    		TextView name;
-    		ImageView image;
-    		TextView systemId;
-    		TextView location;
-    		TextView textSection;
-    		View header;
-    	}
+    public static class PatientCursorAdapter extends CursorAdapter implements SectionIndexer{
     	
     	//private final Activity context;
-        private int[] mRowStates;
-        private AlphabetIndexer mAlphaIndexer;
-        private PatientWrapper mWrapper;
+        private int[] mRowStates = new int[0];
+        private AlphabetIndexer mAlphaIndexer = null;
         private final LayoutInflater mInflater;
         
         private static final int STATE_UNKNOWN = 0;
@@ -186,14 +192,17 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         private static final int STATE_UNLABELED = 2;
         
         private static final String ALPHABET = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        /*
-        public PatientCursorAdapter(Context context) {
-            super(context, null, 0);
-            		//CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-            //this.context = context;
+        
+        public PatientCursorAdapter(Context context, Cursor c) {
+        	super(context.getApplicationContext(),c,false);
             mInflater = LayoutInflater.from(context);
+    		init(c);
         }
-		*/
+        
+        public PatientCursorAdapter(Context context) {
+            this(context, null, 0);
+        }
+        
         public PatientCursorAdapter(Context context, Cursor c, int flags) {
         	super(context,c, flags);
         	/*
@@ -204,7 +213,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             */
             //this.context = context;
             mInflater = LayoutInflater.from(context);
-            init(c);
+    		init(c);
         }
         
         private void init(Cursor c) {
@@ -215,56 +224,79 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             //c.setNotificationUri(context.getContentResolver(), Patients.CONTENT_URI);
             mRowStates = new int[c.getCount()];
             mAlphaIndexer = new AlphabetIndexer(c, 
-                    c.getColumnIndex(Patients.Contract.GIVEN_NAME), 
+                    1, 
                     ALPHABET);
+            mAlphaIndexer.setCursor(c);
+        }
+        
+        public Cursor index(Cursor cursor){
+        	if(cursor != null){
+        		mRowStates = new int[cursor.getCount()];
+        		mAlphaIndexer = new AlphabetIndexer(cursor, 
+        		    		1, 
+        		    		ALPHABET);
+        		mAlphaIndexer.setCursor(cursor);
+        	} else {
+        		mRowStates = new int[0];
+        		mAlphaIndexer = null;
+        	}
+            return cursor;
+        }
+        
+        @Override
+        public void changeCursor (Cursor cursor){
+        	Log.d(TAG+".mAdapter", "change cursor ");
+        	index(cursor);
+        	super.changeCursor(cursor);
         }
         
         @Override
         public Cursor swapCursor(Cursor newCursor) {
         	Log.d(TAG+".mAdapter", "swap cursor "); 
-            init(newCursor);
+        	index(newCursor);
             return super.swapCursor(newCursor);
+            
         }
         
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-        	Log.d(TAG+".mAdapter", "binding view "); 
-        	Log.d(TAG+".mAdapter", "bindView(): cursor position: " + cursor.getPosition());             
+        	Log.d(TAG+".mAdapter", "bindView(): cursor position: " + ((cursor != null)? cursor.getPosition(): 0));
+        	int position = this.getCursor().getPosition();
             // Set patient name and image
             ImageView image = (ImageView)view.findViewById(R.id.image);
-            String imagePath = cursor.getString(cursor.getColumnIndex(Patients.Contract.IMAGE));
-            
-            if(imagePath != null){
-            	try{
-            		image.setImageURI(Uri.parse(imagePath));
-            	} catch (Exception e){
-                	image.setImageResource(R.drawable.unknown);
-            	}
-            } else {
-            	image.setImageResource(R.drawable.unknown);
-            }
+            String imagePath = ((Cursor) this.getItem(position)).getString(5);
             
         	//image.setImageResource(R.drawable.unknown);
-
-            String familyName = cursor.getString(cursor.getColumnIndex(Patients.Contract.FAMILY_NAME));
-            String givenName = cursor.getString(cursor.getColumnIndex(Patients.Contract.GIVEN_NAME));
+            if(imagePath != null){
+            	try{
+            		//image.setImageURI(Uri.parse(imagePath));
+                	//Log.d(TAG+".mAdapter", "bindView(): " + i.getPath());
+                	//image.setImageURI(Uri.parse(imagePath));
+            		image.setImageBitmap(Bitmaps.decodeSampledBitmapFromFile(Uri.parse(imagePath).getPath(), 128,128));
+            	} catch (Exception e){
+            		e.printStackTrace();
+            	}
+            } 
+            
+            String familyName = ((Cursor) this.getItem(position)).getString(2);
+            String givenName = ((Cursor) this.getItem(position)).getString(1);
             String displayName = StringUtil.formatPatientDisplayName(givenName, familyName);
             TextView name = (TextView) view.findViewById(R.id.name);
             name.setText(displayName);
             
             TextView systemId = (TextView)view.findViewById(R.id.system_id);
-            String id = cursor.getString(cursor.getColumnIndex(Patients.Contract.PATIENT_ID));
+            String id = ((Cursor) this.getItem(position)).getString(3);
             //String id = mWrapper.getStringField(Contract.PATIENT_ID);
             systemId.setText((TextUtils.isEmpty(id)? "000000":id));
             
             TextView location = (TextView)view.findViewById(R.id.location);
-            String locationVal = cursor.getString(cursor.getColumnIndex(Patients.Contract.LOCATION));
+            String locationVal = ((Cursor) this.getItem(position)).getString(4);
             location.setText(locationVal);
             
             
             // Alphabet divider
             boolean needsSeparator = false;
-            int pos = cursor.getPosition();
+            int pos = ((Cursor) this.getItem(position)).getPosition();
 
             displayName = displayName.trim();
             if (!TextUtils.isEmpty(displayName)) {
@@ -272,7 +304,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             } else {
                 displayName = " ";
             }
-
+            
             switch (mRowStates[pos]) {
                 case STATE_LABELED:
                     needsSeparator = true;
@@ -286,7 +318,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
                     if (pos == 0) {
                         needsSeparator = true;
                     } else {
-                        cursor.moveToPosition(pos - 1);
+                    	((Cursor) this.getItem(position)).moveToPosition(pos - 1);
                         String prevName = StringUtil.formatPatientDisplayName(givenName, familyName);
                         prevName = prevName.trim();
                         if (!TextUtils.isEmpty(prevName)) {
@@ -298,7 +330,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
                         if (prevName.charAt(0) != displayName.charAt(0)) {
                             needsSeparator = true;
                         }
-                        cursor.moveToPosition(pos);
+                        ((Cursor) this.getItem(position)).moveToPosition(pos);
                     }
                     break;
             }
@@ -310,30 +342,61 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             } else {
                 view.findViewById(R.id.header).setVisibility(View.GONE);
             }
-
+        }
+        
+        public View getView(int position, View convertView, ViewGroup parent) {
+        	Log.d(TAG+".mAdapter", "get view ");
+        	return super.getView(position,convertView, parent);
         }
         
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        	Log.d(TAG+".mAdapter", "new view ");
+        	Log.d(TAG+".mAdapter", "new view  cursor position: " + ((cursor != null)? cursor.getPosition(): 0)); 
             View view = mInflater.inflate(R.layout.patient_list_item, null);
             //bindView(view, context, cursor);
             return view;
         }
+
+		@Override
+		public int getPositionForSection(int sectionIndex) {
+
+			if(mAlphaIndexer == null)
+				return 0;
+	        return mAlphaIndexer.getPositionForSection(sectionIndex);
+		}
+
+		@Override
+		public int getSectionForPosition(int position) {
+
+			if(mAlphaIndexer == null)
+				return 0;
+	        return mAlphaIndexer.getSectionForPosition(position);
+		}
+
+		@Override
+	    public Object[] getSections()
+	    {
+			if(mAlphaIndexer == null)
+				return null;
+	        return mAlphaIndexer.getSections();
+	    }
+
         
     }
     
-    final void sync(Context context, Uri uri){
+    public final void sync(Context context, Uri uri){
     	Logf.D(TAG, "sync()");
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
     	long lastSync = prefs.getLong("patient_sync", 0);
     	long now = System.currentTimeMillis();
-    	Log.d(TAG, "last: " + lastSync +", now: " + now+ ", delta: " + (now-lastSync));
-    	if((now - lastSync) > 86400000){
+    	Log.d(TAG, "last: " + lastSync +", now: " + now+ ", delta: " + (now-lastSync) + ", doSync: " + ((now - lastSync) > 86400000)); 
+    	// TODO
+    	// Once a day 86400000
+    	if((now - lastSync) > delta){
+        	Logf.W(TAG, "sync(): synchronizing patient list");
     		prefs.edit().putLong("patient_sync", now).commit();
     		Intent intent = new Intent(context.getString(R.string.intent_action_read),uri);
     		context.startService(intent);
     	}
-    	doSync = false;
     }
 }
