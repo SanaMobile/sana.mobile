@@ -184,7 +184,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 		}
 	}
 	
-	public static String constructSelectionClause(String[] fields){
+	public static synchronized String constructSelectionClause(String[] fields){
 		StringBuilder selection = new StringBuilder();
 		int index = 0;
 		for(String field:fields){
@@ -207,14 +207,16 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
  	 * @return A cursor with a single row.
  	 * @throws IllegalArgumentException if multiple rows are returned.
  	 */
-	public static Cursor getOneByField(Uri contentUri, ContentResolver resolver, 
+	public static synchronized Cursor getOneByField(Uri contentUri, ContentResolver resolver, 
 			String field, Object object)
 	{
 		String selection = field + " = ?"; 
 		Cursor cursor = resolver.query(contentUri,null, selection, 
 				new String[]{ object.toString() }, null);
-		if(cursor != null && cursor.getCount() > 1)
+		if(cursor != null && cursor.getCount() > 1){
+			cursor.close();
 			throw new IllegalArgumentException("Multiple entries found! Expecting one.");
+		}
 		return cursor;
 	}
 	
@@ -229,12 +231,14 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
  	 * @return A cursor with a single row.
  	 * @throws IllegalArgumentException if multiple rows are returned.
  	 */
-	public static Cursor getOneByFields(Uri contentUri, ContentResolver resolver, 
+	public static synchronized Cursor getOneByFields(Uri contentUri, ContentResolver resolver, 
 			String[] fields, String[] vals)
 	{
 		Cursor cursor = ModelWrapper.getAllByFields(contentUri, resolver, fields, vals);
-		if(cursor != null && cursor.getCount() > 1)
+		if(cursor != null && cursor.getCount() > 1){
+			cursor.close();
 			throw new IllegalArgumentException("Multiple entries found! Expecting one.");
+		}
 		return cursor;
 	}
 	
@@ -248,14 +252,17 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
  	 * @return A cursor with a single row.
  	 * @throws IllegalArgumentException if multiple rows are returned.
  	 */
-	public static Cursor getOneByUuid(Uri contentUri, ContentResolver resolver, 
+	public static synchronized Cursor getOneByUuid(Uri contentUri, ContentResolver resolver, 
 			String uuid)
 	{
-		String selection = BaseContract.UUID + " = ?"; 
+		String selection = BaseContract.UUID + " = ?";
+		
 		Cursor cursor = resolver.query(contentUri,null, selection, 
 				new String[]{ uuid }, null);
-		if(cursor != null && cursor.getCount() > 1)
+		if(cursor != null && cursor.getCount() > 1){
+			cursor.close();
 			throw new IllegalArgumentException("Non unique id! " +contentUri+"/"+uuid);
+		}
 		return cursor;
 	}
 	
@@ -269,7 +276,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param value The selection argument or, row value, to select by.
  	 * @return A cursor with zero or more rows.
  	 */
-	public static Cursor getAllByField(Uri contentUri, ContentResolver resolver, 
+	public static synchronized Cursor getAllByField(Uri contentUri, ContentResolver resolver, 
 			String field, Object object)
 	{
 		return ModelWrapper.getAllByFieldOrdered(contentUri, resolver, field, object, null);
@@ -285,7 +292,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param value The selection argument or, row value, to select by.
  	 * @return A cursor with zero or more rows.
  	 */
-	public static Cursor getAllByFields(Uri contentUri, ContentResolver resolver, 
+	public static synchronized Cursor getAllByFields(Uri contentUri, ContentResolver resolver, 
 			String[] fields, String[] vals)
 	{
 		return ModelWrapper.getAllByFieldsOrdered(contentUri, resolver, fields, vals, null);
@@ -303,7 +310,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @paeam order The order to return by.
  	 * @return A cursor with zero or more rows.
  	 */
-	public static Cursor getAllByFieldOrdered(Uri contentUri, ContentResolver resolver, 
+	public static synchronized Cursor getAllByFieldOrdered(Uri contentUri, ContentResolver resolver, 
 			String field, Object object, String order)
 	{
 		String selection = null; 
@@ -328,7 +335,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @paeam order The order to return by.
  	 * @return A cursor with zero or more rows.
  	 */
-	public static Cursor getAllByFieldsOrdered(Uri contentUri, ContentResolver resolver, 
+	public static synchronized Cursor getAllByFieldsOrdered(Uri contentUri, ContentResolver resolver, 
 			String[] fields, String[] vals, String order)
 	{
 		StringBuilder selection = new StringBuilder();
@@ -351,7 +358,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param resolver The resolver which will perform the query.
 	 * @return A cursor with the result or null.
 	 */
-	public static Cursor getAllByCreatedAsc(Uri contentUri, ContentResolver resolver)
+	public static synchronized Cursor getAllByCreatedAsc(Uri contentUri, ContentResolver resolver)
 	{
 		return ModelWrapper.getAllByFieldOrdered(contentUri, resolver, null, null, BaseContract.CREATED +" ASC");
 	}
@@ -364,7 +371,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param resolver The resolver which will perform the query.
 	 * @return A cursor with the result or null.
 	 */
-	public static Cursor getAllByCreatedDesc(Uri contentUri, ContentResolver resolver)
+	public static synchronized Cursor getAllByCreatedDesc(Uri contentUri, ContentResolver resolver)
 	{
 		final String order = BaseContract.CREATED +" DESC";
 		return resolver.query(contentUri,null, null,null, order);
@@ -379,7 +386,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param resolver The resolver which will perform the query.
 	 * @return A cursor with the result or null.
 	 */
-	public static Cursor getAllByModifiedAsc(Uri contentUri, ContentResolver resolver)
+	public static synchronized Cursor getAllByModifiedAsc(Uri contentUri, ContentResolver resolver)
 	{
 		final String order = BaseContract.MODIFIED +" ASC";
 		return resolver.query(contentUri,null, null,null, order);
@@ -394,7 +401,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param resolver The resolver which will perform the query.
 	 * @return A cursor with the result or null.
 	 */
-	public static Cursor getAllByModifiedDesc(Uri contentUri, ContentResolver resolver)
+	public static synchronized Cursor getAllByModifiedDesc(Uri contentUri, ContentResolver resolver)
 	{
 		final String order = BaseContract.MODIFIED +" DESC";
 		return resolver.query(contentUri,null, null,null, order);
@@ -408,7 +415,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param resolver
 	 * @return
 	 */
-	public static boolean insertOrUpdate(Uri uri, ContentValues values, ContentResolver resolver){
+	public static synchronized boolean insertOrUpdate(Uri uri, ContentValues values, ContentResolver resolver){
 		Cursor c = null;
 		boolean exists = false;
 		String uuid = (values.containsKey(BaseContract.UUID))?
@@ -420,7 +427,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 					exists = true;
 				}
 			} catch(Exception e){
-
+				e.printStackTrace();
 			} finally {
 				if(c!=null)
 					c.close();
@@ -435,12 +442,13 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 				resolver.insert(uri, values);
 			}
 		} catch (Exception e){
+			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
 
-	public static Uri getOneReferenceByFields(Uri contentUri, String[] fields, 
+	public synchronized static Uri getOneReferenceByFields(Uri contentUri, String[] fields, 
 			String[] vals, ContentResolver resolver)
 	{
 		Uri uri = contentUri;
@@ -452,7 +460,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 				uri = ContentUris.withAppendedId(contentUri, id);
 			} 
 		}catch(Exception e){
-
+			e.printStackTrace();
 		} finally { if(c!=null) c.close(); }
 		return uri;
 	}
@@ -465,7 +473,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param selectionArgs
 	 * @return
 	 */
-	private static Uri exists(ContentResolver resolver,
+	private static synchronized Uri exists(ContentResolver resolver,
 			Uri uri,
 			String selection,
 			String[] selectionArgs)
@@ -488,8 +496,11 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 				exists = true;
 			}
 		} catch(Exception e){
-			throw new IllegalArgumentException("Errror inserting", e);
-		} finally { if(c!=null) c.close(); }
+			e.printStackTrace();
+			throw new IllegalArgumentException(e);
+		} finally { 
+			if(c!=null) c.close(); 
+		}
 		return result;
 	}
 	
@@ -500,7 +511,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 	 * @param resolver
 	 * @return
 	 */
-	public static Uri getOrCreate(Uri uri,  
+	public static synchronized Uri getOrCreate(Uri uri,  
 			ContentValues values,
 			ContentResolver resolver)
 	{
@@ -534,5 +545,65 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper imple
 			throw new IllegalArgumentException("Error updating. Unrecognized uri: " + uri);
 		}
 		return result;
+	}
+	
+	/**
+	 * Retrieves the object uuid either from the last path segment, the 'uuid' column
+	 * of the table, or throws an exception if a directory type Uri.
+	 * @param uri
+	 * @param resolver
+	 * @return
+	 */
+	public static synchronized String getUuid(Uri uri, ContentResolver resolver){
+		
+		switch(Uris.getTypeDescriptor(uri)){
+		case Uris.ITEM_UUID:
+			return uri.getLastPathSegment();
+		case Uris.ITEM_ID:
+			Cursor c = null;
+			String uuid = null;
+			try{
+				c = resolver.query(uri, 
+					new String[]{ BaseContract.UUID }, null,null,null);
+				if (c!=null && c.moveToFirst())
+					uuid = c.getString(0);
+			}catch (Exception e){ 
+				e.printStackTrace();
+			} finally {
+				if(c != null) c.close();
+			}	
+			return uuid;
+		default:
+			throw new IllegalArgumentException("Invalid item uri: " + uri);
+		}
+	}
+	
+	/**
+	 * Retrieves the local row id either from the last path segment, the '_id' column
+	 * of the table, or throws an exception if a directory type Uri.
+	 * 
+	 * @param uri
+	 * @param resolver
+	 * @return
+	 */
+	public static synchronized long getRowId(Uri uri, ContentResolver resolver){
+		switch(Uris.getTypeDescriptor(uri)){
+		case Uris.ITEM_ID:
+			return Long.parseLong(uri.getLastPathSegment());
+		case Uris.ITEM_UUID:
+			long id = -1;
+			Cursor c = null;
+			try{
+				c = resolver.query(uri, 
+					new String[]{ BaseContract._ID }, null,null,null);
+				if (c.moveToFirst())
+					id = c.getInt(0);
+			} finally {
+				if(c != null) c.close();
+			}
+			return id;
+		default:
+			throw new IllegalArgumentException("Invalid item uri");
+		}
 	}
 }
