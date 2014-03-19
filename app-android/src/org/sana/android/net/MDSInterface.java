@@ -9,7 +9,9 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,17 +26,29 @@ import org.apache.http.NameValuePair;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import org.json.JSONException;
@@ -43,7 +57,11 @@ import org.json.JSONTokener;
 import org.sana.R;
 import org.sana.core.Event;
 import org.sana.net.MDSResult;
+import org.sana.net.http.ClientFactory;
+import org.sana.net.http.HttpTaskFactory;
+import org.sana.net.http.ssl.EasySSLSocketFactory;
 import org.sana.android.Constants;
+import org.sana.android.content.Uris;
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
@@ -69,6 +87,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -130,7 +149,9 @@ public class MDSInterface {
 		Encounters.Contract.STATE,
 		Encounters.Contract.FINISHED,
 		Encounters.Contract.UUID, 
-		Encounters.Contract.UPLOADED };
+		Encounters.Contract.UPLOADED,
+		Encounters.Contract.SUBJECT,
+		Encounters.Contract.OBSERVER};
 
 	/**
 	 * Http request url for validating MRS credentials
@@ -216,17 +237,28 @@ public class MDSInterface {
 	 * @return The mds url with correct scheme.
 	 */
 	private static String getMDSUrl(Context context){
-		String host = context.getString(R.string.cfg_mds_host);
+		
+
+		String host = context.getString(R.string.host_mds);
+		String root = context.getString(R.string.path_root);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		host = preferences.getString(Constants.PREFERENCE_MDS_URL, host);
+		boolean useSecure = preferences.getBoolean(
+				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
+		String scheme = (useSecure)? "https": "http";
+		/*
+		String host = context.getString(R.string.host_mds);
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		host = preferences.getString(Constants.PREFERENCE_MDS_URL,
 											Constants.DEFAULT_DISPATCH_SERVER);
 		// Takes care of legacy issues
 		//host.replace("moca.mit.edu", "demo.sana.csail.mit.edu");
 		boolean useSecure = preferences.getBoolean(
-				Constants.PREFERENCE_SECURE_TRANSMISSION, false);
+				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
 
 		String scheme = (useSecure)? "https": "http";
-		String url = scheme + "://" + host +"/"+ Constants.PATH_MDS;
+		*/
+		String url = scheme + "://" + host +"/"+ root;
 		Log.d(TAG, "mds url: " + url);
 		return url;
 	}
@@ -275,7 +307,7 @@ public class MDSInterface {
 	 * @return
 	 */
 	protected static MDSResult doExecute(Context ctx, HttpUriRequest method){
-		HttpClient client = new DefaultHttpClient();
+		HttpClient client = HttpTaskFactory.CLIENT_FACTORY.produce();
 		SharedPreferences preferences = 
 			PreferenceManager.getDefaultSharedPreferences(ctx);
 		MDSResult response = null;
@@ -288,7 +320,7 @@ public class MDSInterface {
 		String sProxyPort = preferences.getString(
 				Constants.PREFERENCE_PROXY_PORT, "0");
 		boolean useSecure = preferences.getBoolean(
-				Constants.PREFERENCE_SECURE_TRANSMISSION, false);
+				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
 		
 		int proxyPort = 0;
 		try {
@@ -476,6 +508,10 @@ public class MDSInterface {
 		String mdsUrl = getMDSUrl(c);
 		mdsUrl = checkMDSUrl(mdsUrl);
 		String mUrl = constructBinaryChunkSubmitURL(mdsUrl);
+		// this is the compat layer
+		String gid = String.format("%s_%s", elementId, fileGuid);
+		Log.d(TAG,"Posting to: " + mUrl);
+		Log.d(TAG,"....file chunk: " + elementId +", guid:" + fileGuid);
 		MultipartEntity entity = new MultipartEntity();
 		entity.addPart("procedure_guid", new StringBody(savedProcedureId));
         entity.addPart("element_id", new StringBody(elementId));
@@ -536,17 +572,25 @@ public class MDSInterface {
 		// First get the saved procedure...
 		cursor.moveToFirst();
 		int procedureId = cursor.getInt(1);
-		String answersJson = cursor.getString(2);
-		boolean savedProcedureUploaded = cursor.getInt(5) != 0;
+		String answersJson = cursor.getString(cursor.getColumnIndex(
+				Encounters.Contract.STATE));
+		boolean savedProcedureUploaded = cursor.getInt(cursor.getColumnIndex(
+				Encounters.Contract.UPLOADED)) != 0;
+		String subject = cursor.getString(cursor.getColumnIndex(
+				Encounters.Contract.SUBJECT));
 		cursor.close();
 
 		Uri procedureUri = ContentUris.withAppendedId(
 							Procedures.CONTENT_URI, procedureId);
 		Log.i(TAG, "Getting procedure " + procedureUri.toString());
 		cursor = context.getContentResolver().query(procedureUri, 
-				new String[] { Procedures.Contract.PROCEDURE }, null,null,null);
+				new String[] { Procedures.Contract.PROCEDURE,
+								Procedures.Contract.UUID
+					},
+					null,null,null);
 		cursor.moveToFirst();
-		String procedureXml = cursor.getString(0);
+		String procedureXml = cursor.getString(cursor.getColumnIndex(Procedures.Contract.PROCEDURE));
+		String procedureUuid = cursor.getString(cursor.getColumnIndex(Procedures.Contract.UUID));
 		cursor.close();
 		
 		if (!savedProcedureUploaded) return false;
@@ -730,13 +774,16 @@ public class MDSInterface {
 		Log.i(TAG, "Getting procedure " + procedureUri.toString());
 		cursor = context.getContentResolver().query(procedureUri, 
 				new String[] { Procedures.Contract.TITLE, 
-							   Procedures.Contract.PROCEDURE },
+							   Procedures.Contract.PROCEDURE,
+							   Procedures.Contract.UUID},
 				null, null, null);
 		cursor.moveToFirst();
 		String procedureTitle = cursor.getString(
 				cursor.getColumnIndex(Procedures.Contract.TITLE));
 		String procedureXml = cursor.getString(
 				cursor.getColumnIndex(Procedures.Contract.PROCEDURE));
+		String procedureUUID = cursor.getString(
+				cursor.getColumnIndex(Procedures.Contract.UUID));
 		cursor.close();
 		
 		if(!finished) {
@@ -784,12 +831,14 @@ public class MDSInterface {
 		}
 		
 		// Add in procedureTitle as a fake answer
+		/*
 		Map<String,String> titleMap = new HashMap<String,String>();
 		titleMap.put("answer", procedureTitle);
 		titleMap.put("id", "procedureTitle");
 		titleMap.put("type", "HIDDEN");
 		elementMap.put("procedureTitle", titleMap);
-		
+		*/
+		/*
 		// We need a String -> String map to convert to JSON
 		Map<String,String> enrolledMap = new HashMap<String,String>();
 		enrolledMap.put("answer", "Yes");
@@ -797,7 +846,7 @@ public class MDSInterface {
 		enrolledMap.put("type", ProcedureElement.ElementType.RADIO.toString());
 		enrolledMap.put("question", "Does the patient already have an ID card?");
 		elementMap.put("patientEnrolled", enrolledMap);
-		
+		*/
 		// Utility wrapper for answers
 		class ElementAnswer {
 			public String id;
@@ -971,7 +1020,7 @@ public class MDSInterface {
 	 * 		  can be used for future transmissions as the startPacketSize
 	 * @throws Exception on upload failure
 	 */
-	private static int transmitBinary(Context c, String savedProcedureId, 
+	protected static int transmitBinary(Context c, String savedProcedureId, 
 			String elementId, String binaryGuid, ElementType type, 
 			Uri binaryUri, int startPacketSize) throws Exception 
 	{
@@ -1296,7 +1345,7 @@ public class MDSInterface {
 	
 	// returns the scheme basef on the "Use secure transmission" setting.
 	static String getScheme(SharedPreferences preferences){
-		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, false))
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
 			return "https";
 		else
 			return "http";
@@ -1314,7 +1363,13 @@ public class MDSInterface {
 	
 	// Retuns the port value from net.xml
 	static int getPort(Context c){
-		return c.getResources().getInteger(R.integer.port_mds);
+
+		SharedPreferences preferences = PreferenceManager
+											.getDefaultSharedPreferences(c);
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
+			return 443;
+		else
+			return c.getResources().getInteger(R.integer.port_mds);
 	}
 	
 	public static URI getRoot(Context c){
@@ -1345,6 +1400,7 @@ public class MDSInterface {
 		List<NameValuePair> postData = new ArrayList<NameValuePair>();
 		postData.add(new BasicNameValuePair("username", username));
 		postData.add(new BasicNameValuePair("password", password));
+		Log.d(TAG, String.format("createSessionRequest(): %s://%s:%d/%s/", scheme, host, port, path));
 		return HttpRequestFactory.getPostRequest(scheme, host, port, path, postData);
 	}
 	
@@ -1396,7 +1452,7 @@ public class MDSInterface {
 				Observations.Contract.ENCOUNTER + " = ?", 
 				new String[]{ uuid } ,
 				Observations.Contract.ID + " ASC");
-		StringBuilder obs = new StringBuilder("{ 'encounter': "+ uuid + ", 'observations[");
+		StringBuilder obs = new StringBuilder("{ 'encounter': "+ uuid + ", 'observations' : [");
 		if(cursor != null){
 			while(cursor.moveToNext()){
 				obs.append("{");
