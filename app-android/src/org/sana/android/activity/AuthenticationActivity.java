@@ -2,6 +2,7 @@
 package org.sana.android.activity;
 
 import org.sana.R;
+import org.sana.android.Constants;
 import org.sana.android.app.Locales;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
@@ -14,12 +15,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -88,16 +92,18 @@ public class AuthenticationActivity extends BaseActivity {
     	
         @Override public void handleMessage(Message msg) {
     		int state = msg.what;
-    		Log.i(TAG, "handleMessage(): " + msg.what);
+    		Log.i(TAG, "handleMessage(): " + ((msg.what == 1)? "success":"failure"));
     		cancelProgressDialogFragment();
         	switch(state){
         	case SessionService.FAILURE:
         		loginsRemaining--;
         		enableInput();
         		// TODO use a string resource
-        		Toast.makeText(getApplicationContext(), 
-        				"Username and password incorrect! Logins remaining: " 
-        						+loginsRemaining, 
+        		Toast.makeText(AuthenticationActivity.this,
+        				String.format("%s. %s: %d",
+        						getString(R.string.msg_login_failed),
+        						getString(R.string.authentication_logins_remaining),
+        						loginsRemaining), 
         				Toast.LENGTH_SHORT).show();
         		break;
         	case SessionService.SUCCESS:
@@ -124,6 +130,7 @@ public class AuthenticationActivity extends BaseActivity {
         	}
 
         	// Finish if remaining logins => 0
+    		Log.i(TAG, "handleMessage(): logins remaining: " + loginsRemaining);
         	if(loginsRemaining == 0){
         		finish();
         	}
@@ -160,7 +167,7 @@ public class AuthenticationActivity extends BaseActivity {
     
     /* Loads the debug credentials from res/values/debug.xml if debug_credentials = true */
     private final void loadCredentials(){
-    	if(Boolean.valueOf(this.getString(R.string.debug_credentials))){
+    	if(getResources().getBoolean(R.bool.debug)){
     		mInputUsername.setText(getString(R.string.debug_user));
     		mInputPassword.setText(getString(R.string.debug_password));
     	}
@@ -194,6 +201,8 @@ public class AuthenticationActivity extends BaseActivity {
     			showProgressDialogFragment(getString(R.string.dialog_logging_in));
     			try {
     				mService.create(getInstanceKey(), username,password);// register the callback to the username
+    				//cache the credentials
+    				setCurrentCredentials(username, password);
     			} catch (RemoteException e) {
     				Log.e(TAG, "login()" + e.toString());
     				e.printStackTrace();
@@ -229,8 +238,8 @@ public class AuthenticationActivity extends BaseActivity {
      */
     @Override
     protected void onStop() {
-        super.onStop();
         unbindSessionService();
+        super.onStop();
     }
     
 	// handles initiating the session service binding
@@ -268,5 +277,16 @@ public class AuthenticationActivity extends BaseActivity {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+    }
+    
+    final void setCurrentCredentials(String username, String password){
+
+		Editor editor =  PreferenceManager
+				.getDefaultSharedPreferences(this).edit();
+		editor.putString(
+				Constants.PREFERENCE_EMR_USERNAME, username);
+		editor.putString(
+				Constants.PREFERENCE_EMR_PASSWORD, password);
+		editor.commit();
     }
 }
