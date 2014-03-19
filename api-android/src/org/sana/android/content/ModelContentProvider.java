@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.sana.android.db.DBUtils;
+import org.sana.android.db.DatabaseManager;
 import org.sana.android.db.DatabaseOpenHelper;
 import org.sana.android.db.TableHelper;
 import org.sana.android.db.impl.ConceptsHelper;
@@ -75,7 +76,7 @@ public abstract class ModelContentProvider extends ContentProvider {
 	protected static final String DATABASE = "models.db";
 	
 	protected DatabaseOpenHelper mOpener;
-	
+	protected DatabaseManager mManager;
 	// match types
 	public static final int ITEMS = 0;
 	public static final int ITEM_ID = 1;
@@ -119,14 +120,17 @@ public abstract class ModelContentProvider extends ContentProvider {
 	 * @see android.content.ContentProvider#delete(android.net.Uri, java.lang.String, java.lang.String[])
 	 */
 	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
+	public synchronized  int delete(Uri uri, String selection, String[] selectionArgs) {
         Log.d(TAG, ".delete(" + uri.toString() +");");
 		String whereClause = DBUtils.getWhereClause(uri, 
 				Uris.getDescriptor(uri), 
 				selection);
-		SQLiteDatabase db = mOpener.getWritableDatabase();
-		
-		int count = getTableHelper(uri).onDelete(db, whereClause, selectionArgs);
+
+        TableHelper<?> helper = getTableHelper(uri);
+		String table = helper.getTable();
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();//mOpener.getWritableDatabase();
+		int count = db.delete(table, selection, selectionArgs); //getTableHelper(uri).onDelete(db, whereClause, selectionArgs);
+        DatabaseManager.getInstance().closeDatabase();//
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
 	}
@@ -143,15 +147,18 @@ public abstract class ModelContentProvider extends ContentProvider {
 	 * @see android.content.ContentProvider#insert(android.net.Uri, android.content.ContentValues)
 	 */
 	@Override
-	public Uri insert(Uri uri, ContentValues values) {
+	public synchronized Uri insert(Uri uri, ContentValues values) {
 		Log.d(TAG, "insert(" + uri.toString() +", N = " 
 	        	+ String.valueOf((values == null)?0:values.size()) + " values.)");
-        SQLiteDatabase db = mOpener.getWritableDatabase();
         TableHelper<?> helper = getTableHelper(uri);
         
         // set default insert values and execute
         values = helper.onInsert(values);
-		long id = db.insert(helper.getTable(), null, values);
+		String table = helper.getTable();
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();//mOpener.getWritableDatabase();
+		long id = db.insert(table, null, values);
+		DatabaseManager.getInstance().closeDatabase();
+		
 		Uri result = ContentUris.withAppendedId(uri, id);
 		getContext().getContentResolver().notifyChange(uri, null);
 		Log.d(TAG, "insert(): Successfully inserted => " + result);
@@ -163,10 +170,9 @@ public abstract class ModelContentProvider extends ContentProvider {
 	 * @see android.content.ContentProvider#query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
+	public synchronized Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
         Log.d(TAG, ".query(" + uri.toString() +");");
-        SQLiteDatabase db = mOpener.getReadableDatabase();
         TableHelper<?> helper = getTableHelper(uri);
         
         // set query and execute
@@ -179,8 +185,20 @@ public abstract class ModelContentProvider extends ContentProvider {
 			selection = DBUtils.getWhereClauseWithUUID(uri, selection);
 		default:
 		}
-        Cursor cursor = helper.onQuery(db, projection, selection, selectionArgs, sortOrder);
-        //cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        Log.d(TAG, ".query(.) selection = " + selection);
+        String uriQS = DBUtils.convertUriQueryToSelect(uri);
+        Log.d(TAG, ".query(.) uri qs = " + selection);
+        if(!TextUtils.isEmpty(uriQS)){
+        	selection = String.format("%s %s", selection, uriQS);
+        	Log.d(TAG, ".query(.) selection = " + selection);
+		}
+		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+		qb.setTables(helper.getTable());
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();//mOpener.getReadableDatabase();
+        //Cursor cursor = helper.onQuery(db, projection, selection, selectionArgs, sortOrder);
+        Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        Log.d(TAG, ".query(" + uri.toString() +") count = " + ((cursor!=null)?cursor.getCount():0));
         return cursor;
 	}
 
@@ -188,14 +206,14 @@ public abstract class ModelContentProvider extends ContentProvider {
 	 * @see android.content.ContentProvider#update(android.net.Uri, android.content.ContentValues, java.lang.String, java.lang.String[])
 	 */
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
+	public synchronized int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-        Log.d(TAG, ".update(" + uri.toString() +");");
-		SQLiteDatabase db = mOpener.getWritableDatabase();
+        Log.d(TAG, ".update(" + uri.toString() +");");//mOpener.getWritableDatabase();
 		
         // set any default update values
 		TableHelper<?> helper = getTableHelper(uri);
 		values = helper.onUpdate(uri, values);
+		String table = helper.getTable();
 		
 		// set selection and execute
 		switch(Uris.getTypeDescriptor(uri)){
@@ -206,7 +224,9 @@ public abstract class ModelContentProvider extends ContentProvider {
 			selection = DBUtils.getWhereClauseWithUUID(uri, selection);
 		default:
 		}
-		int result = db.update(helper.getTable(), values, selection, selectionArgs);
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+		int result = db.update(table, values, selection, selectionArgs);
+		DatabaseManager.getInstance().closeDatabase();
 		getContext().getContentResolver().notifyChange(uri, null);
 		return result;
 	}
