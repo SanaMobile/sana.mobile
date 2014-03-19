@@ -177,13 +177,13 @@ public class PatientRunnerFragment extends BaseRunnerFragment {
                 
                 ContentValues cv = new ContentValues();
                 cv.put(Patients.Contract.STATE, 0);
-                
+                /*
                 uEncounter = getActivity().getContentResolver().insert(
                 		Patients.CONTENT_URI, cv);
                 
                 Log.i(TAG, "onCreate() : uri = " + procedureUri.toString()
                         + " savedUri = " + uEncounter);
-                
+                */
                 Procedure p = null;
                 try {
                     p = Procedure.fromXMLString(procedureXml);
