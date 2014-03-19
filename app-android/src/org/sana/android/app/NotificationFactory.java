@@ -29,6 +29,7 @@ package org.sana.android.app;
 
 import org.sana.R;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -155,6 +156,24 @@ public class NotificationFactory {
 		return n;
 	}
 	
+	public NotificationFactory setNumber(int number){
+		mBuilder.setNumber(number);
+		return this;
+	}
 	
+	public Notification build(){
+		return mBuilder.build();
+	}
 	
+	public void cancel (int id){
+		mNotificationManager.cancel(id);
+	}
+	
+	public void cancel (String tag, int id){
+		mNotificationManager.cancel(tag, id);
+	}
+
+	public void cancelAll (){
+		mNotificationManager.cancelAll();
+	}
 }
