@@ -381,8 +381,6 @@ public class ProcedurePage {
 	public void restoreAnswers(Map<String,String> answersMap) {
 		for(ProcedureElement s : elements) {
 			if(answersMap.containsKey(s.getId())) {
-				Log.i(TAG, "restoreAnswers : " + s.getId() + " " 
-						+ answersMap.get(s.getId()));
 				s.setAnswer(answersMap.get(s.getId()));
 			}
 		}
