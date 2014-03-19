@@ -40,50 +40,47 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.net.ContentHandler;
-import java.net.ContentHandlerFactory;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.ListIterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.RequestLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import org.sana.R;
+import org.sana.android.Constants;
 import org.sana.android.activity.EncounterList;
 import org.sana.android.app.Locales;
 import org.sana.android.app.NotificationFactory;
-import org.sana.android.content.Intents;
+import org.sana.android.content.DispatchResponseReceiver;
+import org.sana.android.content.ModelContext;
 import org.sana.android.content.Uris;
 import org.sana.android.db.ModelWrapper;
-import org.sana.android.net.HttpTask;
 import org.sana.android.net.MDSInterface;
-import org.sana.android.net.NetworkTaskListener;
+import org.sana.android.net.MDSInterface2;
+import org.sana.android.provider.EncounterTasks;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
@@ -91,11 +88,13 @@ import org.sana.android.provider.Subjects;
 import org.sana.android.service.QueueManager;
 import org.sana.android.util.Logf;
 import org.sana.android.util.SanaUtil;
-import org.sana.android.util.UriUtil;
+import org.sana.api.task.EncounterTask;
 
 import org.sana.core.Patient;
 import org.sana.core.Procedure;
 import org.sana.net.Response;
+import org.sana.net.http.HttpTaskFactory;
+import org.sana.net.http.handler.EncounterResponseHandler;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -103,10 +102,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
-import android.app.IntentService;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -123,11 +121,11 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Messenger;
 import android.os.Process;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Implementation of the dispatch server as an Android service.
@@ -141,10 +139,14 @@ public class DispatchService extends Service{
 	
 	static final int REQUEST = 0;
 	static final int RESPONSE = 1;
+	public static final int UPLOAD_RESPONSE = 1;
+	public static final String RESPONSE_NOTIFICATION_ID = "notification_id";
+	public static final String RESPONSE_CODE = "code";
+	
 	
 	//TODO Refactor this out.
-	abstract static class JSONHandler<T> {
-		JSONHandler(){}
+	abstract static class SyncHandler<T> {
+		SyncHandler(){}
 
 		public abstract List<ContentValues> values(Response<T> response);
 		
@@ -161,19 +163,18 @@ public class DispatchService extends Service{
     		Log.d("JSONHandler<T>", msg.obj.toString());
     		return response;
 		}
+		
+		public abstract ContentValues[] values(T t);
 
 	}
 	
-	final JSONHandler<List<Procedure>> procedureListHandler = new JSONHandler<List<Procedure>>(){
+	final SyncHandler<List<Procedure>> procedureListHandler = new SyncHandler<List<Procedure>>(){
 
 		@Override
 		public List<ContentValues> values(Response<List<Procedure>> response) {
 			
 			List<ContentValues> list = new ArrayList<ContentValues>();
 			for(Procedure p: response.getMessage()){
-				for(Field f:p.getClass().getDeclaredFields()){
-					Log.d(TAG, f.toGenericString());
-				}
 				ContentValues vals = new ContentValues();
 				vals.put(Procedures.Contract.UUID, p.getUuid());
 				vals.put(Procedures.Contract.TITLE, p.getDescription());
@@ -184,43 +185,17 @@ public class DispatchService extends Service{
 			}
 			return list;
 		}
-		
-		String handleSrc(String src, Uri uri) throws IOException{			
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO)
-				     System.setProperty("http.keepAlive", "false");
-		
-			StringBuilder builder = new StringBuilder();
-			URL url = null;
-			HttpURLConnection con = null;
-			BufferedReader in = null;
-			Writer out = null;
-			try {
-				url = new URL(src);
-				con = (HttpURLConnection) url.openConnection();
-				out = new OutputStreamWriter(getContentResolver().openOutputStream(uri));
-				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-				String str;
-			    while ((str = in.readLine()) != null) {
-			    	out.write(str);
-			    }
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				if(in != null)
-					in.close();
-				if(out != null)
-					out.close();
-				if(con != null)
-					con.disconnect();
-			}
-			
-			return builder.toString();
+
+		@Override
+		public ContentValues[] values(List<Procedure> t) {
+			// TODO Auto-generated method stub
+			return null;
 		}
+		
 		
 	};
 	
-	final JSONHandler<List<Patient>> patientListHandler = new JSONHandler<List<Patient>>(){
+	final SyncHandler<List<Patient>> patientListHandler = new SyncHandler<List<Patient>>(){
 		public  Response<List<Patient>> fromJson(Message msg){
 			Type type = new TypeToken<Response<List<Patient>>>(){}.getType();
 			Gson gson = new GsonBuilder()
@@ -235,7 +210,7 @@ public class DispatchService extends Service{
 		public List<ContentValues> values(Response<List<Patient>> response) {
 			List<ContentValues> list = new ArrayList<ContentValues>();
 			for(Patient p: response.getMessage()){
-				Log.d(TAG, p.toString());
+				Log.d(TAG, p.system_id);
 				ContentValues vals = new ContentValues();
 				vals.put(Patients.Contract.GIVEN_NAME, p.getGiven_name());
 				vals.put(Patients.Contract.FAMILY_NAME, p.getFamily_name());
@@ -246,11 +221,9 @@ public class DispatchService extends Service{
 				vals.put(Patients.Contract.DOB, p.getDob().toString());
 				if(p.getImage() != null && (p.getImage().getPath().endsWith("jpg") || p.getImage().getPath().endsWith("png"))){
 					try{ 
-						File root = Environment.getExternalStorageDirectory();
-						File media = new File(root, "/media/sana/");
-						String path = media.getAbsolutePath() + "/" +  p.getImage().toASCIIString();
-						Log.d(TAG, path);
-						File f = new File(path);
+						File dir = ModelContext.getExternalFilesDir(Subjects.CONTENT_URI);
+						//String path = media.getAbsolutePath() + "/" +  p.getImage().toASCIIString();
+						File f = new File(dir, p.getImage().toASCIIString());
 						if(f.isDirectory()){
 							Log.d(TAG, "deleting erroneous directory " + f.getAbsolutePath());
 							f.delete();
@@ -265,24 +238,11 @@ public class DispatchService extends Service{
 						} else {
 							// TODO Add image download here
 							Log.d(TAG, "Need to download file to: " + f.getAbsolutePath());
-							
-							//f.getParentFile().mkdirs();
-							URL url = new URL("http://ec2-23-23-147-197.compute-1.amazonaws.com/mds/media/" + p.getImage().toASCIIString());
-							Log.d(TAG, "Downloading from: " + url);
-							
-							HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-							urlConnection.setRequestMethod("GET");
-							urlConnection.setDoOutput(true);
-							urlConnection.connect();
-							FileOutputStream fileOutput = new FileOutputStream(f);
-							InputStream inputStream = urlConnection.getInputStream();
-							byte[] buffer = new byte[1024];
-							int bufferLength = 0;
-							while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
-								fileOutput.write(buffer, 0, bufferLength);
-								Log.d(TAG, "... wrote bytes:" + bufferLength);
-							}
-							fileOutput.close();
+							if(f.exists() && f.isDirectory())
+								f.delete();
+							f.getParentFile().mkdirs();
+							boolean result = MDSInterface2.getFile(DispatchService.this, "media/" + p.getImage().toASCIIString(), f);
+							Log.d(TAG, "Download success: " + result);
 							vals.put(Patients.Contract.IMAGE, Uri.fromFile(f).toString());
 						
 						}
@@ -292,15 +252,11 @@ public class DispatchService extends Service{
 					}
 				} else {
 					try{ 
-						File root = Environment.getExternalStorageDirectory();
-						File media = new File(root, "/media/sana/");
-						String path = media.getAbsolutePath() + "/" +  p.getImage().toASCIIString();
-						Log.d(TAG, path);
-						File f = new File(path);
-						if(f.isDirectory()){
+						File dir = ModelContext.getExternalFilesDir(Subjects.CONTENT_URI);
+						Log.d(TAG, dir.getAbsolutePath());
+						File f = new File(dir, p.getImage().toASCIIString());
+						if(f.isDirectory() && f.delete()){
 							Log.d(TAG, "deleting erroneous directory " + f.getAbsolutePath());
-							f.delete();
-							//f.createNewFile();
 						}
 					} catch(Exception e){
 						Log.e(TAG, e.getMessage());
@@ -310,6 +266,52 @@ public class DispatchService extends Service{
 				list.add(vals);
 			}
 			return list;
+		}
+
+		@Override
+		public ContentValues[] values(List<Patient> t) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	};
+	
+	final SyncHandler<Collection<EncounterTask>> encounterTasksHandler = new SyncHandler<Collection<EncounterTask>>(){
+
+		@Override
+		public List<ContentValues> values(Response<Collection<EncounterTask>> response) {
+			List<ContentValues> values = new ArrayList<ContentValues>(response.message.size());
+			for(EncounterTask task:response.message){
+				ContentValues value = new ContentValues();
+				value.put(EncounterTasks.Contract.DUE_DATE , task.due_on);
+				value.put(EncounterTasks.Contract.PROCEDURE , task.procedure.uuid);
+				value.put(EncounterTasks.Contract.SUBJECT , task.subject.uuid );
+				value.put(EncounterTasks.Contract.ENCOUNTER, task.encounter.uuid);
+				value.put(EncounterTasks.Contract.OBSERVER , task.assigned_to.uuid);
+				value.put(EncounterTasks.Contract.STATUS , task.getStatus());
+				values.add(value);
+			}
+			return values;
+		}
+
+		@Override
+		public ContentValues[] values(Collection<EncounterTask> t) {
+			ContentValues[] values = new ContentValues[t.size()];
+			Iterator<EncounterTask> iterator =  t.iterator();
+			int index = 0;
+			while(iterator.hasNext()){
+				EncounterTask task = iterator.next();
+				ContentValues value = new ContentValues();
+				value.put(EncounterTasks.Contract.DUE_DATE , task.due_on);
+				value.put(EncounterTasks.Contract.PROCEDURE , task.procedure.uuid);
+				value.put(EncounterTasks.Contract.SUBJECT , task.subject.uuid );
+				if(task.encounter != null)
+					value.put(EncounterTasks.Contract.ENCOUNTER, task.encounter.uuid);
+				value.put(EncounterTasks.Contract.OBSERVER , task.assigned_to.uuid);
+				value.put(EncounterTasks.Contract.STATUS , task.getStatus());
+				values[index] = value;
+				index++;
+			}
+			return values;
 		}
 	};
 	
@@ -342,6 +344,7 @@ public class DispatchService extends Service{
 	
 	public static final String PKG = "application/vnd.android.package-archive";
 	public static final int PKG_MASK = 0x00000000;
+	static final AtomicInteger sNotificationCount = new AtomicInteger(0);
 	
 	// Callback we pass to the Handler Thread to execute the requests.
 	protected Handler.Callback getHandlerCallback(){
@@ -366,212 +369,384 @@ public class DispatchService extends Service{
 			 */
 			@Override
 			public boolean handleMessage(Message msg) {
-				Logf.D(TAG, "handleMessage()", String.format(
+				if(msg != null)
+					Logf.D(TAG, "handleMessage()", String.format(
 						"Message what: %d, arg1: %d, arg2: %d", 
 						msg.what,msg.arg1,msg.arg2));
-				try{
-				switch(msg.arg2){
-				case REQUEST:
-					Logf.I(TAG, "handleMessage(Message)", "Got a REQUEST");
-					HttpUriRequest request = null;
-					HttpResponse httpResponse = null;
-					String responseString = null;
-					HttpClient client = new DefaultHttpClient();
-					
-					Intent intent = Intent.parseUri(msg.obj.toString(), 0);
-					String action = intent.getAction();
-					// set the request method.
-					String method = "GET";
-					if(action.contains("CREATE"))
-						method = "POST";
-					else if(action.contains("READ"))
-						method = "GET";
-					else if(action.contains("UPDATE"))
-						method = "PUT";
-					else if(action.contains("DELTE"))
-						method = "DELETE";
-
-					Logf.D(TAG, "handleMessage()", String.format("Method: %s", method));
-					
-					String root = getString(R.string.cfg_mds_core);
-					String path = (intent.getData() != null)?
-							intent.getData().getPath(): "";
-				    if (root.endsWith("/") && path.startsWith("/")){
-				    	path.replaceFirst("/", "");
-				    }
-					URI uri = URI.create(root + path);
-					Logf.D(TAG, "handleMessage()", "method: " + method+", uri: " + uri);
-					ContentValues update = new ContentValues();		
-					switch(msg.what){
-					case Uris.ENCOUNTER_DIR:
-						// TODO implement as a query from msg.data
-						break;
-					case Uris.ENCOUNTER_UUID:
-					case Uris.ENCOUNTER_ITEM:
-						//TODO Allows GET or POST
-						if(method.equals("GET"))
-							request = new HttpGet(uri);
-						else if(method.equals("POST")){
-							// TODO 
-							boolean encounterPost = MDSInterface.postProcedureToDjangoServer(intent.getData(), DispatchService.this);
-							// Send notification to notification bar
-
-							// Notification intent
-							Intent notifyIntent = new Intent();
-							notifyIntent.setClass(getApplicationContext(), EncounterList.class);
-							// Sets the Activity to start in a new, empty task
-							notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-							
-							if(encounterPost){
-								DispatchService.this.notify(R.string.upload_success,notifyIntent);
-								update.put(Encounters.Contract.UPLOAD_STATUS, QueueManager.UPLOAD_STATUS_SUCCESS);
-								DispatchService.this.getContentResolver().update(intent.getData(), update, null, null);
-							}else{
-								DispatchService.this.notify(R.string.upload_fail, notifyIntent);
-								update.put(Encounters.Contract.UPLOAD_STATUS, QueueManager.UPLOAD_STATUS_FAILURE);
-								DispatchService.this.getContentResolver().update(intent.getData(), update, null, null);
-							}
-							/*
-							responseString = String.valueOf(encounterPost);
-							Cursor c = null;
-							try{
-								c = DispatchService.this.getContentResolver().query(Uri.parse(uri.toString()), null,null,null,null);
-								if(c != null && c.moveToFirst()){
-									String uuid = c.getString(c.getColumnIndex(Encounters.Contract.UUID));
-									String subject = c.getString(c.getColumnIndex(Encounters.Contract.SUBJECT));
-									
-								}
-							} catch(Exception e){
-								
-							}
-							*/
-							//request = new HttpPost(uri);
-							
-						}
-						break;
-					case Uris.OBSERVATION_DIR:
-						// TODO implement as a query from msg.data
-						break;
-					case Uris.OBSERVATION_UUID:
-						//TODO Allows GET or POST
-						if(method.equals("GET"))
-							request = new HttpGet(uri);
-						else if(method.equals("POST")){
-							request = new HttpPost(uri);
-						}
-						break;
-					case Uris.PROCEDURE_DIR:
-						//TODO Allows GET only for updating procedures from repository
-						uri = URI.create(getString(R.string.cfg_mds_core) 
-								+ "procedure/");
-						// only allows get
-						request = new HttpGet(uri);
-						break;
-					case Uris.PROCEDURE_UUID:
-						//TODO Allows GET. This should pull raw xml
-						if(method.equals("GET"))
-							request = new HttpGet(uri);
-						break;
-					case Uris.SUBJECT_DIR:
-						// only alows GET for pulling the patient list.
-						// TODO switch over to newer methods
-						request = MDSInterface.createSubjectRequest(DispatchService.this);
-						break;
-					case Uris.SUBJECT_UUID:
-						//TODO Allows get or post
-						if(method.equals("GET"))
-							request = new HttpGet(uri);
-						else if(method.equals("POST")){
-							request = new HttpPost(uri);
-						}
-						break;
-					case Uris.PACKAGE_DIR:
-						Logf.D(TAG, "handleMessage(Message)", "PACKAGE update request");
-						uri = URI.create(DispatchService.this.getString(R.string.cfg_app_url));
-						request = new HttpGet(uri);
-						break;
-					default:
-					}	
-					// wrap it up and send it back to self as a response
-					Message rsp = Message.obtain(msg);
-					rsp.arg2 = RESPONSE;
-					if(request != null){
-						Logf.I(TAG, "handleMessage(Message)", "sending to url: " + request.getURI());
-						//TODO Reimplement the HTTPS layer
-						httpResponse = client.execute(request);
-						responseString = EntityUtils.toString(httpResponse.getEntity());
-					} else {
-						
-					}
-					rsp.obj = responseString;
-					rsp.sendToTarget();
-					break;
-					
-					
-				case RESPONSE:
-					Logf.I(TAG, "handleResponse(Message)", "Got a RESPONSE: " + msg.obj);
-					Response<?> response;
-					List<ContentValues> content = new ArrayList<ContentValues>();
-					if(msg.obj == null){
-						Logf.W(TAG, "handleResponse(Message)", "NULL RESPONSE");
-						break;
-					}
-					switch(msg.what){
-					case Uris.ENCOUNTER_DIR:
-						// TODO implement as a query from msg.data
-						break;
-					case Uris.ENCOUNTER_ITEM:
-					case Uris.ENCOUNTER_UUID:
-						Logf.D(TAG, String.valueOf(msg.obj));
-						break;
-					case Uris.OBSERVATION_DIR:
-						// TODO implement as a query from msg.data
-						break;
-					case Uris.OBSERVATION_ITEM:
-					case Uris.OBSERVATION_UUID:
-						//TODO Allows GET or POST
-						break;
-					case Uris.PROCEDURE_DIR:
-						/*
-						Response<List<Procedure>> p = procedureListHandler.fromJson(msg);
-						content = procedureListHandler.values(p);
-						for(ContentValues v: content){
-							ModelWrapper.insertOrUpdate(Procedures.CONTENT_URI, v, getContentResolver());
-						}
-						*/
-						break;
-					case Uris.PROCEDURE_ITEM:
-					case Uris.PROCEDURE_UUID:
-						//TODO Allows GET. This should pull raw xml
-						break;
-					case Uris.SUBJECT_DIR:
-						Response<List<Patient>> patientListResponse = patientListHandler.fromJson(msg);
-						content = patientListHandler.values(patientListResponse);
-						for(ContentValues v: content){
-							ModelWrapper.insertOrUpdate(Subjects.CONTENT_URI, v, getContentResolver());
-						}
-						getContentResolver().notifyChange(Subjects.CONTENT_URI, null);
-						break;
-					case Uris.SUBJECT_ITEM:
-					case Uris.SUBJECT_UUID:
-						//TODO
-						Response<Patient> patientResponse;
-						break;
-					case Uris.PACKAGE_DIR:
-						Logf.D(TAG, "handleMessage(Message)", "PACKAGE update response: " + msg.obj);
-						// This will download and install new apk
-						break;
-					default:
-					}
-					break;
-				default:
-					
+				else{
+					Logf.W(TAG, "handleMessage()", "Null message. Was it supposed to be?");
+					return true;
 				}
-
+				Bundle data = new Bundle();
+				try{
+					data.putAll(msg.getData());
 				} catch (Exception e){
 					e.printStackTrace();
 				}
-				stopSelf(msg.arg1);
+				// set up for results
+				ContentValues[] values = null;
+				int index = 0;
+				Cursor c = null;
+				
+				
+				try {
+					switch (msg.arg2) {
+					case REQUEST:
+						Logf.I(TAG, "handleMessage(Message)", "Got a REQUEST");
+						HttpUriRequest request = null;
+						HttpResponse httpResponse = null;
+						String responseString = null;
+						HttpClient client = HttpTaskFactory.CLIENT_FACTORY.produce();
+
+						Intent intent = Intent.parseUri(msg.obj.toString(), 0);
+						String action = intent.getAction();
+						// set the request method.
+						String method = "GET";
+						if (action.contains("CREATE"))
+							method = "POST";
+						else if (action.contains("READ"))
+							method = "GET";
+						else if (action.contains("UPDATE"))
+							method = "PUT";
+						else if (action.contains("DELTE"))
+							method = "DELETE";
+
+						Logf.D(TAG, "handleMessage()",
+								String.format("Method: %s", method));
+
+						String root = getString(R.string.cfg_mds_url);
+						String path = (intent.getData() != null) ? intent
+								.getData().getPath() : "";
+						String query = (intent.getData() != null) ? intent
+								.getData().getEncodedQuery() : "";
+						if (root.endsWith("/") && path.startsWith("/")) {
+							path.replaceFirst("/", "");
+						}
+						if(!TextUtils.isEmpty(query))
+							path = path + "?" + query;
+						URI uri = URI.create(root + path);
+						Logf.D(TAG, "handleMessage()", "method: " + method
+								+ ", uri: " + uri);
+						
+						// Set up for results
+						ContentValues update = new ContentValues();
+						
+						switch (msg.what) {
+						case Uris.ENCOUNTER_DIR:
+							// TODO implement as a query from msg.data
+							break;
+						case Uris.ENCOUNTER_UUID:
+						case Uris.ENCOUNTER_ITEM:
+									
+							// TODO Allows GET or POST
+							if (method.equals("GET"))
+								request = new HttpGet(uri);
+							else if (method.equals("POST")) {
+								// TODO
+								boolean encounterPost = MDSInterface2
+										.postProcedureToDjangoServer(
+												intent.getData(),
+												DispatchService.this);
+								// Send notification to notification bar
+
+								// Notification intent
+								Intent notifyIntent = new Intent(
+										DispatchService.this,
+										EncounterList.class);
+								// Sets the Activity to start in a new, empty
+								// task
+								notifyIntent
+										.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+								if (encounterPost) {
+									update.put(
+											Encounters.Contract.UPLOAD_STATUS,
+											QueueManager.UPLOAD_STATUS_SUCCESS);
+									DispatchService.this.getContentResolver()
+											.update(intent.getData(), update,
+													null, null);
+									//DispatchService.this.notify(
+									//		R.string.upload_success,
+									//		notifyIntent);
+									DispatchService.this.notifyForeground(
+											UPLOAD_RESPONSE, 
+											R.string.upload_success, 
+											notifyIntent);
+									Intent broadcast = new Intent(DispatchResponseReceiver.BROADCAST_RESPONSE);//,intent.getData());
+									Locales.updateLocale(DispatchService.this, getString(R.string.force_locale));
+									broadcast.putExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE, getString(R.string.upload_success));
+									broadcast.putExtra(RESPONSE_CODE, 200);
+									LocalBroadcastManager.getInstance(DispatchService.this.getApplicationContext()).sendBroadcast(broadcast);
+								} else {
+									update.put(
+											Encounters.Contract.UPLOAD_STATUS,
+											QueueManager.UPLOAD_STATUS_FAILURE);
+									DispatchService.this.getContentResolver()
+											.update(intent.getData(), update,
+													null, null);
+									DispatchService.this.notifyForeground(
+											UPLOAD_RESPONSE, 
+											R.string.upload_fail, 
+											notifyIntent);
+									Intent broadcast = new Intent(DispatchResponseReceiver.BROADCAST_RESPONSE);//,intent.getData());
+									Locales.updateLocale(DispatchService.this, getString(R.string.force_locale));
+									broadcast.putExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE, getString(R.string.upload_fail));
+									broadcast.putExtra(RESPONSE_CODE, 400);
+									LocalBroadcastManager.getInstance(DispatchService.this.getApplicationContext()).sendBroadcast(broadcast);
+									//DispatchService.this.notify(
+									//		R.string.upload_fail, notifyIntent);
+								}
+								/*
+								 * responseString =
+								 * String.valueOf(encounterPost); Cursor c =
+								 * null; try{ c =
+								 * DispatchService.this.getContentResolver
+								 * ().query(Uri.parse(uri.toString()),
+								 * null,null,null,null); if(c != null &&
+								 * c.moveToFirst()){ String uuid =
+								 * c.getString(c.
+								 * getColumnIndex(Encounters.Contract.UUID));
+								 * String subject =
+								 * c.getString(c.getColumnIndex(
+								 * Encounters.Contract.SUBJECT));
+								 * 
+								 * } } catch(Exception e){
+								 * 
+								 * }
+								 */
+								// request = new HttpPost(uri);
+
+							}
+							break;
+						case Uris.OBSERVATION_DIR:
+							// TODO implement as a query from msg.data
+							break;
+						case Uris.OBSERVATION_UUID:
+							// TODO Allows GET or POST
+							if (method.equals("GET"))
+								request = new HttpGet(uri);
+							else if (method.equals("POST")) {
+								request = new HttpPost(uri);
+							}
+							break;
+						case Uris.PROCEDURE_DIR:
+							// TODO Allows GET only for updating procedures from
+							// repository
+							uri = URI.create(getString(R.string.cfg_mds_core)
+									+ "/procedure/");
+							// only allows get
+							request = new HttpGet(uri);
+							break;
+						case Uris.PROCEDURE_UUID:
+							// TODO Allows GET. This should pull raw xml
+							if (method.equals("GET"))
+								request = new HttpGet(uri);
+							break;
+						case Uris.SUBJECT_DIR:
+							// only alows GET for pulling the patient list.
+							// TODO switch over to newer methods
+							request = MDSInterface
+									.createSubjectRequest(DispatchService.this);
+							break;
+						case Uris.SUBJECT_UUID:
+							// TODO Allows get or post
+							if (method.equals("GET"))
+								request = new HttpGet(uri);
+							else if (method.equals("POST")) {
+								request = new HttpPost(uri);
+							}
+							break;
+						case Uris.ENCOUNTER_TASK:
+						case Uris.ENCOUNTER_TASK_DIR:
+							if (method.equals("GET")){
+								EncounterResponseHandler handler = new EncounterResponseHandler();
+								Collection<EncounterTask> objs = Collections.emptyList();
+								try {
+									SharedPreferences preferences = PreferenceManager
+											.getDefaultSharedPreferences(DispatchService.this);
+									String username = preferences.getString(
+											Constants.PREFERENCE_EMR_USERNAME, Constants.DEFAULT_USERNAME);
+									String password = preferences.getString(
+											Constants.PREFERENCE_EMR_PASSWORD, Constants.DEFAULT_PASSWORD);
+									Response<Collection<EncounterTask>> response = MDSInterface2.apiGet(uri,username,password,handler);
+									objs = response.message;
+							        Log.i(TAG, "GET EncounterTask: " + objs.size());
+									List<EncounterTask> updates = Collections.emptyList();
+									Iterator<EncounterTask> it = objs.iterator();
+									while(it.hasNext()){
+										EncounterTask task = it.next();
+										Log.i(TAG, "due date: " + task.due_on);
+										try{
+											c = ModelWrapper.getOneByUuid(EncounterTasks.CONTENT_URI, getContentResolver(), task.uuid);
+											if(c != null && c.moveToFirst()){
+												if(c.getCount() > 1)
+													Logf.W(TAG, "CRITICAL! > 1 task exists uuid:" + task.uuid);
+												it.remove();
+												updates.add(task);
+											}
+										} catch (Exception e){
+											e.printStackTrace();
+										} finally {
+											if (c != null){
+												c.close();
+											}
+										}
+										
+									}
+
+							        Log.i(TAG, "GET EncounterTask: new=" + objs.size());
+									values = encounterTasksHandler.values(objs);
+							        Log.i(TAG, "GET EncounterTask: cv=" + values.length);
+									int inserted = getContentResolver().bulkInsert(EncounterTasks.CONTENT_URI, values);
+
+							        Log.i(TAG, "GET EncounterTask: inserted=" + inserted);
+									values = encounterTasksHandler.values(updates);
+									for(ContentValues vals:values){
+										String uuid = vals.getAsString(EncounterTasks.Contract.UUID);
+										vals.remove(EncounterTasks.Contract.UUID);
+										int updated = getContentResolver().update(Uris.withAppendedUuid(EncounterTasks.CONTENT_URI, uuid),vals,null,null);
+								        Log.i(TAG, "GET EncounterTask: updated=" + updated);
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+							break;
+						case Uris.PACKAGE_DIR:
+							Logf.D(TAG, "handleMessage(Message)",
+									"PACKAGE update request");
+							uri = URI.create(DispatchService.this
+									.getString(R.string.cfg_app_url));
+							request = new HttpGet(uri);
+							break;
+						default:
+						}
+						// wrap it up and send it back to self as a response
+						Message rsp = Message.obtain(msg);
+						rsp.arg2 = RESPONSE;
+						if (request != null) {
+							Logf.I(TAG, "handleMessage(Message)",
+									"sending to url: " + request.getURI());
+							// TODO Reimplement the HTTPS layer
+							httpResponse = client.execute(request);
+							responseString = EntityUtils.toString(httpResponse
+									.getEntity());
+						} else {
+
+						}
+						rsp.obj = responseString;
+						rsp.sendToTarget();
+						break;
+
+					case RESPONSE:
+						Logf.I(TAG, "handleResponse(Message)",
+								"Got a RESPONSE: " + msg.obj);
+						Response<?> response;
+						List<ContentValues> content = new ArrayList<ContentValues>();
+						if (msg.obj == null) {
+							Logf.W(TAG, "handleResponse(Message)",
+									"NULL RESPONSE");
+							break;
+						}
+						switch (msg.what) {
+						case Uris.ENCOUNTER_DIR:
+							// TODO implement as a query from msg.data
+							break;
+						case Uris.ENCOUNTER_ITEM:
+						case Uris.ENCOUNTER_UUID:
+							Logf.D(TAG, String.valueOf(msg.obj));
+							break;
+						case Uris.OBSERVATION_DIR:
+							// TODO implement as a query from msg.data
+							break;
+						case Uris.OBSERVATION_ITEM:
+						case Uris.OBSERVATION_UUID:
+							// TODO Allows GET or POST
+							break;
+						case Uris.PROCEDURE_DIR:
+							/*
+							 Response<List<Procedure>> p =
+							 procedureListHandler.fromJson(msg); 
+							 content = procedureListHandler.values(p); 
+							 for(ContentValues v: content){
+							 ModelWrapper.insertOrUpdate(Procedures.CONTENT_URI, v, getContentResolver()); 
+							 
+							 }
+							 */
+							break;
+						case Uris.PROCEDURE_ITEM:
+						case Uris.PROCEDURE_UUID:
+							// TODO Allows GET. This should pull raw xml
+							break;
+						case Uris.SUBJECT_DIR:
+							Response<List<Patient>> patientListResponse = patientListHandler
+									.fromJson(msg);
+							content = patientListHandler
+									.values(patientListResponse);
+
+							Logf.D(TAG, "Returned list patients: " + content.size());
+							// Validate new patients
+							ListIterator<ContentValues> it = content.listIterator();
+							c = null;
+							while(it.hasNext()){
+								ContentValues next = it.next();
+								String uuid = next.getAsString(Patients.Contract.UUID);
+								if(!TextUtils.isEmpty(uuid)){
+									try{
+										c = ModelWrapper.getOneByUuid(Patients.CONTENT_URI, getContentResolver(), uuid);
+										if(c != null && c.moveToFirst() && c.getCount() == 1){
+											it.remove();
+										}
+									} catch (Exception e){
+										e.printStackTrace();
+									} finally {
+										if (c != null){
+											c.close();
+										}
+									}
+								}
+							}
+							Logf.D(TAG, "New patients: " + content.size());
+							// insert new patients 
+							index = 0;
+							values = new ContentValues[content.size()];
+							for (ContentValues v : content) {
+								values[index] = content.get(index);
+								index++;
+							}
+							if(values != null && values.length > 0)
+								getContentResolver().bulkInsert(Subjects.CONTENT_URI, values);
+							/*
+							for (ContentValues v : content) {
+								ModelWrapper.insertOrUpdate(
+										Subjects.CONTENT_URI, v,
+										getContentResolver());
+							}
+							*/
+							// getContentResolver().notifyChange(Subjects.CONTENT_URI,
+							// null);
+							break;
+						case Uris.SUBJECT_ITEM:
+						case Uris.SUBJECT_UUID:
+							// TODO
+							Response<Patient> patientResponse;
+							break;
+						case Uris.PACKAGE_DIR:
+							Logf.D(TAG, "handleMessage(Message)",
+									"PACKAGE update response: " + msg.obj);
+							// This will download and install new apk
+							break;
+						default:
+						}
+						break;
+					default:
+
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				//stopSelf(msg.arg1);
 				return true;
 			}
 		};
@@ -587,6 +762,7 @@ public class DispatchService extends Service{
 	private Handler mHandler;
 	private boolean initialized = false;
 	private NotificationFactory mNotificationFactory;
+	private AtomicInteger numNotifications = new AtomicInteger(0);
 	
 	////////////////////////////////////////////////////////////////////////////
 	//	Begin Overridden methods
@@ -607,7 +783,7 @@ public class DispatchService extends Service{
 	    mHandler = new Handler(mServiceLooper, getHandlerCallback());
 	    if(!initialized)
 	    	initialized = checkInit();
-	    mNotificationFactory = NotificationFactory.getInstance(getApplicationContext());
+	    mNotificationFactory = NotificationFactory.getInstance(this);
 	    mNotificationFactory.setContentTitle(R.string.network_alert);
 	  }
 	
@@ -634,31 +810,48 @@ public class DispatchService extends Service{
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i(TAG, "onStartCommand()" + intent.getAction());
-	    //handleCommand(intent);
-	    // We want this service to continue running until it is explicitly
-	    // stopped, so return sticky.
-		int matchesPackage = pkgFilter.match(getContentResolver(), intent, false, TAG);
-		int matchesModel = filter.match(getContentResolver(), intent, false, TAG);
-		int what = Uris.getDescriptor(intent.getData());
-		Log.e(TAG, String.format("Message what: %d, match: %d, pkg: %d",what,matchesModel, matchesPackage));
-		
-		// msg.what <=> [REQUEST|RESPONSE] and  msg.arg1 <=> startId 
-		if(matchesModel >= 0){
-			Log.w(TAG, String.format("Obtaining message what: %d, match: %d",what,matchesModel));
-			Message msg = mHandler.obtainMessage(what, intent.toUri(Intent.URI_INTENT_SCHEME));
-			msg.arg1 = startId;
-			msg.arg2 = REQUEST;
-			mHandler.sendMessage(msg);
-		} else if(matchesPackage >= 0){
-			Log.w(TAG, String.format("Obtaining message what: %d, match: %d",what,matchesPackage));
-			Message msg = mHandler.obtainMessage(what, intent.toUri(Intent.URI_INTENT_SCHEME));
-			msg.arg1 = startId;
-			msg.arg2 = REQUEST;
-			mHandler.sendMessage(msg);
+		Log.i(TAG, "onStartCommand()" + ((intent != null)? intent.getAction(): null));
+		if (intent != null) {
+			// handleCommand(intent);
+			// We want this service to continue running until it is explicitly
+			// stopped, so return sticky.
+			int matchesPackage = pkgFilter.match(getContentResolver(), intent,
+					false, TAG);
+			int matchesModel = filter.match(getContentResolver(), intent,
+					false, TAG);
+			int what = Uris.getDescriptor(intent.getData());
+			Log.e(TAG, String.format("Message what: %d, match: %d, pkg: %d",
+					what, matchesModel, matchesPackage));
+
+			// msg.what <=> [REQUEST|RESPONSE] and msg.arg1 <=> startId
+			if (matchesModel >= 0) {
+				Log.w(TAG, String.format(
+						"Obtaining message what: %d, match: %d", what,
+						matchesModel));
+				Message msg = mHandler.obtainMessage(what,
+						intent.toUri(Intent.URI_INTENT_SCHEME));
+				msg.arg1 = startId;
+				msg.arg2 = REQUEST;
+				mHandler.sendMessage(msg);
+			} else if (matchesPackage >= 0) {
+				Log.w(TAG, String.format(
+						"Obtaining message what: %d, match: %d", what,
+						matchesPackage));
+				Message msg = mHandler.obtainMessage(what,
+						intent.toUri(Intent.URI_INTENT_SCHEME));
+				msg.arg1 = startId;
+				msg.arg2 = REQUEST;
+				mHandler.sendMessage(msg);
+			} else {
+				Log.e(TAG, String.format(
+						"Unrecognized message. what: %d, match: %d", what,
+						matchesPackage));
+				//stopSelf(startId);
+			}
+					
 		} else {
-			Log.e(TAG, String.format("Unrecognized message. what: %d, match: %d",what,matchesPackage));
-			stopSelf(startId);
+			Log.w(TAG, "onStartCommand(): Null intent. Are we resuming?");
+			//stopSelf(startId);
 		}
 		mStartMode = START_STICKY;
 	    return START_STICKY;
@@ -667,7 +860,30 @@ public class DispatchService extends Service{
 	@Override
 	public void onDestroy(){
 		Logf.D(TAG, "onDestroy()", "...finishing");
+		try{
+			mNotificationFactory.cancelAll();
+		} catch(Exception e){
+			e.printStackTrace();
+		}
 		super.onDestroy();
+	}
+	
+	@Override
+	public boolean stopService(Intent intent){
+		if(intent != null){
+			int notification = intent.getIntExtra(RESPONSE_NOTIFICATION_ID, 0);
+			if (notification != 0){
+				mNotificationFactory.cancel(notification);
+				if(sNotificationCount.decrementAndGet() == 0){
+					mNotificationFactory.cancelAll();
+					this.stopForeground(true);
+					return super.stopService(intent);
+				}
+			}
+		} else {
+			return super.stopService(intent);
+		} 
+		return false;
 	}
 	
 	private final boolean checkInit(){
@@ -755,8 +971,28 @@ public class DispatchService extends Service{
 		        authScope, creds);
 	}
 	
+	protected final void notifyForeground(int id, int resID, Intent notifyIntent){
+		// Pending intent used to launch the notification intent 
+		PendingIntent actionIntent =
+		        PendingIntent.getActivity(
+		        getBaseContext(),
+		        0,
+		        notifyIntent,
+		        PendingIntent.FLAG_UPDATE_CURRENT
+		);
+		// Always force the locale before we send the notification
+		Locales.updateLocale(getBaseContext(), getString(R.string.force_locale));
+		Notification notification = mNotificationFactory
+				.setContentIntent(actionIntent)
+				.setContentText(resID)
+				.setNumber(numNotifications.incrementAndGet())
+				.build();
+		sNotificationCount.incrementAndGet();
+		startForeground(id, notification);
+	}
+	
 	protected final void notify(int resID, Intent notifyIntent){
-		
+		Log.d(TAG, "notify(...) " + resID +", " + notifyIntent.toUri(Intent.URI_INTENT_SCHEME));
 		// Pending intent used to launch the notification intent 
 		PendingIntent actionIntent =
 		        PendingIntent.getActivity(
