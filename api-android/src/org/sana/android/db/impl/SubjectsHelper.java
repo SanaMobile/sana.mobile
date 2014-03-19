@@ -93,7 +93,15 @@ public class SubjectsHelper extends TableHelper<Subject>{
 		+ Contract.IMAGE 		+ " TEXT,"
 		+ Contract.STATE 		+ " INTEGER DEFAULT '-1',"
 		+ Contract.DOB 			+ " DATE, "
-		+ Contract.LOCATION		+ " TEXT"
+		+ Contract.LOCATION		+ " TEXT,"
+		+ Contract.ADDRESS_ONE + " TEXT,"
+		+ Contract.ADDRESS_TWO + " TEXT,"
+		+ Contract.ADDRESS_THREE + " TEXT,"
+		+ Contract.ADDRESS_FOUR + " TEXT,"
+		+ Contract.CONTACT_ONE + " TEXT,"
+		+ Contract.CONTACT_TWO + " TEXT,"
+		+ Contract.CONTACT_THREE + " TEXT,"
+		+ Contract.CONTACT_FOUR + " TEXT"
         + ");";
 		
 	}
@@ -104,7 +112,12 @@ public class SubjectsHelper extends TableHelper<Subject>{
 	@Override
 	public String onUpgrade(int oldVersion, int newVersion) {
 		Log.i(TAG, "onUpgrade()");
-		return null;
+		String sql = null;
+		if(newVersion > oldVersion && oldVersion <= 3){
+			sql = "DROP TABLE " + getTable() +";";
+			sql += onCreate();
+		}
+		return sql;
 	}
 	
 }
