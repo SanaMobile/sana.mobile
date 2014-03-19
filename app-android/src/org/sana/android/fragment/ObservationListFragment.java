@@ -29,6 +29,7 @@ package org.sana.android.fragment;
 
 import org.sana.R;
 import org.sana.android.content.Intents;
+import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.provider.Observations;
 
@@ -44,9 +45,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -89,8 +92,8 @@ LoaderManager.LoaderCallbacks<Cursor>
 		public void bindView(View view, Context context, Cursor cursor) {
 
 			String value = cursor.getString(cursor.getColumnIndex(Observations.Contract.VALUE));
-			String id = cursor.getString(cursor.getColumnIndex(Observations.Contract.VALUE));
-			String description = cursor.getString(cursor.getColumnIndex(Observations.Contract.VALUE));
+			String id = cursor.getString(cursor.getColumnIndex(Observations.Contract.ID));
+			String description = cursor.getString(cursor.getColumnIndex(Observations.Contract.CONCEPT));
 			// question id
 			TextView question = (TextView) view.findViewById(R.id.text_question_id_value);
 			question.setText(id);
@@ -106,12 +109,12 @@ LoaderManager.LoaderCallbacks<Cursor>
 			if(description.compareToIgnoreCase(("SX SITE IMAGE")) == 0){
 				txt.setVisibility(View.GONE);
 				img.setVisibility(View.VISIBLE);
-				String[] images = value.split(",");
+				String[] images = (!TextUtils.isEmpty(value))? value.split(","): new String[0];
 				// Only show the first one here
 				if(images.length >= 1){
 					Uri image = ContentUris.withAppendedId(ImageSQLFormat.CONTENT_URI, Long.valueOf(images[0]));
 					img.setImageURI(image);
-					img.setTag(image.toString());
+					img.setTag(image);
 				}
 			} else {
 				img.setVisibility(View.GONE);
@@ -195,8 +198,22 @@ LoaderManager.LoaderCallbacks<Cursor>
 
 	public String[] getSelectionArgs(){
 		String[] selectionArgs = (mEncounter != null)? 
-				new String[]{ mEncounter.toString() } : null;
+				new String[]{ ModelWrapper.getUuid(mEncounter, getActivity().getContentResolver()) } : null;
 				return selectionArgs;
+	}
+
+	
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		// Assume it is complex if the thumbnail is visible for now
+		View thumb = v.findViewById(R.id.image_response_value);
+		if(thumb != null && thumb.getVisibility() != View.GONE){
+			Uri uri = (Uri) thumb.getTag();
+			String type = getActivity().getContentResolver().getType(uri);
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(uri, "image/*");
+			startActivity(intent);
+		}
 	}
 
 }
