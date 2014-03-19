@@ -43,6 +43,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.sana.net.Response;
+import org.sana.net.http.HttpTaskFactory;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -110,7 +111,7 @@ public class HttpTask<T> extends AsyncTask<HttpUriRequest,Integer, Response<T>>{
 	@Override
 	protected Response<T> doInBackground(HttpUriRequest... params) {
 		HttpUriRequest method = params[0];
-		HttpClient client = new DefaultHttpClient();
+		HttpClient client = HttpTaskFactory.CLIENT_FACTORY.produce();
 		HttpParams httpParams = client.getParams();
 		if(timeout > 0){
 			HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
@@ -127,7 +128,7 @@ public class HttpTask<T> extends AsyncTask<HttpUriRequest,Integer, Response<T>>{
 			Log.d(TAG, String.format("Response. \n...code: %d\n...chars: %d",
 					httpResponse.getStatusLine().getStatusCode(),
 					responseString.length()));
-			//Log.d(TAG, "Received from MDS:" + responseString);
+			Log.d(TAG, "Received from MDS:" + responseString);
 			if(message != null){
 				message.obj = responseString;
 				message.sendToTarget();
