@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="debug_user">admin</string>
-    <string name="debug_password">Sanamobile1</string>
-    <string name="debug_credentials">true</string> 
+    <string name="debug_user">test_sa</string>
+    <string name="debug_password">t3st</string>
+    <!-- set to false to prevent default user on login screen -->
+    <string name="debug_credentials">false</string>
+    <bool name="debug">false</bool>
 </resources>

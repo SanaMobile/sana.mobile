@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Language: EN -->
 <!-- Docs say that all the identifiers should be in lower case -->
-
 <resources>
-
     <string name="hello">Hello</string>
     <string name="app_name">Sana</string>
     
@@ -20,6 +19,10 @@
     <string name="title_resource_settings">Sana Resource Settings</string>
 	<string name="title_upload_service">Sana Upload Service</string>
 	<string name="title_patient_list">Patient List</string>
+	<string name="title_synchronize">Sync</string>
+	<string name="title_synch_subjects">Sync Patients</string>
+	<string name="title_synch_tasks">Sync Tasks</string>
+	<string name="title_register">Register</string>
 	
 	<!-- Main menu buttons  -->
     <string name="button_main_education">Education Resources</string>
@@ -62,6 +65,7 @@
     <string name="general_observation_list">Observation List</string>
     <string name="general_date_completed">Date Completed</string>
     <string name="general_synchronized">Synchronized</string>
+    <string name="general_upload_in_progress">Upload in progress</string>
     
 	
 	<!--  Dialog Strings -->
@@ -213,5 +217,10 @@
     <string name="authentication_username">Username</string>
     <string name="authentication_password">Password</string>
     <string name="authentication_login">Log-In</string>
+    <string name="authentication_logins_remaining">Remaining</string>
     <string name="msg_login_failed">Login attempt failed!</string>
+    
+    <!-- Encounter Task Strings -->
+    <string name="assigned">Assigned</string>
+    <string name="completed">Completed</string>
 </resources>

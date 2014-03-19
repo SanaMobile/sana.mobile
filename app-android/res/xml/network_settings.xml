@@ -10,7 +10,7 @@
             android:key="s_secure"
             android:title="@string/setting_secure"
             android:summary="@string/setting_secure_summary"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
         <EditTextPreference
             android:key="s_packet_init_size"
             android:title="@string/setting_pkt_size"

@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Resource values used for connecting to the dispatch server -->
-    <integer name="port_mds">80</integer>
+    <integer name="port_mds">443</integer>
     <string name="scheme_mds">https</string>
-    <string name="host_mds">dev.sana.csail.mit.edu</string>
+    <string name="host_mds">project1.sana.csail.mit.edu</string>
+    
     <!-- Path values. Should all end with a trailing slash -->
+    <!-- production path  -->
     <string name="path_root">mds/</string>
+    
+    <!-- training path -->
+    <string name="path_root_training">test/mds/</string>
+    
+    <!-- TODO Remove these since we are using the iri-to-uri approach -->
     <string name="path_session">core/session/</string>
     <string name="path_encounter"></string>
     <string name="path_notification"></string>
     <string name="path_observation"></string>
     <string name="path_procedure"></string>
     <string name="path_subject">core/subject/</string>
-    <string name="path_subject_sync">json/patient/list/</string><string name="path_sch_encounter">sch/encounter/</string>
-    
+    <string name="path_subject_sync">json/patient/list/</string>
+    <string name="path_sch_encounter">sch/encounter/</string>
+    <string name="path_sp_submit">json/procedure/submit/</string>
     <string name="path_etasks">tasks/encounter/</string>
     <string name="path_otasks">tasks/observation/</string>
 </resources>

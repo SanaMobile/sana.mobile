@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Language: HT -->
 <!-- Docs say that all the identifiers should be in lower case -->
-
 <resources>
-
     <string name="hello">Hello</string>
     <string name="app_name">Sana</string>
     
@@ -20,6 +19,10 @@
     <string name="title_resource_settings">Resous Anviwònman</string>
 	<string name="title_upload_service">Voye sèvis</string>
 	<string name="title_patient_list">Pasyan lis</string>
+	<string name="title_synchronize">Senkro</string>
+	<string name="title_synch_subjects">Senkro Pasyan</string>
+	<string name="title_synch_tasks">Sync Vizit</string>
+	<string name="title_register">Enskri</string>
 	
 	<!-- Main menu buttons  -->
     <string name="button_main_education">Edikasyon resous</string>
@@ -62,6 +65,7 @@
     <string name="general_observation_list">Lis Repons</string>
     <string name="general_date_completed">Konplete sou</string>
     <string name="general_synchronized">Senkronize</string>
+    <string name="general_upload_in_progress">Voye nan pwogrè</string>
 	
 	<!--  Dialog Strings -->
 	<string name="dialog_already_uploaded">Sa a te pwosedi deja te Uploaded.</string>
@@ -212,5 +216,11 @@
     <string name="authentication_username">Itilizatè</string>
     <string name="authentication_password">Modpas</string>
     <string name="authentication_login">Konekte</string>
+    <string name="authentication_logins_remaining">rete</string>
     <string name="msg_login_failed">Tantativ Login echwe!</string>
+    
+    
+    <!-- Encounter Task Strings -->
+    <string name="assigned">Plase</string>
+    <string name="completed">Konplete</string>
 </resources>
