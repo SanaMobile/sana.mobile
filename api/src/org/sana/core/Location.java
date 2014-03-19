@@ -29,14 +29,17 @@ package org.sana.core;
 
 import org.sana.api.ILocation;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * @author Sana Development
  *
  */
 public class Location extends Model implements ILocation {
-
+	@Expose
 	public String name;
-	
+	@Expose
+	public int code;
 	/* (non-Javadoc)
 	 * @see org.sana.api.ILocation#getName()
 	 */

@@ -13,10 +13,11 @@ import org.sana.api.IProcedure;
  *
  */
 public class Procedure extends Model implements IProcedure{
-	private String author;
-	private String version;
-    private String description;
-	private String src;
+	public String author;
+	public String version;
+	public String description;
+    public String src;
+	public String title;
 	
 	/** Default Constructor */
 	public Procedure(){}
@@ -90,6 +91,14 @@ public class Procedure extends Model implements IProcedure{
 	 */
 	public void setSrc(String src) {
 		this.src = src;
+	}
+	
+	public String getTitle(){
+		return title;
+	}
+	
+	public void setTitle(String title){
+		this.title = title;
 	}
 	
 }

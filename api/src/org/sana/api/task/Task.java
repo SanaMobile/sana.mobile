@@ -31,6 +31,7 @@ import java.util.Date;
 
 import org.sana.api.IObserver;
 import org.sana.core.Model;
+import org.sana.core.Observer;
 
 /**
  * @author Sana Development
@@ -38,9 +39,13 @@ import org.sana.core.Model;
  */
 public abstract class Task extends Model implements ITask{
 
-	public Date dueDate;
-	public IObserver observer;
-	public String status;
+	public Date dueDate = null;
+	public String due_on;
+	public Observer assigned_to;
+	public static class Status{
+		public String current;
+	}
+	public Status status;
 	
 	/* (non-Javadoc)
 	 * @see org.sana.api.task.ITask#getDueDate()
@@ -55,7 +60,7 @@ public abstract class Task extends Model implements ITask{
 	 */
 	@Override
 	public IObserver getObserver() {
-		return observer;
+		return assigned_to;
 	}
 	
 	/* (non-Javadoc)
@@ -63,6 +68,6 @@ public abstract class Task extends Model implements ITask{
 	 */
 	@Override
 	public String getStatus() {
-		return status;
+		return status.current;
 	}
 }

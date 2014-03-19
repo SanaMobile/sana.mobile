@@ -5,6 +5,8 @@ package org.sana.core;
 
 import org.sana.api.IConcept;
 
+import com.google.gson.annotations.Expose;
+
 
 /**
  * A functional unit of meaning. All data must be annotated by at least one
@@ -21,25 +23,32 @@ public class Concept extends Model implements IConcept{
 	 * A machine friendly short name or identifier. <code>name</code> values
 	 * should be formatted as [A-Z](_?[A-Z])*? 
 	 */
+	@Expose
 	public String name;
 	
 	/** Human-readable name */
+	@Expose
 	public String display_name;
 
 	/** Longer human-readable, narrative description. */
+	@Expose
 	public String description;
 	
 	/** XML compliant data type. @see org.sana.Datatype */
+	@Expose
 	public String datatype;
 	
 	/** Mime type. Default should be text/plain.  */
+	@Expose
 	public String mediatype;
 	
 	/** A validation function string to enforce on associated values
 	 *  @see Observation#setValue(Object)
 	 */
-	public String constraints;
-	
+	@Expose
+	public String constraint;
+	@Expose
+	public String conceptclass;
 	/** Default Constructor */
 	public Concept(){}
 	
@@ -126,14 +135,14 @@ public class Concept extends Model implements IConcept{
 	 * @return the constraint
 	 */
 	public String getConstraints() {
-		return constraints;
+		return constraint;
 	}
 
 	/**
 	 * @param constraint the constraint to set
 	 */
 	public void setConstraints(String constraints) {
-		this.constraints = constraints;
+		this.constraint = constraints;
 	}
 
 

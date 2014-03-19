@@ -50,7 +50,7 @@ public class EncounterTask extends Task implements IEncounterTask{
 	 * @see org.sana.api.task.IEncounterTask#getEncounter()
 	 */
 	@Override
-	public IEncounter getEncounter() {
+	public Encounter getEncounter() {
 		return encounter;
 	}
 
@@ -59,7 +59,7 @@ public class EncounterTask extends Task implements IEncounterTask{
 	 * @see org.sana.api.task.IEncounterTask#getProcedure()
 	 */
 	@Override
-	public IProcedure getProcedure() {
+	public Procedure getProcedure() {
 		return procedure;
 	}
 
@@ -68,7 +68,7 @@ public class EncounterTask extends Task implements IEncounterTask{
 	 * @see org.sana.api.task.IEncounterTask#getSubject()
 	 */
 	@Override
-	public ISubject getSubject() {
+	public Subject getSubject() {
 		return subject;
 	}
 
