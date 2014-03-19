@@ -103,6 +103,9 @@ public class PatientsList extends FragmentActivity implements
             case R.id.menu_new_patient:
                 registerNewPatient();
                 return true;
+            case R.id.menu_sync_patients:
+            	mFragmentPatientList.sync(this, Patients.CONTENT_URI);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
