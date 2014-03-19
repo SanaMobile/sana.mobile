@@ -37,6 +37,7 @@ import org.sana.android.content.core.ObserverWrapper;
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.net.HttpTask;
 import org.sana.android.net.MDSInterface;
+import org.sana.android.net.MDSInterface2;
 import org.sana.net.MDSResult;
 import org.sana.net.Response;
 import org.sana.android.net.NetworkTaskListener;
@@ -48,9 +49,12 @@ import org.sana.util.UUIDUtil;
 
 import android.app.Service;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
@@ -126,7 +130,7 @@ public class SessionService extends Service{
 		@Override
 		public void unregisterCallback(ISessionCallback arg0)
 				throws RemoteException {
-			Log.i(TAG + ".mBinder", "unregisterCallback(): + arg0");
+			Log.i(TAG + ".mBinder", "unregisterCallback(): " + arg0);
 			if(arg0 != null) mCallbacks.unregister(arg0);
 		}
 		
@@ -138,7 +142,7 @@ public class SessionService extends Service{
 	 * 
 	 * @author Sana Development
 	 *
-	 */
+	 *
 	private class HttpSessionAuthListener implements NetworkTaskListener<MDSResult>{
 		
 		String tempKey = null;
@@ -161,7 +165,7 @@ public class SessionService extends Service{
 			}
 		}
 	}
-	
+	*/
 	private class AuthListener implements NetworkTaskListener<Response<String>>{
 		
 		String tempKey = null;
@@ -185,7 +189,7 @@ public class SessionService extends Service{
 		}
 	}
 
-	HttpSessionAuthListener mNetListener = null;
+	//HttpSessionAuthListener mNetListener = null;
 	
 	HttpTask mNetTask = null;
 	
@@ -205,9 +209,25 @@ public class SessionService extends Service{
 	
     @Override
     public void onDestroy() {
+		Log.i(TAG, "onDestroy()");
     	if(mCallbacks != null)
     		mCallbacks.kill();
     	super.onDestroy();
+    }
+    
+    @Override
+    public boolean onUnbind(Intent arg0) {
+		Log.i(TAG, "onUnbind()");
+		int connections = 0;
+		try{
+			connections = mCallbacks.beginBroadcast();
+		} finally {
+			mCallbacks.finishBroadcast();
+		}
+		if(!(connections > 0))
+			stopSelf();
+		return super.onUnbind(arg0);
+    	
     }
 	
 	/**
@@ -244,11 +264,11 @@ public class SessionService extends Service{
 		if(isLocalUsername(username)){
 			try{
 				Log.d(TAG, "auth: " + username + " pass: " + password);
-				ObserverWrapper o = (ObserverWrapper) ObserverWrapper.getOneByAuth(
+				IObserver o = ObserverWrapper.getOneByAuth(
 						getContentResolver(), username, password);
 		
 				// user exists and was validated locally
-				if(o != null && o.getCount() == 1){
+				if(o != null){
 					session = o.getUuid();
 					handleSessionAuthResult(SUCCESS, tempKey, session);
 					// the user was good but password didn't match, return a fail
@@ -256,6 +276,7 @@ public class SessionService extends Service{
 					handleSessionAuthResult(FAILURE, tempKey, username);
 				}
 			} catch (Exception e){
+					e.printStackTrace();
 					Log.e(TAG, e.getMessage());
 					handleSessionAuthResult(FAILURE, tempKey, INVALID.toString());
 			}
@@ -266,6 +287,8 @@ public class SessionService extends Service{
 				session = UUIDUtil.generateObserverUUID(username).toString();
 				registerNew(username,password,session);
 				handleSessionAuthResult(SUCCESS, tempKey, username);
+		} else {
+			handleSessionAuthResult(FAILURE, tempKey, INVALID.toString());
 		}
 			
 	}
@@ -274,14 +297,21 @@ public class SessionService extends Service{
 	// Starts an async http task to POST credentials to dispatch server
 	private void openNetworkSession(String tempKey){
 		Log.d(TAG, "Opening network session: " + tempKey);
+		if(!connected()){
+			Log.d(TAG, "openNetworkSession()..connected = false");
+			openLocalSession(tempKey);
+		} else {
 		try {
+			Log.d(TAG, "openNetworkSession()..connected = true");
 			String[] credentials = tempSessions.get(tempKey);
-			HttpPost post = MDSInterface.createSessionRequest(this, 
+			HttpPost post = MDSInterface2.createSessionRequest(this, 
 					credentials[0], credentials[1]);
+			Log.i(TAG, "openNetworkSession(...) " + post.getURI());
 			new HttpTask<String>(new AuthListener(tempKey)).execute(post);
 		} catch(Exception e){
 			Log.e(TAG, e.getMessage());
 			e.printStackTrace();
+		}
 		}
 	}
 	
@@ -353,8 +383,9 @@ public class SessionService extends Service{
 			break;
 		case INDETERMINATE:
 			openSession(STATE_LOCAL, tempKey);
-		default:
 			break;
+		default:
+			throw new IllegalArgumentException();
 		}
 	}
 
@@ -386,8 +417,11 @@ public class SessionService extends Service{
 		Cursor c = null;
 		boolean isValid = false;
 		try{
-			c = ModelWrapper.getOneByField(Observers.CONTENT_URI,
-				getContentResolver(),Observers.Contract.USERNAME,username);
+			c = getContentResolver().query(Observers.CONTENT_URI, 
+					new String[]{ Observers.Contract._ID }, 
+					Observers.Contract.USERNAME + " = ?", 
+					new String[]{ username }, null);
+			//(Observers.CONTENT_URI, getContentResolver(),Observers.Contract.USERNAME,username);
 			if(c != null && c.moveToFirst() && c.getCount() == 1)
 				isValid = true;
 		} finally {
@@ -461,4 +495,13 @@ public class SessionService extends Service{
 		return uri;
 	}
 	
+	
+	protected boolean connected(){
+		ConnectivityManager cm = (ConnectivityManager) 
+		        getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+		return(activeNetwork != null &&
+		                      activeNetwork.isConnectedOrConnecting());
+		
+	}
 }
