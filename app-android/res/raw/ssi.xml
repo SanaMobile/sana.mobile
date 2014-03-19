@@ -1,0 +1,194 @@
+<Procedure title="Swivi Operasyon" 
+    author="Alexi Matousek"
+    uuid="5299055a-c5e6-47e7-b649-dc17dac6019b" 
+    version="1.2" >
+    <!-- Instruction screen 1 -->
+    <Page>
+       <Element id="i1" type="TEXT" 
+        concept="INSTRUCTION 1"
+        question="Sivouple, mache kay malad sa, e pose'l kesyon yo ki swivan.\n\nSi w pa ka rive kay malad la, w met pose'l kesyon yo nan yon lot kote."
+        />
+    </Page>
+    <Page>
+        <Element id="1" type="RADIO" 
+        concept="LOCATION PATIENT HOUSE"
+        question="Eske w kay malad la kounye-a?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <ShowIf>
+			<Criteria type="EQUALS" id="1" value="wi"/>
+        </ShowIf>
+        <Element id="1a" type="HIDDEN" 
+        concept="LOCATION GPS"
+        question="GPS"
+        action="intent://org.sana.provider/observation/1#Intent;scheme=content;action=org.sana.android.intent.ACTION_RECORD_GPS;end"
+        />
+    </Page>
+    <!--  Instruction screen 2 -->
+    <Page>
+       <Element id="instruction2" type="TEXT" 
+        concept="INSTRUCTION 2"
+        question="Si malad la gen:\n\nlafyev\n doule ki ogmante\n anflamasyon\n likid ki vide\n pu\n baye\n\nsa siyifi li ka gen yon enfeksyon. Fok li fe w konnen pou w ka vin evalye li anko byen vit"
+        />
+    </Page>
+    <!-- Will trigger automatic GPS if 1 positive -->
+    <!-- 
+    Do something here
+    -->
+    <Page>
+        <Element id="2" type="RADIO" 
+        concept="FEVER POST SX"
+        question="Depi w soti l’opital la, eske w gen lafyèv?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <Element id="3" type="RADIO" 
+        concept="SX SITE PAIN"
+        question="Kote yo te opere w la, eske w santi doule ladan ki ogmante?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <Element id="4" type="RADIO" 
+        concept="SX SITE REDNESS"
+        question="Kote yo te opere w la, eske li vin pi wouj?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <Element id="5" type="RADIO" 
+        concept="SX SITE SWELLING"
+        question="Kote yo te opere w la, eske li gen anfle ki ogmante?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <Element id="6" type="RADIO"
+        concept="FIRMNESS SX SITE"
+        question="Kote yo te opere w la, eske li vin pi di?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    
+    <Page>
+        <Element id="7" type="RADIO" 
+        concept="SX SITE DRAINAGE"
+        question="Kote yo te opere w la, eske li gen likid ki vide?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    
+    <!-- Begin follow ups to question 7 if positive response -->
+    <Page>
+        <ShowIf>
+			<Criteria type="EQUALS" id="7" value="wi"/>
+        </ShowIf>
+        <Element id="7a" type="RADIO" 
+        concept="SX SITE DRAINAGE VISCOSITY"
+        question="Eske likid la epè, w eske li tankou dlo-a?"
+        choices="epè|tankou dlo-a"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <ShowIf>
+				<Criteria type="EQUALS" id="7" value="wi"/>
+        </ShowIf>
+        <Element id="7b" type="RADIO" 
+        concept="SX SITE DRAINAGE COLOR"
+        question="Ki koulè likid la?"
+        choices="Mawon, jòn, vèt w blan|wouj, woz, w klè"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <ShowIf>
+				<Criteria type="EQUALS" id="7" value="wi"/>
+        </ShowIf>
+        <Element id="7c" type="RADIO" 
+        concept="SX SITE DRAINAGE ODOR"
+        question="Eske likid la santi move?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    <!-- End follow ups to question 7 -->
+    
+    <Page>
+        <Element id="8" type="RADIO" 
+        concept="SX SITE OPEN SPONTANEOUS"
+        question=" Kote yo te opere w la, eske li ouvri pi laj?"
+        choices="wi|non"
+        required="true"
+        />
+    </Page>
+    <!-- May want to do 9 as an info screen then picture -->
+    <Page>
+        <Element id="9" type="PICTURE" 
+        concept="SX SITE IMAGE"
+        question="Souple, pran foto-a. Asire foto-a a gen tout koupe ladan li.  Asire, si li gen likid ki vide, w mete likid sa nan foto-a, ak tach sou pansman-an, si li genyen."
+        required="true"
+        />
+    </Page>  
+    <Page>
+        <Element id="10" type="RADIO" 
+        concept="SX SITE INFECTION SUSPECTED"
+        question="Eske w panse malad la gen enfeksyon?"
+        choices="wi|non|pa konnen"
+        required="true"
+        />
+    </Page>
+    <!-- Referral Page -->
+    <!--  
+    	Referral logic   
+		Question	Item		High Risk		Low Risk		Other
+		1			Location	-				-	
+		2			Fever		yes				no	
+		3			Pain		yes				no	
+		4			Redness		yes				no	
+		5			Swelling	yes				no	
+		6			Hardness	yes				no	
+		7			Drainage	yes				no	
+		8			thick/thin	thick			watery	
+		9			Color		brown, yellow,  red, pink,clear
+								  green, white		
+		10			smell		yes				no	
+		11			opening		yes				no
+		12			picture		-				-
+		13			CHW			yes				no				unsure
+    -->
+    <Page>
+        <ShowIf>
+    		<or>
+				<Criteria type="EQUALS" id="2" value="wi"/>
+				<Criteria type="EQUALS" id="3" value="wi"/>
+				<Criteria type="EQUALS" id="4" value="wi"/>
+				<Criteria type="EQUALS" id="5" value="wi"/>
+    			<Criteria type="EQUALS" id="6" value="wi"/>
+    			<Criteria type="EQUALS" id="7" value="wi"/>
+    			<Criteria type="EQUALS" id="7a" value="epè"/>
+    			<Criteria type="EQUALS" id="7b" value="Mawon, jòn, vèt w blan"/>
+    			<Criteria type="EQUALS" id="7c" value="wi"/>
+    			<Criteria type="EQUALS" id="8" value="wi"/>
+    			<Criteria type="EQUALS" id="10" value="wi"/>
+    		</or>
+        </ShowIf>
+        <Element id="i3" type="TEXT" 
+        concept="REFER INFECTION RISK"
+        question="Respons yo w te bay siyifi malad la ka gen yon enfeksyon. Fok li ale nan lopital pou we chirijyen an byen vit. \n\nSivouple, rele sipevize la kouye-a:\n\n"
+        action="intent:42898704#Intent;scheme=tel;action=android.intent.action.CALL;S.android.intent.extra.TITLE=rele%20sipevize%3A%20428998704;end"
+        />
+    </Page>
+    <!-- End referral page -->
+   <!-- End translate -->
+</Procedure>
