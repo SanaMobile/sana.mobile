@@ -42,9 +42,19 @@ import android.util.Log;
  *
  */
 public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
-
+	
 	public static final String TAG = DatabaseOpenHelperImpl.class
 			.getSimpleName();
+	
+	private static DatabaseOpenHelperImpl instance = null;
+	
+	public static synchronized DatabaseOpenHelperImpl getInstance(Context context, String name, int version){
+
+        if (instance == null)
+            instance = new DatabaseOpenHelperImpl(context, name, version);
+        return instance;
+    }
+	
 	/**
 	 * @param context
 	 * @param name
@@ -72,6 +82,7 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
 				ProceduresHelper.getInstance().onCreate(),
 				SubjectsHelper.getInstance().onCreate()
 		};
+		//db.acquireReference();
 		for(String sql:create){
 			db.execSQL(sql);
 		}
@@ -79,6 +90,7 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
         ImageProvider.onCreateDatabase(db);
         SoundProvider.onCreateDatabase(db);
         BinaryProvider.onCreateDatabase(db);
+		//db.releaseReference();
 	}
 	/* (non-Javadoc)
 	 * @see android.database.sqlite.SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
@@ -100,7 +112,7 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
 				ProceduresHelper.getInstance(),
 				SubjectsHelper.getInstance() };
 
-			db.acquireReference();
+			
 			for(TableHelper<?> helper:helpers){
 				if(oldVersion <= 2){
 					db.execSQL("DROP TABLE " + helper.getTable() + " IF EXISTS;");
@@ -112,8 +124,6 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper{
 						db.execSQL(helper.onUpgrade(oldVersion, newVersion));
 				}
 			}
-			db.releaseReference();
-			
 		}
 	}
 }
