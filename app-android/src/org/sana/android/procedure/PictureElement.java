@@ -8,6 +8,7 @@ import org.sana.android.ImagePreviewDialog;
 import org.sana.android.ScalingImageAdapter;
 import org.sana.android.db.SanaDB;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
+import org.sana.util.UUIDUtil;
 import org.w3c.dom.Node;
 
 import android.app.Activity;
@@ -66,10 +67,18 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
     protected View createView(Context c) {
         imageGrid = new GridView(c);
         String procedureId = 
-        	getProcedure().getInstanceUri().getPathSegments().get(1);
-        String whereStr = ImageSQLFormat.ENCOUNTER_ID + " = ? AND "
+        	getProcedure().getInstanceUri().getLastPathSegment();
+        Log.w(TAG, "PictureELement: Encounter id " + procedureId);
+        String whereStr;
+        if(!UUIDUtil.isValid(procedureId))
+        	whereStr = ImageSQLFormat.ENCOUNTER_ID + " = ? AND "
 				+ ImageSQLFormat.ELEMENT_ID + " = ? AND "
 				+ ImageSQLFormat.FILE_VALID + " = ?";
+        else
+        	whereStr = ImageSQLFormat.ENCOUNTER_ID + " = '?' AND "
+				+ ImageSQLFormat.ELEMENT_ID + " = ? AND "
+				+ ImageSQLFormat.FILE_VALID + " = ?";
+        	
 		Cursor cursor = c.getContentResolver().query(
 				SanaDB.ImageSQLFormat.CONTENT_URI,
 				new String[] { ImageSQLFormat._ID }, whereStr,
@@ -130,7 +139,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
 	 public void onClick(View v) {
 		 if (v == cameraButton) {
 			 String procedureId = 
-				 getProcedure().getInstanceUri().getPathSegments().get(1); //which procedure its part of
+				 getProcedure().getInstanceUri().getLastPathSegment(); //which procedure its part of
 			 String[] params = {procedureId, id, String.valueOf(imageAdapter.getCount() + 1)};
 		
 			 imageCaptureIntent = new Intent(getContext(), ((Activity) getContext()).getClass());
