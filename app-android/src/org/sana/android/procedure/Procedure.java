@@ -2,6 +2,7 @@ package org.sana.android.procedure;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -574,23 +575,23 @@ public class Procedure {
             
         }
         
-        String guid = "";
-        Node guidNode = node.getAttributes().getNamedItem("guid");
+        String uuid = "";
+        Node guidNode = node.getAttributes().getNamedItem("uuid");
         if(guidNode != null) {
-        	guid = guidNode.getNodeValue();
-            Log.i(TAG, "Unique Id of procedure: " + guid);
+        	uuid = guidNode.getNodeValue();
+            Log.i(TAG, "Unique Id of procedure: " + uuid);
             
         }
         
         String version = "";
-        Node n = node.getAttributes().getNamedItem("guid");
+        Node n = node.getAttributes().getNamedItem("version");
         if(n != null) {
         	version = n.getNodeValue();
             Log.i(TAG, "Version: " + version);
             
         }
         
-        Procedure procedure = new Procedure(title, author, guid, pages, elts);
+        Procedure procedure = new Procedure(title, author, uuid, pages, elts);
         procedure.version = version;
         return procedure;
     }
@@ -608,7 +609,10 @@ public class Procedure {
     public static Procedure fromRawResource(Context c, int id) throws 
     	IOException, ParserConfigurationException, SAXException, Exception 
     {
-        return fromXML(new InputSource(c.getResources().openRawResource(id)));       
+    	InputStream is = null;
+    	is = c.getResources().openRawResource(id);
+        Procedure p =  fromXML(new InputSource(is)); 
+        return p;
     }
     
     /**
