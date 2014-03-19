@@ -27,10 +27,15 @@
  */
 package org.sana.android.db.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.EncounterTasks.Contract;
+import org.sana.api.IModel;
 import org.sana.api.task.EncounterTask;
 import org.sana.api.task.Status;
 
@@ -43,7 +48,9 @@ import android.util.Log;
  *
  */
 public class EncounterTasksHelper extends TableHelper<EncounterTask>{
-	
+
+    static final SimpleDateFormat sdf = new SimpleDateFormat(IModel.DATE_FORMAT, 
+			Locale.US);
 	public static final String SELECT_COMPOUND = "SELECT"
 		+ "encountertask._id AS encountertask_id,"
 		+ "encountertask.uuid AS encountertask_uuid,"
@@ -78,6 +85,15 @@ public class EncounterTasksHelper extends TableHelper<EncounterTask>{
         vals.put(Contract.ENCOUNTER, "");
         vals.put( Contract.PROCEDURE, "");
         vals.put( Contract.SUBJECT, "");
+        String dueStr = values.getAsString(Contract.DUE_DATE);
+		Date dueDate = new Date();
+		try {
+			dueDate = (dueStr != null)? sdf.parse(dueStr): new Date();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        vals.put( Contract.DUE_DATE, sdf.format(dueDate));
         vals.putAll(values);
 		return super.onInsert(vals);
 	}
@@ -93,6 +109,15 @@ public class EncounterTasksHelper extends TableHelper<EncounterTask>{
         vals.put(Contract.SUBJECT, "");
         vals.put( Contract.PROCEDURE, "");
         vals.put(Contract.ENCOUNTER, "");
+        String dueStr = values.getAsString(Contract.DUE_DATE);
+		Date dueDate = new Date();
+		try {
+			dueDate = (dueStr != null)? sdf.parse(dueStr): new Date();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        vals.put( Contract.DUE_DATE, sdf.format(dueDate));
 		return super.onUpdate(uri, vals);
 	}
 
