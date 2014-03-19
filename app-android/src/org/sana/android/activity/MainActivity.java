@@ -1,17 +1,21 @@
 package org.sana.android.activity;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.sana.R;
 import org.sana.analytics.Runner;
 import org.sana.android.Constants;
+import org.sana.android.activity.settings.Settings;
 import org.sana.android.app.DefaultActivityRunner;
 import org.sana.android.app.Locales;
+import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
 import org.sana.android.fragment.AuthenticationDialogFragment.AuthenticationDialogListener;
 import org.sana.android.media.EducationResource;
 import org.sana.android.procedure.Procedure;
+import org.sana.android.provider.EncounterTasks;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Observers;
 import org.sana.android.provider.Patients;
@@ -23,14 +27,22 @@ import org.sana.android.service.impl.DispatchService;
 import org.sana.android.service.impl.SessionService;
 import org.sana.android.task.ResetDatabaseTask;
 import org.sana.android.util.Logf;
+import org.sana.android.util.SanaUtil;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -38,8 +50,11 @@ import android.os.RemoteException;
 import android.os.AsyncTask.Status;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -54,6 +69,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 	public static final String TAG = MainActivity.class.getSimpleName();
 	public static final String CLOSE = "org.sana.android.intent.CLOSE";
 	
+	public static final int AUTHENTICATE = 0;
 	public static final int PICK_PATIENT = 1;
 	public static final int PICK_ENCOUNTER = 2;
 	public static final int PICK_ENCOUNTER_TASK = 3;
@@ -61,6 +77,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 	public static final int RUN_PROCEDURE = 5;
 	public static final int RUN_REGISTRATION = 6;
 	public static final int VIEW_ENCOUNTER = 7;
+	public static final int SETTINGS = 8;
 	
 	private Runner<Intent,Intent> runner;
 	
@@ -83,6 +100,14 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     	Logf.I(TAG, "onActivityResult()", ((resultCode == RESULT_OK)? "OK":"CANCELED" ));
     	switch(resultCode){
     	case RESULT_CANCELED:
+
+    		switch(requestCode){
+    		case AUTHENTICATE:
+    			Logf.W(TAG, "onActivityResult()", "Authentication failure..Exiting");
+    			finish();
+    		case SETTINGS:
+    			break;
+    		}
     		data = new Intent(Intents.ACTION_CANCEL);
     		//onNext(data);
     		break;
@@ -108,10 +133,17 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     		case PICK_ENCOUNTER:
     			//intent.setAction(Intent.ACTION_VIEW)
     			//.setData(data.getData())
-    			intent.setClass(getBaseContext(), ObservationList.class)
+    			intent.setClass(this, ObservationList.class)
     			.setData(data.getData())
     			.putExtras(data);
     			startActivity(intent);
+    			break;
+    		case PICK_ENCOUNTER_TASK:
+    			Uri uri = intent.getParcelableExtra(Intents.EXTRA_PROCEDURE);
+    			intent.setAction(Intent.ACTION_VIEW)
+    			.setData(uri)
+    			.putExtras(data);
+    			startActivityForResult(intent, RUN_PROCEDURE);
     			break;
     		default:
     		}
@@ -126,19 +158,20 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     	Logf.I(TAG, "onCreate()");
-		Locales.updateLocale(getApplicationContext(), getString(R.string.force_locale));
-        setContentView(R.layout.main);
+		Locales.updateLocale(this, getString(R.string.force_locale));
+        setContentView(R.layout.main_ht);
+        // TODO rethink where to integrate this
     	checkUpdate(Uris.buildUri("package", "org.sana.provider" , ""));
-    	mWorkflow = this.getString(R.string.default_workflow);
         runner = new DefaultActivityRunner();
-    	onNext(mIntent);
     	init();
+    	onNext(null);
     }
     
     @Override
     protected void onPause() {
         super.onPause();
     	Logf.D(TAG, "onPause()");
+    	  LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(mReceiver);
     	dump();
     }
 
@@ -146,6 +179,8 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     protected void onResume() {
         super.onResume();
     	Logf.I(TAG, "onResume()");
+        IntentFilter filter = new IntentFilter(DispatchResponseReceiver.BROADCAST_RESPONSE);
+        LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(mReceiver, filter);
     	//bindSessionService();
     	// This prevents us from relaunching the login on every resume
     	dump();
@@ -174,12 +209,52 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         // kill the session service if there is nothing else bound
         if(mBound)
         	stopService(new Intent(SessionService.ACTION_START));
+        else
+        	stopService(new Intent(SessionService.ACTION_START));
     }
     
     @Override
     protected void onDestroy() {
     	Log.d(TAG, "onDestroy()");
         super.onDestroy();
+    }
+    
+    // Option menu codes
+    private static final int OPTION_EXPORT_DATABASE = 0;
+    private static final int OPTION_SETTINGS = 1;
+	private static final int OPTION_SYNC = 2;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	boolean debug = this.getResources().getBoolean(R.bool.debug);
+    	if(debug){
+    		menu.add(0, OPTION_EXPORT_DATABASE, 0, "Export Data");
+    		menu.add(0, OPTION_SETTINGS, 1, getString(R.string.menu_settings));
+    		menu.add(0, OPTION_SYNC, 2, getString(R.string.menu_sync));
+    	}
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()) {
+        case OPTION_EXPORT_DATABASE:
+        	try {
+				boolean exported = SanaUtil.exportDatabase(this,  "models.db");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+            return true;
+        case OPTION_SETTINGS:
+            Intent i = new Intent(Intent.ACTION_PICK);
+            i.setClass(this, Settings.class);
+            startActivityForResult(i, SETTINGS);
+            return true;
+        case OPTION_SYNC:
+        	//doUpdatePatientDatabase();
+			return true;
+        }    
+        return false;
     }
     
     /**
@@ -190,7 +265,6 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         intent.setClass(this, MainActivity.class);
         // pass the app state fields
         onSaveAppState(intent);
-        //startActivityForResult(intent, State.HOME.ordinal());
     }
     
     /**
@@ -199,14 +273,12 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     void showAuthenticationActivity() {
         Intent intent = new Intent();
         intent.setClass(this, AuthenticationActivity.class);
-        // pass the app state fields
-        onSaveAppState(intent);
-        //startActivityForResult(intent, State.LOGIN.ordinal());
+        startActivityForResult(intent, AUTHENTICATE);
     }
 
     protected void onNext(Intent intent){
     	if(intent == null){
-    		showAuthenticationDialog();
+    		showAuthenticationActivity();
     		return;
     	}
     	intent.putExtra(Intents.EXTRA_REQUEST, mIntent);
@@ -285,14 +357,14 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     
     void init(){
     	Logf.D(TAG, "init()");
-    	PreferenceManager.setDefaultValues(this, R.xml.settings, false);
-    	PreferenceManager.setDefaultValues(this, R.xml.network_settings,false);
-    	PreferenceManager.setDefaultValues(this, R.xml.resource_settings, false);
-    	
     	SharedPreferences preferences = 
         		PreferenceManager.getDefaultSharedPreferences(this);
-        if(!init){
-        	if(!preferences.getBoolean(Constants.DB_INIT, false)){
+    	boolean dbInit =preferences.getBoolean(Constants.DB_INIT, false);
+    	PreferenceManager.setDefaultValues(this, R.xml.settings, true);
+    	PreferenceManager.setDefaultValues(this, R.xml.network_settings,true);
+    	PreferenceManager.setDefaultValues(this, R.xml.resource_settings, true);
+    	
+        if(!dbInit){
         		Logf.D(TAG, "init()", "Initializing");
         		doClearDatabase();
             // Make sure directory structure is in place on external drive
@@ -303,11 +375,13 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         	} else {
         		Logf.D(TAG, "init()", "reloading");
         		// RELOAD Database
-        		doClearDatabase();
+        		preferences.edit().clear().commit();
+            	PreferenceManager.setDefaultValues(this, R.xml.network_settings,true);
+        		doClearDatabase(new Uri[]{ Procedures.CONTENT_URI });
+            	preferences.edit().putBoolean(Constants.DB_INIT, true).commit();
         		
         	}
-        	preferences.edit().putString("s_phone_name", getPhoneNumber()).commit();
-        }
+    	preferences.edit().putString("s_phone_name", getPhoneNumber()).commit();
     }
     
     
@@ -318,6 +392,14 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     			return;
     	mResetDatabaseTask = 
     			(ResetDatabaseTask) new ResetDatabaseTask(this,true).execute(this);
+    }
+    
+    private void doClearDatabase(Uri[] uris) {
+    	// TODO: context leak
+    	if(mResetDatabaseTask!= null && mResetDatabaseTask.getStatus() != Status.FINISHED)
+    			return;
+    	mResetDatabaseTask = 
+    			(ResetDatabaseTask) new ResetDatabaseTask(this,true,uris).execute(this);
     }
     
     private void saveLocalTaskState(Bundle outState){
@@ -395,19 +477,26 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 			startActivityForResult(intent, PICK_PATIENT);
 			break;
 		case R.id.btn_main_transfers:
-			intent = new Intent(Intent.ACTION_PICK);
+			intent = new Intent(Intent.ACTION_VIEW);
 			intent.setDataAndType(Encounters.CONTENT_URI, Encounters.CONTENT_TYPE);
 			startActivityForResult(intent, PICK_ENCOUNTER);
 			break;
-		case R.id.btn_main_register_patient:
-			intent = new Intent(Intent.ACTION_INSERT);
-			intent.setDataAndType(Patients.CONTENT_URI, Patients.CONTENT_TYPE);
-			startActivityForResult(intent, RUN_REGISTRATION);
-			break;
+		//case R.id.btn_main_register_patient:
+		//	intent = new Intent(Intent.ACTION_INSERT);
+		//	intent.setDataAndType(Patients.CONTENT_URI, Patients.CONTENT_TYPE);
+		//	startActivityForResult(intent, RUN_REGISTRATION);
+		//	break;
 		case R.id.btn_main_procedures:
 			intent = new Intent(Intent.ACTION_PICK);
 			intent.setDataAndType(Procedures.CONTENT_URI, Procedures.CONTENT_TYPE);
 			startActivityForResult(intent, PICK_PROCEDURE);
+			break;
+
+		case R.id.btn_main_tasks:
+			intent = new Intent(Intent.ACTION_PICK);
+			intent.setDataAndType(EncounterTasks.CONTENT_URI, EncounterTasks.CONTENT_TYPE);
+			onSaveAppState(intent);
+			startActivityForResult(intent, PICK_ENCOUNTER_TASK);
 			break;
 		}
 	}
@@ -441,7 +530,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 	        	case SessionService.FAILURE:
 	        		loginsRemaining--;
 	        		// TODO use a string resource
-	        		Toast.makeText(getApplicationContext(), 
+	        		Toast.makeText(MainActivity.this, 
 	        				"Username and password incorrect! Logins remaining: " 
 	        						+loginsRemaining, 
 	        				Toast.LENGTH_SHORT).show();
@@ -472,5 +561,5 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 	        }
 	    
 	    };	
-
+	    
 }
