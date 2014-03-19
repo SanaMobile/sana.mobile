@@ -31,7 +31,7 @@ public final class DBUtils {
 	public static String getWhereClauseWithUUID(Uri uri, String whereClause){
 		String select = whereClause;
 		select = concatenateWhere(whereClause,
-					BaseContract.UUID + " = " + uri.getLastPathSegment());
+					BaseContract.UUID + " = '" + uri.getLastPathSegment() +"'");
 		return select;
 	}
 	
@@ -46,7 +46,7 @@ public final class DBUtils {
 	 */
 	public static String getWhereClauseWithID(Uri uri, String whereClause){
 		return concatenateWhere(whereClause,
-					BaseColumns._ID + " = " + uri.getLastPathSegment());
+				BaseContract._ID + " = " + uri.getLastPathSegment());
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public final class DBUtils {
 					BaseColumns._ID + " LIKE " + uri.getLastPathSegment());
 			else
 				select = concatenateWhere(whereClause,
-						BaseContract.UUID + " LIKE " + uri.getLastPathSegment());
+						BaseContract.UUID + " LIKE '" + uri.getLastPathSegment() +"'");
 		}
 		return select;
 	}
@@ -108,8 +108,6 @@ public final class DBUtils {
 	public static String[] appendSelectionArgs(String[] originalValues, 
 			String[] newValues)
 	{
-		// TODO Replace with DatabaseUtilsCompat if/when supported by 
-		// ActionBarSherlock
 		int l1 = (originalValues != null)? originalValues.length: 0;
 		int l2 = (newValues != null)? newValues.length: 0;
 		String[] result = new String[l1 + l2];
@@ -127,8 +125,6 @@ public final class DBUtils {
 	 * @return 
 	 */
 	public static String concatenateWhere(String arg1, String arg2){
-		// TODO Replace with DatabaseUtilsCompat if/when supported by 
-		// ActionBarSherlock
 		String cat = "";
 		// Both non empty concatenate
 		if(!TextUtils.isEmpty(arg1) && !TextUtils.isEmpty(arg2))
@@ -140,7 +136,31 @@ public final class DBUtils {
 			else if(!TextUtils.isEmpty(arg2))
 				cat = arg2;
 		}
-		return cat.replace("=", " LIKE ");		
+		cat.replace("=", " LIKE ");
+		return cat;
 	}
 
+	/**
+	 * Converts any Uri query string into a select statement by taking
+	 * every key value pair in the query into "key = 'value'".
+	 *  
+	 * @param uri
+	 * @return
+	 */
+	public static String convertUriQueryToSelect(Uri uri){
+		String qString = uri.getQuery();
+		// Shortcut out for null query
+		if(TextUtils.isEmpty(qString))
+			return null;
+		StringBuilder select = new StringBuilder();
+		String[] rawQuery = uri.getQuery().split(",");
+		for(int index = 0;index < rawQuery.length;index++){
+			String[] kv = rawQuery[index].split("=");
+			// append space after first key value pair
+			if(index > 0) select.append(" ");
+			select.append(String.format("%s LIKE '%s'",kv[0],kv[1]));
+		}
+		return select.toString();
+	}
+	
 }
