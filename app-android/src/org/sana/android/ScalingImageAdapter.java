@@ -143,7 +143,7 @@ public class ScalingImageAdapter extends CursorAdapter {
         Uri thumbUri = getImageThumbnailUriFromCursorRow(cursor);
         view.setImageURI(thumbUri);
         
-        Log.i(TAG, "bindView: " + thumbUri);
+        //Log.i(TAG, "bindView: " + thumbUri);
         /*new Thread() { 
         	private Context mContext;
         	private Uri imageUri;

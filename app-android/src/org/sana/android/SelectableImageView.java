@@ -63,7 +63,6 @@ public class SelectableImageView extends ImageView {
 	/** {@inheritDoc} */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		Log.d(TAG,"draw");
 		super.onDraw(canvas);
 		if (showBorder()) {
 			Rect r_left = new Rect(0,0,8,canvas.getHeight());
