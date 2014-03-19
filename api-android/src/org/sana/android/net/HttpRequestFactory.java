@@ -98,6 +98,18 @@ public final class HttpRequestFactory {
 			throw new IllegalArgumentException(e);
 		}
 	}
+	
+	public static HttpPost getPostRequest(URI uri, List<NameValuePair> postData) throws IllegalArgumentException
+	{
+		try{
+			HttpPost post = new HttpPost(uri);
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postData, "UTF-8");
+			post.setEntity(entity);
+			return post;
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
 
 	/**
 	 * 
