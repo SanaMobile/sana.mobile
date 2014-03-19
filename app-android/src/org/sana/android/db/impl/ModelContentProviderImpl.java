@@ -29,6 +29,7 @@ package org.sana.android.db.impl;
 
 import org.sana.R;
 import org.sana.android.content.ModelContentProvider;
+import org.sana.android.db.DatabaseManager;
 
 import android.util.Log;
 
@@ -42,7 +43,6 @@ import android.util.Log;
 public class ModelContentProviderImpl extends ModelContentProvider {
 	public static final String TAG = ModelContentProviderImpl.class.getSimpleName();
 	
-
 	/* (non-Javadoc)
 	 * @see android.content.ContentProvider#onCreate()
 	 */
@@ -52,7 +52,9 @@ public class ModelContentProviderImpl extends ModelContentProvider {
 		String name = getContext().getString(R.string.db_name);
 		int version = getContext().getResources().getInteger(org.sana.api.R.integer.cfg_db_version_value);
 		Log.i(TAG, "onCreate(). version:" + version);
-		mOpener = new DatabaseOpenHelperImpl(getContext(),name, version);
+		mOpener = DatabaseOpenHelperImpl.getInstance(getContext().getApplicationContext(),name, version);
+		DatabaseManager.initializeInstance(mOpener);
+		mManager = DatabaseManager.getInstance();
 		return true;
 	}
 }
