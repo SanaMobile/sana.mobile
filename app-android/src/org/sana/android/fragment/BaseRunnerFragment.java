@@ -18,14 +18,17 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.sana.R;
 import org.sana.android.Constants;
+import org.sana.android.activity.BaseRunner;
 import org.sana.android.activity.ProcedureRunner;
 import org.sana.android.app.Locales;
 import org.sana.android.app.State.Keys;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
 import org.sana.android.db.EventDAO;
+import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.db.ProcedureDAO;
+import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.media.EducationResource.Audience;
 import org.sana.android.net.MDSInterface;
 import org.sana.android.procedure.Procedure;
@@ -40,10 +43,12 @@ import org.sana.android.provider.Procedures;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.ServiceConnector;
 import org.sana.android.service.ServiceListener;
+import org.sana.android.service.impl.InstrumentationService;
 import org.sana.android.task.PatientLookupListener;
 import org.sana.android.task.PatientLookupTask;
 import org.sana.android.util.Logf;
 import org.sana.android.util.SanaUtil;
+import org.sana.util.UUIDUtil;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
@@ -61,6 +66,7 @@ import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,20 +134,23 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.dump();
+        //this.dump();
     }
 
     /** {@inheritDoc} */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.base_runner_fragment, null);
+        return inflater.inflate(R.layout.base_runner_fragment, container, false);
     }
-
-    /** {@inheritDoc} */
+    
+    /*
+     * (non-Javadoc)
+     * @see android.support.v4.app.Fragment#onActivityCreated(android.os.Bundle)
+     */
     @Override
     public void onActivityCreated(Bundle instance) {
         super.onActivityCreated(instance);
-        Log.v(getClass().getSimpleName(), "onActivityCreate");
+        Log.v(getClass().getSimpleName(), "onActivityCreated()");
         
         try {;
             //mConnector.setServiceListener(this);
@@ -152,10 +161,13 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
             e.printStackTrace();
         }
         this.setRetainInstance(true);
-        this.onUpdateAppState(getActivity().getIntent());
-        dump();
+        //if(instance != null)
+        	onUpdateAppState(instance);
+        //else if(getActivity().getIntent() != null)
+        	onUpdateAppState(getActivity().getIntent());
         //logEvent(EventType.ENCOUNTER_ACTIVITY_START_OR_RESUME, "");
         logEvent(EventType.ENCOUNTER_ACTIVITY_START_OR_RESUME, ((instance != null)?instance.toString():null));
+        //makeText("Instance is null: " + ((instance != null)? false: true));
         loadProcedure(instance);
     }
 
@@ -224,7 +236,10 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         // Flush out any observations
         getActivity().getContentResolver().delete(Observations.CONTENT_URI, 
         		Observations.Contract.ENCOUNTER + " = ?", 
-        		new String[]{ uEncounter.toString() });
+        		new String[]{ uEncounter.getLastPathSegment() });
+        getActivity().getContentResolver().delete(ImageSQLFormat.CONTENT_URI, 
+        		ImageSQLFormat.ENCOUNTER_ID + " = ?", 
+        		new String[]{ uEncounter.getLastPathSegment() });
     }
     
     /**
@@ -391,12 +406,13 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     public void uploadProcedureInBackground2() {
         Log.d(TAG, "uploading" + uEncounter);
     	uEncounter = (!Uris.isEmpty(uEncounter))? uEncounter: Uri.EMPTY;
-    	
+    	Intent instrumentation = new Intent(getActivity(),InstrumentationService.class);
+    	getActivity().stopService(instrumentation);
     	// use the uEncounter field to Post the data.
     	Intent upload = new Intent("org.sana.android.intent.action.CREATE", uEncounter);
-    	this.getActivity().startService(upload);
+    	getActivity().startService(upload);
         logEvent(EventType.ENCOUNTER_SAVE_UPLOAD, uEncounter.toString());
-        getActivity().finish();
+        //getActivity().finish();
     	
     }
     // current progress in the procedure
@@ -446,6 +462,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
                     break;
                 case R.id.procedure_done_upload:
                     //uploadProcedureInBackground();
+                	showUploadingDialog();
                     uploadProcedureInBackground2();
                     break;
                 default:
@@ -630,15 +647,17 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         }
     }
 
+    int requested = 0;
+    
     /**
      * A request for loading a procedure.
      * 
      * @author Sana Development Team
      */
     class ProcedureLoadRequest {
-        Bundle instance;
+        Bundle instance = null;
 
-        Intent intent;
+        Intent intent = null;
     }
 
     /**
@@ -661,19 +680,25 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         /** {@inheritDoc} */
         @Override
         protected ProcedureLoadResult doInBackground(ProcedureLoadRequest... params) {
+        	requested++;
+            Log.v(TAG, "ProcedureLoadRequest count: " + requested);
             ProcedureLoadRequest load = params[0];
             instance = load.instance;
             intent = load.intent;
-
             ProcedureLoadResult result = new ProcedureLoadResult();
-            if (instance == null && !intent.hasExtra("savedProcedureUri")) {
+            if (Uris.isEmpty(uEncounter) && instance == null && !intent.hasExtra("savedProcedureUri")) {
                 
                 // New Encounter
                 Uri procedure = intent.getData();
-                Log.i(TAG, "ProcedureLoadResult.doInBackground() : uri = " + procedure.toString() + " savedUri="
+                Log.i(TAG, "ProcedureLoadResult.doInBackground() : uri = " + procedure + "(" + procedure.getLastPathSegment() + "), savedUri="
                         + uEncounter);
                 
-                int procedureId = Integer.parseInt(procedure.getPathSegments().get(1));
+                String uuid = procedure.getLastPathSegment();
+                if(!UUIDUtil.isValid(uuid)){
+                	uuid = ModelWrapper.getUuid(procedure,getActivity().getContentResolver());
+                	procedure = Uris.withAppendedUuid(Procedures.CONTENT_URI, uuid);
+                }
+                Log.i(TAG, "preparing to load xml for uri = " + procedure); 
                 String procedureXml = ProcedureDAO.getXMLForProcedure(getActivity(), procedure);
 
                 // Record that we are starting a new encounter
@@ -683,8 +708,9 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
                     Log.w(TAG, "no Encounter: " + uEncounter);
                 	ContentValues cv = new ContentValues();
                 	cv.put(Encounters.Contract.UUID, UUID.randomUUID().toString());
-                	cv.put(Encounters.Contract.SUBJECT, uSubject.toString());
-                	cv.put(Encounters.Contract.PROCEDURE, procedureId);
+                	cv.put(Encounters.Contract.SUBJECT, ModelWrapper.getUuid(uSubject, getActivity().getContentResolver()));
+                	cv.put(Encounters.Contract.OBSERVER, ModelWrapper.getUuid(uObserver, getActivity().getContentResolver()));
+                	cv.put(Encounters.Contract.PROCEDURE, procedure.getLastPathSegment());
                 	cv.put(Encounters.Contract.STATE, "");
                 	cv.put(Encounters.Contract.FINISHED, true);
                 	cv.put(Encounters.Contract.UPLOADED, false);
@@ -733,21 +759,29 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
             } else {
 
                 // This is a saved encounter.
-                startPage = 0;
+                //startPage = 0;
                 PatientInfo pi = null;
-
-                Log.v(TAG, "No instance on warm boot.");
-                startPage = 0;
-                onDonePage = false;
-                String savedProcedureUri = intent.getStringExtra("savedProcedureUri");
-                if (savedProcedureUri != null)
-                    uEncounter = Uri.parse(savedProcedureUri);
+                if(instance == null && Uris.isEmpty(uEncounter)){
+                	Log.v(TAG, "No instance on warm boot.");
+                	String savedProcedureUri = intent.getStringExtra("savedProcedureUri");
+                	if (!TextUtils.isEmpty(savedProcedureUri))
+                		uEncounter = Uri.parse(savedProcedureUri);
                 
-                // Record that we are restoring a saved encounter
-                logEvent(EventType.ENCOUNTER_LOAD_SAVED, "");
+                	// Record that we are restoring a saved encounter
+                	logEvent(EventType.ENCOUNTER_LOAD_SAVED, String.valueOf(uEncounter));
+                    //startPage = intent.getIntExtra("currentPage", 0);
+                    //onDonePage = intent.getBooleanExtra("onDonePage", false);
 
-                pi = new PatientInfo();
-
+                	//pi = new PatientInfo();
+                } else {
+                    Log.v(TAG, "Instance present on warm boot.");
+                	logEvent(EventType.ENCOUNTER_LOAD_HOTLOAD, String.valueOf(uEncounter));
+                    //startPage = instance.getInt("currentPage");
+                    //onDonePage = instance.getBoolean("onDonePage");
+                	String savedProcedureUri = intent.getStringExtra("savedProcedureUri");
+                	
+                }
+                Log.w(TAG, "Page: " + startPage + ", onDonePage: " + onDonePage );
                 if (uEncounter == null) {
                     Log.e(TAG, "Couldn't determine the URI to warm boot with, " + "bailing.");
                     return result;
@@ -756,14 +790,14 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
                         + startPage + " onDonePage: " + onDonePage);
 
                 Cursor c = null;
-                int procedureId = -1;
+                String procedureId = "";
                 String answersJson = "";
                 try {
                     c = getActivity().getContentResolver().query(uEncounter, new String[] {
                             Encounters.Contract.PROCEDURE, Encounters.Contract.STATE
                     }, null, null, null);
                     c.moveToFirst();
-                    procedureId = c.getInt(0);
+                    procedureId = c.getString(0);
                     answersJson = c.getString(1);
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
@@ -789,8 +823,12 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
                     Log.e(TAG, "onCreate() -- JSONException " + e.toString());
                     e.printStackTrace();
                 }
-
-                Uri procedureUri = ContentUris.withAppendedId(Procedures.CONTENT_URI, procedureId);
+                Uri procedureUri;
+                if(UUIDUtil.isValid(procedureId)){
+                	procedureUri = Uris.withAppendedUuid(Procedures.CONTENT_URI, procedureId);
+                } else
+                	procedureUri = ContentUris.withAppendedId(Procedures.CONTENT_URI, Long.parseLong(procedureId));
+                Log.i(TAG, "preparing to load xml for uri = " + procedureUri); 
                 String procedureXml = ProcedureDAO.getXMLForProcedure(getActivity(), procedureUri);
                 Procedure procedure = null;
                 try {
@@ -834,13 +872,16 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         @Override
         protected void onPostExecute(ProcedureLoadResult result) {
             super.onPostExecute(result);
+            requested--;
             hideProgressDialogFragment();
             if (result != null && result.success) {
                 mProcedure = result.p;
                 uEncounter = result.savedProcedureUri;
                 logEvent(EventType.ENCOUNTER_LOAD_FINISHED, "");
-                if (mProcedure != null)
+                if (mProcedure != null){
+                	mProcedure.setInstanceUri(uEncounter);
                     createView();
+                }
                 else
                     logEvent(EventType.ENCOUNTER_LOAD_FAILED, "Null procedure");
 
@@ -983,41 +1024,83 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     }
     
     protected void onUpdateAppState(Bundle inState){
-    	Log.e(TAG, "onUpdateAppState()");
+    	Log.w(TAG, "onUpdateAppState(Bundle)");
     	if(inState == null){
-        	Log.w(TAG, "onUpdateAppState()" + " null bundle");
+        	Log.e(TAG, "onUpdateAppState(Bundle)" + " null bundle");
     		return;
     	}
+    	Uri uri = Uri.EMPTY;
     	if(inState.containsKey(Intents.EXTRA_ENCOUNTER)){
-    		uEncounter = inState.getParcelable(Intents.EXTRA_ENCOUNTER);
+    		uri = inState.getParcelable(Intents.EXTRA_ENCOUNTER);
+    		if(!Uris.isEmpty(uri)) uEncounter = uri;
     	}
-    	if(inState.containsKey(Intents.EXTRA_SUBJECT))
-    		uSubject = inState.getParcelable(Intents.EXTRA_SUBJECT);
-    	if(inState.containsKey(Intents.EXTRA_PROCEDURE))
-    		uProcedure = inState.getParcelable(Intents.EXTRA_PROCEDURE);
-    	if(inState.containsKey(Intents.EXTRA_OBSERVER))
-    		uObserver = inState.getParcelable(Intents.EXTRA_OBSERVER);
+    	if(inState.containsKey(Intents.EXTRA_SUBJECT)){
+    		uri = inState.getParcelable(Intents.EXTRA_SUBJECT);
+			if(!Uris.isEmpty(uri)) uSubject = uri;
+    	}
+    	if(inState.containsKey(Intents.EXTRA_PROCEDURE)){
+        	uri = inState.getParcelable(Intents.EXTRA_PROCEDURE);
+    		if(!Uris.isEmpty(uri)) uProcedure = uri;
+        }
+    	if(inState.containsKey(Intents.EXTRA_OBSERVER)){
+    		uri = inState.getParcelable(Intents.EXTRA_OBSERVER);
+			if(!Uris.isEmpty(uri)) uObserver = uri;
+    	}
+
+		if(inState.containsKey("currentPage"))
+			startPage = inState.getInt("currentPage");
+		if(inState.containsKey("onDonePage"))
+			onDonePage = inState.getBoolean("onDonePage");
     	dump();
+    	Log.w(TAG, "onUpdateAppState(Bundle): EXIT");
     }
     
     protected void onUpdateAppState(Intent inState){
-    	Log.e(TAG, "onUpdateAppState()");
+    	Log.w(TAG, "onUpdateAppState(Intent)");
     	dump();
+    	Uri uri = Uri.EMPTY;
     	if(inState.hasExtra(Intents.EXTRA_ENCOUNTER)){
-    		uEncounter = inState.getParcelableExtra(Intents.EXTRA_ENCOUNTER);
+    		uri = inState.getParcelableExtra(Intents.EXTRA_ENCOUNTER);
+        	Log.w(TAG, "onUpdateAppState(Intent) uri -->" + uri);
+    		if(!Uris.isEmpty(uri)) uEncounter = uri;
     	}
-    	if(inState.hasExtra(Intents.EXTRA_SUBJECT))
-    		uSubject = inState.getParcelableExtra(Intents.EXTRA_SUBJECT);
-    	if(inState.hasExtra(Intents.EXTRA_PROCEDURE))
-    		uProcedure = inState.getParcelableExtra(Intents.EXTRA_PROCEDURE);
-    	if(inState.hasExtra(Intents.EXTRA_OBSERVER))
-    		uObserver = inState.getParcelableExtra(Intents.EXTRA_OBSERVER);
+    	if(inState.hasExtra(Intents.EXTRA_SUBJECT)){
+    		uri = inState.getParcelableExtra(Intents.EXTRA_SUBJECT);
+        	Log.w(TAG, "onUpdateAppState(Intent) uri -->" + uri);
+			if(!Uris.isEmpty(uri)) uSubject = uri;
+    	}
+    	if(inState.hasExtra(Intents.EXTRA_PROCEDURE)){
+    		uri = inState.getParcelableExtra(Intents.EXTRA_PROCEDURE);
+        	Log.w(TAG, "onUpdateAppState(Intent) uri -->" + uri);
+			if(!Uris.isEmpty(uri)) uProcedure = uri;
+    	}
+		if(inState.hasExtra(Intents.EXTRA_OBSERVER)){
+    		uri = inState.getParcelableExtra(Intents.EXTRA_OBSERVER);
+        	Log.w(TAG, "onUpdateAppState(Intent) uri -->" + uri);
+			if(!Uris.isEmpty(uri)) uObserver = uri;
+    	}
+
+		if(inState.hasExtra("currentPage"))
+			startPage = inState.getIntExtra("currentPage",0);
+		if(inState.hasExtra("onDonePage"))
+			onDonePage = inState.getBooleanExtra("onDonePage",false);
+		
+    	dump();
+    	Log.w(TAG, "onUpdateAppState(Intent): EXIT");
     }
     
     protected void dump(){
-    	Logf.D(this.getTag(),"dump()", String.format("{ 'encounter': '%s',"
+    	Logf.D(this.getClassTag(),"dump()", String.format("{ 'encounter': '%s',"
     			+" 'observer': '%s', 'subject': '%s', 'procedure': '%s' }",
     			uEncounter, uObserver, uSubject, uProcedure));
+    }
+    protected void dump(Class<?> klazz){
+    	Logf.D(klazz.getSimpleName(),"dump()", String.format("{ 'encounter': '%s',"
+    			+" 'observer': '%s', 'subject': '%s', 'procedure': '%s' }",
+    			uEncounter, uObserver, uSubject, uProcedure));
+    }
+    protected String getClassTag(){
+    	return this.getClass().getSimpleName();
     }
     
 	/**
@@ -1052,12 +1135,17 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
      * @param outState
      */
     protected void onSaveAppState(Bundle outState){
+    	Log.w(TAG, "onSaveAppState()");
     	dump();
     	outState.putString(Keys.SESSION_KEY, mSessionKey);
     	outState.putParcelable(Intents.EXTRA_ENCOUNTER, uEncounter);
     	outState.putParcelable(Intents.EXTRA_SUBJECT, uSubject);
     	outState.putParcelable(Intents.EXTRA_PROCEDURE, uProcedure);
     	outState.putParcelable(Intents.EXTRA_OBSERVER, uObserver);
+    	outState.putInt("currentPage", ((mProcedure != null)? mProcedure.getCurrentIndex():0));
+    	outState.putBoolean("onDonePage", onDonePage);
+    	dump();
+    	Log.w(TAG, "onSaveAppState(): Exit");
     }
     
     /**
@@ -1080,6 +1168,8 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     	outState.putExtra(Intents.EXTRA_SUBJECT, uSubject);
     	outState.putExtra(Intents.EXTRA_PROCEDURE, uProcedure);
     	outState.putExtra(Intents.EXTRA_OBSERVER, uObserver);
+    	outState.putExtra("currentPage", ((mProcedure != null)? mProcedure.getCurrentIndex():0));
+    	outState.putExtra("onDonePage", onDonePage);
     }
     
     
@@ -1093,5 +1183,36 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     
     public boolean setValue(int pageIndex, String elementId, String value){
     	return mProcedure.setValue(pageIndex, elementId, value);
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+    	super.onSaveInstanceState(outState);
+    	onSaveAppState(outState);
+    }
+    
+    public final void makeText(String message){
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+    }
+    
+    public void onRestoreInstanceState(Bundle inState){
+    	this.onUpdateAppState(inState);
+    }
+    
+    public int getCurrentPage(){
+    	return (mProcedure != null)? mProcedure.getCurrentIndex():0;
+    }
+    
+    public boolean onDonePage(){
+    	return onDonePage;
+	}
+    
+    protected void showUploadingDialog(){
+
+    	if(getActivity() instanceof BaseRunner){
+    		BaseRunner runner = (BaseRunner) getActivity();
+    		runner.setUploading(true);
+    		runner.showUploadingDialog();
+    	}
     }
 }
