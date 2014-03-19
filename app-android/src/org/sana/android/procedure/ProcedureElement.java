@@ -3,6 +3,8 @@ package org.sana.android.procedure;
 import java.net.URISyntaxException;
 
 import org.sana.R;
+import org.sana.android.activity.BaseRunner;
+import org.sana.android.activity.ProcedureRunner;
 import org.sana.android.media.AudioPlayer;
 import org.sana.android.media.EducationResource;
 import org.sana.android.util.SanaUtil;
@@ -10,6 +12,7 @@ import org.w3c.dom.Node;
 
 import com.google.gson.Gson;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.InputType;
@@ -655,8 +658,11 @@ public abstract class ProcedureElement {
     }
     
     /**
-     * Returns a 
-     * @return
+     * Returns a View containing a set of buttons, each of which can be
+     * used as a launch point for another activity. 
+     * 
+     * @see {@link #getAction()} for more on action String format
+     * @return a View containing a list of action buttons
      */
     public View getActions(Context c){
 		Log.d(TAG, "action=" + action);
@@ -679,9 +685,8 @@ public abstract class ProcedureElement {
 	    		button.setOnClickListener(new View.OnClickListener(){
 					@Override
 					public void onClick(View v) {
-						Intent action = (Intent) v.getTag();
-						ProcedureElement.this.getContext().startActivity(action);
-						
+						Intent intent = (Intent) v.getTag();
+						startActivity(intent);
 					}});
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
@@ -693,6 +698,18 @@ public abstract class ProcedureElement {
     	
     	
     	return ll;
+    }
+    
+    protected final Activity getActivity(){
+    	return (Activity) getContext();
+    }
+    
+    protected final void startActivity(Intent intent){
+    	Activity activity = getActivity();
+		Intent launcher = new Intent(getContext(), activity.getClass());
+		launcher.putExtra(Intent.EXTRA_INTENT, intent);
+		launcher.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		getContext().startActivity(launcher);
     }
     
     /** 
