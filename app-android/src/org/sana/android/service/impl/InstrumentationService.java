@@ -27,11 +27,15 @@
  */
 package org.sana.android.service.impl;
 
+import java.util.List;
 import java.util.Locale;
 
+import org.sana.BuildConfig;
 import org.sana.android.activity.ProcedureRunner;
+import org.sana.android.content.Uris;
 import org.sana.android.provider.Observations;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
@@ -39,6 +43,7 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -53,6 +58,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.Process;
 import android.support.v4.util.SparseArrayCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -78,6 +84,7 @@ public class InstrumentationService extends Service {
 			super(looper);
 		}
 		
+		@SuppressLint("NewApi")
 		public void handleMessage(Message msg) {
 			Log.i(TAG, "msg obj = " + String.valueOf(msg.obj));
 			switch(msg.what){
@@ -87,32 +94,46 @@ public class InstrumentationService extends Service {
 					//Intent reply = msg.getData().getParcelable(Intent.EXTRA_INTENT);
 					PendingIntent replyTo = msg.getData().getParcelable(Intent.EXTRA_INTENT);
 					//Log.d(TAG, "replyTo: " + String.valueOf(replyTo));
-					LocationListener listener = getListener(replyTo,msg.arg1, msg.getData());
+					LocationListener listener = getListener(null,uri,msg.arg1, msg.getData());
 					try{
-						if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-							//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, replyTo);
-							locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-						} else if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-							//locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, replyTo);
-							locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
-						} else
-							throw new IllegalArgumentException("No location providers available");
+						Criteria criteria = new Criteria();
+						if(android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.FROYO){
+							criteria.setPowerRequirement(Criteria.POWER_HIGH);
+							criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+						} else {
+							criteria.setAccuracy(Criteria.ACCURACY_FINE);
+						}
+						List<String> providers = locationManager.getProviders(criteria, true);
+						for(String provider: providers){
+							Log.d(TAG, "Using location provider: " + provider);
+							locationManager.requestLocationUpdates(provider, 0, 0, listener);
+						}
+						//if(TextUtils.isEmpty(provider))
+						//	throw new IllegalArgumentException("No location providers available");
 						// add to our listeners so that we can clean up later if necessary
 						//replies.put(msg.arg1, replyTo);
-						listeners.put(msg.arg1, listener);
+						if(providers.size() == 0){
+							Location nullLocation = new Location(LocationManager.GPS_PROVIDER);
+							nullLocation.setAccuracy(0);
+							nullLocation.setLatitude(0);
+							nullLocation.setLongitude(0);
+							listener.onLocationChanged(nullLocation);
+						} else {
+							listeners.put(msg.arg1, listener);
+						}
 					} catch (Exception e){
 						Log.e(TAG, "Error getting location updates: " + e.getMessage());
 						e.printStackTrace();
-						stopSelf(msg.arg1);
+						removeListener(msg.arg1);
 					}
 				} else {
 					Log.w(TAG, "no replyTo in original intent sent to InstrumentationService");
-					stopSelf(msg.arg1);
+					removeListener(msg.arg1);
 				}
 				break;
 			default:
 				Log.w(TAG, "Unknown message! Message = " + msg.what);
-				stopSelf(msg.arg1);
+				removeListener(msg.arg1);
 			}
 		}
 	}
@@ -157,18 +178,19 @@ public class InstrumentationService extends Service {
 	 */
 	@Override
 	public void onDestroy(){
+		int key = 0;
 		for(int index =0; index < listeners.size(); index++){
 			try{
-				locationManager.removeUpdates(listeners.get(index));
-				listeners.delete(index);
+				locationManager.removeUpdates(listeners.get(key));
 			} catch(Exception e){}
 		}
+		listeners.clear();
 		for(int index =0; index < replies.size(); index++){
 			try{
 				locationManager.removeUpdates(replies.get(index));
-				replies.delete(index);
 			} catch(Exception e){}
 		}
+		replies.clear();
 		super.onDestroy();
 	}
 	
@@ -178,18 +200,20 @@ public class InstrumentationService extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		String action = intent.getAction();
-		Uri uri = intent.getData();
-		Message msg = mHandler.obtainMessage();
-		msg.obj = uri.toString();
-		msg.arg1 = startId;
-		//Bundle data = new Bundle();
-		//data.putAll(intent.getExtras());
-		msg.setData(intent.getExtras());
-		if(action.equals(ACTION_RECORD_GPS)){
-			msg.what = MSG_GET_LOCATION;
+		if(intent != null){
+			String action = intent.getAction();
+			Uri uri = intent.getData();
+			Message msg = mHandler.obtainMessage();
+			msg.obj = uri.toString();
+			msg.arg1 = startId;
+			//Bundle data = new Bundle();
+			//data.putAll(intent.getExtras());
+			msg.setData(intent.getExtras());
+			if(action.equals(ACTION_RECORD_GPS)){
+				msg.what = MSG_GET_LOCATION;
+			}
+			mHandler.sendMessage(msg);
 		}
-		mHandler.sendMessage(msg);
 		return START_STICKY;
 	}
 	
@@ -199,8 +223,8 @@ public class InstrumentationService extends Service {
 		return listener;
 	}
 	
-	private final LocationListener getListener(final PendingIntent replyTo, int id, Bundle data){
-		LocationListener listener = new LocationInstrumentationListener(replyTo,id, data);
+	private final LocationListener getListener(final PendingIntent replyTo, Uri uri,int id, Bundle data){
+		LocationListener listener = new LocationInstrumentationListener(replyTo,uri,id, data);
 		return listener;
 	}
 	
@@ -217,65 +241,88 @@ public class InstrumentationService extends Service {
 	private final void removeListener(int key){
 		try{
 			LocationListener listener = listeners.get(key);
-			listeners.remove(key);
 			if(listener != null){
 				try{
 					locationManager.removeUpdates(listener);
-				} catch (Exception e){}
+					//mHandler.removeMessages(key, null);
+				} catch (Exception e){
+					Log.e(TAG, "removeListener(): " + e);
+				}
 			}
+			listeners.remove(key);
 			PendingIntent replyTo = replies.get(key);
 			replies.delete(key);
 			if(replyTo != null){
 				try{
 					locationManager.removeUpdates(replyTo);
-				} catch (Exception e){}
+				} catch (Exception e){
+					Log.e(TAG, "removeListener(): " + e);
+				}
 			}
-				
 		} catch(Exception e) {
 			
 		}
+		if(listeners.size() == 0){
+			stopSelf();
+		}
+	}
+	
+	final void updateObservation(Uri uri, Object value){
+		Log.i(TAG, "Updating: " + uri + ", value: " + value);
+		ContentValues vals = new ContentValues();
+		vals.put(Observations.Contract.VALUE, String.valueOf(value));
+		getContentResolver().update(uri, vals, null, null);
 	}
 	
 	class LocationInstrumentationListener implements LocationListener{
 		
 		final int id;
-		//final Uri uri;
+		final Uri uri;
 		final PendingIntent replyTo;
 		final Bundle bundle = new Bundle();
+		Location currentLocation = null;
+		final int minAccuracy;
+		final static int DEFAULT_MIN_ACCURACY = 16;
 		//final Context mContext;
 		
 		public LocationInstrumentationListener(PendingIntent replyTo, int id){
-			this.id = id;
-			this.replyTo = replyTo;
-			//mContext = context;
-		}
-		public LocationInstrumentationListener(PendingIntent replyTo, int id, Bundle data){
-			this.id = id;
-			this.replyTo = replyTo;
-			bundle.putAll(data.getBundle("extra_data"));
-			//mContext = context;
+			this(replyTo,Uri.EMPTY, id,null, DEFAULT_MIN_ACCURACY);
 		}
 		
+		public LocationInstrumentationListener(PendingIntent replyTo, Uri uri, int id, Bundle data){
+			this(replyTo, uri,id,data,DEFAULT_MIN_ACCURACY);
+		}
+		
+		public LocationInstrumentationListener(PendingIntent replyTo, Uri uri, int id, Bundle data, int minAccuracy){
+			this.id = id;
+			this.replyTo = replyTo;
+			this.uri = uri;
+			bundle.putAll(data.getBundle("extra_data"));
+			this.minAccuracy = minAccuracy;
+		}
 		
 		@Override
 		public void onLocationChanged(Location location) {
 			Log.d(TAG, "Got location update." + location.getLatitude() + ":" + location.getLongitude());
 			Log.d(TAG, "Got location update." + location);
-			String locStr = "( "+location.getLatitude() +", "+ location.getLongitude()+" )"; 
-			ContentValues vals = new ContentValues();
-			vals.put(Observations.Contract.VALUE, locStr);
+			float accuracy = location.getAccuracy();
+			Log.d(TAG, "Accuracy: " + accuracy);
+			String locStr = "( "+location.getLatitude() +", "+ location.getLongitude()+", " + accuracy+" )";
+			// Bail if accuracy is > minimum acceptable
+			
+			if(!Uris.isEmpty(uri))
+				updateObservation(uri,locStr);
 			if(replyTo != null){
 				try {
 					Intent reply = new Intent();
-					reply.setClass(getApplicationContext(), ProcedureRunner.class);
-					reply.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 					reply.putExtra(Observations.Contract.VALUE,locStr);
 					reply.putExtras(bundle);
 					reply.putExtra(LocationManager.KEY_LOCATION_CHANGED, location);
-					PendingIntent.getActivity(getApplicationContext(), Activity.RESULT_OK, reply, PendingIntent.FLAG_UPDATE_CURRENT).send();
+					replyTo.send(InstrumentationService.this, Activity.RESULT_OK, reply);
+					//PendingIntent.getActivity(getBaseContext(), Activity.RESULT_OK, reply, PendingIntent.FLAG_UPDATE_CURRENT).send();
 					
 					//replyTo.send();
-				} catch (CanceledException e) {
+				} catch (Exception e) {
 					Log.e(TAG, "Error sending replyTo: " + e.getMessage());
 					e.printStackTrace();
 				}
@@ -283,6 +330,8 @@ public class InstrumentationService extends Service {
 				Log.w(TAG, "No Pending Intent replyTo. Did you provide extra" 
 						+ "Intent.EXTRA_INTENT in Intent sent to service?");
 			}
+			if(accuracy > minAccuracy)
+				return;
 			removeListener(id);
 			stopSelf(id);
 		}
@@ -315,5 +364,6 @@ public class InstrumentationService extends Service {
         	}
 		}
 	}
+	
 	
 }
