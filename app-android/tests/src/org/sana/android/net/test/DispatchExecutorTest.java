@@ -31,8 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.sana.net.http.HttpDispatcher;
+import org.sana.net.http.HttpTaskFactory;
 
 import android.test.AndroidTestCase;
 
@@ -56,6 +58,10 @@ public class DispatchExecutorTest extends AndroidTestCase {
 		List<NameValuePair> forms = new ArrayList<NameValuePair>();
 		forms.add(new BasicNameValuePair("username", "admin"));
 		forms.add(new BasicNameValuePair("password", "Sanamobile1"));
+		
+		
+		DefaultHttpClient client = (DefaultHttpClient) HttpTaskFactory.CLIENT_FACTORY.produce();
+		
 		//MDSResult result = DispatchExecutor.executePost(uri,forms);
 		//Log.i(TAG, result.toString());
 		
