@@ -4,6 +4,7 @@ import org.sana.android.util.SanaUtil;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ public class ResetDatabaseTask extends AsyncTask<Context, Void, Integer> {
 	private ProgressDialog progressDialog;
 	private Context mContext = null; // TODO context leak?
 	private boolean quiet = false;
+	private Uri[] uris = new Uri[0];
 	/**
 	 * A new task for resetting the database.
 	 * @param c the current Context.
@@ -34,6 +36,22 @@ public class ResetDatabaseTask extends AsyncTask<Context, Void, Integer> {
 	public ResetDatabaseTask(Context c, boolean quiet) {
 		this.mContext = c;
 		this.quiet = quiet;
+		
+	}
+	
+	/**
+	 * A new task for resetting the database.
+	 * @param c the current Context.
+	 */
+	public ResetDatabaseTask(Context c, boolean quiet, Uri[] uris) {
+		this.mContext = c;
+		this.quiet = quiet;
+		this.uris = new Uri[uris.length];
+		int index = 0;
+		for(Uri uri:uris){
+			this.uris[index] = uri; index++;
+		}
+		
 	}
 	
 	/** {@inheritDoc} */
@@ -43,6 +61,10 @@ public class ResetDatabaseTask extends AsyncTask<Context, Void, Integer> {
 		Context c = params[0];
 		try{
 			SanaUtil.clearDatabase(c);
+			for(Uri uri:uris){
+				Log.d(TAG, "Clearing: " + uri);
+				c.getContentResolver().delete(uri, null, null);
+			}
 			SanaUtil.loadDefaultDatabase(c);	
 		} catch(Exception e){
 			Log.e(TAG, "Could not sync. " + e.toString());
