@@ -27,6 +27,11 @@
  */
 package org.sana.android.content;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.sana.android.provider.Concepts;
 import org.sana.android.provider.EncounterTasks;
 import org.sana.android.provider.Encounters;
@@ -41,8 +46,12 @@ import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
 import org.sana.util.UUIDUtil;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 /**
  * a container of Uri descriptor values and related constants. The static 
  * methods of this class are primarily intended for consistent, application-wide
@@ -185,43 +194,43 @@ public final class Uris {
 		mMatcher.addURI(PACKAGE_AUTHORITY, "settings/*", SETTINGS_UUID);
 		*/
 		mMatcher.addURI(Models.AUTHORITY, "/", PACKAGE_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "concept/", CONCEPT_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "concept/#", CONCEPT_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "concept/*", CONCEPT_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "encounter/", ENCOUNTER_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "encounter/#", ENCOUNTER_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "encounter/*", ENCOUNTER_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "event/", EVENT_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "event/#", EVENT_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "event/*", EVENT_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "instruction/", INSTRUCTION_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "instruction/#", INSTRUCTION_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "instruction/*", INSTRUCTION_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "notification/", NOTIFICATION_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "notification/#", NOTIFICATION_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "notification/*", NOTIFICATION_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "observation/", OBSERVATION_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "observation/#", OBSERVATION_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "observation/*", OBSERVATION_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "observer/", OBSERVER_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "observer/#", OBSERVER_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "observer/*", OBSERVER_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "procedure/", PROCEDURE_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "procedure/#", PROCEDURE_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "procedure/*", PROCEDURE_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "subject/", SUBJECT_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "subject/#", SUBJECT_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "subject/*", SUBJECT_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "patient/", SUBJECT_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "patient/#", SUBJECT_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "patient/*", SUBJECT_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/concept/", CONCEPT_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/concept/#", CONCEPT_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/concept/*", CONCEPT_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/encounter/", ENCOUNTER_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/encounter/#", ENCOUNTER_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/encounter/*", ENCOUNTER_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/event/", EVENT_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/event/#", EVENT_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/event/*", EVENT_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/instruction/", INSTRUCTION_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/instruction/#", INSTRUCTION_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/instruction/*", INSTRUCTION_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/notification/", NOTIFICATION_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/notification/#", NOTIFICATION_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/notification/*", NOTIFICATION_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/observation/", OBSERVATION_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/observation/#", OBSERVATION_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/observation/*", OBSERVATION_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/observer/", OBSERVER_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/observer/#", OBSERVER_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/observer/*", OBSERVER_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/procedure/", PROCEDURE_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/procedure/#", PROCEDURE_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/procedure/*", PROCEDURE_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/subject/", SUBJECT_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/subject/#", SUBJECT_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/subject/*", SUBJECT_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "core/patient/", SUBJECT_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "core/patient/#", SUBJECT_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "core/patient/*", SUBJECT_UUID);
 
-		mMatcher.addURI(Models.AUTHORITY, "task/encounter/", ENCOUNTER_TASK_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "task/encounter/#", ENCOUNTER_TASK_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "task/encounter/*", ENCOUNTER_TASK_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "task/observation/", OBSERVATION_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "task/observation/#", OBSERVATION_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "task/observation/*", OBSERVATION_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/encounter/", ENCOUNTER_TASK_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/encounter/#", ENCOUNTER_TASK_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/encounter/*", ENCOUNTER_TASK_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/", OBSERVATION_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/#", OBSERVATION_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/*", OBSERVATION_UUID);
 		
 	}
 	
@@ -438,7 +447,7 @@ public final class Uris {
 	 * @return
 	 */
 	public static boolean isEmpty(Uri uri){
-		return (uri == null)? true: uri == Uri.EMPTY;
+		return (uri != null && !uri.equals(Uri.EMPTY))? false: true;
 	}
 	
 	/**
@@ -470,4 +479,34 @@ public final class Uris {
     	
     	return result;
     }
+    
+    /**
+     * Converts Android "content" style resource identifiers to URIs to use with the
+     * new MDS REST API. Only works for those objects whose path components in the new 
+     * REST API are consistent with MDS.
+     * 
+     * @param uri The internal resource identifier to convert.
+     * @param scheme The scheme to use for the conversion
+     * @param host The mds host
+     * @param port The mds port to talk to.
+     * @param rootPath Additional 
+     * @return
+     * @throws MalformedURLException 
+     * @throws URISyntaxException 
+     */
+	public static URI iriToURI(Uri uri, String scheme, String host, int port, String rootPath) 
+			throws MalformedURLException, URISyntaxException
+	{
+		String path = String.format("%s%s", rootPath, uri.getPath());
+		String query = uri.getEncodedQuery();
+		URL url = null;
+		if(!TextUtils.isEmpty(query)){
+			path = String.format("%s%s?%s", path,query);
+			url = new URL(scheme, host, port, path);
+		} else {String.format("%s%s", rootPath, uri.getPath());
+			url = new URL(scheme, host, port, path);
+		}
+		URI u  = url.toURI();
+		return u;
+	}
 }

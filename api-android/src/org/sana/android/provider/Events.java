@@ -42,7 +42,7 @@ public final class Events{
 	
 	/** The content:// style URI for this content provider. */
 	public static final Uri CONTENT_URI = Uri.parse(
-			"content://" + AUTHORITY + "/event");
+			"content://" + AUTHORITY + "/core/event");
 	
 	/** The MIME type for a directory of events. */
 	public static final String CONTENT_TYPE = 

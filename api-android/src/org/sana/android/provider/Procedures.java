@@ -45,7 +45,7 @@ public final class Procedures {
     
     /** The content:// style URI for this content provider. */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + AUTHORITY + "/procedure");
+            + AUTHORITY + "/core/procedure");
     
 	/** The MIME type for a directory of procedures.  */
     public static final String CONTENT_TYPE = 

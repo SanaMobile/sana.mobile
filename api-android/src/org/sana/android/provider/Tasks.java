@@ -35,7 +35,7 @@ import android.net.Uri;
  */
 public interface Tasks {
 
-	public static final String AUTHORITY = "org.sana.task.provider";
+	public static final String AUTHORITY = "org.sana.provider";
 
 	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 

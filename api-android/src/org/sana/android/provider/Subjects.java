@@ -41,7 +41,7 @@ public class Subjects {
     
     /** The content:// style URI for this content provider. */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + AUTHORITY + "/subject");
+            + AUTHORITY + "/core/subject");
     
 	/** The MIME type of CONTENT_URI providing a directory of subjects. */
 	public static final String CONTENT_TYPE = 

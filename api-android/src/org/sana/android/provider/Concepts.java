@@ -29,7 +29,7 @@ public final class Concepts {
      * The content:// style URI for this content provider.
      */
 	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/concept");
+			+ AUTHORITY + "/core/concept");
 
 	private Concepts(){}
 	

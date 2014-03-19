@@ -47,7 +47,7 @@ public final class Encounters {
     /** The content:// style URI for encounters.
      */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + Encounters.AUTHORITY + "/encounter");
+            + Encounters.AUTHORITY + "/core/encounter");
 
     /**
      * The MIME type of CONTENT_URI providing a directory of saved procedures.
@@ -101,6 +101,11 @@ public final class Encounters {
     	/** The subject who data was collected about; i.e. the patient */
     	public static final String SUBJECT = "subject";
 
+    	/**
+    	 * The entity which collected the data
+    	 */
+    	public static final String OBSERVER = "observer";
+    	
     	/**
     	 * Status of data inputting. When finished, upload data to MDS.
     	 */

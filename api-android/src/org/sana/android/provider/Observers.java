@@ -44,7 +44,7 @@ public class Observers{
 
 	/** The content:// style URI for this content provider. */
 	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/observer");
+			+ AUTHORITY + "/core/observer");
 
 	/** The MIME type for a directory of procedures.  */
 	public static final String CONTENT_TYPE = 

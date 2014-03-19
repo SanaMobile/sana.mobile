@@ -26,8 +26,8 @@ public final class Observations {
 							"vnd.android.cursor.item/org.sana.observation";
 
 	/** The content style URI */
-	public static final Uri CONTENT_URI = Uri.withAppendedPath(
-			AUTHORITY_URI, "observation");
+	public static final Uri CONTENT_URI = Uri.parse("content://"
+            + AUTHORITY + "/core/observation");
 	
 	/**
 	 * Contract for the Observation table in the database.

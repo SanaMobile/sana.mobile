@@ -33,7 +33,7 @@ public final class Patients{
      * The content:// style URI for this content provider.
      */
 	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ AUTHORITY + "/patient");
+			+ AUTHORITY + "/core/patient");
 	
 	/** Default sort order. */
 	public static final String DEFAULT_SORT_ORDER = Contract.FAMILY_NAME + "  ASC";
@@ -107,8 +107,19 @@ public final class Patients{
         // 6 - Upload stalled - username/password incorrect
     	public static final String STATE = "_state";
     	
-    	/** An image of the patient */
+    	/** A location code for the patient */
     	public static final String LOCATION = "location";
+    	
+    	public static final String ADDRESS_ONE = "address_one";
+    	public static final String ADDRESS_TWO = "address_two";
+    	public static final String ADDRESS_THREE = "address_three";
+    	public static final String ADDRESS_FOUR = "address_four";
+    	
+    	public static final String CONTACT_ONE = "contact_one";
+    	public static final String CONTACT_TWO = "contact_two";
+    	public static final String CONTACT_THREE = "contact_three";
+    	public static final String CONTACT_FOUR = "contact_four";
+    	
 	}
 
 }

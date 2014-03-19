@@ -52,7 +52,7 @@ public class EncounterTasks {
      * The content:// style URI for objects of this type.
      */
 	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ Tasks.AUTHORITY + "/encounter");
+			+ Tasks.AUTHORITY + "/tasks/encounter");
 	
 	private EncounterTasks(){}
 	
