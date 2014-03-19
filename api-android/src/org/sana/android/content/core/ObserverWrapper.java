@@ -100,12 +100,15 @@ public class ObserverWrapper extends ModelWrapper<IObserver> implements
 						new String[]{ username,password	}
 						));
 		IObserver object = null;
-		if(wrapper != null && wrapper.getCount() > 0)
-			try{ 
-				object = wrapper.getObject();
+
+		if(wrapper != null){
+			try{
+				if(wrapper.moveToFirst() && wrapper.getCount() == 1)
+					object = wrapper.getObject();
 			} finally {
 				wrapper.close();
 			}
+		}
 		return object;
 	}
 	
