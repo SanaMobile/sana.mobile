@@ -39,7 +39,7 @@ public class MDSResult {
 	 * @return true if <code>status</code> equals "SUCCESS" 
 	 */
 	public boolean succeeded() {
-		return SUCCESS_STRING.equals(status);
+		return SUCCESS_STRING.compareToIgnoreCase(status) == 0;
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class MDSResult {
 	 * @return true if <code>status</code> equals "FAILURE" 
 	 */
 	public boolean failed() {
-		return FAILURE_STRING.equals(status);
+		return FAILURE_STRING.compareToIgnoreCase(status) == 0;
 	}
 	
 	/**
