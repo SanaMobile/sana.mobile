@@ -8,7 +8,7 @@
     android:orientation="vertical" >
 
     <!-- Header -->
-
+	<!--
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
             android:layout_height="2dp"
             android:background="@color/light_blue" />
     </LinearLayout>
-
+	-->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical" >
 
@@ -52,9 +52,9 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:singleLine="true"
-                android:text="GivenName Surname"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textIsSelectable="true" />
+                android:textIsSelectable="true"
+                android:text="GivenName Surname" />
             <TextView
                 android:id="@+id/system_id"
                 android:layout_width="wrap_content"
@@ -66,7 +66,8 @@
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/light_gray"
-                android:textIsSelectable="true" />
+                android:textIsSelectable="true"
+                android:text="123456" />
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
@@ -80,6 +81,34 @@
                 android:textColor="@color/light_gray"
                 android:textIsSelectable="true"
                 android:visibility="gone" />
+            
+            <TextView
+                android:id="@+id/procedure_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:padding="1dp"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/light_gray"
+                android:textIsSelectable="true" 
+                android:text="Procedure Title"/>
+  
+            <TextView
+                android:id="@+id/due_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:padding="1dp"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/light_gray"
+                android:textIsSelectable="true" 
+                android:text="2001-01-01"/>
         </LinearLayout>
 
         <ImageView

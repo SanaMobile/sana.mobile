@@ -72,7 +72,6 @@
             android:layout_alignTop="@+id/text_response"
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/text_response"
-            android:onClick="view"
             android:scaleType="fitCenter"
             android:src="@drawable/unknown" />
 
@@ -83,7 +82,6 @@
             android:layout_alignTop="@+id/text_response"
             android:layout_toRightOf="@+id/text_response"
             android:hint="@string/general_no_value"
-            android:onClick="view"
             android:singleLine="false"
             android:layout_marginLeft="5dp"
             android:textAppearance="?android:attr/textAppearanceMediumInverse" />
