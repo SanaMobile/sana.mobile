@@ -1,8 +1,14 @@
 package org.sana.android.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -36,6 +42,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -356,6 +363,7 @@ public class SanaUtil {
         // insertProcedure(ctx, R.raw.cvd_protocol);
         //insertProcedure(ctx, R.raw.api_test);
         insertProcedure(ctx, R.raw.ssi);
+        insertProcedure(ctx, R.raw.ssi_two_site);
         // insertProcedure(ctx, R.raw.audio_upload_test);
     }
 
@@ -415,11 +423,11 @@ public class SanaUtil {
 
     /** Format a list of primary keys into a SQLite-formatted list of ids. Ex
      * 1,2,3 is formatted as (1,2,3) */
-    public static String formatPrimaryKeyList(List<Long> idList) {
+    public static String formatPrimaryKeyList(List<?> idList) {
         StringBuilder sb = new StringBuilder("(");
-        Iterator<Long> it = idList.iterator();
+        Iterator<?> it = idList.iterator();
         while (it.hasNext()) {
-            sb.append(Long.toString(it.next()));
+            sb.append(String.valueOf(it.next()));
             if (it.hasNext()) {
                 sb.append(",");
             }
@@ -439,5 +447,31 @@ public class SanaUtil {
     {
         Log.d(tag, "onActivityResult: requestCode = " + requestCode
                 + ", resultCode = " + resultCode);
+    }
+    
+    public static final boolean exportDatabase(Context ctx, String dbName) throws IOException{
+    	
+    	boolean result = false;
+    	File db = ctx.getDatabasePath(dbName);
+    	File out = new File(Environment.getExternalStorageDirectory(), dbName);
+    	InputStream is = null;
+    	OutputStream os = null;
+    	
+    	try {
+			is = new BufferedInputStream(new FileInputStream(db));
+			os = new BufferedOutputStream(new FileOutputStream(out));
+			byte[] buffer = new byte[1024];
+			while(is.read(buffer) > 0){
+					os.write(buffer);
+			}
+			result = true;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(is != null) is.close();
+			if(os != null) os.close();
+		}
+    	return result;
     }
 }
