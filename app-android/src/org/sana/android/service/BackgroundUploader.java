@@ -6,6 +6,7 @@ import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
 import org.sana.android.net.MDSInterface;
+import org.sana.android.net.MDSInterface2;
 import org.sana.android.util.SanaUtil;
 
 import android.app.Application;
@@ -258,7 +259,7 @@ public class BackgroundUploader extends Service {
 									QueueManager.UPLOAD_STATUS_IN_PROGRESS);
 							
 							boolean uploadResult = 
-								MDSInterface.postProcedureToDjangoServer(
+								MDSInterface2.postProcedureToDjangoServer(
 										procedure, BackgroundUploader.this);	
 							
 							if (uploadResult) {
