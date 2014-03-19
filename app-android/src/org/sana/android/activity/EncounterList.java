@@ -1,5 +1,6 @@
 package org.sana.android.activity;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,27 +10,38 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.sana.R;
 import org.sana.android.app.Locales;
+import org.sana.android.content.Uris;
+import org.sana.android.db.EventDAO;
+import org.sana.android.db.ModelWrapper;
+import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.net.MDSInterface;
 import org.sana.android.provider.Encounters;
+import org.sana.android.provider.Observations;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
+import org.sana.android.provider.Events.EventType;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.QueueManager;
 import org.sana.android.service.ServiceConnector;
 import org.sana.android.service.ServiceListener;
 import org.sana.android.util.SanaUtil;
+import org.sana.util.UUIDUtil;
 
 import android.app.ListActivity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -43,10 +55,11 @@ import android.widget.TextView;
  * @author Sana Development Team
  */
 public class EncounterList extends ListActivity implements 
-	SimpleCursorAdapter.ViewBinder 
+	SimpleCursorAdapter.ViewBinder
 {
 	private static final String TAG = EncounterList.class.getSimpleName();
-	private static final String[] PROJECTION = { Encounters.Contract._ID,
+	private static final String[] PROJECTION = { 
+		    Encounters.Contract._ID,
 			Encounters.Contract.UUID, 
 			Encounters.Contract.PROCEDURE, 
 			Encounters.Contract.SUBJECT, 
@@ -104,7 +117,24 @@ public class EncounterList extends ListActivity implements
 		return title;
 	}
 	
+	private String lookupProcedureName(Uri procedure){
+
+		Cursor cur2 = getContentResolver().query(procedure,
+				new String[] {
+					Procedures.Contract._ID,
+					Procedures.Contract.TITLE },
+				null, null, null);
+		cur2.moveToFirst();
+		int id = cur2.getInt(0);
+		String title = cur2.getString(1);
+		cur2.close();
+		procedureToName.put(id, title);
+		
+		return title;
+	}
+	
 	/** Parses patient name from JSON String */
+	@Deprecated
 	private String getPatientNameFromData(String jsonData) {
         String patientId = "";
         String patientFirst = "";
@@ -138,6 +168,7 @@ public class EncounterList extends ListActivity implements
 	}
 	
 	/** Gets the upload status of an item in the queue */
+	@Deprecated
 	private String getUploadStatus(int queueStatus, int queuePosition) {
 		String message = "";
 		if (queueStatus == 0 || queueStatus == -1) message = "Not Uploaded";
@@ -164,8 +195,8 @@ public class EncounterList extends ListActivity implements
 		else if (queueStatus == QueueManager.UPLOAD_STATUS_CREDENTIALS_INVALID) 
 			message = "Upload stalled - username/password incorrect";
 		else Log.i(TAG, "Not a valid number stored in database.");
-		Log.i(TAG, "Message being set as the status of the procedure: " 
-				+ message);
+		//Log.i(TAG, "Message being set as the status of the procedure: " 
+		//		+ message);
 		return message;
 	}
 	
@@ -196,14 +227,15 @@ public class EncounterList extends ListActivity implements
 		else if (queueStatus == QueueManager.UPLOAD_STATUS_CREDENTIALS_INVALID) 
 			message = "Upload stalled - username/password incorrect";
 		else Log.i(TAG, "Not a valid number stored in database.");
-		Log.i(TAG, "Message being set as the status of the procedure: " 
-				+ message);
+		//Log.i(TAG, "Message being set as the status of the procedure: " 
+		//		+ message);
 		return message;
 	}
 	
 	private String getPatientNameFromTable(String uuid) {
 		String[] row = new String[4];
-		String[] projection = new String[] { Patients.Contract.PATIENT_ID, 
+		final String[] projection = new String[] { 
+				Patients.Contract.PATIENT_ID, 
 				Patients.Contract.UUID,
 				Patients.Contract.GIVEN_NAME,
 				Patients.Contract.FAMILY_NAME };
@@ -217,7 +249,8 @@ public class EncounterList extends ListActivity implements
 			selectionArgs = null;
 			selection = null;
 		} else {
-			Log.d(TAG, "uuid value: " + uuid ); 
+			selection = Patients.Contract.UUID + " = ?";
+			Log.d(TAG, "Patient uuid value: " + uuid ); 
 		}
 		
 		if(patientToName.containsKey(uuid)) {
@@ -237,7 +270,7 @@ public class EncounterList extends ListActivity implements
 				if(cur2 != null) cur2.close();
 				patientToName.put(uuid, row);
 			} catch (Exception e){
-			
+				e.printStackTrace();
 			}
 		}
 	
@@ -263,13 +296,20 @@ public class EncounterList extends ListActivity implements
 				((TextView)v).setText(cur.getString(columnIndex));
 				switch(columnIndex) {
 				case 2:
-					int procedureId = cur.getInt(cur.getColumnIndex(Encounters.Contract.PROCEDURE));
-					String procedureName = lookupProcedureName(procedureId);
+					String procedureId = cur.getString(cur.getColumnIndex(Encounters.Contract.PROCEDURE));
+					String procedureName = "UNKNOWN";
+					Uri procedure;
+					if(UUIDUtil.isValid(procedureId))
+						procedure = Uris.withAppendedUuid(Procedures.CONTENT_URI, procedureId); 
+					else
+						procedure = ContentUris.withAppendedId(Procedures.CONTENT_URI, Long.parseLong(procedureId));
+					
+					procedureName = lookupProcedureName(procedure);
 					((TextView)v).setText(procedureName);
 					break;
 				case 3:
 					String patientUuid = cur.getString(cur.getColumnIndex(Encounters.Contract.SUBJECT));
-					Log.i(TAG, "Setting patient name for patient. " + patientUuid);
+					//Log.i(TAG, "Setting patient name for patient. " + patientUuid);
 					String patientName = getPatientNameFromTable(patientUuid);
 					((TextView)v).setText(patientName);
 					break;
@@ -280,7 +320,7 @@ public class EncounterList extends ListActivity implements
 					int queuePosition = cur.getInt(cur.getColumnIndex(Encounters.Contract.UPLOAD_QUEUE));
 					String message = getUploadStatus2(queueStatus, 
 							queuePosition + 1);
-					Log.d(TAG, "Setting upload status to : " + message);
+					//Log.d(TAG, "Setting upload status to : " + message);
 					((TextView)v).setText(message);
 					break;
 				}
@@ -288,7 +328,8 @@ public class EncounterList extends ListActivity implements
 		}
 		catch (Exception e) {
 			Log.e(TAG, "Exception in setting the text in the list: " + 
-					e.toString());
+					e.toString() + ((cur != null)? cur.getPosition(): -1));
+			e.printStackTrace();
 		}
 		return true;
 	}
@@ -297,12 +338,13 @@ public class EncounterList extends ListActivity implements
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
+		Log.d(TAG, "onCreate()");
 		
 		// Connect to the background uploader service
 		try {
-        	mConnector.setServiceListener(
-        			new BackgroundUploaderConnectionListener());
-        	mConnector.connect(this);
+        	//mConnector.setServiceListener(
+        	//		new BackgroundUploaderConnectionListener());
+        	//mConnector.connect(this);
         }
         catch (Exception e) {
         	Log.e(TAG, "Exception starting background upload service: " 
@@ -325,6 +367,7 @@ public class EncounterList extends ListActivity implements
 	        setListAdapter(adapter);
         }
         catch (Exception e) {
+			e.printStackTrace();
 			Log.e(TAG, "Exception in creating SimpleCursorAdapter: " 
 					+ e.toString());
 		}
@@ -344,25 +387,33 @@ public class EncounterList extends ListActivity implements
 		}
 	}
 	
-	/** {@inheritDoc} */
 	@Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Uri uri = ContentUris.withAppendedId(getIntent().getData(), id);
+		
+		//CheckBox view = (CheckBox) v.findViewById(R.id.icon);
+		//view.setChecked(!view.isChecked());
+		//l.setItemChecked(position, view.isChecked());
+        Uri uri = ContentUris.withAppendedId(Encounters.CONTENT_URI, id);
         Log.i(TAG, "procedure Uri in onListItemClick: " + uri);
         String action = getIntent().getAction();
+        Log.i(TAG, "...action: " + action);
         if (Intent.ACTION_PICK.equals(action) || 
-        		Intent.ACTION_GET_CONTENT.equals(action)) 
+        		Intent.ACTION_GET_CONTENT.equals(action))
         {
             // The caller is waiting for us to return a note selected by
             // the user.  The have clicked on one, so return it now.
-        	MDSInterface.logObservations(this, uri.toString());
+        	
+        	//MDSInterface.logObservations(this, uri.toString());
             setResult(RESULT_OK, new Intent().setData(uri));
             finish();
+        } else if (Intent.ACTION_VIEW.equals(action)){
+        	startActivity(new Intent(Intent.ACTION_VIEW, uri));
         } else {
             // Launch activity to view/edit the currently selected item
             startActivity(new Intent(Intent.ACTION_EDIT, uri));
-        }
-    }
+        
+		}
+	}
 	
 	public static final int SELECT_ALL = 0;
 	public static final int SELECT_FAILED = 3;
@@ -387,13 +438,17 @@ public class EncounterList extends ListActivity implements
 
 		switch (item.getItemId()) {
 		case SELECT_ALL:
-			selectAllProcedures();
+			if(!selectAllToggle) 
+				selectAllProcedures();
+			else
+				unselectAllProcedures();
+			selectAllToggle = !selectAllToggle;
 			return true;
 		case DELETE:
 			deleteSelected();
 			return true;
 		case RESEND:
-			resendSelected();
+			resendSelected2();
 			return true;
 		/*case CANCEL_UPLOAD:
 			cancelUploads();
@@ -401,21 +456,27 @@ public class EncounterList extends ListActivity implements
 		}
 		return false;
 	}
+	boolean selectAllToggle = false;
 	
 	/** All checkboxes will be checked */
 	private void selectAllProcedures() {
-		try {
+			
 			for (int x = 0; x < getListAdapter().getCount(); x++) {
+				try {
+					//getListView().setItemChecked(x, true);
+					//boolean checked = getListView().isItemChecked(x);
+					//Log.w(TAG, "....ListView Item:"+ x+ ", checked : " + checked);
 				CheckBox checkbox = (CheckBox) getListView().getChildAt(x)
 												.findViewById(R.id.icon);
 				checkbox.setChecked(true);
-				Log.i(TAG, "Is checkbox checked? (Should be true): " 
+				Log.i(TAG, "....Is checkbox checked? (Should be true): " 
 						+ checkbox.isChecked());
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					Log.e(TAG, "Exception in selectAll(): pos: " + x+" ," + e.getMessage());
+				}
 			}
-		}
-		catch (Exception e) {
-			Log.i(TAG, "Exception in selectAll(): " + e.toString());
-		}
 	}
 	
 	/**
@@ -424,13 +485,16 @@ public class EncounterList extends ListActivity implements
 	private void unselectAllProcedures() {
 		try {
 			for (int x = 0; x < getListAdapter().getCount(); x++) {
-				CheckBox checkbox = (CheckBox) getListView().getChildAt(x)
-													.findViewById(R.id.icon);
+				View v = getListView().getChildAt(x);
+				//getListView().setItemChecked(x, false);
+				CheckBox checkbox = (CheckBox) v.findViewById(R.id.icon);
 				checkbox.setChecked(false);
+				
 			}
 		}
 		catch (Exception e) {
-			Log.i(TAG, "Exception in unselectAll(): " + e.toString());
+			e.printStackTrace();
+			Log.e(TAG, "Exception in unselectAll(): " + e.toString());
 		}
 	}
 	
@@ -439,28 +503,63 @@ public class EncounterList extends ListActivity implements
 	 */
 	private void deleteSelected() {
 		List<Long> ids = new LinkedList<Long>();
+		List<String> uuids = new LinkedList<String>();
 		ListAdapter adapter = getListAdapter();
-		ListView view = getListView();
-		try {
 			for (int x = 0; x < adapter.getCount(); x++) {
-				CheckBox checkbox = (CheckBox) view.getChildAt(x)
+				try{
+					CheckBox checkbox = (CheckBox) getListView().getChildAt(x)
 												.findViewById(R.id.icon);
-				if (checkbox.isChecked()) {
-					long itemId = adapter.getItemId(x);
-					ids.add(itemId);
+					Cursor c = (Cursor) adapter.getItem(x);
+					if (checkbox.isChecked()) {
+						long itemId = adapter.getItemId(x);
+						uuids.add(c.getString(1));
+						ids.add(itemId);
+					}
+
+				}
+				catch (Exception e) {
+				e.printStackTrace();
+				Log.e(TAG, "Exception in deleteSelected(): pos: " + x+" ," + e.getMessage());
 				}
 			}
-			unselectAllProcedures();
+			Log.w(TAG, "Delete count: " + ids.size());
 			String idList = SanaUtil.formatPrimaryKeyList(ids);
-
+			String uuidList = SanaUtil.formatPrimaryKeyList(uuids);
+			Log.w(TAG, "Deleting: " + idList);
 			// Now delete the ids
 			getContentResolver().delete(Encounters.CONTENT_URI, 
-					Encounters.Contract._ID + " IN " + idList, null); 
-		}
-		catch (Exception e) {
+					Encounters.Contract._ID + " IN " + idList, null);
+
+			for(long id: ids){
+				int deleted = getContentResolver().delete(ImageSQLFormat.CONTENT_URI, 
+	        		ImageSQLFormat.ENCOUNTER_ID + " = ?", 
+	        		new String[]{ String.valueOf(id) });
+				Log.d(TAG, "Deleted n = " + deleted +" images");
+				deleted = getContentResolver().delete(ImageSQLFormat.CONTENT_URI, 
+	        		ImageSQLFormat.ENCOUNTER_ID + " = ?", 
+	        		new String[]{ "encounter" });
+				Log.d(TAG, "Deleted n = " + deleted +" bad images");
+			}
+			/*
+			getContentResolver().delete(Observations.CONTENT_URI, 
+	        		Observations.Contract.ENCOUNTER + " IN " + uuidList,null);
+	        
+	        getContentResolver().delete(ImageSQLFormat.CONTENT_URI, 
+	        		ImageSQLFormat.ENCOUNTER_ID + " IN " + idList, null);
+			/*
+			for(long id: ids){
+				int index = getListView().
+				String uuid = ((Cursor)getListAdapter().get)).getString(columnIndex);
+				getContentResolver().delete(Observations.CONTENT_URI, 
+	        		Observations.Contract.ENCOUNTER + " = ?", 
+	        		new String[]{ uuid });
+	        	getContentResolver().delete(ImageSQLFormat.CONTENT_URI, 
+	        		ImageSQLFormat.ENCOUNTER_ID + " = ?", 
+	        		new String[]{ uuid });
+	        
+			}
+			*/
 			unselectAllProcedures();
-			Log.i(TAG, "Exception in deleteSelected(): " + e.toString());
-		}
 	}
 	
 	/**
@@ -473,12 +572,14 @@ public class EncounterList extends ListActivity implements
 				ListView view = getListView();
 				Uri contentUri = getIntent().getData();
 				for (int x = 0; x < adapter.getCount(); x++) {
+					//boolean checked = getListView().isItemChecked(x);
+					//Log.w(TAG, "ListView Item:"+ x+ ", checked : " + checked);
 					CheckBox checkbox = (CheckBox)view.getChildAt(x)
 													.findViewById(R.id.icon);
 					if (checkbox.isChecked()) {
 						Uri procedure = ContentUris.withAppendedId(contentUri, 
 								(Long) view.getItemIdAtPosition(x));
-						Log.i(TAG, "Resending procedure: " + procedure);
+						Log.i(TAG, "Resending encounter: " + procedure);
 						mUploadService.addProcedureToQueue(procedure);
 					}
 				}
@@ -490,16 +591,42 @@ public class EncounterList extends ListActivity implements
 		}
 	}
 	
+	private void resendSelected2(){
+		// use the uEncounter field to Post the data.
+		long[] ids = null;
+		//if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.FROYO)
+		SimpleCursorAdapter c = (SimpleCursorAdapter) this.getListAdapter();
+		for (int x = 0; x < c.getCount(); x++) {
+			//boolean checked = getListView().isItemChecked(x);
+			//Log.w(TAG, "ListView Item:"+ x+ ", checked : " + checked);
+			Uri encounter = ContentUris.withAppendedId(Encounters.CONTENT_URI, getListView().getItemIdAtPosition(x));
+			Intent upload = new Intent("org.sana.android.intent.action.CREATE", encounter);
+			Cursor cur = c.getCursor();
+			//String message = String.format("encounter: %s, procedure: %s, subject %d",
+			//		cur.getString(2), cur.getString(3), cur.getInt(4));
+			StringBuilder sb = new StringBuilder();
+			//DatabaseUtils.dumpCurrentRow(c.getCursor(), sb);
+			Log.w(TAG, sb.toString());
+			startService(upload);
+			
+			String msg = "Sending dispatcher CREATE for: " + encounter;
+			Log.w(TAG, msg);
+	        EventDAO.registerEvent(this, EventType.ENCOUNTER_SAVE_UPLOAD, msg);
+		}
+	}
+ 
+    
+	
 	//private static ContentResolver contentResolver;
 	//If selected procedures are in queue or are currently being uploaded, cancel the upload
-	/*private void cancelUploads() {
+	private void cancelUploads() {
 		try{
 			for (int x = 0; x < getListAdapter().getCount(); x++) {
 				CheckBox checkbox = (CheckBox) getListView().getChildAt(x).findViewById(R.id.icon);
 				Uri procedure = ContentUris.withAppendedId(getIntent().getData(), (Long) getListView().getItemIdAtPosition(x));
 				if (checkbox.isChecked()) {
 					// TODO Make is cancel if its in the middle of uploading, not just taking it out of the queue
-					BackgroundUploader.removeFromQueue(procedure);
+					//mUploadService.removeFromQueue(procedure);
 				}
 			}
 			unselectAllProcedures();
@@ -508,5 +635,6 @@ public class EncounterList extends ListActivity implements
 			unselectAllProcedures();
 			Log.i(TAG, "Exception in cancelSelected(): " + e.toString());
 		}
-	}*/
+	}
+
 }
