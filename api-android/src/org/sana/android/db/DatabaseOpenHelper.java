@@ -60,9 +60,6 @@ public abstract class DatabaseOpenHelper extends SQLiteOpenHelper
 		super(context,name,null,version);
 	}
 	
-		
-	
-	
 	/* (non-Javadoc)
 	 * @see org.sana.android.db.InsertHelper#onInsert(android.content.ContentValues)
 	@Override
