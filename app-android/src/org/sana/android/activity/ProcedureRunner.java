@@ -30,8 +30,8 @@ public class ProcedureRunner extends BaseRunner
     @Override
     public void onCreate(Bundle instance) {
         super.onCreate(instance);
-        setContentView(R.layout.procedure_runner_activity);
     	Locales.updateLocale(this, getString(R.string.force_locale));
+        setContentView(R.layout.procedure_runner_activity);
     }
 
     /** {@inheritDoc} */
@@ -44,9 +44,25 @@ public class ProcedureRunner extends BaseRunner
         }
     }
     
-
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+    	super.onSaveInstanceState(outState);
+    	if(mProcedureRunnerFragment != null)
+    		mProcedureRunnerFragment.onSaveInstanceState(outState);
+    }
+    
+    @Override
+    public void onRestoreInstanceState(Bundle inState){
+    	super.onRestoreInstanceState(inState);
+    	if(mProcedureRunnerFragment != null)
+    		mProcedureRunnerFragment.onRestoreInstanceState(inState);
+    }
+    
+    
     @Override
     public void onConfigurationChanged(Configuration newConfig){
+    	if(mProcedureRunnerFragment != null)
+    		mProcedureRunnerFragment.storeCurrentProcedure(false);
     	super.onConfigurationChanged(newConfig);
     }
     
@@ -57,4 +73,6 @@ public class ProcedureRunner extends BaseRunner
     	}
     	super.onDestroy();
     }
+    
+    
 }
