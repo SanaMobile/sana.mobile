@@ -2,11 +2,13 @@
 package org.sana.android.activity;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.app.Locales;
+import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.db.BinaryDAO;
 import org.sana.android.db.EncounterDAO;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
@@ -17,14 +19,21 @@ import org.sana.android.procedure.Procedure;
 import org.sana.android.provider.Events.EventType;
 import org.sana.android.provider.Observations;
 import org.sana.android.service.PluginService;
+import org.sana.android.service.impl.DispatchService;
 import org.sana.android.task.ImageProcessingTask;
 import org.sana.android.task.ImageProcessingTaskRequest;
+import org.sana.android.util.Logf;
 import org.sana.android.util.SanaUtil;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,6 +41,10 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -57,6 +70,8 @@ public abstract class BaseRunner extends FragmentActivity {
     public static final int DIALOG_ALREADY_UPLOADED = 7;
     public static final int DIALOG_LOOKUP_PROGRESS = 1;
     public static final int DIALOG_LOAD_PROGRESS = 2;
+    public static final int DIALOG_SIGNAL_STRENGTH = 16;
+    public static final int DIALOG_UPLOAD_RESULT = 32;
 
     // Options
     public static final int OPTION_SAVE_EXIT = 0;
@@ -65,12 +80,14 @@ public abstract class BaseRunner extends FragmentActivity {
     public static final int OPTION_HELP = 3;
 
     // Intent
+    public static final int RUN_DISCARD = -1;
     public static final int CAMERA_INTENT_REQUEST_CODE = 1;
     public static final int BARCODE_INTENT_REQUEST_CODE = 2;
     public static final int INFO_INTENT_REQUEST_CODE = 7;
     public static final int PLUGIN_INTENT_REQUEST_CODE = 4;
     public static final int IMPLICIT_PLUGIN_INTENT_REQUEST_CODE = 8;
     public static final int OBSERVATION_RESULT_CODE = 16;
+    public static final int TELEPHONY_CODE = 32;
 
     // State instance fields
     private static String[] params;
@@ -78,9 +95,26 @@ public abstract class BaseRunner extends FragmentActivity {
     private Uri thisSavedProcedure;
     private Intent mEncounterState = new Intent();
     private boolean wasOnDonePage = false;
+    protected ProgressDialog mUploadingDialog = null;
+    protected AtomicBoolean mUploading = new AtomicBoolean(false);
     
 
     private BaseRunnerFragment mRunnerFragment = null;
+    protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		  @Override
+		  public void onReceive(Context context, Intent intent) {
+		    // Extract data included in the Intent
+			Log.d(TAG, "context: " + context.getClass().getSimpleName() + ", intent: " + intent.toUri(Intent.URI_INTENT_SCHEME));
+			setUploading(false);
+            hideUploadingDialog();
+            String text = intent.hasExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE)? intent.getStringExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE): "Upload Result Received: " + intent.getDataString();
+			int result = intent.getIntExtra(DispatchService.RESPONSE_CODE, 400);
+			if(result == 200)
+				createUploadResultSuccessDialog(text).show();
+			else
+				createUploadResultFailDialog(text).show();
+		  }
+		};
 
     /** {@inheritDoc} */
     @Override
@@ -89,7 +123,41 @@ public abstract class BaseRunner extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_PROGRESS);
     	Locales.updateLocale(this, getString(R.string.force_locale));
     }
-
+    
+    @Override
+    public void onPause(){
+        super.onPause();
+    	Logf.D(TAG, "onPause()");
+    	if(mUploading.get() && mUploadingDialog != null){
+    		mUploadingDialog.dismiss();
+    		mUploadingDialog = null;
+    	}
+    	LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(mReceiver);
+    }
+    
+    @Override
+    public void onResume(){
+        super.onResume();
+    	Logf.D(TAG, "onResume()");
+    	Logf.D(TAG, "uploading: " + mUploading.get());
+    	if(mUploading.get()){
+    		if(mUploadingDialog != null){
+    			Logf.D(TAG, "mUploadingDialog != null && mUploading.get() = true");
+    			mUploadingDialog.show();
+    		} else {
+    			Logf.D(TAG, "mUploadingDialog == null && mUploading.get() = true");
+    			mUploadingDialog = new ProgressDialog(this);
+    			mUploadingDialog.setTitle(R.string.general_upload_in_progress);
+    			mUploadingDialog.setCancelable(false);
+    			mUploadingDialog.show();
+    		}
+    	} else {
+			Logf.D(TAG, "mUploading.get() = false");
+    	}
+        IntentFilter filter = new IntentFilter(DispatchResponseReceiver.BROADCAST_RESPONSE);
+        LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(mReceiver, filter);
+    	
+    }
     /** {@inheritDoc} */
     @Override
     public void onAttachFragment(Fragment fragment) {
@@ -180,6 +248,11 @@ public abstract class BaseRunner extends FragmentActivity {
                                 })
                         .setCancelable(false)
                         .create();
+
+            case DIALOG_SIGNAL_STRENGTH:
+            	break;
+            case DIALOG_UPLOAD_RESULT:	
+            
             default:
                 break;
         }
@@ -190,7 +263,7 @@ public abstract class BaseRunner extends FragmentActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         Log.i(TAG, "data: " + intent.toUri(Intent.URI_INTENT_SCHEME));
-        int description = intent.getExtras().getInt(INTENT_KEY_STRING);
+        int description = intent.getExtras().getInt(INTENT_KEY_STRING, RUN_DISCARD);
         Log.i(TAG, "description = " + description);
         try {
             switch (description) {
@@ -244,9 +317,22 @@ public abstract class BaseRunner extends FragmentActivity {
                 	String id = intent.getStringExtra("id");
                 	int page = intent.getIntExtra("page", -1);
                 	String obs = intent.getStringExtra(Observations.Contract.VALUE);
+                	ContentValues vals = new ContentValues();
+                	vals.put(Observations.Contract.VALUE, obs);
+                	//getContentResolver().update(intent.getData(), vals, null,null );
                 	Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id,obs));
-                	setValue(page, id, obs);
-                	storeCurrentProcedure(false, true);
+                	//setValue(page, id, obs);
+                	//storeCurrentProcedure(false, true);
+                	break;
+                case RUN_DISCARD:
+                	Intent dial = intent.getParcelableExtra(Intent.EXTRA_INTENT);
+                	// This is very forgiving of missing EXTRA_INTENT
+                	try{
+                		startActivityForResult(dial, RUN_DISCARD);
+                	} catch (Exception e){
+                		Log.w(TAG, "Bad Intent: " + dial);
+                		e.printStackTrace();
+                	}
                 	break;
                 default:
                     break;
@@ -349,6 +435,9 @@ public abstract class BaseRunner extends FragmentActivity {
                         	Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id,obs));
                         	p.setValue(page, id, obs);
                         	break;
+                        case RUN_DISCARD:
+                        	Log.i(TAG, "Action completed successfully: " + data);
+                        	break;
                         default:
                             Log.e(TAG, "Unknown activity");
                             answer = "";
@@ -390,6 +479,23 @@ public abstract class BaseRunner extends FragmentActivity {
         }
     }
     
+    protected final void makeText(String text){
+		makeText(text, Toast.LENGTH_LONG);
+	}
+    
+    protected final void makeText(String text, int duration){
+    	Locales.updateLocale(this, getString(R.string.force_locale));
+		Toast.makeText(this, text, duration).show();
+	}
+    
+    protected final void makeText(int resId){
+    	makeText(resId, Toast.LENGTH_SHORT);
+	}
+    
+    protected final void makeText(int resId, int duration){
+    	makeText(getString(resId), duration);
+	}
+    
     /** A static temporary image file
      * 
      * @return */
@@ -410,5 +516,111 @@ public abstract class BaseRunner extends FragmentActivity {
     		dir.mkdirs();
         File tmp =  new File(dir, String.format("%s_%s.jpg", encounter, obsId));
         return tmp.delete();
+    }
+    
+    /**
+     * 
+     * @param text
+     * @return
+     */
+    protected final AlertDialog createUploadResultSuccessDialog(String text){
+    	Locales.updateLocale(this,getString(R.string.force_locale));
+    	return new AlertDialog.Builder(this)
+    	.setTitle(getResources().getString(R.string.upload_status))
+        .setMessage((TextUtils.isEmpty(text))?getResources().getString(R.string.upload_success):text)
+            .setNeutralButton(getResources().getString(R.string.general_ok), new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton) {// close without saving
+                        setResult(RESULT_OK, null);
+                        finish();
+                }})
+             .setCancelable(false)
+             .create();
+    }
+    
+    /**
+     * 
+     * @param text
+     * @return
+     */
+    protected final AlertDialog createUploadResultFailDialog(String text){
+    	Locales.updateLocale(this,getString(R.string.force_locale));
+    	return new AlertDialog.Builder(this)
+        	.setTitle(getResources().getString(R.string.upload_status))
+            .setMessage((TextUtils.isEmpty(text))?getResources().getString(R.string.upload_fail):text)
+            .setNeutralButton(getResources().getString(R.string.general_ok), new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	// close without saving
+                        //setResult(RESULT_OK, null);
+                        //finish();
+                }})
+             .setCancelable(false)
+             .create();
+    }
+    
+    protected final void createSignalStrengthDialog(){
+    	
+    	
+    }
+    
+    public void hideUploadingDialog(){
+    	if(mUploadingDialog != null && mUploadingDialog.isShowing()){
+    		mUploadingDialog.dismiss();
+    		mUploadingDialog = null;
+    	}
+    }
+    
+    public void showUploadingDialog(){
+    	if(mUploadingDialog != null && !mUploadingDialog.isShowing())
+    		mUploadingDialog.show();
+    	else{
+    		mUploadingDialog = new ProgressDialog(this);
+    		mUploadingDialog.setTitle(R.string.general_upload_in_progress);
+    		mUploadingDialog.setCancelable(false);
+    		mUploadingDialog.show();
+    	}
+    		
+    }
+    
+    public void setUploading(boolean state){
+    	mUploading.set(state);
+    }
+    
+    public void onSaveInstanceState(Bundle outState){
+    	super.onSaveInstanceState(outState);
+    	outState.putBoolean("mUploading", mUploading.get());
+    }
+    
+    public void onRestoreInstanceState(Bundle inState){
+    	super.onRestoreInstanceState(inState);
+    	if(inState != null){
+    		mUploading.set(inState.getBoolean("mUploading", false));
+    	} else {
+    		mUploading.set(false);
+    	}
+    }
+    
+    private class GSMStateListener extends PhoneStateListener{
+    	@Override
+        public void onSignalStrengthsChanged(SignalStrength strength) {
+        	Locales.updateLocale(BaseRunner.this, getString(R.string.force_locale));
+        	String negativeText = getResources().getString(R.string.general_cancel);
+        	String positiveText = getResources().getString(R.string.general_ok);
+            super.onSignalStrengthsChanged(strength);
+            new AlertDialog.Builder(BaseRunner.this)
+                .setTitle("SNR")
+                .setMessage(String.valueOf(strength.getGsmSignalStrength()))
+                .setPositiveButton(positiveText, new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton) {// close without saving
+                        //setResult(RESULT_OK, null);
+                        //finish();
+                }})
+                .setNegativeButton(negativeText, new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int whichButton) {// close without saving
+                        //setResult(RESULT_OK, null);
+                        //finish();
+                }})
+                .create()
+                .show();
+        }
     }
 }

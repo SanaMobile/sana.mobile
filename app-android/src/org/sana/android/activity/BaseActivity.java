@@ -1,17 +1,23 @@
 package org.sana.android.activity;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import org.sana.R;
 import org.sana.android.app.Locales;
 import org.sana.android.app.State.Keys;
+import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
 import org.sana.android.fragment.AuthenticationDialogFragment.AuthenticationDialogListener;
@@ -43,6 +49,8 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     public static final String INSTANCE_KEY = "instanceKey";
     public static final String SESSION_KEY = "sessionKey";
     
+    private final AtomicBoolean mWaiting = new AtomicBoolean(false);
+    
     // instanceKey initialized to some random value for the instance;
 	private String mInstanceKey = UUID.randomUUID().toString();
 	// Authenticated session key default is null;
@@ -52,7 +60,16 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     protected Uri mEncounter = Uri.EMPTY;
     protected Uri mProcedure = Uri.EMPTY;
     protected Uri mObserver = Uri.EMPTY;
-	
+    protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		  @Override
+		  public void onReceive(Context context, Intent intent) {
+		    // Extract data included in the Intent
+			Log.d(TAG, "context: " + context.getClass().getSimpleName() + ", intent: " + intent.toUri(Intent.URI_INTENT_SCHEME));
+			String text = intent.hasExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE)? intent.getStringExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE): "Upload Result Received: " + intent.getDataString();
+			makeText(text);
+		  }
+		};
+		
 	/**
 	 * Returns the value of the instance key which is created when the object is
 	 * instantiated.
@@ -258,37 +275,47 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * @param message
      */
     void showProgressDialogFragment(String message) {
-        
         if (mWaitDialog != null && mWaitDialog.isShowing()) {
             hideProgressDialogFragment();
         }
         // No need to create dialog if this is finishing
         if(isFinishing())
         	return;
+        
         mWaitDialog = new ProgressDialog(this);
         mWaitDialog.setMessage(message);
         mWaitDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mWaitDialog.show();
+        mWaiting.set(true);
     }
     
     /**
      * Hides the progress dialog if it is shown.
      */
     void hideProgressDialogFragment() {
-        
+    	mWaiting.set(false);
         if (mWaitDialog == null) {
             return;
         }
         // dismiss if finishing
-        if(isFinishing())
-        	mWaitDialog.dismiss();
-        else
-        	mWaitDialog.hide();
+    	try{
+    		if(isFinishing())
+    			mWaitDialog.dismiss();
+    		else
+    			mWaitDialog.hide();
+    		} catch (Exception e){
+    			e.printStackTrace();
+    	}
     }
     
     final void cancelProgressDialogFragment(){
-    	if(mWaitDialog != null)
-    		mWaitDialog.dismiss();
+    	mWaiting.set(false);
+    	try{
+    		if(mWaitDialog != null && mWaitDialog.isShowing())
+    			mWaitDialog.dismiss();
+    	} catch (Exception e){
+    		e.printStackTrace();
+    	}
     }
     
     public void setData(Uri uri){
@@ -348,8 +375,33 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
 	}
 	
     protected void dump(){
-    	Logf.D(TAG,"dump()", String.format("{ 'encounter': '%s',"
+    	Logf.D(this.getClass().getSimpleName(),"dump()", String.format("{ 'encounter': '%s',"
     			+" 'observer': '%s', 'subject': '%s', 'procedure': '%s' }",
     			mEncounter, mObserver, mSubject, mProcedure));
     }
+    
+    protected void dump(String method){
+    	Logf.D(this.getClass().getSimpleName(),method+".dump()", String.format("{ 'encounter': '%s',"
+    			+" 'observer': '%s', 'subject': '%s', 'procedure': '%s' }",
+    			mEncounter, mObserver, mSubject, mProcedure));
+    	
+    }
+    
+    protected final void makeText(String text){
+		makeText(text, Toast.LENGTH_LONG);
+	}
+    
+    protected final void makeText(String text, int duration){
+    	Locales.updateLocale(this, getString(R.string.force_locale));
+		Toast.makeText(this, text, duration).show();
+	}
+    
+    protected final void makeText(int resId){
+    	makeText(resId, Toast.LENGTH_SHORT);
+	}
+    
+    protected final void makeText(int resId, int duration){
+    	makeText(getString(resId), duration);
+	}
+    
 }
