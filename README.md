@@ -1,0 +1,116 @@
+sana.mobile
+===========
+
+The libraries and Android code for the Sana mobile client.
+
+Overview
+--------
+The new client code is intended to be a self-contained, modularized, 
+project including all necessary support libraries and unit testing code
+for the Sana Mobile Android client. 
+
+Code structure
+--------------
+1.  api - Pure Java library consisting of POJO's and code w/o Android 
+    dependencies
+2.  api-android - Common library for Sana mobile Android client as well 
+    external plugin apps. 
+3.  app-android - Sana mobile client
+4.  api/libs - Additional libraries required by the projects.
+
+Development Requirements
+------------------------
+1.  Git
+2.  JDK(latest 1.6 release)
+3.  Android ADT Bundle
+      http://developer.android.com/sdk/index.html
+4.  Android v4-support and v7-appcompat support libraries(Install using SDK 
+      manager).
+      http://developer.android.com/tools/support-library/setup.html
+    Should be included with ADT
+5.  Add API 7 using SDK manager
+5.  Android virtual device or phone which supports API 7
+
+Code installation instructions.
+-------------------------------
+1.  Start Eclipse bundled with ADT 
+2.  Import the sana code projects:
+    a. File --> Import --> Git --> Projects from Git
+    b. Use following URI for import
+        https://github.com/SanaHealth/sana.mobile
+    c. Select all branches
+    d. Use defaults for local destination
+    e. Select all of the projects
+       api
+       api-android
+       app-android
+       app-android-tests
+3.  Add android-support-v7-appcompat project to your workspace
+    *** The sana.mobile code assumes it has been copied into the workspace.
+    *** If you do not copy you will need to update the library reference later.
+    Important:
+    a. Add to Java Build Path
+         android-support-v4.jar
+         android-support-v7-appcompat.jar
+    b. Select Android Private Libraries in Export tab of Java build path
+    For more info:
+        http://developer.android.com/tools/support-library/setup.html#libs-with-res
+
+Troubleshooting
+---------------
+A.  Missing Android dependencies. Use the "Android SDK Manager" to add any 
+    missing API levels. In Eclipse, it can be launched by selecting
+        Window --> Android SDK Manager 
+B.  "NoClassDefFoundError" when running the client application. By default, the 
+    ADT plugin does not export libraries included in the build. To correct this
+    issue, right click on the project in Eclipse and open the Properties window.
+    Select: Java Build Path --> Order and Export 
+C.  Path issues with v7-appcompat library reference in api-android. Open
+    Project Properties --> Android and check the Library references at the 
+    bottom of the window. A large red x by the v7-appcompat indicates the path needs to
+    be corrected. Remove and re-add the appcompat project from your workspace.
+    
+Licensing
+---------
+This software is released under the BSD License. Please see LICENSE for a full
+copy of the license and copyright information. Licensing information for
+additional software included with this product can be found in the NOTICE.
+
+Cryptographic Software Notice
+-----------------------------
+
+This distribution may include software that has been designed for use
+with cryptographic software. The country in which you currently reside
+may have restrictions on the import, possession, use, and/or re-export
+to another country, of encryption software. BEFORE using any encryption
+software, please check your country's laws, regulations and policies
+concerning the import, possession, or use, and re-export of encryption
+software, to see if this is permitted. See <http://www.wassenaar.org/>
+for more information.
+
+The U.S. Government Department of Commerce, Bureau of Industry and
+Security (BIS), has classified this software as Export Commodity
+Control Number (ECCN) 5D002.C.1, which includes information security
+software using or performing cryptographic functions with asymmetric
+algorithms. The form and manner of this Apache Software Foundation
+distribution makes it eligible for export under the License Exception
+ENC Technology Software Unrestricted (TSU) exception (see the BIS
+Export Administration Regulations, Section 740.13) for both object
+code and source code.
+
+The following provides more details on the included software that
+may be subject to export controls on cryptographic software:
+
+  Apache HttpComponents Client interfaces with the
+  Java Secure Socket Extension (JSSE) API to provide
+
+    - HTTPS support
+
+  Apache HttpComponents Client does not include any
+  implementation of JSSE.
+  
+  
+Contact
+-------
+Additional information can be found at, or is linked from, the main project 
+site: http://sana.mit.edu
