@@ -34,6 +34,7 @@
     <string name="button_main_register_patients">Register Patient</string>
     <string name="button_main_select_procedure">Select Procedure</string>
     <string name="button_main_select_patient">Select Patient</string>
+    <string name="button_main_training_mode">Practice</string>
 		
 	<!--  General Phrases -->
 	<string name="general_ok">Okay</string>
@@ -80,6 +81,7 @@
     <string name="dialog_loading_procedure">Loading Procedure.</string>
     <string name="dialog_look_up_patient">Looking up patient \"%d\"</string>
     <string name="dialog_logging_in">Logging in.</string>
+    <string name="dialog_synchronizing">Synchronizing</string>
 	
 	<!-- Menu options strings -->
 	<string name="menu_new_patient">New Patient</string>
@@ -100,7 +102,11 @@
     <string name="settings_network_title">Sana Configuration</string>
     <string name="settings_resource_title">Sana Configuration</string>
 	<string name="setting_mds_url">Mobile Dispatch Server URL</string>
-    <string name="setting_mds_url_summary">IP address of MDS, do NOT add a trailing /</string>
+    <string name="setting_mds_url_summary">Hostname or IP address of MDS, do NOT add a trailing /</string>
+	<string name="setting_mds_port">Mobile Dispatch Server Port</string>
+    <string name="setting_mds_port_summary">Do not change unless using non-standard port</string>
+	<string name="setting_mds_root">Mobile Dispatch Server Root Path</string>
+    <string name="setting_mds_root_summary">Root path prefix-default mds/</string>
     <string name="setting_secure">Secure Transmission</string>
     <string name="setting_secure_summary">Encrypt data sent over the network</string>
     <string name="setting_phone_name">Phone Name</string>

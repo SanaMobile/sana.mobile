@@ -34,6 +34,7 @@
     <string name="button_main_register_patients">Add Pasyan</string>
     <string name="button_main_select_procedure">Chwazi Pwosedi</string>
     <string name="button_main_select_patient">Chwazi Pasyan</string>
+    <string name="button_main_training_mode">Pratike</string>
 		
 	<!--  General Phrases -->
 	<string name="general_ok">Oke</string>
@@ -79,6 +80,7 @@
     <string name="dialog_loading_procedure">Loading Pwosedi</string>
     <string name="dialog_look_up_patient">Leve je l \'pasyan \"%d\"</string>
     <string name="dialog_logging_in">Otantifye</string>
+    <string name="dialog_synchronizing">senkronism</string>
 	
 	<!-- Menu options strings -->
 	<string name="menu_new_patient">Pasyan New</string>
