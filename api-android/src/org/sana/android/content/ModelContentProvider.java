@@ -242,6 +242,19 @@ public abstract class ModelContentProvider extends ContentProvider {
 	public ParcelFileDescriptor openFile(Uri uri, String mode)
 			throws FileNotFoundException 
 	{
+		Log.i(TAG, "openFile()" + uri);
+    	Log.d(TAG,"...uri: " + uri);
+    	Log.d(TAG,"...mode: " + mode);
+    	
+    	String ext = getTableHelper(uri).getFileExtension();
+		int match = Uris.getContentDescriptor(uri);
+		switch(match){
+		case(Uris.OBSERVATION):
+		case(Uris.SUBJECT):
+			break;
+		default:
+			throw new FileNotFoundException("Unsupported content type. No files.");
+		}
 		TableHelper<?> helper = getTableHelper(uri);
 		String column = helper.getFileColumn();
 		Cursor c = query(uri, new String[]{ column }, null, null, null);
@@ -255,8 +268,8 @@ public abstract class ModelContentProvider extends ContentProvider {
         				throw new IllegalArgumentException(
         						"Vaild for single row only");
         			// get file and open
-        	        int i = c.getColumnIndex(column);
-        	        path = c.getString(i);
+        	        path = c.getString(0);
+        	        Log.d(TAG, "...opening file path: " + path);
         		} else {
                     throw new IllegalArgumentException("Invalid Uri: " + uri);
         		}
@@ -269,17 +282,28 @@ public abstract class ModelContentProvider extends ContentProvider {
     	int modeBits = modeToMode(mode);
     	// Create file
         if (TextUtils.isEmpty(path)){
+        	Log.d(TAG,"...path was empty.");
         	if(modeBits == ParcelFileDescriptor.MODE_READ_ONLY)
         		throw new IllegalArgumentException("Read only open on empty File path "
             		+"in column '" + column + "' for uri: " + uri);
             // Open in read write with no file name
-        	String ext = getTableHelper(uri).getFileExtension();
         	long id = ContentUris.parseId(uri);
-        	File dir = getContext().getDir("files/" + helper.getTable(), 0);
+        	File dir = getContext().getExternalFilesDir(helper.getTable());
+        	boolean created = dir.mkdirs();
+        	Log.d(TAG,"...created parent dirs: " + created);
+        	//File dir = new File(fDir,helper.getTable());
+        	dir.mkdirs();
         	fopen = new File(dir,String.format("%s.%s", id,ext));
+        	// Update file column with absolute path
+        	ContentValues values = new ContentValues();
+        	values.put(column, fopen.getAbsolutePath());
+        	int updated = getContext().getContentResolver().update(uri, values, null,null);
+        	Log.d(TAG, "updated: " + updated + ", file: " + fopen.getAbsolutePath());
         } else {
         	fopen = new File(path);
         }
+    	Log.d(TAG,"...opening file: " + fopen.getAbsolutePath());
+    	Log.d(TAG,"...opening in mode: " + mode);
         return ParcelFileDescriptor.open(fopen, modeBits);
 	}
 	
