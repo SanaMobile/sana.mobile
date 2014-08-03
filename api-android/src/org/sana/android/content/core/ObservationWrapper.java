@@ -27,6 +27,8 @@
  */
 package org.sana.android.content.core;
 
+import java.io.File;
+
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.provider.Observations;
 import org.sana.api.IObservation;
@@ -34,6 +36,7 @@ import org.sana.api.IObservation;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 
 /**
  * @author Sana Development
@@ -264,5 +267,19 @@ public class ObservationWrapper extends ModelWrapper<IObservation> implements
 				new String[]{ 	Observations.Contract.SUBJECT,
 								Observations.Contract.CONCEPT },
 				new String[]{	subject,concept }));
+	}
+	
+	public static File getComplexData(ContentResolver resolver, Uri obs){
+		Cursor cursor = null;
+		String path = null;
+		try{
+			String[] projection = new String[]{ Observations.Contract.VALUE };
+			cursor = resolver.query(obs, projection, null,null,null);
+			if(cursor != null && cursor.moveToFirst())
+				path = cursor.getString(0);
+		} finally {
+			if(cursor != null) cursor.close();
+		}
+		return (TextUtils.isEmpty(path))? null: new File(path);
 	}
 }
