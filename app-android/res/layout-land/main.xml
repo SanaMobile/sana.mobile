@@ -1,50 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:background="@drawable/main_background"
+    android:gravity="fill_horizontal"
+    android:orientation="horizontal" >
 
     <ImageView
-        android:layout_width="fill_parent"
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/mocap" />
-    <!--
-         <Button android:id="@+id/moca_main_record"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="Lookup Patient Record" />
-    -->
-
+        android:src="@drawable/sana_logo" />
+    
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal" >
+        android:id="@+id/btn_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent" 
+        android:gravity="fill_horizontal"
+        android:orientation="vertical"  >
+        
+        <Button
+            android:id="@+id/btn_main_register_patient"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:text="@string/button_main_register_patients" />
 
         <Button
-            android:id="@+id/moca_main_view_patients"
-            android:layout_width="@dimen/btn_main_width"
+            android:id="@+id/btn_main_select_patient"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/button_main_view_patients" />
+            android:onClick="submit"
+            android:text="@string/button_main_select_patient" />
 
         <Button
-            android:id="@+id/moca_main_procedure"
-            android:layout_width="120px"
+            android:id="@+id/btn_main_procedures"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/button_main_new_encounter" />
+            android:onClick="submit"
+            android:text="@string/button_main_select_procedure" />
 
-        <!-- TODO: needs to be removed -->
         <Button
-            android:id="@+id/moca_main_transfers"
-            android:layout_width="120px"
+            android:id="@+id/btn_main_transfers"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:onClick="submit"
             android:text="@string/button_main_view_prior_encounters" />
 
         <Button
-            android:id="@+id/moca_main_notifications"
-            android:layout_width="120px"
+            android:id="@+id/button_main_notifications"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:onClick="submit"
             android:text="@string/button_main_view_notifications" />
-    </LinearLayout>
 
+    </LinearLayout>
 </LinearLayout>
