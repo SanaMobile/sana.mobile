@@ -9,14 +9,18 @@ import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.app.Locales;
 import org.sana.android.content.DispatchResponseReceiver;
+import org.sana.android.content.Intents;
+import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.db.BinaryDAO;
 import org.sana.android.db.EncounterDAO;
+import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.fragment.BaseRunnerFragment;
 import org.sana.android.media.EducationResource.Audience;
 import org.sana.android.procedure.PictureElement;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.provider.Events.EventType;
+import org.sana.android.provider.BaseContract;
 import org.sana.android.provider.Observations;
 import org.sana.android.service.PluginService;
 import org.sana.android.service.impl.DispatchService;
@@ -24,6 +28,7 @@ import org.sana.android.task.ImageProcessingTask;
 import org.sana.android.task.ImageProcessingTaskRequest;
 import org.sana.android.util.Logf;
 import org.sana.android.util.SanaUtil;
+import org.sana.util.UUIDUtil;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -97,7 +102,7 @@ public abstract class BaseRunner extends FragmentActivity {
     private boolean wasOnDonePage = false;
     protected ProgressDialog mUploadingDialog = null;
     protected AtomicBoolean mUploading = new AtomicBoolean(false);
-    
+    protected String mPluginId = null;
 
     private BaseRunnerFragment mRunnerFragment = null;
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -265,6 +270,9 @@ public abstract class BaseRunner extends FragmentActivity {
         Log.i(TAG, "data: " + intent.toUri(Intent.URI_INTENT_SCHEME));
         int description = intent.getExtras().getInt(INTENT_KEY_STRING, RUN_DISCARD);
         Log.i(TAG, "description = " + description);
+        Uri data;
+        String id;
+        int page;
         try {
             switch (description) {
                 case 0: // intent comes from PictureElement to launch camera app
@@ -301,21 +309,39 @@ public abstract class BaseRunner extends FragmentActivity {
                             intent.getType());
                     Log.d(TAG, "State: " + mEncounterState.toUri(
                             Intent.URI_INTENT_SCHEME));
+                    // The EXTRA_INTENT is what actually captures the data
                     Intent plug = intent.getParcelableExtra(Intent.EXTRA_INTENT);
-                    // Add some state about the current encounter to the Intent
-                    plug.putExtra("subject",
-                            p.getPatientInfo().getPatientIdentifier());
-                    plug.putExtra("encounter", EncounterDAO.getEncounterGuid(this,
-                            thisSavedProcedure));
-                    plug.putExtra("observation", intent.getStringExtra(
-                            BinarySQLFormat.ELEMENT_ID));
-
+                    // Node id set by the plugin element
+                    id = intent.getStringExtra(Observations.Contract.ID);
+                    page = intent.getIntExtra("page", -1);
+                    mPluginId = id;
+                    // encounter uuid from the activity intent
+            		String encounter = ModelWrapper.getUuid(intent.getData(), getContentResolver());
+            		Uri mSubject = getIntent().getParcelableExtra(Intents.EXTRA_SUBJECT);
+            		String subject = ModelWrapper.getUuid(mSubject, getContentResolver());
+            		// Use the node id and encounter to get or create the observation entry
+            		data = ObservationWrapper.getReferenceByEncounterAndId(
+    						getContentResolver(), encounter,
+    						id);
+            		if(data == null || data.equals(Observations.CONTENT_URI)){
+            			ContentValues vals = new ContentValues();
+            			vals.put(BaseContract.UUID, UUIDUtil.generate(encounter, id).toString());
+            			vals.put(Observations.Contract.ENCOUNTER, encounter);
+            			vals.put(Observations.Contract.ID, id);
+            			vals.put(Observations.Contract.CONCEPT, plug.getStringExtra(Observations.Contract.CONCEPT));
+            			vals.put(Observations.Contract.SUBJECT, subject);
+            			data = getContentResolver().insert(Observations.CONTENT_URI, vals);
+            		}
+                    plug.setDataAndType(data, intent.getType());
+                    plug.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    // Take a look at it
                     Log.d(TAG, "Plug: " + plug.toUri(Intent.URI_INTENT_SCHEME));
+                    // Launch the plugin
                     startActivityForResult(plug, PLUGIN_INTENT_REQUEST_CODE);
                     break;
                 case OBSERVATION_RESULT_CODE:
-                	String id = intent.getStringExtra("id");
-                	int page = intent.getIntExtra("page", -1);
+                	id = intent.getStringExtra("id");
+                	page = intent.getIntExtra("page", -1);
                 	String obs = intent.getStringExtra(Observations.Contract.VALUE);
                 	ContentValues vals = new ContentValues();
                 	vals.put(Observations.Contract.VALUE, obs);
@@ -357,9 +383,12 @@ public abstract class BaseRunner extends FragmentActivity {
         Log.d(TAG, "......... resultCode : " + resultCode);
         Log.d(TAG, "......... obs        : " + mEncounterState.getData());
         Log.d(TAG, "......... type       : " + mEncounterState.getType());
+        String id = "";
         String answer = "";
+        int page = -1;
         switch (resultCode) {
             case (RESULT_OK):
+            	page = mRunnerFragment.getCurrentPage();
                 try {
                     switch (requestCode) {
                     /*
@@ -402,38 +431,46 @@ public abstract class BaseRunner extends FragmentActivity {
                             }
                             break;
                         case PLUGIN_INTENT_REQUEST_CODE:
-                            Uri mObs = mEncounterState.getData();
-                            String mObsType = mEncounterState.getType();
-                            Intent result = PluginService.renderPluginActivityResult(
-                                    getContentResolver(), data, mObs, mObsType);
-                            String type = result.getType();
-                            Uri rData = result.getData();
+                            Uri mObs = data.getData();
+                            String type = (TextUtils.isEmpty(data.getType()))? 
+                            		"text/plain": data.getType();
+                            id = (data.hasExtra(Observations.Contract.ID))?
+                            		data.getStringExtra(Observations.Contract.ID):
+                            		mPluginId;
 
+                            // Print plugin result
+                            Log.d(TAG, "....Plugin result:");
+                            Log.d(TAG, "........data      : " + mObs);
+                            Log.d(TAG, "........id        : " + id);
+                            Log.d(TAG, "........type      : " + type);
+                            
                             // Check if we get plain text first
                             if (type.equals("text/plain")) {
-                                answer = rData.getFragment();
+                                answer = mObs.getFragment();
 
-                                // Otherwise we have binary blob so we insert
+                            // Otherwise we have binary blob so we insert
                             } else {
+                            	answer = ObservationWrapper.getComplexData(
+                            				getContentResolver(), mObs).getAbsolutePath();
                                 Uri uri = BinaryDAO.updateOrCreate(
                                         getContentResolver(),
-                                        mObs.getPathSegments().get(1),
-                                        mObs.getPathSegments().get(2),
-                                        rData, type);
-                                Log.d(TAG, "Binary insert uri: " + uri.toString());
-                                answer = BinaryDAO.getUUID(uri);
-                                p.current().setElementValue(
-                                        mEncounterState.getData().getPathSegments().get(2),
-                                        answer);
+                                        mEncounterState.getData().getLastPathSegment(),
+                                        id,
+                                        mObs, type);
                             }
+                            Log.d(TAG, "........answer       : " + answer);
+                            Log.d(TAG, "........page         : " + page);
+                            // set and store the value
+                            setValue(page, id, answer);
+                            storeCurrentProcedure(false, true);
                             break;
 
                         case OBSERVATION_RESULT_CODE:
-                        	String id = data.getStringExtra("id");
-                        	int page = data.getIntExtra("page", -1);
+                        	id = data.getStringExtra("id");
+                        	page = data.getIntExtra("page", -1);
                         	String obs = data.getStringExtra(Observations.Contract.VALUE);
                         	Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id,obs));
-                        	p.setValue(page, id, obs);
+                        	setValue(page, id, obs);
                         	break;
                         case RUN_DISCARD:
                         	Log.i(TAG, "Action completed successfully: " + data);
@@ -449,9 +486,6 @@ public abstract class BaseRunner extends FragmentActivity {
 
                     Log.d(TAG, "Got answer: " + answer);
                     Log.w(TAG, mEncounterState.toUri(0));
-                    //p.current().setElementValue(
-                    //        mEncounterState.getData().getPathSegments().get(2),
-                    //        answer);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "Error capturing answer from RESULT_OK: "
