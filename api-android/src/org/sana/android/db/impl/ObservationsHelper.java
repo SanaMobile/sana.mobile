@@ -77,7 +77,7 @@ public class ObservationsHelper extends TableHelper<Observation>{
 	}
 	
 	protected ObservationsHelper(){
-		super(Observation.class);
+		super(Observation.class, Observations.Contract.VALUE, "bin");
 	}
 	
 	/* (non-Javadoc)
