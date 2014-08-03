@@ -4,8 +4,11 @@ import java.net.URISyntaxException;
 
 import org.sana.R;
 import org.sana.android.activity.ProcedureRunner;
+import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.db.BinaryDAO;
+import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.SanaDB.BinarySQLFormat;
+import org.sana.android.provider.Observations;
 import org.sana.android.service.PluginService;
 import org.w3c.dom.Node;
 
@@ -14,6 +17,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -56,7 +60,8 @@ public class PluginElement extends ProcedureElement implements
 {
 	private static final String TAG = PluginElement.class.getSimpleName();
 	public static final String PARAMS_NAME = "keys";
-	
+	public static final String DELIMITER = ";";
+			
 	// the plugin action -> intent action string
 	protected final String pluginAction;
 	// the plugin package -> Activity package 
@@ -67,6 +72,7 @@ public class PluginElement extends ProcedureElement implements
     protected Button mViewButton;
     protected ImageView mPluginIcon;
     protected String mLabel = null;
+    protected Bundle mParams;
 
     /**
      * Constructs a new PluginElement
@@ -83,14 +89,21 @@ public class PluginElement extends ProcedureElement implements
      * 		construct a launch intent. 
      */
 	protected PluginElement(String id, String question, String answer,
-			String concept, String figure, String audioPrompt, String action, 
+			String concept, String figure, String audioPrompt, String action,
 			String mimeType) 
 	{
+		this(id, question, answer, concept, figure, audioPrompt, action, new Bundle(), mimeType);
+	}
+	protected PluginElement(String id, String question, String answer,
+			String concept, String figure, String audioPrompt, String action,
+			Bundle params,
+			String mimeType){
+
 		super(id, question, answer, concept, figure, audioPrompt);
 		this.pluginAction = action;
 		this.mimeType = mimeType;
+		setControlParams(params);
 	}
-	
 	/**
 	 * Fetches the plug-in String for this element
 	 * @return the action string
@@ -105,6 +118,16 @@ public class PluginElement extends ProcedureElement implements
 	 */
 	public String getMimeType(){
 		return mimeType;
+	}
+	
+	public String getControlString(){
+		StringBuilder control = new StringBuilder();
+		control.append(getAction());
+		for(String key: mParams.keySet()){
+			control.append(DELIMITER);
+			control.append(key + "=" + mParams.getString(key));
+		}
+		return control.toString();
 	}
 	
 	/**
@@ -131,15 +154,28 @@ public class PluginElement extends ProcedureElement implements
 	 */
 	protected Intent getViewIntent() {
 		Log.d(TAG, "view: " + answer);
-		Intent intent = new Intent();
-		if(!TextUtils.isEmpty(answer)){
-			Uri u = ContentUris.withAppendedId(BinarySQLFormat.CONTENT_URI,
-						Long.parseLong(answer));
-			Log.d(TAG, u.toString());
-			Uri fUri = BinaryDAO.queryFile(getContext().getContentResolver(), u);
-			intent = new Intent(Intent.ACTION_VIEW, fUri);
-			Log.d(TAG, fUri.toString());
-		 }
+		Uri ue = getProcedure().getInstanceUri();
+		String encounter = ModelWrapper.getUuid(ue, getContext().getContentResolver());
+		Intent intent = null;
+		if(TextUtils.isEmpty(answer))
+			return intent;
+		try{
+			intent = new Intent();
+			//Uri obs = Uri.parse(answer);
+			Uri obs = ObservationWrapper.getReferenceByEncounterAndId(
+				getContext().getContentResolver(), encounter,
+				id);
+			intent = new Intent(getAction() +"_VIEW");
+			if(obs != null && !obs.equals(Observations.CONTENT_URI)){
+				intent.setDataAndType(obs,mimeType)
+					.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			}
+			Log.d(TAG, "....encounter" + encounter);
+			Log.d(TAG, "....obs" + obs);
+			Log.d(TAG, "intent: " + intent);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		return intent;
 	}
 	
@@ -162,16 +198,20 @@ public class PluginElement extends ProcedureElement implements
 	protected void capture(){
 		 try {
 			 Uri obs = Uri.withAppendedPath(getProcedure().getInstanceUri(),id);
-			 Intent plugin = PluginService.renderPluginLaunchIntent(
-					 getRawPluginIntent(),obs);
+			 
+			 
+			 Intent plugin = new Intent(getAction());
+			 plugin.putExtras(getControlParams());
+			 plugin.putExtra(Observations.Contract.ID, id);
+			 plugin.putExtra(Observations.Contract.CONCEPT, concept);
 			 Log.d(TAG, "obs: " + obs);
 			 Intent i = new Intent(getContext(), ProcedureRunner.class);
 			 i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 				.putExtra(ProcedureRunner.INTENT_KEY_STRING, 
 						  ProcedureRunner.PLUGIN_INTENT_REQUEST_CODE)
-				.putExtra(BinarySQLFormat.ELEMENT_ID, id)
+				.putExtra(Observations.Contract.ID, id)
 				.putExtra(Intent.EXTRA_INTENT, plugin)
-				.setDataAndType(obs,mimeType);
+				.setDataAndType(getProcedure().getInstanceUri(),mimeType);
 			 ((Activity) getContext()).startActivity(i);
 		 } catch (Exception e){
 			 Log.e(TAG, "Error starting plugin: " + e.toString());
@@ -184,7 +224,7 @@ public class PluginElement extends ProcedureElement implements
 	protected void view(){
 		try {
 			Intent intent = getViewIntent();
-			if(intent.getData() != null){
+			if(intent != null && intent.getData() != null){
 				getContext().startActivity(intent);
 			} else {
 				Toast.makeText(getContext(),
@@ -196,9 +236,31 @@ public class PluginElement extends ProcedureElement implements
 		 }
 	}
 	
+	protected Bundle getControlParams(){
+		Bundle params = new Bundle(mParams);
+		return params;
+	}
+	
+	protected String getControlParam(String name){
+		return mParams.getString(name);
+		
+	}
+	protected void setControlParams(Bundle params){
+		mParams = new Bundle(params);
+	}
+	
+	protected void updateControlParams(Bundle params){
+		mParams.putAll(params);
+	}
+	
+	protected void setControlParam(String name, String value){
+		mParams.putString(name, value);
+		
+	}
+	
     @Override
     protected void appendOptionalAttributes(StringBuilder sb){
-        sb.append("\" action=\"" + getAction());
+        sb.append("\" action=\"" + getControlString());
         sb.append("\" mimeType=\"" + getMimeType());
     }
     
@@ -207,12 +269,21 @@ public class PluginElement extends ProcedureElement implements
     		String answer, String concept, String figure, String audio, 
     		Node node) throws ProcedureParseException  
     {
-        String action = node.getAttributes().getNamedItem("action")
+        String controlStr = node.getAttributes().getNamedItem("action")
         				.getNodeValue();
-        String pkg = node.getAttributes().getNamedItem("mimeType")
+        if(TextUtils.isEmpty(controlStr))
+        	throw new ProcedureParseException("Invalid contol string: NULL");
+        String[] control = controlStr.split(DELIMITER);
+        String action = control[0];
+        Bundle params = new Bundle();
+        for(int i = 1; i < control.length; i++){
+        	String[] param = control[i].split("=");
+        	params.putString(param[0], param[1]);
+        }
+        String mimeType = node.getAttributes().getNamedItem("mimeType")
         				.getNodeValue();
     	return new PluginElement(id, question, answer, concept, figure, audio,
-    			action,pkg);
+    			action,params,mimeType);
     }
      
 	/** {@inheritDoc} */
@@ -262,13 +333,16 @@ public class PluginElement extends ProcedureElement implements
 	/** {@inheritDoc} */
 	@Override
     public String getAnswer() {
+		Log.i(TAG, "getAnswer()");
+		Log.d(TAG, "... id "+id + ", answer:" + answer);
     	return answer;
     }
     
 	/** Sets the answer String for this element */
 	@Override
 	public void setAnswer(String answer) {
-		Log.d(TAG, "Element: "+id + ", set answer:" + answer);
+		Log.i(TAG, "setAnswer()");
+		Log.d(TAG, "... set answer:" + answer);
 		this.answer = answer;
 	}
 }
