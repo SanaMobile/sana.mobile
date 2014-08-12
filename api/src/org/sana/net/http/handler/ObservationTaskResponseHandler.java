@@ -10,9 +10,8 @@ import com.google.gson.reflect.TypeToken;
 
 public class ObservationTaskResponseHandler extends ApiResponseHandler<Response<Collection<ObservationTask>>>{
 
-	public Type getType() {
-		final Type type = new TypeToken<Response<Collection<ObservationTask>>>(){}.getType();
-		return type;
-	}
+    public Type getType() {
+        final Type type = new TypeToken<Response<Collection<ObservationTask>>>(){}.getType();
+        return type;
+    }
 }
-
