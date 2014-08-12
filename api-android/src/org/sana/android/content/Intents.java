@@ -96,6 +96,9 @@ public final class Intents{
     /** Intent request code to resume running a saved procedure*/
     public static final int RESUME_PROCEDURE = EDIT | Uris.PROCEDURE_DIR;
     
+    /** Intent request code to start running a procedure */
+    public static final int EXECUTE_ENCOUNTER_TASK = RUN | Uris.ENCOUNTER_TASK_DIR;
+
     /** INtent request code to view settings */
     //public static final int SETTINGS = PICK | Uris.SETTINGS_DIR;
     
@@ -112,6 +115,8 @@ public final class Intents{
 	// Activity action strings 
 	//-------------------------------------------------------------------------
 	/** Effectively an action to indicate a call to Activity.finish()  */
+    public static final String ACTION_RESPOND_SUCCESS = "org.sana.intent.action.RESPOND_SUCCES";
+    public static final String ACTION_RESPOND_FAIL = "org.sana.intent.action.RESPOND_FAIL";
     public static final String ACTION_FINISH = "org.sana.android.intent.action.FINISH";
     
     public static final String ACTION_CANCEL = "org.sana.android.intent.action.CANCEL";
@@ -163,10 +168,21 @@ public final class Intents{
     
     /** Intent action string for the main activity. */
     public static final String ACTION_MAIN = "org.sana.android.intent.action.MAIN";
+    //-------------------------------------------------------------------------
+    // CRUD action strings for the dispatcher
+    //-------------------------------------------------------------------------
+    /** Indicates data has been created and should be pushed upstream as necessary */
+    public static final String ACTION_CREATE = "org.sana.intent.action.CREATE";
+    /** Indicates data needs to be read or fetched from upstream as necessary */
+    public static final String ACTION_READ = "org.sana.intent.action.READ";
+    /** Indicates data has been updated and should be pushed upstream as necessary */
+    public static final String ACTION_UPDATE = "org.sana.intent.action.UPDATE";
+    /** Indicates data has been removed and should be removed upstream as anecessary */
+    public static final String ACTION_DELETE = "org.sana.intent.action.DELETE";
+    
+    /** General action to indicate the action is intended to complete a predefined task */
+    public static final String ACTION_EXECUTE_TASK = "org.sana.intent.action.EXECUTE_TASK";
 
-    
-    
-    
 	private static final Map<String, Integer> sActionCodes = new HashMap<String, Integer>(18);
 	static{
 		sActionCodes.put(Intent.ACTION_MAIN, MAIN);
@@ -189,21 +205,29 @@ public final class Intents{
 		sActionCodes.put(Intents.ACTION_PICK_ACTIVITY,PICK_ACTIVITY);
 		sActionCodes.put(Intent.ACTION_SEARCH,SEARCH);
 		sActionCodes.put(Intent.ACTION_WEB_SEARCH,WEB_SEARCH);
+                // CRUD Actions - these are essentially synonyms for others
+		sActionCodes.put(ACTION_CREATE, INSERT);
+		sActionCodes.put(ACTION_READ, VIEW);
+		sActionCodes.put(ACTION_UPDATE, EDIT);
+		sActionCodes.put(ACTION_DELETE, DELETE);
+                // Additional sana defined actions
+		sActionCodes.put(ACTION_EXECUTE_TASK, MAIN);
 	}
     //-------------------------------------------------------------------------
-	// Activity category strings 
-	//-------------------------------------------------------------------------
+    // Activity category strings 
+    //-------------------------------------------------------------------------
     public static final String CATEGORY_AUTHENTICATE = "org.sana.android.intent.category.AUTHENTICATE";
-	public static final String CATEGORY_OBSERVABLE = "org.sana.android.intent.category.OBSERVABLE";
-	public static final String CATEGORY_LEXICAL = "org.sana.android.intent.category.LEXICAL";
-	public static final String CATEGORY_TASK = "org.sana.android.intent.category.TASK";
-	
+    public static final String CATEGORY_OBSERVABLE = "org.sana.android.intent.category.OBSERVABLE";
+    public static final String CATEGORY_LEXICAL = "org.sana.android.intent.category.LEXICAL";
+    public static final String CATEGORY_TASK = "org.sana.android.intent.category.TASK";
+    public static final String CATEGORY_TASK_COMPLETE = "org.sana.intent.category.TASK_COMPLETE";
+
     //-------------------------------------------------------------------------
     // Intent extra keys
-	//-------------------------------------------------------------------------
-	/** The int value of the original request code used when starting an Activity. */ 
-	public static final String EXTRA_REQUEST_CODE = "org.sana.android.intent.REQUEST_CODE";
-	
+    //-------------------------------------------------------------------------
+    /** The int value of the original request code used when starting an Activity. */ 
+    public static final String EXTRA_REQUEST_CODE = "org.sana.android.intent.REQUEST_CODE";
+
 	/** The int value of the original request code used when starting an Activity. */ 
 	public static final String EXTRA_TOKEN = "org.sana.android.intent.TOKEN";
 	
@@ -243,20 +267,33 @@ public final class Intents{
 	/** A content: Uri holding the current subject */ 
 	public static final String EXTRA_SUBJECT = "org.sana.android.intent.extra.SUBJECT";
 	
-	/** A content: Uri holding the current encounter task */ 
+	/** A content: Uri holding a task */ 
 	public static final String EXTRA_TASK = "org.sana.android.intent.extra.TASK";
 
+        /** An array of content Uris holding zero or more tasks */
 	public static final String EXTRA_TASKS = "org.sana.android.intent.extra.TASKS";
 	
 	/** A content: Uri holding the current encounter task */ 
 	public static final String EXTRA_TASK_ENCOUNTER = "org.sana.android.intent.extra.task.ENCOUNTER";
 	
-	/** A content: Uri holding the current encounter task */ 
+	/** A content: Uri holding the current observation task */ 
 	public static final String EXTRA_TASK_OBSERVATION = "org.sana.android.intent.extra.task.OBSERVATION";
 	
 
 	public static final String SERVICE_DISPATCH = "org.sana.service.START_DISPATCH";
 	
+
+
+        //-------------------------------------------------------------------------
+        // Intent flags
+	//-------------------------------------------------------------------------
+	/** Set to  indicate notifications should be sent  */    
+        public static final int FLAG_NOTIFY = 1;
+        /** Set to  indicate notifications should be sent when the action of the intent has been started */ 
+        public static final int FLAG_NOTIFY_TASK_INIT = 2;
+        /** Set to  indicate notifications should be sent after the action of the intent has completed  */ 
+        public static final int FLAG_NOTIFY_TASK_COMPLETE = 4; 
+
 	/**
 	 * Copies an intent into a new one including all data, type, extras, and 
 	 * categories.
