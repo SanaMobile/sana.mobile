@@ -50,52 +50,52 @@ import org.sana.util.UUIDUtil;
  *
  */
 public class EncountersHelper extends TableHelper<Encounter>{
-	public static final String TAG = EncountersHelper.class.getSimpleName();
+    public static final String TAG = EncountersHelper.class.getSimpleName();
 
-	public static final String SELECT_COMPOUND = "SELECT"
-			+ "encountertask._id AS encountertask_id,"
-			+ "encountertask.uuid AS encountertask_uuid,"
-			+ "encountertask.due_on AS ,"
-			+ "encountertask.modified AS modified,"
-			+ "patient._id AS patient_id,"
-			+ "patient.uuid AS patient_uuid,"
-			+ "patient.given_name AS patient_given_name,"
-			+ "patient.family_name AS patient_family_name,"
-			+ "procedure._id AS procedure_id,"
-			+ "procedure.uuid AS procedure_uuid,"
-			+ "procedure.title AS procedure_title"
-			+ " FROM"
-			+ " encountertask"
-			+ " LEFT JOIN patient ON encountertask.patient = patient.uuid"
-			+ " LEFT JOIN procedure ON encountertask.procedure = procedure.uuid";
-	
-	static final Map<String, String> sProjectionMap = new HashMap<String, String>();
-	
-	static{
-		sProjectionMap.put(Encounters.Contract.STATE, Encounters.Contract.STATE);
-		
-	}
-	
-	private static final EncountersHelper HELPER = new EncountersHelper();
-	
-	/**
-	 * Gets the singleton instance of this class.
-	 * 
-	 * @return An instance of this class.
-	 */
-	public static EncountersHelper getInstance(){
-		return HELPER;
-	}
-	
-	protected EncountersHelper(){
-		super(Encounter.class);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.sana.android.db.InsertHelper#onInsert(android.net.Uri, android.content.ContentValues)
-	 */
-	@Override
-	public ContentValues onInsert(ContentValues values) {
+    public static final String SELECT_COMPOUND = "SELECT"
+            + "encountertask._id AS encountertask_id,"
+            + "encountertask.uuid AS encountertask_uuid,"
+            + "encountertask.due_on AS ,"
+            + "encountertask.modified AS modified,"
+            + "patient._id AS patient_id,"
+            + "patient.uuid AS patient_uuid,"
+            + "patient.given_name AS patient_given_name,"
+            + "patient.family_name AS patient_family_name,"
+            + "procedure._id AS procedure_id,"
+            + "procedure.uuid AS procedure_uuid,"
+            + "procedure.title AS procedure_title"
+            + " FROM"
+            + " encountertask"
+            + " LEFT JOIN patient ON encountertask.patient = patient.uuid"
+            + " LEFT JOIN procedure ON encountertask.procedure = procedure.uuid";
+    
+    static final Map<String, String> sProjectionMap = new HashMap<String, String>();
+    
+    static{
+        sProjectionMap.put(Encounters.Contract.STATE, Encounters.Contract.STATE);
+        
+    }
+    
+    private static final EncountersHelper HELPER = new EncountersHelper();
+    
+    /**
+     * Gets the singleton instance of this class.
+     * 
+     * @return An instance of this class.
+     */
+    public static EncountersHelper getInstance(){
+        return HELPER;
+    }
+    
+    protected EncountersHelper(){
+        super(Encounter.class);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.sana.android.db.InsertHelper#onInsert(android.net.Uri, android.content.ContentValues)
+     */
+    @Override
+    public ContentValues onInsert(ContentValues values) {
         
         if(values.containsKey(Encounters.Contract.STATE)== false){
             values.put(Encounters.Contract.STATE, "");
@@ -116,24 +116,24 @@ public class EncountersHelper extends TableHelper<Encounter>{
         if(values.containsKey(Encounters.Contract.UPLOAD_QUEUE) == false) {
             values.put(Encounters.Contract.UPLOAD_QUEUE, -1);
         }
-		return super.onInsert(values);
-	}
+        return super.onInsert(values);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.android.db.UpdateHelper#onUpdate(java.lang.String, android.content.ContentValues, java.lang.String, java.lang.String[])
-	 */
-	@Override
-	public ContentValues onUpdate(Uri uri, ContentValues values) {
-		return super.onUpdate(uri, values);
-	}
+    /* (non-Javadoc)
+     * @see org.sana.android.db.UpdateHelper#onUpdate(java.lang.String, android.content.ContentValues, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public ContentValues onUpdate(Uri uri, ContentValues values) {
+        return super.onUpdate(uri, values);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.android.db.CreateHelper#onCreate(android.database.sqlite.SQLiteDatabase)
-	 */
-	@Override
-	public String onCreate() {
-		Log.i(TAG, "onCreate()");
-		return "CREATE TABLE " + getTable() + " ("
+    /* (non-Javadoc)
+     * @see org.sana.android.db.CreateHelper#onCreate(android.database.sqlite.SQLiteDatabase)
+     */
+    @Override
+    public String onCreate() {
+        Log.i(TAG, "onCreate()");
+        return "CREATE TABLE " + getTable() + " ("
                 + Encounters.Contract._ID + " INTEGER PRIMARY KEY,"
                 + Encounters.Contract.UUID + " TEXT,"
                 + Encounters.Contract.PROCEDURE + " TEXT NOT NULL,"
@@ -147,31 +147,40 @@ public class EncountersHelper extends TableHelper<Encounter>{
                 + Encounters.Contract.CREATED + " TEXT,"
                 + Encounters.Contract.MODIFIED + " TEXT"
                 + ");";
-	}
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.android.db.UpgradeHelper#onUpgrade(int, int)
-	 */
-	@Override
-	public String onUpgrade(int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	/*
-	@Override
-	public Cursor onQuery(SQLiteDatabase db, String[] projection, 
-			String selection, String[] selectionArgs, String sortOrder){
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		if(TextUtils.isEmpty(selection)){
-			String[] tables = new String[] { getTable(), SubjectsHelper.getInstance().getTable()};
-			selection = String.format("%s LEFT OUTER JOIN %s ON %s = %s",
-					tables[0], tables[1], Encounters.Contract.SUBJECT, Patients.Contract.UUID);
-			qb.setTables(tables[0]+","+tables[1]);
-		} else {
-			qb.setTables(getTable());
-		}
-		Cursor cursor = qb.query(db, projection, selection, selectionArgs, null,null, sortOrder);
-		return cursor;
-	}
-	*/
+    /* (non-Javadoc)
+     * @see org.sana.android.db.UpgradeHelper#onUpgrade(int, int)
+     */
+    @Override
+    public String onUpgrade(int oldVersion, int newVersion) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.sana.android.db.SortHelper#onSort(android.net.Uri)
+     */
+    @Override
+    public String onSort(Uri uri) {
+        return Encounters.Contract.CREATED + " DESC";
+    }
+    
+    /*
+    @Override
+    public Cursor onQuery(SQLiteDatabase db, String[] projection, 
+            String selection, String[] selectionArgs, String sortOrder){
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        if(TextUtils.isEmpty(selection)){
+            String[] tables = new String[] { getTable(), SubjectsHelper.getInstance().getTable()};
+            selection = String.format("%s LEFT OUTER JOIN %s ON %s = %s",
+                    tables[0], tables[1], Encounters.Contract.SUBJECT, Patients.Contract.UUID);
+            qb.setTables(tables[0]+","+tables[1]);
+        } else {
+            qb.setTables(getTable());
+        }
+        Cursor cursor = qb.query(db, projection, selection, selectionArgs, null,null, sortOrder);
+        return cursor;
+    }
+    */
 }
