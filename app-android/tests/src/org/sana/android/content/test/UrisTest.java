@@ -69,6 +69,14 @@ public class UrisTest extends AndroidTestCase {
 		uuid = UUID.randomUUID().toString();
 	}
 	
+	public static void logUri(Uri uri){
+		Log.d(TAG, String.format(" { 'descriptor'=%d, 'typeDescriptor'=%d, 'contentDescriptor'=%d, 'uri'=%s }",
+			Uris.getDescriptor(uri),
+			Uris.getTypeDescriptor(uri),
+			Uris.getContentDescriptor(uri),
+			uri));
+	}
+	
 	public void testConceptDescriptors(){
     	assertEquals(Uris.getDescriptor(Concepts.CONTENT_URI), Uris.CONCEPT_DIR);
     	uri = ContentUris.withAppendedId(Concepts.CONTENT_URI, 1);
@@ -78,11 +86,26 @@ public class UrisTest extends AndroidTestCase {
 	}
 	
 	public void testEncounterDescriptors(){
+		// Test DIR
+		uri = Encounters.CONTENT_URI;
+		logUri(uri);
     	assertEquals(Uris.getDescriptor(Encounters.CONTENT_URI), Uris.ENCOUNTER_DIR);
+    	assertEquals(Uris.ITEMS, Uris.getTypeDescriptor(uri));
+    	assertEquals(Uris.ENCOUNTER, Uris.getContentDescriptor(uri));
+    	
+    	//Test ITEM_ID
     	uri = ContentUris.withAppendedId(Encounters.CONTENT_URI, 1);
+		logUri(uri);
     	assertEquals(Uris.getDescriptor(uri), Uris.ENCOUNTER_ITEM);
+    	assertEquals(Uris.ITEM_ID, Uris.getTypeDescriptor(uri));
+    	assertEquals(Uris.ENCOUNTER, Uris.getContentDescriptor(uri));
+    	
+    	// Test ITEM UUID
     	uri = Uris.withAppendedUuid(Encounters.CONTENT_URI, uuid.toString());
+		logUri(uri);
     	assertEquals(Uris.getDescriptor(uri), Uris.ENCOUNTER_UUID);
+    	assertEquals(Uris.ITEM_UUID, Uris.getTypeDescriptor(uri));
+    	assertEquals(Uris.ENCOUNTER, Uris.getContentDescriptor(uri));
 	}
 	
 	public void testEventDescriptors(){

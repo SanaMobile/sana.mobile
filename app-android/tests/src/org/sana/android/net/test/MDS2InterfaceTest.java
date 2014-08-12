@@ -1,7 +1,12 @@
 package org.sana.android.net.test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+import java.util.HashMap;
 import java.net.URI;
 
 import org.sana.R;
@@ -12,7 +17,9 @@ import org.sana.android.provider.Concepts;
 import org.sana.android.provider.EncounterTasks;
 import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
+import org.sana.android.provider.Tasks;
 import org.sana.api.task.EncounterTask;
+import org.sana.api.IModel;
 import org.sana.core.Concept;
 import org.sana.core.Location;
 import org.sana.core.Patient;
@@ -20,6 +27,7 @@ import org.sana.core.Procedure;
 import org.sana.net.Response;
 import org.sana.net.http.handler.ConceptResponseHandler;
 import org.sana.net.http.handler.EncounterResponseHandler;
+import org.sana.net.http.handler.EncounterTaskResponseHandler;
 import org.sana.net.http.handler.LocationResponseHandler;
 import org.sana.net.http.handler.PatientResponseHandler;
 import org.sana.net.http.handler.ProcedureResponseHandler;
@@ -34,7 +42,7 @@ import android.util.Log;
 
 public class MDS2InterfaceTest  extends AndroidTestCase {
 
-	String username = "test";
+	String username = "test_sa";
 	String password = "t3st";
 	Uri[] uris = new Uri[]{};
 	Context mContext;
@@ -54,6 +62,15 @@ public class MDS2InterfaceTest  extends AndroidTestCase {
 		rootPath = mContext.getString(R.string.path_root);
 	}
 	
+        static final SimpleDateFormat sdf = new SimpleDateFormat(IModel.DATE_FORMAT,
+            Locale.US);
+            
+        public String timeStamp(){        
+	    Date now = new Date();        
+	    String nowStr = sdf.format(now);        
+	    return nowStr;    
+	}    
+	
 	public void testLocationGet(){
 		Uri target = Uri.parse("content://org.sana/core/location");
 		Collection<Location> objs = Collections.emptyList();
@@ -62,7 +79,7 @@ public class MDS2InterfaceTest  extends AndroidTestCase {
 		Log.d("MDS2InterfaceTest", "GET: " + uri);
 		LocationResponseHandler handler = new LocationResponseHandler();
 
-			Response<Collection<Location>> response = MDSInterface2.apiGet(uri, handler);
+			Response<Collection<Location>> response = MDSInterface2.apiGet(uri, username,password,handler);
 			Log.i("MDS2InterfaceTest", "LOCATIONS " + response);
 			objs = response.message;
 			for(Location obj:objs){
@@ -80,8 +97,8 @@ public class MDS2InterfaceTest  extends AndroidTestCase {
 		try {
 		URI uri = Uris.iriToURI(target , scheme, host, port, rootPath );
 		Log.d("MDS2InterfaceTest", "GET: " + uri);
-		EncounterResponseHandler handler = new EncounterResponseHandler();
-			Response<Collection<EncounterTask>> response = MDSInterface2.apiGet(uri,handler);
+		EncounterTaskResponseHandler handler = new EncounterTaskResponseHandler();
+			Response<Collection<EncounterTask>> response = MDSInterface2.apiGet(uri,username,password,handler);
 			Log.i("MDS2InterfaceTest", "TASKS " + response);
 			objs = response.message;
 			for(EncounterTask task:objs){
@@ -94,13 +111,42 @@ public class MDS2InterfaceTest  extends AndroidTestCase {
 		
 	}
 	
+	public void testEncounterTaskUpdate(){
+		Collection<EncounterTask> objs = Collections.emptyList();
+                String uuid = "e56b3f06-329a-4be8-869e-0226c708221e";
+                String now = timeStamp();
+                Log.d("MDS2InterfaceTest", "now = " + now);
+		Uri target = Uris.withAppendedUuid(EncounterTasks.CONTENT_URI, uuid);
+		try {
+		    URI uri = MDSInterface2.iriToURI(mContext,target); 
+		    //Uris.iriToURI(target , scheme, host, port, rootPath );
+		    Map<String,String> form = new HashMap<String,String>();
+                    //form.put("uuid",uuid);
+		    form.put("status", "2");
+		    form.put(Tasks.Contract.COMPLETED, now);
+		    Log.d("MDS2InterfaceTest", "PUT: " + uri);
+		    EncounterTaskResponseHandler handler = new EncounterTaskResponseHandler();
+		    Response<Collection<EncounterTask>> response = MDSInterface2.apiPost(uri,username,password,form,handler);
+		    Log.i("MDS2InterfaceTest", "TASKS " + response);
+		    objs = response.message;
+		    for(EncounterTask task:objs){
+		        Log.d("MDS2InterfaceTest", task.toString());
+		        Log.d("MDS2InterfaceTest", "..completed" + task.completed);
+                    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		assertTrue(objs.size() == 1);
+		
+	}
+	
 	public void testConceptGet(){
 		ConceptResponseHandler handler = new ConceptResponseHandler();
 		Collection<Concept> objs = Collections.emptyList();
 		Uri target = Concepts.CONTENT_URI;
 		try {
 		URI uri = Uris.iriToURI(target , scheme, host, port, rootPath );
-			Response<Collection<Concept>> response = MDSInterface2.apiGet(uri,handler);
+			Response<Collection<Concept>> response = MDSInterface2.apiGet(uri,username,password,handler);
 			Log.i("MDS2InterfaceTest", "CONCEPTS" + response);
 			objs = response.message;
 			for(Concept obj:objs){
@@ -119,7 +165,7 @@ public class MDS2InterfaceTest  extends AndroidTestCase {
 		Collection<Patient> objs = Collections.emptyList();
 		try {
 			URI uri = Uris.iriToURI(target , scheme, host, port, rootPath );
-			Response<Collection<Patient>> response = MDSInterface2.apiGet(uri, handler);
+			Response<Collection<Patient>> response = MDSInterface2.apiGet(uri, username,password,handler);
 			Log.i("MDS2InterfaceTest", "PATIENTS" + response);
 			objs = response.message;
 			for(Patient obj:objs){
@@ -139,7 +185,7 @@ public class MDS2InterfaceTest  extends AndroidTestCase {
 		Collection<Procedure> objs = Collections.emptyList();
 		try {
 			URI uri = Uris.iriToURI(target , scheme, host, port, rootPath );
-			response = MDSInterface2.apiGet(uri, handler);
+			response = MDSInterface2.apiGet(uri, username,password,handler);
 			Log.i("MDS2InterfaceTest", "CONCEPTS" + response);
 			objs = response.message;
 			for(Procedure obj:objs){
