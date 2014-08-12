@@ -98,4 +98,9 @@ public abstract class Model implements IModel{
 	public void setUuid(String uuid) {
 		this.uuid = java.util.UUID.fromString(uuid).toString();
 	}
+	
+        @Override        
+        public String toString(){
+            return String.format("<%s %s>",this.getClass().getSimpleName(),uuid);
+        }
 }
