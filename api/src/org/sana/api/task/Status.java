@@ -32,8 +32,21 @@ package org.sana.api.task;
  *
  */
 public enum Status {
-	ASSIGNED,
-	ACCEPTED,
-	REJECTED,
-	COMPLETED
+	ASSIGNED(1),
+	REVIEWED(5),
+	REJECTED(3),
+	COMPLETED(2),
+        IN_PROGRESS(4);
+        public final int code;
+        Status(int code){
+            this.code = code;
+        }
+        
+        public static Status fromCode(int code){
+            for(Status status: Status.values()){
+                if(status.code == code)
+                    return status;
+            }
+            throw new IllegalArgumentException();
+        }
 }
