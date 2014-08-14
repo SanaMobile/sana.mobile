@@ -5,7 +5,18 @@
     <color name="light_goldenrod">#EEDD82</color>
     <color name="goldenrod">#DAA520</color>
     <color name="past_due">#FF3300</color>
+    <color name="complete">#00CC00</color>
+    <color name="due_today">#FF9933</color>
+    <!-- Progress Dialog colors -->
+    <color name="bg_progressdialog">#8C4406</color>
+    <color name="fg_progressdialog">#FFFFFF</color>
     
+    <!-- Alert colors -->
+    <color name="bg_alertsuccess">#00FF00</color>
+    <color name="bg_alertfail">#FF0000</color>
+    <color name="fg_alert">#FFFFFF</color>
+    
+    <!-- Android compat colors -->
     <drawable name="screen_background_holo_light">#fff3f3f3</drawable>
     <drawable name="screen_background_holo_dark">#ff000000</drawable>
     <color name="background_holo_dark">#ff000000</color>
