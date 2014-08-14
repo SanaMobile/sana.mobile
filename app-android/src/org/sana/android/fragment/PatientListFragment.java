@@ -5,9 +5,11 @@ import java.util.Locale;
 
 import org.sana.R;
 import org.sana.android.app.Locales;
+import org.sana.android.content.Intents;
 import org.sana.android.content.core.PatientWrapper;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Patients.Contract;
+import org.sana.android.provider.Subjects;
 import org.sana.android.util.Bitmaps;
 import org.sana.android.util.Logf;
 
@@ -91,7 +93,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         setListAdapter(mAdapter);
         // Do we sync with server
         delta = getActivity().getResources().getInteger(R.integer.sync_delta_subjects);
-        sync(getActivity(), Patients.CONTENT_URI);
+        sync(getActivity(), Subjects.CONTENT_URI);
     	LoaderManager.enableDebugLogging(true);
         getActivity().getSupportLoaderManager().initLoader(PATIENTS_LOADER, null, this);
     }
@@ -395,7 +397,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     	if((now - lastSync) > delta){
         	Logf.W(TAG, "sync(): synchronizing patient list");
     		prefs.edit().putLong("patient_sync", now).commit();
-    		Intent intent = new Intent(context.getString(R.string.intent_action_read),uri);
+    		Intent intent = new Intent(Intents.ACTION_READ,uri);
     		context.startService(intent);
     	}
     }

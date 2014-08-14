@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_new_patient"
+        android:showAsAction="always|withText"
+        android:title="@string/title_register"/>
+    
+    <item
+        android:id="@+id/menu_sync_patients"
+        android:showAsAction="always|withText"
+        android:title="@string/title_synchronize"/>
+    <item
+        android:id="@+id/menu_delete_patients"
+        android:showAsAction="always|withText"
+        android:title="@string/menu_delete"/>
+
+</menu>
