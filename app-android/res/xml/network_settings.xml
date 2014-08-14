@@ -2,19 +2,20 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/settings_title" >
-        <EditTextPreference
+        <CheckBoxPreference android:key="s_secure" android:title="@string/setting_secure" android:summary="@string/setting_secure_summary" android:defaultValue="true" /><EditTextPreference
             android:key="s_mds_url"
             android:title="@string/setting_mds_url"
             android:summary="@string/setting_mds_url_summary" android:defaultValue="@string/host_mds"/>
-        <CheckBoxPreference 
-            android:key="s_secure"
-            android:title="@string/setting_secure"
-            android:summary="@string/setting_secure_summary"
-            android:defaultValue="true" />
+        <EditTextPreference 
+            android:summary="@string/setting_mds_port_summary" 
+            android:key="s_mds_port" 
+            android:title="@string/setting_mds_port" 
+            android:defaultValue="@integer/port_mds" />
+        <EditTextPreference android:summary="@string/setting_mds_root_summary" android:key="s_mds_root" android:title="@string/setting_mds_root" android:defaultValue="@string/path_root"/>
         <EditTextPreference
             android:key="s_packet_init_size"
             android:title="@string/setting_pkt_size"
-            android:summary="@string/setting_pkt_size_summary" />
+            android:summary="@string/setting_pkt_size_summary" android:defaultValue="@integer/packet_size"/>
         <EditTextPreference
             android:key="s_database_refresh_period"
             android:title="@string/setting_emr_refresh"
@@ -38,6 +39,7 @@
             android:title="@string/setting_upload_hack"
             android:summary="@string/setting_upload_hack_summary"
             android:defaultValue="false" />
+        
     </PreferenceCategory>
 
 </PreferenceScreen>

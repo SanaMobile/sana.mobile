@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/settings_title" >
+        <!--
+        <EditTextPreference
+            android:key="s_packet_init_size"
+            android:title="@string/setting_pkt_size"
+            android:summary="@string/setting_pkt_size_summary" android:defaultValue="@integer/packet_size"/>
+        -->
+        <CheckBoxPreference 
+            android:key="s_notify_task_status"
+            android:title="@string/setting_notify_task_status"
+            android:summary="@string/setting_notify_task_status_summary"
+            android:defaultValue="true" />
+        <CheckBoxPreference 
+            android:key="s_upload_foreground"
+            android:title="@string/setting_upload_foreground"
+            android:summary="@string/setting_upload_foreground_summary"
+            android:defaultValue="true" />        
+    </PreferenceCategory>
+
+</PreferenceScreen>
