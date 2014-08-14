@@ -192,7 +192,7 @@ public class SanaUtil {
      * 
      * @param ctx the Context where the data is stored */
     public static void clearDatabase(Context ctx) {
-    	/*
+        /*
         deleteContentUri(ctx, Procedures.CONTENT_URI,
                 Procedures.Contract._ID);
         deleteContentUri(ctx, Encounters.CONTENT_URI,
@@ -207,7 +207,7 @@ public class SanaUtil {
                 BinarySQLFormat._ID);
         if (SanaDB.DATABASE_VERSION > 4)
             deleteContentUri(ctx, Observations.CONTENT_URI, 
-            		Observations.Contract._ID);
+                    Observations.Contract._ID);
         */
     }
 
@@ -251,7 +251,7 @@ public class SanaUtil {
 
             if (searchDuplicateTitleAuthor(ctx, title, author)){
                 Log.d(TAG, "Duplicate found!");
-            	ctx.getContentResolver().update(Procedures.CONTENT_URI,
+                ctx.getContentResolver().update(Procedures.CONTENT_URI,
                     cv, 
                     "(title LIKE\"" + title + "\")", null);
             }else
@@ -363,6 +363,7 @@ public class SanaUtil {
         // insertProcedure(ctx, R.raw.cvd_protocol);
         //insertProcedure(ctx, R.raw.api_test);
         insertProcedure(ctx, R.raw.ssi);
+        insertProcedure(ctx, R.raw.haitivit_camera);
         insertProcedure(ctx, R.raw.ssi_two_site);
         // insertProcedure(ctx, R.raw.audio_upload_test);
     }
@@ -411,7 +412,7 @@ public class SanaUtil {
      * @return a new AlertDialog with a specified listener */
     public static AlertDialog createAlertMessage(Context c, String alertMessage,
             DialogInterface.OnClickListener listener) {
-    	Locales.updateLocale(c, c.getString(R.string.force_locale));
+        Locales.updateLocale(c, c.getString(R.string.force_locale));
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setMessage(alertMessage).setCancelable(false)
                 .setPositiveButton(
@@ -450,28 +451,28 @@ public class SanaUtil {
     }
     
     public static final boolean exportDatabase(Context ctx, String dbName) throws IOException{
-    	
-    	boolean result = false;
-    	File db = ctx.getDatabasePath(dbName);
-    	File out = new File(Environment.getExternalStorageDirectory(), dbName);
-    	InputStream is = null;
-    	OutputStream os = null;
-    	
-    	try {
-			is = new BufferedInputStream(new FileInputStream(db));
-			os = new BufferedOutputStream(new FileOutputStream(out));
-			byte[] buffer = new byte[1024];
-			while(is.read(buffer) > 0){
-					os.write(buffer);
-			}
-			result = true;
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if(is != null) is.close();
-			if(os != null) os.close();
-		}
-    	return result;
+        
+        boolean result = false;
+        File db = ctx.getDatabasePath(dbName);
+        File out = new File(Environment.getExternalStorageDirectory(), dbName);
+        InputStream is = null;
+        OutputStream os = null;
+        
+        try {
+            is = new BufferedInputStream(new FileInputStream(db));
+            os = new BufferedOutputStream(new FileOutputStream(out));
+            byte[] buffer = new byte[1024];
+            while(is.read(buffer) > 0){
+                    os.write(buffer);
+            }
+            result = true;
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            if(is != null) is.close();
+            if(os != null) os.close();
+        }
+        return result;
     }
 }
