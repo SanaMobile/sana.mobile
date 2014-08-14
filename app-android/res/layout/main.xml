@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout1"
+    android:id="@+id/main_root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/main_background"
@@ -19,28 +19,28 @@
         android:layout_height="wrap_content"
         android:onClick="submit"
         android:text="@string/button_main_register_patients" />
-    
-	<Button
-	    android:id="@+id/btn_main_select_patient"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:onClick="submit"
-	    android:text="@string/button_main_select_patient" />
 
-	<Button
-	    android:id="@+id/btn_main_procedures"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:onClick="submit"
-	    android:text="@string/button_main_select_procedure" />
-	
+    <Button
+        android:id="@+id/btn_main_select_patient"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="@string/button_main_select_patient" />
+
+    <Button
+        android:id="@+id/btn_main_procedures"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="@string/button_main_select_procedure" />
+
     <Button
         android:id="@+id/btn_main_transfers"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:onClick="submit"
         android:text="@string/button_main_view_prior_encounters" />
-    
+
     <!--
     <fragment
         android:id="@+id/fragment1"
@@ -62,12 +62,12 @@
         android:layout_height="wrap_content"
         android:src="@drawable/sana_logo" />
 
-	<Button
+    <Button
         android:id="@+id/btn_main_tasks"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_main_view_scheduled_tasks" />
-        
+
     <Button
         android:id="@+id/btn_view_patients"
         android:layout_width="fill_parent"
