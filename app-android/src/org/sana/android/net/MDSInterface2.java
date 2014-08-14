@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.sana.android.net;
 
@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -37,10 +38,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -58,6 +64,7 @@ import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Observations;
 import org.sana.android.provider.Procedures;
 import org.sana.android.service.QueueManager;
+import org.sana.android.service.impl.DispatchService;
 import org.sana.net.MDSResult;
 import org.sana.net.Response;
 import org.sana.net.http.HttpTaskFactory;
@@ -73,6 +80,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -91,7 +99,7 @@ public class MDSInterface2 {
 
 	/**
 	 * Gets the value in the MDS url setting and add the correct scheme, i.e.
-	 * http or https, depending on the value of the use secure transmission 
+	 * http or https, depending on the value of the use secure transmission
 	 * setting.
 	 * @param context The current context.
 	 * @param path an additional path to append if not null
@@ -109,10 +117,10 @@ public class MDSInterface2 {
 		String url = scheme + "://" + host +"/"+ root;
 		return (TextUtils.isEmpty(path)? url: url + path);
 	}
-	
+
 	/**
 	 * Gets the value in the MDS url setting and add the correct scheme, i.e.
-	 * http or https, depending on the value of the use secure transmission 
+	 * http or https, depending on the value of the use secure transmission
 	 * setting.
 	 * @param ctx The application context.
 	 * @return The mds url with correct scheme.
@@ -124,84 +132,84 @@ public class MDSInterface2 {
 	private static String constructProcedureSubmitURL(String mdsURL) {
 		return mdsURL + Constants.PROCEDURE_SUBMIT_PATTERN;
 	}
-	
-	protected static MDSResult doPost(String scheme, String host, int port, 
-			String path, 
+
+	protected static MDSResult doPost(String scheme, String host, int port,
+			String path,
 			List<NameValuePair> postData) throws UnsupportedEncodingException{
 		URI uri = null;
-		try { 
+		try {
 			uri = URIUtils.createURI(scheme, host, port, path, null, null);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			throw new IllegalArgumentException(String.format("Can not post to mds: %s, %s, %d, %s", scheme,host,port,path),e);	
+			throw new IllegalArgumentException(String.format("Can not post to mds: %s, %s, %d, %s", scheme,host,port,path),e);
 		}
 		Log.d(TAG, "doPost() uri: " + uri.toASCIIString());
 		HttpPost post = new HttpPost(uri);
 		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postData, "UTF-8");
 		post.setEntity(entity);
 		return MDSInterface2.doExecute(post);
-		
+
 	}
-	
+
 	/**
-	 * Executes a POST method. Provides a wrapper around doExecute by 
+	 * Executes a POST method. Provides a wrapper around doExecute by
 	 * preparing the PostMethod.
-	 * 
+	 *
 	 * @param ctx the current Context
 	 * @param mUrl the request url
 	 * @param postData the form data.
-	 * @return 
-	 * @throws UnsupportedEncodingException 
+	 * @return
+	 * @throws UnsupportedEncodingException
 	 */
-	protected static MDSResult doPost(String url, 
-			List<NameValuePair> postData) throws UnsupportedEncodingException 
+	protected static MDSResult doPost(String url,
+			List<NameValuePair> postData) throws UnsupportedEncodingException
 	{
-		
+
 		HttpPost post = new HttpPost(url);
 		Log.d(TAG, "doPost(): " + url + ", " + postData.size());
 		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postData, "UTF-8");
 		post.setEntity(entity);
 		return MDSInterface2.doExecute(post);
 	}
-	
-	protected static MDSResult doPost(String scheme, 
-			String host, 
-			int port, 
-			String path, 
-			HttpEntity entity) 
+
+	protected static MDSResult doPost(String scheme,
+			String host,
+			int port,
+			String path,
+			HttpEntity entity)
 	{
 		URI uri = null;
-		try { 
+		try {
 			uri = URIUtils.createURI(scheme, host, port, path, null, null);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			throw new IllegalArgumentException(String.format("Can not post to mds: %s, %s, %d, %s", scheme,host,port,path),e);	
+			throw new IllegalArgumentException(String.format("Can not post to mds: %s, %s, %d, %s", scheme,host,port,path),e);
 		}
 		Log.d(TAG, "doPost() uri: " + uri.toASCIIString());
 		HttpPost post = new HttpPost(uri);
 		post.setEntity(entity);
 		return MDSInterface2.doExecute(post);
 	}
-	
+
 	/**
-	 * Executes a POST method. Provides a wrapper around doExecute by 
+	 * Executes a POST method. Provides a wrapper around doExecute by
 	 * preparing the PostMethod.
-	 * 
+	 *
 	 * @param ctx the current Context
 	 * @param mUrl the request url
 	 * @param parts the form data.
-	 * @return 
+	 * @return
 	 */
-	protected static MDSResult doPost(String url, HttpEntity entity) 
+	protected static MDSResult doPost(String url, HttpEntity entity)
 	{
 		HttpPost post = new HttpPost(url);
 		post.setEntity(entity);
 		return MDSInterface2.doExecute(post);
 	}
-	
+
 	/**
 	 * Executes a client HttpMethod.
-	 * 
+	 *
 	 * @param ctx The context which the method will be executed in
 	 * @param method The Http
 	 * @return
@@ -212,7 +220,7 @@ public class MDSInterface2 {
 		HttpResponse httpResponse = null;
 		String responseString = null;
 		try {
-			httpResponse = client.execute(method); 
+			httpResponse = client.execute(method);
 			Log.d(TAG, "doExecute() got response code " +  httpResponse.getStatusLine().getStatusCode());
 
 			char buf[] = new char[20560];
@@ -225,14 +233,14 @@ public class MDSInterface2 {
 			Log.e(TAG, e1.toString());
 			e1.printStackTrace();
 		} catch (JsonParseException e) {
-			Log.e(TAG, "doExecute(): Error parsing MDS JSON response: " 
+			Log.e(TAG, "doExecute(): Error parsing MDS JSON response: "
 					+ e.getMessage());
 		}
 		return response;
 	}
-	
-	private static boolean postResponses(Context c, 
-			String savedProcedureGuid, 
+
+	private static boolean postResponses(Context c,
+			String savedProcedureGuid,
 			String procedureUUID,
 			String subjectUUID,
 			String jsonResponses,
@@ -246,15 +254,15 @@ public class MDSInterface2 {
 		Log.d(TAG, "mds url: " + mdsURL);
 		//mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructProcedureSubmitURL(mdsURL);
-		String phoneId = preferences.getString("s_phone_name", 
+		String phoneId = preferences.getString("s_phone_name",
 				Constants.PHONE_ID);
-		return MDSInterface2.postResponses(c, savedProcedureGuid, 
+		return MDSInterface2.postResponses(c, savedProcedureGuid,
 				procedureUUID, subjectUUID, jsonResponses, username, password, phoneId);
-		
+
 	}
-	
-	static boolean postResponses(Context context, 
-			String savedProcedureGuid, 
+
+	static boolean postResponses(Context context,
+			String savedProcedureGuid,
 			String procedureUUID,
 			String subjectUUID,
 			String jsonResponses,
@@ -278,7 +286,7 @@ public class MDSInterface2 {
 		postData.add(new BasicNameValuePair("responses", jsonResponses));
 		postData.add(new BasicNameValuePair("subject", subjectUUID));
 
-		String mdsURL = getMDSUrl(context);	
+		String mdsURL = getMDSUrl(context);
 		Log.d(TAG, "mds url: " + mdsURL);
 		//mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructProcedureSubmitURL(mdsURL);
@@ -292,10 +300,10 @@ public class MDSInterface2 {
 			Log.d(TAG, "postResponses(...): null response");
 			return false;
 		}
-		
-		
+
+
 	}
-	
+
 	static class NetworkConfig{
 		String host;
 		int port;
@@ -309,30 +317,30 @@ public class MDSInterface2 {
 
 		String scheme = ((preferences.getBoolean(
 			Constants.PREFERENCE_SECURE_TRANSMISSION, true))? "https":"http");
-		
+
 		// If there's a proxy enabled, use it.
 		String proxyHost = preferences.getString(Constants.PREFERENCE_PROXY_HOST, "");
 		String sProxyPort = null;
 		int proxyPort = 0;
 		try {
 			sProxyPort = preferences.getString(Constants.PREFERENCE_PROXY_PORT, "0");
-			if (!TextUtils.isEmpty(sProxyPort)); 
+			if (!TextUtils.isEmpty(sProxyPort));
 				proxyPort = Integer.parseInt(sProxyPort);
 		} catch(NumberFormatException e) {
 			Log.w(TAG, "Invalid proxy port: " + sProxyPort);
 		}
-		
+
 		URI uri = null;
-		try { 
+		try {
 			uri = URIUtils.createURI(scheme, host, port, path, null, null);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-			throw new IllegalArgumentException(String.format("Can not post to mds: %s, %s, %d, %s", scheme,host,port,path),e);	
+			throw new IllegalArgumentException(String.format("Can not post to mds: %s, %s, %d, %s", scheme,host,port,path),e);
 		}
 		*/
-	
+
 	/**
-	 * 
+	 *
 	 * @author Sana development
 	 *
 	 */
@@ -342,17 +350,17 @@ public class MDSInterface2 {
 		String subject = null;
 		String observer = null;
 		String procedure = null;
-		String concept = "521b0825-14c9-49e5-a95e-462a01e2ae05"; 
+		String concept = "521b0825-14c9-49e5-a95e-462a01e2ae05";
 		String device = null;
 		boolean finished = false;
 		boolean uploaded = false;
 		String observations = null;
-		
+
 		public static EncounterCompat readFromCursor(Context ctx, Uri uri){
 			EncounterCompat ec = new EncounterCompat();
-			
+
 			Cursor c = null;
-			
+
 			c = ctx.getContentResolver().query(
 					uri, savedProcedureProjection, null,
 					null, null);
@@ -364,33 +372,33 @@ public class MDSInterface2 {
 			return ec;
 		}
 	}
-	
+
 	public static String[] savedProcedureProjection = new String[] {
-		Encounters.Contract._ID, 
+		Encounters.Contract._ID,
 		Encounters.Contract.PROCEDURE,
 		Encounters.Contract.STATE,
 		Encounters.Contract.FINISHED,
-		Encounters.Contract.UUID, 
+		Encounters.Contract.UUID,
 		Encounters.Contract.UPLOADED,
 		Encounters.Contract.SUBJECT,
 		Encounters.Contract.OBSERVER};
-	
+
 	public static boolean postProcedureToDjangoServer(Uri uri, Context context, String user, String password) throws UnsupportedEncodingException {
 		Log.i(TAG, "In Post procedure to Django server for background uploading service.");
 		Log.i(TAG, "Attempting to upload: " + uri);
-		
+		QueueManager.setProcedureUploadStatus(context, uri, QueueManager.UPLOAD_STATUS_IN_PROGRESS);
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		String mdsURL = getMDSUrl(context);
 		Log.d(TAG, "mds url: " + mdsURL);
 		//mdsURL = checkMDSUrl(mdsURL);
 		String mUrl = constructProcedureSubmitURL(mdsURL);
-		
+
 		// get the tel number - default to ten-digit all zero's if null
 		TelephonyManager tMgr =(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 		String device = tMgr.getLine1Number();
 		device = (TextUtils.isEmpty(device))? "9999999999":device;
-		
+
 		Cursor cursor = context.getContentResolver().query(
 				uri, savedProcedureProjection, null,
 				null, null);
@@ -429,7 +437,7 @@ public class MDSInterface2 {
 		Log.i(TAG, "...observer " + observerUUID);
 		//if(savedProcedureUploaded)
 		//	return true;
-		
+
 		// TODO Remove this entirely and replace
 		Uri procedureUri = null;
 		if(UUIDUtil.isValid(procedureId))
@@ -440,16 +448,16 @@ public class MDSInterface2 {
 		}
 		Log.i(TAG, "Getting procedure uuid "+ ModelWrapper.getUuid(procedureUri, context.getContentResolver()));
 		Log.i(TAG, "Getting procedure " + procedureUri.toString());
-		
+
 		String procedureTitle = null;
 		String procedureXml = null;
 		String procedureUUID = null;
-		cursor = context.getContentResolver().query(procedureUri, 
-				new String[] { Procedures.Contract.TITLE, 
+		cursor = context.getContentResolver().query(procedureUri,
+				new String[] { Procedures.Contract.TITLE,
 							   Procedures.Contract.PROCEDURE,
 							   Procedures.Contract.UUID},
 				null, null, null);
-		
+
 		try{
 			cursor.moveToFirst();
 			procedureTitle = cursor.getString(
@@ -461,30 +469,30 @@ public class MDSInterface2 {
 		} finally {
 			if(cursor != null) cursor.close();
 		}
-		
+
 
 		Log.i(TAG, "...encounter " + savedProcedureGUID);
 		Log.i(TAG, "...procedure" + procedureUUID + " '" + procedureTitle +"'");
 		Log.i(TAG, "...subject" + subjectUUID);
 		Log.i(TAG, "...device" + device);
 		Log.i(TAG, "...observer " + observerUUID);
-		
+
 		if(!finished) {
-			Log.i(TAG, "Not finished. Not uploading. (just kidding)" 
+			Log.i(TAG, "Not finished. Not uploading. (just kidding)"
 					+ uri.toString());
 			//return false;
 		}
-		
-		
-		
-		
+
+
+
+
 		// Map of all of the Procedure Elements; i.e. observation data
 		// binaries get parsed out later
 		Map<String, Map<String,String>> elementMap = null;
 		try {
-			
+
 			Procedure p = Procedure.fromXMLString(procedureXml);
-			
+
 			p.setInstanceUri(uri);
 
 			JSONTokener tokener = new JSONTokener(answersJson);
@@ -517,7 +525,7 @@ public class MDSInterface2 {
 			return false;
 		}
 		Map<String, Map<String, String>> observations = getObservationsCompat(context,savedProcedureGUID, elementMap);
-		
+
 		// Add in procedureTitle as a fake answer
 		/*
 		Map<String,String> titleMap = new HashMap<String,String>();
@@ -536,7 +544,7 @@ public class MDSInterface2 {
 				this.type = type;
 			}
 		}
-		// Convert saved procedure to JSON 
+		// Convert saved procedure to JSON
 		JSONObject jsono = new JSONObject();
 		int totalBinaries = 0;
 		ArrayList<ElementAnswer> binaries = new ArrayList<ElementAnswer>();
@@ -550,7 +558,7 @@ public class MDSInterface2 {
 			String id = e.getKey();
 			String type = e.getValue().get("type");
 			String answer = e.getValue().get("answer");
-			
+
 			if (id == null || type == null || answer == null)
 				continue;
 
@@ -572,16 +580,17 @@ public class MDSInterface2 {
 		if(savedProcedureUploaded) {
 			Log.i(TAG, "Responses have already been sent to MDS, not posting.");
 		} else {
+             QueueManager.setProcedureUploadStatus(context, uri, QueueManager.UPLOAD_STATUS_IN_PROGRESS);
 			// upload the question and answer pairs text, without packetization
 			String json = jsono.toString();
 			Log.i(TAG, "json string: " + json.length());
-			
+
 			// try repeating upload on fail to some preset number
+			final int MAX_TRIES = 3;
 			int tries = 0;
-			final int MAX_TRIES = 1;
 			while(tries < MAX_TRIES) {
-				if (MDSInterface2.postResponses(context, 
-						savedProcedureGUID, procedureTitle, subjectUUID,json, 
+				if (MDSInterface2.postResponses(context,
+						savedProcedureGUID, procedureTitle, subjectUUID,json,
 						user, password,device)) {
 					// Mark the procedure text as uploaded in the database
 					ContentValues cv = new ContentValues();
@@ -595,18 +604,19 @@ public class MDSInterface2 {
 			// if tries >= maximum we bail and try again later
 			if(tries == MAX_TRIES) {
 				Log.e(TAG, "Could not post responses, bailing.");
+                                QueueManager.setProcedureUploadStatus(context, uri, QueueManager.UPLOAD_STATUS_FAILURE);
 				return false;
 			}
 
 		}
-		Log.i(TAG, "Posted responses, now sending " + totalBinaries 
+		Log.i(TAG, "Posted responses, now sending " + totalBinaries
 				+ " binaries.");
 		// lookup starting packet size
 		int newPacketSize;
 		try {
 			newPacketSize = Integer.parseInt(
 					PreferenceManager.getDefaultSharedPreferences(context)
-						.getString("s_packet_init_size", 
+						.getString("s_packet_init_size",
 						Integer.toString(Constants.DEFAULT_INIT_PACKET_SIZE)));
 		} catch (NumberFormatException e) {
 			newPacketSize = Constants.DEFAULT_INIT_PACKET_SIZE;
@@ -616,13 +626,16 @@ public class MDSInterface2 {
 
 		int totalProgress = 1+totalBinaries;
 		int thisProgress = 2;
-		// upload each binary file where each binary should be represented by 
+		// upload each binary file where each binary should be represented by
 		// one value in a comma separated list of ints starting
+		
+		final int MAXBINARY_POST_ATTEMPT = 5;
 		for(ElementAnswer e : binaries) {
 			if(TextUtils.isEmpty(e.answer)){
 				Log.w(TAG, "Got empty answer! Element: " + e.id);
 				continue;
 			}
+				
 			// parse csv list
 			String[] ids = e.answer.split(",");
 			// loop over each value
@@ -634,18 +647,18 @@ public class MDSInterface2 {
 				} catch(IllegalArgumentException ex) {
 					Log.e(TAG, ex.getMessage());
 				}
-				
+
 				if (type == ElementType.PICTURE) {
 					binUri = ContentUris.withAppendedId(
-								ImageSQLFormat.CONTENT_URI, 
-								Long.parseLong(binaryId));	
+								ImageSQLFormat.CONTENT_URI,
+								Long.parseLong(binaryId));
 				} else if (type == ElementType.SOUND) {
 					binUri = ContentUris.withAppendedId(
-								SoundSQLFormat.CONTENT_URI, 
+								SoundSQLFormat.CONTENT_URI,
 								Long.parseLong(binaryId));
 				} else if (type == ElementType.PLUGIN) {
 					binUri = ContentUris.withAppendedId(
-							BinarySQLFormat.CONTENT_URI, 
+							BinarySQLFormat.CONTENT_URI,
 							Long.parseLong(binaryId));
 				} else if (type == ElementType.BINARYFILE) {
 					binUri = Uri.fromFile(new File(e.answer));
@@ -653,41 +666,48 @@ public class MDSInterface2 {
 					// Maybe if we grab the mtime/filesize on the file and store
 					// it when we upload it.
 				}
-
-				try {
-					Log.i(TAG, "Uploading " + binUri);
-					// reset the new packet size each time to the last 
-					// successful transmission size
-					newPacketSize = MDSInterface.transmitBinary(context, savedProcedureGUID, 
+				
+				
+				int binaryPostCount = 0;
+				while(binaryPostCount < MAXBINARY_POST_ATTEMPT){
+					binaryPostCount++;
+					try {
+						Log.i(TAG, "Uploading " + binUri);
+						// reset the new packet size each time to the last
+						// successful transmission size
+						newPacketSize = MDSInterface.transmitBinary(context, savedProcedureGUID,
 												   e.id, binaryId, type, binUri,
 												   newPacketSize);
-					// Delete the file!
-					switch(type) {
-					case PICTURE:
-					case SOUND:
-						//This was deleting the pictures after upload - should 
-						// not happen, leave commented out!
-						//context.getContentResolver().delete(binUri,null,null);
-						break;
-					default:
-					}
-				} catch (Exception x) {
-					Log.i(TAG, "Uploading " + binUri + " failed : " 
+						// Delete the file!
+						switch(type) {
+						case PICTURE:
+						case SOUND:
+							//This was deleting the pictures after upload - should
+							// not happen, leave commented out!
+							//context.getContentResolver().delete(binUri,null,null);
+							break;
+						default:
+						}
+					} catch (Exception x) {
+						Log.e(TAG, "Uploading " + binUri + " failed : "
 							+ x.toString());
-					return false;
+						x.printStackTrace();
+						QueueManager.setProcedureUploadStatus(context, uri, QueueManager.UPLOAD_STATUS_FAILURE);
+						return false;
+					}
+					thisProgress++;
 				}
-				thisProgress++;
+				
 			}
 		}
-
 		// TODO Tag entire procedure in db as done transmitting
 		QueueManager.setProcedureUploadStatus(context, uri, QueueManager.UPLOAD_STATUS_SUCCESS);
-		return true;   
+		return true;
 	}
-	
+
 	public static boolean postProcedureToDjangoServer(Uri uri, Context context) throws UnsupportedEncodingException {
-		
-		
+
+
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		String username = preferences.getString(
@@ -702,14 +722,14 @@ public class MDSInterface2 {
 		String subject = null;
 		String observer = null;
 		String procedure = null;
-		String encConcept = "521b0825-14c9-49e5-a95e-462a01e2ae05"; 
-		
+		String encConcept = "521b0825-14c9-49e5-a95e-462a01e2ae05";
+
 		// get the tel number - default to ten-digit all zero's if null
 		TelephonyManager tMgr =(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 		String device = tMgr.getLine1Number();
 		device = (TextUtils.isEmpty(device))? "0000000000":device;
-		
-		// Fetch the encounter information 
+
+		// Fetch the encounter information
 		Cursor c = null;
 		c = context.getContentResolver().query(uri, null, null, null, null);
 		c.moveToFirst();
@@ -726,18 +746,18 @@ public class MDSInterface2 {
 		Log.i(TAG, "procedure: " + procedure);
 		Log.i(TAG, "concept: " + encConcept);
 		Log.i(TAG, "device: " + device);
-		
+
 		// build out the observations
 		String[] obsProjection =  new String[]{
 				Observations.Contract.ID,
 				Observations.Contract.CONCEPT,
 				Observations.Contract.VALUE
 		};
-		
+
 		Cursor cursor = context.getContentResolver().query(
 				Observations.CONTENT_URI,
 				obsProjection,
-				Observations.Contract.ENCOUNTER + " = ?", 
+				Observations.Contract.ENCOUNTER + " = ?",
 				new String[]{ uuid } ,
 				Observations.Contract.ID + " ASC");
 		List<Map<String,String>> observations = new ArrayList<Map<String,String>>(cursor.getCount());
@@ -752,12 +772,12 @@ public class MDSInterface2 {
 			obs.put(Observations.Contract.VALUE, value);
 			observations.add(obs);
 		}
-		
+
 		return mdsUuid;
-		
+
 	}
 	*/
-	
+
 	public static List<Map<String, String>> getObservations(Context context, String uuid){
 
 		final String[] obsProjection = new String[] {
@@ -791,20 +811,20 @@ public class MDSInterface2 {
 		}
 		return observations;
 	}
-	
+
 	/**
-	 * Returns the observations for a single encounter in a format that can be passed to the mds 1.x 
+	 * Returns the observations for a single encounter in a format that can be passed to the mds 1.x
 	 * responses post
 	 * @param context The current context
 	 * @param uuid The encounter uuid String.
 	 * @param elementMap A 1.x style map of elements which includes the element type.
-	 * @return 
+	 * @return
 	 */
 	public static Map<String, Map<String, String>> getObservationsCompat(Context context, String uuid, Map<String, Map<String, String>> elementMap){
 		final String[] obsProjection = new String[] {
-				Observations.Contract.UUID, 
+				Observations.Contract.UUID,
 				Observations.Contract.ID,
-				Observations.Contract.CONCEPT, 
+				Observations.Contract.CONCEPT,
 				Observations.Contract.VALUE,
 				Observations.Contract.PARENT};
 		Map<String, Map<String, String>> observations = null;
@@ -815,7 +835,7 @@ public class MDSInterface2 {
 					Observations.Contract.ENCOUNTER + " = ?",
 					new String[] { uuid }, Observations.Contract.ID + " ASC");
 			observations = new HashMap<String, Map<String, String>>(cursor.getCount());
-			
+
 			while (cursor.moveToNext()) {
 				Map<String, String> obs = new HashMap<String, String>(4);
 				// TODO handle complex observations
@@ -861,26 +881,31 @@ public class MDSInterface2 {
 						Observations.Contract.PARENT,
 						Observations.Contract.VALUE
 				},
-				Observations.Contract.ENCOUNTER + " = ?", 
+				Observations.Contract.ENCOUNTER + " = ?",
 				new String[]{ uuid } ,
 				Observations.Contract.ID + " ASC");
 
-		
-		
+
+
 		return null;
 	}
-	public static HttpPost createSessionRequest(Context context, String username, 
-			String password)
+	public static HttpPost createSessionRequest(Context context, String username,
+			String password) throws URISyntaxException
 	{
 		String url = getMDSUrl(context, context.getString(R.string.path_session));
 		Log.d(TAG, "createSessionRequest() "+url);
-		URI uri = URI.create(url);
+		URI uri = getURI(context,context.getString(R.string.path_session));
 		List<NameValuePair> postData = new ArrayList<NameValuePair>();
 		postData.add(new BasicNameValuePair("username", username));
 		postData.add(new BasicNameValuePair("password", password));
 		return HttpRequestFactory.getPostRequest(uri, postData);
 	}
-	
+
+	public static boolean getFile(Context context, Uri file) throws IOException {
+		String path = "media/" + file.getLastPathSegment();
+		return getFile(context,path, new File(file.getPath()));
+	}
+
 	public static boolean getFile(Context context, String path, File outfile) throws IOException{
 		String url = getMDSUrl(context, path);
 		Log.d(TAG, "getFile() "+url +", outfile:" + outfile);
@@ -914,34 +939,34 @@ public class MDSInterface2 {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Builds and returns an HttpClient with Basic Authorization headers initialized
 	 * with a BasicCredentialsProvider
-	 * 
+	 *
 	 * @param username The username credential.
 	 * @param password The password credential.
-	 * @return a new HttpClient 
+	 * @return a new HttpClient
 	 */
-	
+
 	public static HttpClient buildBasicAuthClient(String username, String password){
 		HttpClient client = HttpTaskFactory.CLIENT_FACTORY.produce();
 		if(!(TextUtils.isEmpty(username) || TextUtils.isEmpty(password))){
 			CredentialsProvider credsProvider = new BasicCredentialsProvider();
 	        credsProvider.setCredentials(
-	                new AuthScope(AuthScope.ANY_HOST,AuthScope.ANY_PORT), 
+	                new AuthScope(AuthScope.ANY_HOST,AuthScope.ANY_PORT),
 	                new UsernamePasswordCredentials(username,password));
 	        ((DefaultHttpClient)client).setCredentialsProvider(credsProvider);
 		}
 		return client;
 	}
-	
+
 	public static  Response<String> apiGet(URI uri) throws UnsupportedEncodingException
 	{
 		return apiGet(uri,null,null);
 	}
 
-	public static  Response<String> apiGet(URI uri, String username, String password) throws UnsupportedEncodingException 
+	public static  Response<String> apiGet(URI uri, String username, String password) throws UnsupportedEncodingException
 			{
 		HttpClient client = buildBasicAuthClient(username,password);
 		HttpGet request = new HttpGet(uri);
@@ -964,9 +989,9 @@ public class MDSInterface2 {
 		}
 		return response;
 	}
-	
+
 	public static synchronized <T> Response<T> apiGet(URI uri, String username, String password,
-			ResponseHandler<Response<T>> handler) throws UnsupportedEncodingException 
+			ResponseHandler<Response<T>> handler) throws UnsupportedEncodingException
 			{
 		HttpClient client = buildBasicAuthClient(username,password);
 		HttpGet request = new HttpGet(uri);
@@ -987,21 +1012,25 @@ public class MDSInterface2 {
 		}
 		return response;
 	}
-	
-	public static <T> Response<T> apiGet(URI uri, ResponseHandler<Response<T>> handler) throws UnsupportedEncodingException 
+
+	public static <T> Response<T> apiGet(URI uri, ResponseHandler<Response<T>> handler) throws UnsupportedEncodingException
 	{
 		return apiGet(uri,"","",handler);
 	}
-	
+
 	public static synchronized <T> Response<T> apiPost(URI uri, String username, String password,
-			Map<String, Object> values,
+			Map<String, String> values,
 			ResponseHandler<Response<T>> handler)
 	{
+                Log.i(TAG, "apiPost()" + uri);
 		HttpClient client = buildBasicAuthClient(username,password);
 		HttpPost request = new HttpPost(uri);
 		HttpResponse httpResponse = null;
 		Response<T> response = Response.empty();
 		try {
+                        HttpEntity entity = new UrlEncodedFormEntity(mapToPost(values), "UTF-8");
+                        request.setEntity(entity);
+                        Log.i(TAG, "apiPost(): executing" + request.getMethod());
 			httpResponse = client.execute(request);
 			response = handler.handleResponse(httpResponse);
 		} catch (ClientProtocolException e) {
@@ -1015,9 +1044,9 @@ public class MDSInterface2 {
 		}
 		return response;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param uri
 	 * @param username
 	 * @param password
@@ -1026,15 +1055,30 @@ public class MDSInterface2 {
 	 * @return
 	 */
 	public static synchronized <T> Response<T> apiPut(URI uri, String username, String password,
-			Map<String, Object> values,
+			Map<String, String> form,
+			Map<String, String> files,
 			ResponseHandler<Response<T>> handler){
 		HttpClient client = buildBasicAuthClient(username,password);
 		HttpPut request = new HttpPut(uri);
 		HttpResponse httpResponse = null;
 		Response<T> response = Response.empty();
-		try {
-			httpResponse = client.execute(request);
-			response = handler.handleResponse(httpResponse);
+		try{
+                    Log.d(TAG,"apiPut() BUILDING ENTITY");
+                    //UrlEncodedFormEntity
+                    HttpEntity entity;
+                    if(files == null){
+                        entity = new UrlEncodedFormEntity(mapToPost(form), "UTF-8");
+                    } else {
+                        entity = new MultipartEntity();
+
+                        Log.d(TAG,"apiPut() updating n = " + form.entrySet().size() +" values");
+                    }
+                    request.setEntity(entity);
+		    Log.d(TAG,"apiPut() executing" + request.getMethod());
+		    httpResponse = client.execute(request);
+		    Log.d(TAG,"apiPut() reading response");
+		    response = handler.handleResponse(httpResponse);
+		    Log.d(TAG,"apiPut() --> " + response.status + ": " + response.code);
 		} catch (ClientProtocolException e) {
 			response.setCode(500);
 			response.setStatus(Response.FAILURE);
@@ -1046,7 +1090,7 @@ public class MDSInterface2 {
 		}
 		return response;
 	}
-	
+
 	public static synchronized <T> Response<T> apiDelete(URI uri, String username, String password,
 			Map<String, Object> values,
 			ResponseHandler<Response<T>> handler){
@@ -1068,22 +1112,22 @@ public class MDSInterface2 {
 		}
 		return response;
 	}
-	
+
 	/**
      * Converts Android "content" style resource identifiers to URIs to use with the
-     * new MDS REST API. Only works for those objects whose path components in the new 
+     * new MDS REST API. Only works for those objects whose path components in the new
      * REST API are consistent with MDS. Requires the <code>host_mds</code> and
      * <code>path_root</code> strings be declared as resources, <code>cfg_mds_port</code>
      * integer be declared in the resources as well as the PREFERENCE_MDS_URL setting
      * value declared in the settings.xml.
-     * 
+     *
 	 * @param context
 	 * @param uri
 	 * @return
 	 * @throws MalformedURLException
 	 * @throws URISyntaxException
 	 */
-	public static URI iriToURI(Context context, Uri uri) throws 
+	public static URI iriToURI(Context context, Uri uri) throws
 		MalformedURLException, URISyntaxException
 	{
 		String host = context.getString(R.string.host_mds);
@@ -1094,15 +1138,69 @@ public class MDSInterface2 {
 				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
 		String scheme = (useSecure)? "https": "http";
 		String path = "/mds" + uri.getPath();
-		int port = context.getResources().getInteger(R.integer.cfg_mds_port);
+                if(!path.endsWith("/"))
+                    path = path + "/";
+		int port = 443;
+		try{
+		    port = Integer.valueOf(preferences.getString(Constants.PREFERENCE_MDS_PORT, "443"));
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
 		return Uris.iriToURI(uri, scheme, host, port, root);
 	}
-	
+
+	static String getScheme(SharedPreferences preferences){
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
+			return "https";
+		else
+			return "http";
+	}
+
+	static int getPort(Context c){
+		SharedPreferences preferences = PreferenceManager
+											.getDefaultSharedPreferences(c);
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
+			return 443;
+		else
+			return c.getResources().getInteger(R.integer.port_mds);
+	}
+
+	public static URI getRoot(Context c) throws URISyntaxException{
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(c);
+
+		String scheme = getScheme(preferences);
+		String host = preferences.getString(Constants.PREFERENCE_MDS_URL,
+				c.getString(R.string.host_mds));
+		int port = getPort(c);
+		String path = c.getString(R.string.path_root);
+		return new URI(scheme, null, host, port,path, null, null);
+	}
+
+	public static URI getURI(Context c, String path) throws URISyntaxException{
+		return getURI(c,path,null);
+	}
+
+	public static URI getURI(Context c, String path, String query) throws URISyntaxException{
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(c);
+
+		String scheme = getScheme(preferences);
+		String host = preferences.getString(Constants.PREFERENCE_MDS_URL,
+				c.getString(R.string.host_mds));
+		int port = getPort(c);
+		String root = c.getString(R.string.path_root);
+		Log.i(TAG," path:"+  root + path);
+		URI uri =  new URI(scheme, null, host, port,root + path, query, null);
+		Log.i(TAG, "uri: " + uri.toString() +", path:" + path);
+		return uri;
+	}
+
 	public static void logObservations(Context context, String uuid){
 		Cursor cursor = context.getContentResolver().query(
 				Observations.CONTENT_URI,
 				null,
-				Observations.Contract.ENCOUNTER + " = ?", 
+				Observations.Contract.ENCOUNTER + " = ?",
 				new String[]{ uuid } ,
 				Observations.Contract.ID + " ASC");
 		StringBuilder obs = new StringBuilder("{ 'encounter': "+ uuid + ", 'observations' : [");
@@ -1119,5 +1217,62 @@ public class MDSInterface2 {
 		obs.append("]}");
 		Log.i(TAG, obs.toString());
 	}
-	
+
+    public synchronized static final <T> Response<T> syncUpdate(Context ctx, Uri uri,
+        String username, String password,
+        Bundle form,
+        Bundle files,
+        ResponseHandler<Response<T>> handler)
+    {
+        Log.i(TAG, "syncUpdate()");
+        Map<String, String> data = new HashMap<String, String>();
+        Cursor c = null;
+        Response<T> response = Response.empty();
+        // Should have at least one field that need to be updated
+        if(form != null){
+            Iterator<String> keys = form.keySet().iterator();
+            while(keys.hasNext()){
+                String key = keys.next();
+                data.put(key, form.getString(key));
+                Log.d(TAG, "key: " + key +" --> value: "+ form.getString(key));
+            }
+        }
+        try{
+            URI target = iriToURI(ctx,uri);
+            response = apiPost(target,username,password,data,handler);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public static List<NameValuePair> mapToPost(Map<String, ? extends Object> map){
+        List<NameValuePair> postData = new ArrayList<NameValuePair>();
+        map = (map != null)?map: new HashMap<String,Object>();
+        for(String key: map.keySet()){
+            Log.i(TAG, "    " + key + " : " + map.get(key));
+            postData.add(new BasicNameValuePair(key, String.valueOf(map.get(key))));
+        }
+        return postData;
+    }
+
+    public static HttpEntity buildEntity(Map<String, ? extends Object> form, Map<String,File> files)
+        throws UnsupportedEncodingException
+    {
+        if(files  == null){
+            return new UrlEncodedFormEntity(mapToPost(form),"UTF-8");
+        } else {
+            MultipartEntity entity = new MultipartEntity();
+            for(String key: form.keySet()){
+                entity.addPart(key,
+                        new StringBody(String.valueOf(form.get(key))));
+            }
+            for(Entry<String, File> entry: files.entrySet()){
+                //entity.addPart(entry.getKey(),
+                //        new ByteArrayBody(entry.getValue()));
+            }
+            return entity;
+        }
+    }
+
 }
