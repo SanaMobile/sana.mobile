@@ -25,7 +25,6 @@ import org.sana.android.service.impl.DispatchService;
 import org.sana.android.service.QueueManager;
 import org.sana.android.util.Logf;
 import org.sana.android.util.SanaUtil;
-import org.sana.android.util.StringUtils;
 import org.sana.api.IModel;
 import org.sana.core.Encounter;
 
