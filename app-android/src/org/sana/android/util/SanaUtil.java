@@ -363,7 +363,7 @@ public class SanaUtil {
         // insertProcedure(ctx, R.raw.cvd_protocol);
         //insertProcedure(ctx, R.raw.api_test);
         insertProcedure(ctx, R.raw.ssi);
-        insertProcedure(ctx, R.raw.haitivit_camera);
+        //insertProcedure(ctx, R.raw.haitivit_camera);
         insertProcedure(ctx, R.raw.ssi_two_site);
         // insertProcedure(ctx, R.raw.audio_upload_test);
     }
