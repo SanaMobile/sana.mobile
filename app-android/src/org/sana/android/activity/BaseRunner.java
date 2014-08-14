@@ -16,8 +16,11 @@ import org.sana.android.fragment.BaseRunnerFragment;
 import org.sana.android.media.EducationResource.Audience;
 import org.sana.android.procedure.PictureElement;
 import org.sana.android.procedure.Procedure;
+import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Events.EventType;
 import org.sana.android.provider.Observations;
+import org.sana.android.provider.Procedures;
+import org.sana.android.provider.Tasks;
 import org.sana.android.service.PluginService;
 import org.sana.android.service.impl.DispatchService;
 import org.sana.android.task.ImageProcessingTask;
@@ -34,6 +37,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentFilter.MalformedMimeTypeException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -59,7 +63,7 @@ import android.widget.Toast;
  * reloading, and uploading.
  * 
  * @author Sana Development Team */
-public abstract class BaseRunner extends FragmentActivity {
+public abstract class BaseRunner extends FragmentActivity implements BaseRunnerFragment.ProcedureListener{
 
     public static final String TAG = BaseRunner.class.getSimpleName();
     public static final String INTENT_KEY_STRING = "intentKey";
@@ -101,20 +105,20 @@ public abstract class BaseRunner extends FragmentActivity {
 
     private BaseRunnerFragment mRunnerFragment = null;
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		  @Override
-		  public void onReceive(Context context, Intent intent) {
-		    // Extract data included in the Intent
-			Log.d(TAG, "context: " + context.getClass().getSimpleName() + ", intent: " + intent.toUri(Intent.URI_INTENT_SCHEME));
-			setUploading(false);
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Extract data included in the Intent
+            Log.d(TAG, "context: " + context.getClass().getSimpleName() + ", intent: " + intent.toUri(Intent.URI_INTENT_SCHEME));
+            setUploading(false);
             hideUploadingDialog();
             String text = intent.hasExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE)? intent.getStringExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE): "Upload Result Received: " + intent.getDataString();
-			int result = intent.getIntExtra(DispatchService.RESPONSE_CODE, 400);
-			if(result == 200)
-				createUploadResultSuccessDialog(text).show();
-			else
-				createUploadResultFailDialog(text).show();
-		  }
-		};
+            int result = intent.getIntExtra(DispatchService.RESPONSE_CODE, 400);
+            if(result == 200)
+                createUploadResultSuccessDialog(text).show();
+            else
+                createUploadResultFailDialog(text).show();
+        }
+    };
 
     /** {@inheritDoc} */
     @Override
@@ -154,10 +158,22 @@ public abstract class BaseRunner extends FragmentActivity {
     	} else {
 			Logf.D(TAG, "mUploading.get() = false");
     	}
-        IntentFilter filter = new IntentFilter(DispatchResponseReceiver.BROADCAST_RESPONSE);
-        LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(mReceiver, filter);
+        LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(mReceiver, buildFilter());
     	
     }
+    
+    public IntentFilter buildFilter(){
+    	IntentFilter filter = new IntentFilter(DispatchResponseReceiver.BROADCAST_RESPONSE);
+        filter.addDataScheme(Encounters.CONTENT_URI.getScheme());
+        try {
+            
+            filter.addDataType(Encounters.CONTENT_ITEM_TYPE);
+        } catch (MalformedMimeTypeException e) {
+        
+        }
+        return filter;
+    }
+    
     /** {@inheritDoc} */
     @Override
     public void onAttachFragment(Fragment fragment) {
@@ -172,7 +188,7 @@ public abstract class BaseRunner extends FragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         Locales.updateLocale(this, getString(R.string.force_locale));
-        menu.add(0, OPTION_SAVE_EXIT, 0, getString(R.string.menu_save_exit));
+        //menu.add(0, OPTION_SAVE_EXIT, 0, getString(R.string.menu_save_exit));
         menu.add(0, OPTION_DISCARD_EXIT, 1, getString(R.string.menu_discard_exit));
         menu.add(0, OPTION_VIEW_PAGES, 2, getString(R.string.menu_view_pages));
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
@@ -191,7 +207,7 @@ public abstract class BaseRunner extends FragmentActivity {
             switch (item.getItemId()) {
                 case OPTION_SAVE_EXIT:
                     mRunnerFragment.storeCurrentProcedure(false);
-                    setResult(RESULT_OK, null);
+                    setResult(RESULT_CANCELED, null);
                     mRunnerFragment.logEvent(EventType.ENCOUNTER_SAVE_QUIT, "");
                     finish();
                     return true;
@@ -622,5 +638,11 @@ public abstract class BaseRunner extends FragmentActivity {
                 .create()
                 .show();
         }
+    }
+    
+    public void onProcedureComplete(Intent data){
+    }
+    
+    public void onProcedureCancelled(String message){
     }
 }

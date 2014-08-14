@@ -4,13 +4,14 @@ package org.sana.android.activity;
 import org.sana.R;
 import org.sana.android.app.Locales;
 import org.sana.android.fragment.ProcedureRunnerFragment;
+import org.sana.android.fragment.BaseRunnerFragment.ProcedureListener;
 import org.sana.android.service.impl.InstrumentationService;
 
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
+import android.util.Log;
 /** Activity which loops through the available steps within a procedure including
  * handling any branching logic. Individual procedure steps are rendered to a
  * view which is wrapped in a container which presents buttons for paging.
@@ -41,6 +42,7 @@ public class ProcedureRunner extends BaseRunner
         super.onAttachFragment(fragment);
         if (fragment.getClass() == ProcedureRunnerFragment.class) {
             mProcedureRunnerFragment = (ProcedureRunnerFragment) fragment;
+            mProcedureRunnerFragment.setProcedureListener(this);
         }
     }
     
@@ -73,6 +75,17 @@ public class ProcedureRunner extends BaseRunner
     	}
     	super.onDestroy();
     }
+    @Override
+    public void onProcedureComplete(Intent data){
+        Log.d(TAG, "onProcedureComplete(): " + data);
+        setResult(RESULT_OK,data);
+        finish();
+    }
     
-    
+    @Override
+    public void onProcedureCancelled(String message){
+        Log.d(TAG, "onProcedureComplete(): " + message);
+		setResult(RESULT_CANCELED,null);
+		finish();
+    }
 }
