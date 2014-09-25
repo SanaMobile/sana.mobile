@@ -52,6 +52,7 @@ import android.content.UriMatcher;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 /**
  * a container of Uri descriptor values and related constants. The static 
  * methods of this class are primarily intended for consistent, application-wide
@@ -64,22 +65,32 @@ public final class Uris {
  
 	private static final String SCHEME_CONTENT = "content";
 	
+    public static final int NO_MATCH = -1;
+    public static final int MATCH_ALL = 0;
+    public static final int MATCH_TYPE = 1;
+    public static final int MATCH_CONTENT = 2;
+    public static final int MATCH_PACKAGE = 4;
+    
 	public static final int ITEMS = 1;
 	public static final int ITEM_ID = 2;
 	public static final int ITEM_UUID = 4;
 	public static final int ITEM_RELATED = 8;
+    public static final int ITEM_FILE = 16;
 
-	public static final int TYPE_SHIFT = 8;
-	private static final int TYPE_MASK = (1 << TYPE_SHIFT) -1; 
+	public static final int TYPE_WIDTH = 8;
+	public static final int TYPE_SHIFT = 0;
+	private static final int TYPE_MASK = (1 << TYPE_WIDTH) -1; 
 	
-	public static final int CONTENT_SHIFT = 16;
-	private static final int CONTENT_MASK = ((1 << CONTENT_SHIFT) - 1) << TYPE_SHIFT; 
+	public static final int CONTENT_WIDTH = 16;
+	public static final int CONTENT_SHIFT = TYPE_WIDTH;
+	private static final int CONTENT_MASK = ((1 << CONTENT_WIDTH) - 1) << CONTENT_SHIFT; 
 
-	public static final int PACKAGE_SHIFT = 4;
-	private static final int PACKAGE_MASK = ((1 << PACKAGE_SHIFT) - 1) << CONTENT_SHIFT << TYPE_SHIFT; 
+        public static final int PACKAGE_WIDTH = 4;
+	public static final int PACKAGE_SHIFT = CONTENT_WIDTH + CONTENT_SHIFT;
+	private static final int PACKAGE_MASK = ((1 << PACKAGE_WIDTH) - 1) << PACKAGE_SHIFT; 
     
 	
-	public static final int DESCRIPTOR_WIDTH = PACKAGE_SHIFT + CONTENT_SHIFT + TYPE_SHIFT;
+	public static final int DESCRIPTOR_WIDTH = PACKAGE_WIDTH + CONTENT_WIDTH + TYPE_WIDTH;
 	public static final int NULL = UriMatcher.NO_MATCH;
 	
 
@@ -125,18 +136,18 @@ public final class Uris {
 	//--------------------------------------------------------------------------
 	// Model codes
 	//--------------------------------------------------------------------------
-	public static final int CONCEPT = 1 << TYPE_SHIFT;
-	public static final int ENCOUNTER = 2 << TYPE_SHIFT;
-	public static final int EVENT = 4 << TYPE_SHIFT;
-	public static final int INSTRUCTION = 8 << TYPE_SHIFT;
-	public static final int NOTIFICATION = 6 << TYPE_SHIFT;
-	public static final int OBSERVATION = 32 << TYPE_SHIFT;
-	public static final int OBSERVER = 64 << TYPE_SHIFT;
-	public static final int PROCEDURE = 128 << TYPE_SHIFT;
-	public static final int RELATIONSHIP = 256 << TYPE_SHIFT;
-	public static final int SUBJECT = 512 << TYPE_SHIFT;
-	public static final int ENCOUNTER_TASK = 1024 << TYPE_SHIFT;
-	public static final int OBSERVATION_TASK = 2048 << TYPE_SHIFT;
+	public static final int CONCEPT = 1 << CONTENT_SHIFT;
+	public static final int ENCOUNTER = 2 << CONTENT_SHIFT;
+	public static final int EVENT = 4 << CONTENT_SHIFT;
+	public static final int INSTRUCTION = 8 << CONTENT_SHIFT;
+	public static final int NOTIFICATION = 6 << CONTENT_SHIFT;
+	public static final int OBSERVATION = 32 << CONTENT_SHIFT;
+	public static final int OBSERVER = 64 << CONTENT_SHIFT;
+	public static final int PROCEDURE = 128 << CONTENT_SHIFT;
+	public static final int RELATIONSHIP = 256 << CONTENT_SHIFT;
+	public static final int SUBJECT = 512 << CONTENT_SHIFT;
+	public static final int ENCOUNTER_TASK = 1024 << CONTENT_SHIFT;
+	public static final int OBSERVATION_TASK = 2048 << CONTENT_SHIFT;
 	
 	// dir match codes OBJECT | ITEMS
 	public static final int CONCEPT_DIR = CONCEPT | ITEMS;
@@ -228,9 +239,9 @@ public final class Uris {
 		mMatcher.addURI(Models.AUTHORITY, "tasks/encounter/", ENCOUNTER_TASK_DIR);
 		mMatcher.addURI(Models.AUTHORITY, "tasks/encounter/#", ENCOUNTER_TASK_ITEM);
 		mMatcher.addURI(Models.AUTHORITY, "tasks/encounter/*", ENCOUNTER_TASK_UUID);
-		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/", OBSERVATION_DIR);
-		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/#", OBSERVATION_ITEM);
-		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/*", OBSERVATION_UUID);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/", OBSERVATION_TASK_DIR);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/#", OBSERVATION_TASK_ITEM);
+		mMatcher.addURI(Models.AUTHORITY, "tasks/observation/*", OBSERVATION_TASK_UUID);
 		
 	}
 	
@@ -264,20 +275,21 @@ public final class Uris {
 	 * @throws IllegalArgumentException if the descriptor can not be determined.
 	 */
 	public static int getContentDescriptor(Uri uri){
-		int d = getDescriptor(uri);
-		return (d > -1)? d & CONTENT_MASK: UriMatcher.NO_MATCH;
+		int d = getDescriptor(uri) & CONTENT_MASK;
+		return (d > -1)? d: UriMatcher.NO_MATCH;
 	}
 	
 	/**
-	 * The content type descriptor. 
+	 * The content type descriptor. If matched, it will return one of 
+	 * ITEMS, ITEMS_ID, or ITEM_UUID
 	 * 
 	 * @param uri
 	 * @return
 	 * @throws IllegalArgumentException if the descriptor can not be determined.
 	 */
 	public static int getTypeDescriptor(Uri uri){
-		int d = getDescriptor(uri);
-		return (d > -1)? d  & TYPE_MASK: UriMatcher.NO_MATCH;
+		int d = getDescriptor(uri) & TYPE_MASK;
+		return (d > -1)? d: UriMatcher.NO_MATCH;
 	}
 	
 	/**
@@ -288,17 +300,17 @@ public final class Uris {
 	 * @param path
 	 * @return
 	 */
-	public static Uri buildUri(String scheme, String authority, String path){
-		Uri uri = Uri.parse(scheme + "://");
-		Uri.Builder builder = uri.buildUpon();
-		
-		builder.scheme(scheme).authority(authority);
-		for(String s:path.split("/")){
-			if(s != null && s != "")
-				builder.path(path);
-		}
-		return builder.build();
-	}
+    public static Uri buildUri(String scheme, String authority, String path){
+        Uri uri = Uri.parse(scheme + "://");
+        Uri.Builder builder = uri.buildUpon();
+        builder.scheme(scheme).authority(authority);
+        for(String s:path.split("/")){
+            if(!TextUtils.isEmpty(s)){
+                builder.appendPath(path);
+            }
+        }
+        return builder.build();
+    }
 	
 	/**
 	 * Builds a hierarchical content style Uri.
@@ -330,11 +342,12 @@ public final class Uris {
 	 * @param uuid
 	 * @return
 	 */
-	public static Uri withAppendedUuid(Uri uri, String uuid){
-		Uri.Builder builder = uri.buildUpon();
-		Uri result = builder.appendEncodedPath(uuid).build();
-		return result;
-	}
+    public static Uri withAppendedUuid(Uri uri, String uuid){
+        //Uri.Builder builder = uri.buildUpon();
+        //Uri result = builder.appendPath(uuid).build();
+        Uri result = Uri.parse(uri.toString() + "/" + uuid);
+        return result;
+    }
 	
 
 	/**
@@ -450,6 +463,27 @@ public final class Uris {
 		return (uri != null && !uri.equals(Uri.EMPTY))? false: true;
 	}
 	
+
+    public static boolean isTask(Uri uri){
+        int d = getTypeDescriptor(uri);
+        if(d == UriMatcher.NO_MATCH) return false;
+        return ((d == ENCOUNTER_TASK) ||
+                (d == OBSERVATION_TASK))? true: false; 
+    }
+
+    public static final boolean filterEquals(Uri from, Uri to, int flags){
+        boolean result = false;
+        if(flags == MATCH_ALL){
+            result = (getDescriptor(from) == getDescriptor(to));
+        } else {
+            // TODO implement this
+        }
+        return result;
+    }
+
+    public static final boolean filterEquals(Uri from, Uri to){
+        return filterEquals(from,to, MATCH_ALL);
+    }
 	/**
 	 * Copy constructor utility.
 	 * 
@@ -475,9 +509,9 @@ public final class Uris {
      * @return
      */
     public static Uri iriToUri(Uri iri, String method){
-    	Uri result = Uri.EMPTY;
-    	
-    	return result;
+        Uri result = Uri.EMPTY;
+        
+        return result;
     }
     
     /**
@@ -498,6 +532,8 @@ public final class Uris {
 			throws MalformedURLException, URISyntaxException
 	{
 		String path = String.format("%s%s", rootPath, uri.getPath());
+                if(!path.endsWith("/"))
+                    path = path + "/";
 		String query = uri.getEncodedQuery();
 		URL url = null;
 		if(!TextUtils.isEmpty(query)){
@@ -509,4 +545,5 @@ public final class Uris {
 		URI u  = url.toURI();
 		return u;
 	}
+
 }

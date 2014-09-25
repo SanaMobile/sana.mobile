@@ -25,28 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.api.task;
+package org.sana.android.util;
+ 
+import org.sana.android.app.Locales;
+
+import android.content.Context;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @author Sana Development
+ * Text and String utility methods.
  *
+ * @author Sana Development
  */
-public enum Status {
-	ASSIGNED(1),
-	REVIEWED(5),
-	REJECTED(3),
-	COMPLETED(2),
-        IN_PROGRESS(4);
-        public final int code;
-        Status(int code){
-            this.code = code;
-        }
-        
-        public static Status fromCode(int code){
-            for(Status status: Status.values()){
-                if(status.code == code)
-                    return status;
-            }
-            throw new IllegalArgumentException();
-        }
+public final class Strings{
+
+    private static AtomicBoolean forceLocale = new AtomicBoolean(false);
+    private static String locale = null;
+
+    private Strings(){}
+
+    public static void intialize(Context context, int resId){
+        locale = context.getString(resId);
+    }
+
+    public static boolean getForceLocale(){
+        return forceLocale.get();
+    }
+
+    public static void setForceLocale(boolean newValue){
+        forceLocale.set(newValue);
+    }
+
+    /**
+     * Returns the localized string from a resource id using the locale
+     * provided when calling (@link #intialize}
+     *
+     * @param context The COntext which contains the localized resource
+     * @param resId The String resource id to fetch
+     */
+    public static String getLocalizedString(Context context, int resId){
+        Locales.updateLocale(context, locale);
+        return context.getString(resId);
+    }
+
 }

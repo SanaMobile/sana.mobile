@@ -121,7 +121,10 @@ public abstract class ModelContentProvider extends ContentProvider {
 	 */
 	@Override
 	public synchronized  int delete(Uri uri, String selection, String[] selectionArgs) {
-        Log.d(TAG, ".delete(" + uri.toString() +");");
+        Log.d(TAG, "delete() uri=" + uri 
+				+ ", selection= " + selection
+			    + ", selectionArgs=" + ((selectionArgs != null)?TextUtils.join(",", selectionArgs):"null")
+				+ " );");
 		String whereClause = DBUtils.getWhereClause(uri, 
 				Uris.getDescriptor(uri), 
 				selection);
@@ -190,7 +193,7 @@ public abstract class ModelContentProvider extends ContentProvider {
         Log.d(TAG, ".query(.) uri qs = " + selection);
         if(!TextUtils.isEmpty(uriQS)){
         	selection = String.format("%s %s", selection, uriQS);
-        	Log.d(TAG, ".query(.) selection = " + selection);
+        	Log.d(TAG, ".query(.) selection --> " + selection);
 		}
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		qb.setTables(helper.getTable());

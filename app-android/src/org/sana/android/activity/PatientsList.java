@@ -7,7 +7,6 @@ import org.sana.android.content.Intents;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
 import org.sana.android.provider.Patients;
-import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
 import org.sana.android.service.impl.DispatchService;
 import org.sana.android.util.SanaUtil;
@@ -52,7 +51,8 @@ public class PatientsList extends FragmentActivity implements
 
     // Fragments
     private PatientListFragment mFragmentPatientList;
-
+    private boolean mAdmin = true;
+    
     /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,10 @@ public class PatientsList extends FragmentActivity implements
     /** {@inheritDoc} */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.patients_list_menu, menu);
+    	if(mAdmin)
+    		getMenuInflater().inflate(R.menu.patients_list_menu_admin, menu);
+    	else
+    		getMenuInflater().inflate(R.menu.patients_list_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -104,8 +107,10 @@ public class PatientsList extends FragmentActivity implements
                 registerNewPatient();
                 return true;
             case R.id.menu_sync_patients:
-            	mFragmentPatientList.sync(this, Patients.CONTENT_URI);
+            	mFragmentPatientList.sync(this, Subjects.CONTENT_URI);
                 return true;
+            case R.id.menu_delete_patients:
+            	getContentResolver().delete(Subjects.CONTENT_URI, null,null);
             default:
                 return super.onOptionsItemSelected(item);
         }

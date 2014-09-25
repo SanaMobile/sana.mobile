@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:padding="6dip">
     <CheckBox
-        android:id="@+id/icon"
+        android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_marginRight="6dip"
@@ -19,40 +19,40 @@
         android:layout_weight="1"
         android:layout_height="fill_parent">
         <TextView
-            android:text=""
-            android:id="@+id/toptext"
+        android:id="@+id/procedure"
+        	android:text=""
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
-        <TextView
-            android:text=""
+        	android:focusable="false"
+        	android:focusableInTouchMode="false"/>
+            <TextView
+            android:id="@+id/subject"
+        	android:text=""
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/bottomtext"
             android:ellipsize="marquee"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
-        <TextView
-            android:text=""
+        	android:focusable="false"
+        	android:focusableInTouchMode="false"/>
+            <TextView
+            android:id="@+id/procedure_date"
+        	android:text=""
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:id="@+id/datetext"
             android:ellipsize="marquee"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
-        <TextView
-            android:text=""
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+        	android:focusable="false"
+        	android:focusableInTouchMode="false"/>
+            <TextView
             android:id="@+id/queue_status"
+        	android:text=""
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ellipsize="marquee"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
+        	android:focusable="false"
+        	android:focusableInTouchMode="false"/>
     </LinearLayout>
 </LinearLayout>

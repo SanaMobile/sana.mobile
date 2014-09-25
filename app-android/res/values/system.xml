@@ -6,4 +6,5 @@
     -->
     <string name="sync_delta">0</string>
     <string name="force_locale">ht</string>
+    <string name="display_version">Version: ssi-v22</string>
 </resources>

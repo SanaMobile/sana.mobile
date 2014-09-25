@@ -30,22 +30,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * PictureElement is a ProcedureElement that allows a user to take photos. It 
- * displays thumbnails of images that have been taken, allows a user to bring 
- * up the camera to take new ones, and allows a user to click on a thumbnail to 
+ * PictureElement is a ProcedureElement that allows a user to take photos. It
+ * displays thumbnails of images that have been taken, allows a user to bring
+ * up the camera to take new ones, and allows a user to click on a thumbnail to
  * bring up a dialog allowing for closer image review and examination.
  * <p/>
  * <ul type="none">
  * <li><b>Clinical Use </b>This element is useful in clinical scenarios wherever
  * images will aid in diagnosis.</li>
- * <li><b>Collects </b>Zero or more images returned as a comma separated list of 
+ * <li><b>Collects </b>Zero or more images returned as a comma separated list of
  * integer picture ids.</li>
  * </ul>
- * 
+ *
  * @author Sana Development Team
  */
 public class PictureElement extends ProcedureElement implements OnClickListener,
-	OnItemClickListener, OnItemLongClickListener 
+	OnItemClickListener, OnItemLongClickListener
 {
     public static String TAG = PictureElement.class.getSimpleName();
     public static final String PARAMS_NAME = "keys";
@@ -55,7 +55,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
     private GridView imageGrid;
     private ImagePreviewDialog imageReview;
     private Intent imageCaptureIntent;
-    
+
     /** {@inheritDoc} */
     @Override
     public ElementType getType() {
@@ -66,7 +66,8 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
     @Override
     protected View createView(Context c) {
         imageGrid = new GridView(c);
-        String procedureId = 
+        Log.i(TAG, "Looking up for encounter: " + getProcedure().getInstanceUri());
+        String procedureId =
         	getProcedure().getInstanceUri().getLastPathSegment();
         Log.w(TAG, "PictureELement: Encounter id " + procedureId);
         String whereStr;
@@ -78,32 +79,32 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
         	whereStr = ImageSQLFormat.ENCOUNTER_ID + " = '?' AND "
 				+ ImageSQLFormat.ELEMENT_ID + " = ? AND "
 				+ ImageSQLFormat.FILE_VALID + " = ?";
-        	
+
 		Cursor cursor = c.getContentResolver().query(
 				SanaDB.ImageSQLFormat.CONTENT_URI,
 				new String[] { ImageSQLFormat._ID }, whereStr,
 				new String[] { procedureId, id, "1" }, null);
 
-		// HAXMODE -- if we don't do this we leak the Cursor 
+		// HAXMODE -- if we don't do this we leak the Cursor
 		if (c instanceof Activity) {
 			((Activity)c).startManagingCursor(cursor);
 		}
-        imageAdapter = new ScalingImageAdapter(c, cursor, 
+        imageAdapter = new ScalingImageAdapter(c, cursor,
         		THUMBNAIL_SCALE_FACTOR);
-        imageGrid.setAdapter(imageAdapter);     
+        imageGrid.setAdapter(imageAdapter);
         imageGrid.setNumColumns(3);
         imageGrid.setVerticalSpacing(5);
         imageGrid.setPadding(5, 0, 0, 0);
-        
+
         imageGrid.setOnItemClickListener(this);
         imageGrid.setOnItemLongClickListener(this);
-        
+
         //imageGrid.setTranscriptMode(imageGrid.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-        
+
         cameraButton = new Button(c);
         cameraButton.setText(R.string.btn_add_photo);
         cameraButton.setOnClickListener(this);
-        
+
         imageReview = new ImagePreviewDialog(c);
         LinearLayout picContainer = new LinearLayout(c);
         picContainer.setOrientation(LinearLayout.VERTICAL);
@@ -111,37 +112,37 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
         if(question == null) {
             question = c.getString(R.string.question_standard_picture_element);
         }
-        
+
         //Set question
         TextView tv = new TextView(c);
         tv.setText(String.format("%s: %s", id, question));
         tv.setGravity(Gravity.CENTER);
         tv.setTextAppearance(c, android.R.style.TextAppearance_Medium);
-        
+
         //Add to layout
         picContainer.addView(tv, new LinearLayout.LayoutParams(-1,-1,0.1f));
         //picContainer.addView(imageView, new LinearLayout.LayoutParams(-1,-1,0.1f));
-        
+
         //Add button
-        picContainer.addView(cameraButton, 
+        picContainer.addView(cameraButton,
         		new LinearLayout.LayoutParams(-1,-1,0.1f));
-        picContainer.addView(imageGrid, 
+        picContainer.addView(imageGrid,
         		new LinearLayout.LayoutParams(-1, 210)); //LayoutParams(-1,-1,0.8f));
         picContainer.setWeightSum(1.0f);
         return picContainer;
     }
-    
-    /** 
+
+    /**
      * Sends an Intent to ProcedureRunner with the procedure id and element
-     * id as parameters. 
+     * id as parameters.
      * */
     @Override
 	 public void onClick(View v) {
 		 if (v == cameraButton) {
-			 String procedureId = 
+			 String procedureId =
 				 getProcedure().getInstanceUri().getLastPathSegment(); //which procedure its part of
 			 String[] params = {procedureId, id, String.valueOf(imageAdapter.getCount() + 1)};
-		
+
 			 imageCaptureIntent = new Intent(getContext(), ((Activity) getContext()).getClass());
 			 imageCaptureIntent.putExtra(PARAMS_NAME, params)
 			 			  .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -149,7 +150,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
 			 ((Activity) getContext()).startActivity(imageCaptureIntent);
 		 }
 	 }
-    
+
     /** Toggles the image as selected */
     @Override
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -162,7 +163,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
 		//view.invalidate();
 		//iadapter.notifyDataSetChanged();
 		//parent.invalidate();
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -173,7 +174,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
 	public boolean onItemLongClick(AdapterView<?> parent, View v, int position,
 			long id) {
 		Log.i(TAG, "" + position);
-		
+
 		long imageId = imageAdapter.getItemId(position);
 		Uri imageUri = ContentUris.withAppendedId(ImageSQLFormat.CONTENT_URI,
 				imageId);
@@ -189,7 +190,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
 		}
 		return false;
 	}
-    
+
     /** {@inheritDoc} */
     @Override
 	public void setAnswer(String answer) {
@@ -225,7 +226,7 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
 				answerz.add(Long.toString(id));
 			}
 		}
-		
+
     	if (answerz.size() > 0) {
     		StringBuilder csv = new StringBuilder(answerz.get(0));
     		for (int i=1; i<answerz.size(); i++) {
@@ -239,32 +240,32 @@ public class PictureElement extends ProcedureElement implements OnClickListener,
     		return "";
     	}
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void buildXML(StringBuilder sb) {
-        sb.append("<Element type=\"" + getType().name() + "\" id=\"" 
+        sb.append("<Element type=\"" + getType().name() + "\" id=\""
         		+ id);
         sb.append("\" question=\"" + question);
         sb.append("\" answer=\"" + getAnswer());
         sb.append("\" concept=\"" + getConcept());
         sb.append("\"/>\n");
     }
-    
+
     /** Default Constructor */
-    private PictureElement(String id, String question, String answer, 
+    private PictureElement(String id, String question, String answer,
     		String concept, String figure, String audio) {
         super(id, question, answer, concept, figure, audio);
     }
 
     /** @see ProcedureElement#fromXML(String, String, String, String, String, String, Node) */
-    public static PictureElement fromXML(String id, String question, 
-    		String answer, String concept, String figure, String audio, 
-    		Node node) throws ProcedureParseException 
+    public static PictureElement fromXML(String id, String question,
+    		String answer, String concept, String figure, String audio,
+    		Node node) throws ProcedureParseException
     {
     	return new PictureElement(id, question, answer, concept, figure, audio);
     }
 
-	
+
 
 }

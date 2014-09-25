@@ -42,6 +42,7 @@ import org.sana.api.task.Status;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
+import android.text.TextUtils;
 
 /**
  * @author Sana Development
@@ -79,8 +80,8 @@ public class EncounterTasksHelper extends TableHelper<EncounterTask>{
 	@Override
 	public ContentValues onInsert(ContentValues values) {
 		ContentValues vals = new ContentValues();
-		vals.put(Contract.UUID, UUID.randomUUID().toString());
-        vals.put(Contract.STATUS, Status.ACCEPTED.toString());
+		//vals.put(Contract.UUID, UUID.randomUUID().toString());
+        //vals.put(Contract.STATUS, Status.ACCEPTED.toString());
         vals.put( Contract.OBSERVER, "");
         vals.put(Contract.ENCOUNTER, "");
         vals.put( Contract.PROCEDURE, "");
@@ -89,11 +90,25 @@ public class EncounterTasksHelper extends TableHelper<EncounterTask>{
 		Date dueDate = new Date();
 		try {
 			dueDate = (dueStr != null)? sdf.parse(dueStr): new Date();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+            Date checkDate;
+        
+            String completed = values.getAsString(Contract.COMPLETED);
+            if(!TextUtils.isEmpty(completed)){
+                checkDate = sdf.parse(completed);
+                vals.put( Contract.COMPLETED, sdf.format(completed));
+            }
+            String started = values.getAsString(Contract.STARTED);
+            if(!TextUtils.isEmpty(started)){
+                checkDate = sdf.parse(started);
+                vals.put( Contract.STARTED, sdf.format(started));
+            }
+        } catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
         vals.put( Contract.DUE_DATE, sdf.format(dueDate));
+        
         vals.putAll(values);
 		return super.onInsert(vals);
 	}
@@ -103,6 +118,7 @@ public class EncounterTasksHelper extends TableHelper<EncounterTask>{
 	 */
 	@Override
 	public ContentValues onUpdate(Uri uri, ContentValues values) {
+		/*
 		ContentValues vals = new ContentValues();
         vals.put( Contract.OBSERVER, "");
         vals.put(Contract.STATUS, "");
@@ -118,7 +134,9 @@ public class EncounterTasksHelper extends TableHelper<EncounterTask>{
 			e.printStackTrace();
 		}
         vals.put( Contract.DUE_DATE, sdf.format(dueDate));
-		return super.onUpdate(uri, vals);
+        vals.putAll(values);
+        */
+		return super.onUpdate(uri, values);
 	}
 
 	/* (non-Javadoc)
@@ -133,6 +151,8 @@ public class EncounterTasksHelper extends TableHelper<EncounterTask>{
 				+ Contract.OBSERVER + " TEXT, "
 				+ Contract.STATUS + " TEXT, "
 				+ Contract.DUE_DATE + " DATE, "
+				+ Contract.COMPLETED + " DATE, "
+				+ Contract.STARTED + " DATE, "
 				+ Contract.ENCOUNTER + " TEXT, "
 				+ Contract.PROCEDURE + " TEXT, "
 				+ Contract.SUBJECT + " TEXT, "
@@ -148,7 +168,7 @@ public class EncounterTasksHelper extends TableHelper<EncounterTask>{
 	@Override
 	public String onUpgrade(int oldVersion, int newVersion) {
 		if(oldVersion < newVersion){
-			
+			return "DROP TABLE " + getTable() +"; " + onCreate();
 		}
 		return null;
 	}

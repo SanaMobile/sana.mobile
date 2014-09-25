@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">api-android</string>
-    <string name="intent_action_create">org.sana.android.intent.action.CREATE</string>
-    <string name="intent_action_read">org.sana.android.intent.action.READ</string>
-    <string name="intent_action_update">org.sana.android.intent.action.UPDATE</string>
-    <string name="intent_action_delete">org.sana.android.intent.action.DELETE</string>
+    <string name="intent_action_create">org.sana.intent.action.CREATE</string>
+    <string name="intent_action_read">org.sana.intent.action.READ</string>
+    <string name="intent_action_update">org.sana.intent.action.UPDATE</string>
+    <string name="intent_action_delete">org.sana.intent.action.DELETE</string>
 </resources>
+

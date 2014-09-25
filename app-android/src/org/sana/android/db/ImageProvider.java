@@ -25,23 +25,23 @@ import android.util.Log;
 
 /**
  * Content provider for image content.
- * 
+ *
  * @author Sana Development Team
  *
  */
 public class ImageProvider extends ContentProvider {
 
     private static final String TAG = "ImageProvider";
-    
+
     public static final String VIEW_PARAMETER = "view";
     public static final String THUMBNAIL_VIEW = "thumb";
-    
+
     private static final String IMAGE_TABLE_NAME = "images";
     public static final String IMAGE_BUCKET_NAME = "/sdcard/dcim/sana/";
-    
+
     private static final int IMAGES = 1;
     private static final int IMAGE_ID = 2;
-    
+
     private DatabaseHelper mOpenHelper;
     private static final UriMatcher sUriMatcher;
     private static HashMap<String,String> sImageProjectionMap;
@@ -64,75 +64,75 @@ public class ImageProvider extends ContentProvider {
     	thumbBuilder.appendQueryParameter(VIEW_PARAMETER, THUMBNAIL_VIEW);
     	return thumbBuilder.build();
     }
-    
+
     private String basePath() {
     	return "/data/data/org.sana/files/";
     }
-    
+
     private String buildImageFilenameFromId(String imageId) {
     	return basePath() + imageId;
     }
-    
+
     private String buildThumbnailFilenameFromId(String imageId) {
     	return basePath() + "thumb_" + imageId;
     }
-    
+
     private String buildFilenameFromUri(Uri uri) {
     	List<String> segments = uri.getPathSegments();
-    	
+
     	// Invalid URI
-    	if (segments.size() != 2) 
+    	if (segments.size() != 2)
     		return "";
-    	
+
     	String imageId = segments.get(1);
     	String viewName = uri.getQueryParameter(VIEW_PARAMETER);
-    	
+
     	if (THUMBNAIL_VIEW.equals(viewName)) {
     		return buildThumbnailFilenameFromId(imageId);
     	} else { // default to image view
     		return buildImageFilenameFromId(imageId);
     	}
     }
-    
+
     private boolean deleteFile(String imageId) {
     	String filename = buildImageFilenameFromId(imageId);
     	File f = new File(filename);
     	boolean result = f.delete();
-    	Log.i(TAG, "Deleting file for id " + imageId + " : " + filename + " " 
+    	Log.i(TAG, "Deleting file for id " + imageId + " : " + filename + " "
     			+ (result ? "succeeded" : "failed"));
     	filename = buildThumbnailFilenameFromId(imageId);
     	f = new File(filename);
     	boolean thumbResult = f.delete();
-    	Log.i(TAG, "Deleting thumbnail for id " + imageId + " : " + filename 
+    	Log.i(TAG, "Deleting thumbnail for id " + imageId + " : " + filename
     			+ " " + (thumbResult ? "succeeded" : "failed"));
     	return result && thumbResult;
     }
-    
+
     private boolean deleteFile(Uri uri) {
     	List<String> segments = uri.getPathSegments();
-    	
+
     	// Invalid URI
-    	if (segments.size() != 1) 
+    	if (segments.size() != 1)
     		return true;
-    	
+
     	String imageId = segments.get(1);
     	return deleteFile(imageId);
     }
 
     /** {@inheritDoc} */
     @Override
-    public ParcelFileDescriptor openFile(Uri uri, String mode) throws 
-    	FileNotFoundException 
+    public ParcelFileDescriptor openFile(Uri uri, String mode) throws
+    	FileNotFoundException
     {
     	String filename = buildFilenameFromUri(uri);
         Log.i(TAG, "openFile() for filename: " + filename + " mode: " + mode);
-        File f = new File(filename); 
-        
+        File f = new File(filename);
+
         //Hack to get image to write to database
-        
+
         int m = ParcelFileDescriptor.MODE_READ_ONLY;
         if ("w".equals(mode)) {
-        	m = ParcelFileDescriptor.MODE_WRITE_ONLY | 
+        	m = ParcelFileDescriptor.MODE_WRITE_ONLY |
         							ParcelFileDescriptor.MODE_CREATE;
         } else if("rw".equals(mode) || "rwt".equals(mode)) {
         	m = ParcelFileDescriptor.MODE_READ_WRITE;
@@ -144,32 +144,34 @@ public class ImageProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
-        Log.i(TAG, "query() uri="+uri.toString() + " projection=" 
-        		+ TextUtils.join(",",projection));
-        
+        Log.i(TAG, "query() uri="+uri.toString() + " projection="
+        		+ ((projection == null)?"":TextUtils.join(",",projection))
+        		+ ", selection="+selection
+        		+ ", selectionArgs=" + ((selectionArgs == null)?"":TextUtils.join(",",selectionArgs)));
+
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(IMAGE_TABLE_NAME);
-        
+
         switch(sUriMatcher.match(uri)) {
-        case IMAGES:    
+        case IMAGES:
             break;
         case IMAGE_ID:
-            qb.appendWhere(ImageSQLFormat._ID + "=" 
+            qb.appendWhere(ImageSQLFormat._ID + "="
             		+ uri.getPathSegments().get(1));
             break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
-        
+
         String orderBy;
         if(TextUtils.isEmpty(sortOrder)) {
             orderBy = ImageSQLFormat.DEFAULT_SORT_ORDER;
         } else {
             orderBy = sortOrder;
         }
-        
+
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        Cursor c = qb.query(db, projection, selection, selectionArgs, null, 
+        Cursor c = qb.query(db, projection, selection, selectionArgs, null,
         		null, orderBy);
         c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
@@ -180,24 +182,24 @@ public class ImageProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection,
             String[] selectionArgs) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        int count = 0; 
-        
+        int count = 0;
+
         switch(sUriMatcher.match(uri)) {
         case IMAGES:
-            count = db.update(IMAGE_TABLE_NAME, values, selection, 
+            count = db.update(IMAGE_TABLE_NAME, values, selection,
             		selectionArgs);
             break;
-            
+
         case IMAGE_ID:
             String procedureId = uri.getPathSegments().get(1);
             count = db.update(IMAGE_TABLE_NAME, values, ImageSQLFormat._ID + "="
-            		+ procedureId + (!TextUtils.isEmpty(selection) ? " AND (" 
+            		+ procedureId + (!TextUtils.isEmpty(selection) ? " AND ("
             				+ selection + ")" : ""), selectionArgs);
             break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
-        
+
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }
@@ -211,8 +213,8 @@ public class ImageProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
         case IMAGES:
         	LinkedList<String> idList = new LinkedList<String>();
-        	Cursor c = query(ImageSQLFormat.CONTENT_URI, 
-        			new String[] { ImageSQLFormat._ID }, selection, 
+        	Cursor c = query(ImageSQLFormat.CONTENT_URI,
+        			new String[] { ImageSQLFormat._ID }, selection,
         			selectionArgs, null);
         	if(c.moveToFirst()) {
         		while(!c.isAfterLast()) {
@@ -223,24 +225,24 @@ public class ImageProvider extends ContentProvider {
         		}
         	}
         	c.deactivate();
-        	
+
             count = db.delete(IMAGE_TABLE_NAME, selection, selectionArgs);
-            
+
             for(String id : idList) {
             	deleteFile(id);
             }
             break;
         case IMAGE_ID:
-            String imageId = uri.getPathSegments().get(1); 
-            count = db.delete(IMAGE_TABLE_NAME, ImageSQLFormat._ID + "=" 
-            		+ imageId + (!TextUtils.isEmpty(selection) ? " AND (" 
+            String imageId = uri.getPathSegments().get(1);
+            count = db.delete(IMAGE_TABLE_NAME, ImageSQLFormat._ID + "="
+            		+ imageId + (!TextUtils.isEmpty(selection) ? " AND ("
             				+ selection + ")" : ""), selectionArgs);
             deleteFile(uri);
             break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
-        
+
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }
@@ -251,67 +253,67 @@ public class ImageProvider extends ContentProvider {
         if (sUriMatcher.match(uri) != IMAGES) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
-        
+
         ContentValues values;
         if(initialValues != null) {
             values = new ContentValues(initialValues);
         } else {
             values = new ContentValues();
         }
-        
+
         Long now = Long.valueOf(System.currentTimeMillis());
-        
+
         if(values.containsKey(ImageSQLFormat.CREATED_DATE) == false) {
             values.put(ImageSQLFormat.CREATED_DATE, now);
         }
-        
+
         if(values.containsKey(ImageSQLFormat.MODIFIED_DATE) == false) {
             values.put(ImageSQLFormat.MODIFIED_DATE, now);
         }
- 
+
         if(values.containsKey(ImageSQLFormat.ENCOUNTER_ID) == false) {
             values.put(ImageSQLFormat.ENCOUNTER_ID, "");
         }
-        
+
         if(values.containsKey(ImageSQLFormat.ELEMENT_ID) == false) {
             values.put(ImageSQLFormat.ELEMENT_ID, "");
         }
-        
+
         if(values.containsKey(ImageSQLFormat.FILE_URI) == false) {
             values.put(ImageSQLFormat.FILE_URI, "");
         }
-        
+
         if(values.containsKey(ImageSQLFormat.FILE_VALID) == false) {
             values.put(ImageSQLFormat.FILE_VALID, false);
         }
-        
+
         if(values.containsKey(ImageSQLFormat.FILE_SIZE) == false) {
             values.put(ImageSQLFormat.FILE_SIZE, 0);
         }
-        
+
         if(values.containsKey(ImageSQLFormat.UPLOAD_PROGRESS) == false) {
             values.put(ImageSQLFormat.UPLOAD_PROGRESS, 0);
         }
-        
+
         if(values.containsKey(ImageSQLFormat.UPLOADED) == false) {
             values.put(ImageSQLFormat.UPLOADED, false);
         }
-        
+
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(IMAGE_TABLE_NAME, 
+        long rowId = db.insert(IMAGE_TABLE_NAME,
         		ImageSQLFormat.ENCOUNTER_ID, values);
         if(rowId > 0) {
-            
+
             String filename = rowId + "";
             try {
-                getContext().openFileOutput(filename, 
+                getContext().openFileOutput(filename,
                 		Context.MODE_PRIVATE).close();
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Couldn't make the file: " + e);
             } catch (IOException e) {
                 Log.e(TAG, "Couldn't make the file: " + e);
             }
-            String path = 
+            String path =
             	getContext().getFileStreamPath(filename).getAbsolutePath();
             Log.i(TAG, "File path is : " + path);
             Uri noteUri = ContentUris.withAppendedId(
@@ -319,7 +321,7 @@ public class ImageProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(noteUri, null);
             return noteUri;
         }
-        
+
         throw new SQLException("Failed to insert row into " + uri);
     }
 
@@ -359,11 +361,11 @@ public class ImageProvider extends ContentProvider {
 
     /**
      * Updates this providers table
-     * @param db the db to update in 
+     * @param db the db to update in
      * @param oldVersion the current db version
      * @param newVersion the new db version
      */
-    public static void onUpgradeDatabase(SQLiteDatabase db, int oldVersion, 
+    public static void onUpgradeDatabase(SQLiteDatabase db, int oldVersion,
     		int newVersion) {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                 + newVersion);
@@ -372,12 +374,12 @@ public class ImageProvider extends ContentProvider {
         }
     }
 
-    
+
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(SanaDB.IMAGE_AUTHORITY, "images", IMAGES);
         sUriMatcher.addURI(SanaDB.IMAGE_AUTHORITY, "images/#", IMAGE_ID);
-        
+
         sImageProjectionMap = new HashMap<String, String>();
         sImageProjectionMap.put(ImageSQLFormat._ID, ImageSQLFormat._ID);
         sImageProjectionMap.put(ImageSQLFormat.ENCOUNTER_ID, ImageSQLFormat.ENCOUNTER_ID);
@@ -390,5 +392,5 @@ public class ImageProvider extends ContentProvider {
         sImageProjectionMap.put(ImageSQLFormat.CREATED_DATE, ImageSQLFormat.CREATED_DATE);
         sImageProjectionMap.put(ImageSQLFormat.MODIFIED_DATE, ImageSQLFormat.MODIFIED_DATE);
     }
-    
+
 }

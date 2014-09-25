@@ -6,15 +6,9 @@
     android:orientation="vertical" >
 
     <fragment
-        android:id="@+id/list_fragment"
+        android:id="@+id/encounterlist_fragment"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        class="org.sana.android.fragment.EncounterTaskListFragment" />
-    <!--
-	<fragment
-        android:id="@+id/list_fragment_complete"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        class="org.sana.android.fragment.EncounterTaskListCompleteFragment" />
-    -->
+        class="org.sana.android.fragment.EncounterListFragment" />
+
 </LinearLayout>

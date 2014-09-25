@@ -11,6 +11,7 @@ public class DispatchResponseReceiver extends BroadcastReceiver {
 
 	private static final String TAG = DispatchResponseReceiver.class.getSimpleName();
 	public static final String KEY_RESPONSE_MESSAGE = "response_message";
+	public static final String KEY_RESPONSE_CODE = "response_code";
 	public static final String KEY_RESPONSE_ID = "response_id";
 	public static final String BROADCAST_RESPONSE = "org.sana.android.DISPATCH_RESPONSE";
 	

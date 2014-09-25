@@ -3,6 +3,7 @@
     <string name="debug_user">test_sa</string>
     <string name="debug_password">t3st</string>
     <!-- set to false to prevent default user on login screen -->
-    <string name="debug_credentials">false</string>
+    <bool name="debug_credentials">false</bool>
     <bool name="debug">false</bool>
+    <bool name="training_mode">false</bool>
 </resources>

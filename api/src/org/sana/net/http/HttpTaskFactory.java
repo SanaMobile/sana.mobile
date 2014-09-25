@@ -67,202 +67,202 @@ import org.sana.net.http.ssl.EasySSLSocketFactory;
  */
 public class HttpTaskFactory {
 
-	/* Basic implementation of a Factory */
-	public static EntityFactory ENTITY_FACTORY = new EntityFactory(){
-		/*
-		 * (non-Javadoc)
-		 * @see org.sana.net.http.HttpFactory.EntityFactory#produce(java.util.Map)
-		 */
-		@Override
-		public HttpEntity produce(Map<String, ?> formData)
-				throws UnsupportedEncodingException {
-			return produce(formData, null);
-		}
-		/*
-		 * (non-Javadoc)
-		 * @see org.sana.net.http.HttpFactory.EntityFactory#produce(java.util.Map, java.util.Map)
-		 */
-		@Override
-		public HttpEntity produce(Map<String, ?> formData,
-				Map<String, URI> files) throws UnsupportedEncodingException {
-			MultipartEntity entity = new MultipartEntity();
-			if(files != null){
-				for(String key:files.keySet()){
-					URI value = files.get(key);
-					entity.addPart(key, new FileBody(new File(value)));
-				}
-			}
-			if(formData != null){
-				for(String key:formData.keySet()){
-					Object value = formData.get(key);
-					entity.addPart(key, new StringBody(String.valueOf(value)));
-				}
-			}
-			return entity;
-		}
-		
-	};
-	
-	/* Basic implementation of a Factory */
-	public static RequestFactory REQUEST_FACTORY = new RequestFactory(){
-		/*
-		 * (non-Javadoc)
-		 * @see com.sana.android.net.HttpThread.Factory#produceCreate(java.net.URI, java.util.Map, java.util.Map)
-		 */
-		@Override
-		public HttpUriRequest produceCreate(URI uri, Map<String, ?> formData,
-				Map<String, URI> files) throws UnsupportedEncodingException {
-			HttpPost request = new HttpPost(uri);
-			HttpEntity entity = ENTITY_FACTORY.produce(formData, files);
-			request.setEntity(entity);
-			return request;
-		}
-		
-		/*
-		 * (non-Javadoc)
-		 * @see com.sana.android.net.HttpThread.Factory#produceRead(java.net.URI)
-		 */
-		@Override
-		public HttpUriRequest produceRead(URI uri) {
-			return new HttpGet(uri);
-		}
-		/*
-		 * (non-Javadoc)
-		 * @see com.sana.android.net.HttpThread.Factory#produceUpdate(java.net.URI, java.util.Map, java.util.Map)
-		 */
-		@Override
-		public HttpUriRequest produceUpdate(URI uri, Map<String, ?> formData,
-				Map<String, URI> files) throws UnsupportedEncodingException {
-			HttpPut request = new HttpPut(uri);
-			HttpEntity entity = ENTITY_FACTORY.produce(formData, files);
-			request.setEntity(entity);
-			return request;
-		}
-		/*
-		 * (non-Javadoc)
-		 * @see com.sana.android.net.HttpThread.Factory#produceDelete(java.net.URI)
-		 */
-		@Override
-		public HttpUriRequest produceDelete(URI uri){
-			return new HttpDelete(uri);
-		}
-	};
-	
-	public static ClientFactory CLIENT_FACTORY = new ClientFactory(){
+    /* Basic implementation of a Factory */
+    public static EntityFactory ENTITY_FACTORY = new EntityFactory(){
+        /*
+         * (non-Javadoc)
+         * @see org.sana.net.http.HttpFactory.EntityFactory#produce(java.util.Map)
+         */
+        @Override
+        public HttpEntity produce(Map<String, ?> formData)
+                throws UnsupportedEncodingException {
+            return produce(formData, null);
+        }
+        /*
+         * (non-Javadoc)
+         * @see org.sana.net.http.HttpFactory.EntityFactory#produce(java.util.Map, java.util.Map)
+         */
+        @Override
+        public HttpEntity produce(Map<String, ?> formData,
+                Map<String, URI> files) throws UnsupportedEncodingException {
+            MultipartEntity entity = new MultipartEntity();
+            if(files != null){
+                for(String key:files.keySet()){
+                    URI value = files.get(key);
+                    entity.addPart(key, new FileBody(new File(value)));
+                }
+            }
+            if(formData != null){
+                for(String key:formData.keySet()){
+                    Object value = formData.get(key);
+                    entity.addPart(key, new StringBody(String.valueOf(value)));
+                }
+            }
+            return entity;
+        }
+        
+    };
+    
+    /* Basic implementation of a Factory */
+    public static RequestFactory REQUEST_FACTORY = new RequestFactory(){
+        /*
+         * (non-Javadoc)
+         * @see com.sana.android.net.HttpThread.Factory#produceCreate(java.net.URI, java.util.Map, java.util.Map)
+         */
+        @Override
+        public HttpUriRequest produceCreate(URI uri, Map<String, ?> formData,
+                Map<String, URI> files) throws UnsupportedEncodingException {
+            HttpPost request = new HttpPost(uri);
+            HttpEntity entity = ENTITY_FACTORY.produce(formData, files);
+            request.setEntity(entity);
+            return request;
+        }
+        
+        /*
+         * (non-Javadoc)
+         * @see com.sana.android.net.HttpThread.Factory#produceRead(java.net.URI)
+         */
+        @Override
+        public HttpUriRequest produceRead(URI uri) {
+            return new HttpGet(uri);
+        }
+        /*
+         * (non-Javadoc)
+         * @see com.sana.android.net.HttpThread.Factory#produceUpdate(java.net.URI, java.util.Map, java.util.Map)
+         */
+        @Override
+        public HttpUriRequest produceUpdate(URI uri, Map<String, ?> formData,
+                Map<String, URI> files) throws UnsupportedEncodingException {
+            HttpPut request = new HttpPut(uri);
+            HttpEntity entity = ENTITY_FACTORY.produce(formData, files);
+            request.setEntity(entity);
+            return request;
+        }
+        /*
+         * (non-Javadoc)
+         * @see com.sana.android.net.HttpThread.Factory#produceDelete(java.net.URI)
+         */
+        @Override
+        public HttpUriRequest produceDelete(URI uri){
+            return new HttpDelete(uri);
+        }
+    };
+    
+    public static ClientFactory CLIENT_FACTORY = new ClientFactory(){
 
-		@Override
-		public HttpClient produce() {
-			//Set up your HTTPS connection
-	        SchemeRegistry schemeRegistry = new SchemeRegistry();
-	        // http scheme
-	        schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-	        // https scheme
-	        schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(), 443));
-	        
-			HttpParams params = basicParams();
-			ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
-		    return new DefaultHttpClient(cm, params);
-		}
+        @Override
+        public HttpClient produce() {
+            //Set up your HTTPS connection
+            SchemeRegistry schemeRegistry = new SchemeRegistry();
+            // http scheme
+            schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            // https scheme
+            schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(), 443));
+            
+            HttpParams params = basicParams();
+            ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
+            return new DefaultHttpClient(cm, params);
+        }
 
-		@Override
-		public HttpClient produce(InputStream keystore, String keypass) {
-		    try {
-		        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-		        trustStore.load(keystore, keypass.toCharArray());
+        @Override
+        public HttpClient produce(InputStream keystore, String keypass) {
+            try {
+                KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                trustStore.load(keystore, keypass.toCharArray());
 
-		        SSLSocketFactory sf = SSLSocketFactory.getSocketFactory();
-		        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+                SSLSocketFactory sf = SSLSocketFactory.getSocketFactory();
+                sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-				HttpParams params = basicParams();
-		        SchemeRegistry registry = new SchemeRegistry();
-		        registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		        registry.register(new Scheme("https", sf, 443));
+                HttpParams params = basicParams();
+                SchemeRegistry registry = new SchemeRegistry();
+                registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+                registry.register(new Scheme("https", sf, 443));
 
-		        ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
+                ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
 
-		        return new DefaultHttpClient(ccm, params);
-		    } catch (Exception e) {
-		        return new DefaultHttpClient();
-		    }
-		}
-		
-		protected HttpParams basicParams(){
-			HttpParams params = new BasicHttpParams();
-	        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-	        HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-    		// Make sure this connection will timeout
-            HttpConnectionParams.setConnectionTimeout(params, 10000);
-            HttpConnectionParams.setSoTimeout(params, 10000);
+                return new DefaultHttpClient(ccm, params);
+            } catch (Exception e) {
+                return new DefaultHttpClient();
+            }
+        }
+        
+        protected HttpParams basicParams(){
+            HttpParams params = new BasicHttpParams();
+            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+            // Make sure this connection will timeout
+            HttpConnectionParams.setConnectionTimeout(params, 300000);
+            HttpConnectionParams.setSoTimeout(params, 300000);
             return params;
-		}
-		
-	};
-	
-	private HttpTaskFactory() {}
+        }
+        
+    };
+    
+    private HttpTaskFactory() {}
 
-	/**
-	 * 
-	 * @param uri
-	 * @param formData
-	 * @param files
-	 * @param handler
-	 * @return
-	 */
-	public static <K> HttpThread<K> produceCreate(URI uri, Map<String, ?> formData,
-			Map<String, URI> files, ResponseHandler<K> handler)  {
-		HttpUriRequest request = null;
-		try {
-			request = REQUEST_FACTORY.produceCreate(uri, formData, files);
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException(e);
-		}
-		HttpClient client = CLIENT_FACTORY.produce();
-		return new HttpThread<K>(client, request,handler);
-	}
+    /**
+     * 
+     * @param uri
+     * @param formData
+     * @param files
+     * @param handler
+     * @return
+     */
+    public static <K> HttpThread<K> produceCreate(URI uri, Map<String, ?> formData,
+            Map<String, URI> files, ResponseHandler<K> handler)  {
+        HttpUriRequest request = null;
+        try {
+            request = REQUEST_FACTORY.produceCreate(uri, formData, files);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
+        HttpClient client = CLIENT_FACTORY.produce();
+        return new HttpThread<K>(client, request,handler);
+    }
 
-	/**
-	 * 
-	 * @param uri
-	 * @param handler
-	 * @return
-	 */
-	public static <K> HttpThread<K> produceRead(URI uri, ResponseHandler<K> handler)  {
-		HttpUriRequest request = REQUEST_FACTORY.produceRead(uri);
-		HttpClient client = CLIENT_FACTORY.produce();
-		return new HttpThread<K>(client, request,handler);
-	}
+    /**
+     * 
+     * @param uri
+     * @param handler
+     * @return
+     */
+    public static <K> HttpThread<K> produceRead(URI uri, ResponseHandler<K> handler)  {
+        HttpUriRequest request = REQUEST_FACTORY.produceRead(uri);
+        HttpClient client = CLIENT_FACTORY.produce();
+        return new HttpThread<K>(client, request,handler);
+    }
 
-	/**
-	 * 
-	 * @param uri
-	 * @param formData
-	 * @param files
-	 * @param handler
-	 * @return
-	 */
-	public static <K> HttpThread<K> produceUpdate(URI uri, Map<String, ?> formData,
-			Map<String, URI> files, ResponseHandler<K> handler)  {
-		HttpUriRequest request = null;
-		try {
-			request = REQUEST_FACTORY.produceUpdate(uri, formData, files);
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalArgumentException(e);
-		}
+    /**
+     * 
+     * @param uri
+     * @param formData
+     * @param files
+     * @param handler
+     * @return
+     */
+    public static <K> HttpThread<K> produceUpdate(URI uri, Map<String, ?> formData,
+            Map<String, URI> files, ResponseHandler<K> handler)  {
+        HttpUriRequest request = null;
+        try {
+            request = REQUEST_FACTORY.produceUpdate(uri, formData, files);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException(e);
+        }
 
-		HttpClient client = CLIENT_FACTORY.produce();
-		return new HttpThread<K>(client, request,handler);
-	}
+        HttpClient client = CLIENT_FACTORY.produce();
+        return new HttpThread<K>(client, request,handler);
+    }
 
-	/**
-	 * 
-	 * @param uri
-	 * @param handler
-	 * @return
-	 */
-	public static <K> HttpThread<K> produceDelete(URI uri, ResponseHandler<K> handler)  {
-		HttpUriRequest request = REQUEST_FACTORY.produceDelete(uri);
-		HttpClient client = CLIENT_FACTORY.produce();
-		return new HttpThread<K>(client, request,handler);
-	}
+    /**
+     * 
+     * @param uri
+     * @param handler
+     * @return
+     */
+    public static <K> HttpThread<K> produceDelete(URI uri, ResponseHandler<K> handler)  {
+        HttpUriRequest request = REQUEST_FACTORY.produceDelete(uri);
+        HttpClient client = CLIENT_FACTORY.produce();
+        return new HttpThread<K>(client, request,handler);
+    }
 
 }

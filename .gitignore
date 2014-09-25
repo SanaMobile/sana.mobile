@@ -21,3 +21,6 @@ local.properties
 
 # Android libs
 /android-support-v7-appcompat
+
+# local private resource files
+*-private.xml

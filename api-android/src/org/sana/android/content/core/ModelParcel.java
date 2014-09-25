@@ -28,6 +28,7 @@
 package org.sana.android.content.core;
 
 import java.text.ParseException;
+import java.util.Arrays;
 
 import org.sana.core.Model;
 import org.sana.util.DateUtil;
@@ -42,49 +43,51 @@ import android.os.Parcelable;
  *
  */
 public class ModelParcel extends Model implements Parcelable {
-	public static final String TAG = ModelParcel.class.getSimpleName();
-	
-	public ModelParcel(Parcel in){
-		setUuid(in.readString());
-		try {
-			setCreated(DateUtil.parseDate(in.readString()));
-			setModified(DateUtil.parseDate(in.readString()));
-		} catch (ParseException e) {			
-			e.printStackTrace();
-			throw new IllegalArgumentException(e);
-		}
-	}
+    public static final String TAG = ModelParcel.class.getSimpleName();
+    
+    public ModelParcel(Parcel in){
+        setUuid(in.readString());
+        try {
+            setCreated(DateUtil.parseDate(in.readString()));
+            setModified(DateUtil.parseDate(in.readString()));
+        } catch (ParseException e) {            
+            e.printStackTrace();
+            throw new IllegalArgumentException(e);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see android.os.Parcelable#describeContents()
-	 */
-	@Override
-	public int describeContents() {
-		return 0;
-	}
+    /* (non-Javadoc)
+     * @see android.os.Parcelable#describeContents()
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-	/* (non-Javadoc)
-	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
-	 */
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(getUuid());
-		dest.writeString(DateUtil.format(getCreated()));
-		dest.writeString(DateUtil.format(getModified()));
-	}
+    /* (non-Javadoc)
+     * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+     */
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getUuid());
+        dest.writeString(DateUtil.format(getCreated()));
+        dest.writeString(DateUtil.format(getModified()));
+    }
 
-	public static final Parcelable.Creator<ModelParcel> CREATOR = 
-		new Parcelable.Creator<ModelParcel>() 
-	{
+    public static final Parcelable.Creator<ModelParcel> CREATOR = 
+        new Parcelable.Creator<ModelParcel>() 
+    {
 
-		@Override
-		public ModelParcel createFromParcel(Parcel source) {
-					return new ModelParcel(source);
-		}
+        @Override
+        public ModelParcel createFromParcel(Parcel source) {
+            return new ModelParcel(source);
+        }
 
-		@Override
-		public ModelParcel[] newArray(int size) {
-					return new ModelParcel[size];
-		}
-	};
+        @Override
+        public ModelParcel[] newArray(int size) {
+            ModelParcel[] array = new ModelParcel[size];
+            Arrays.fill(array,null);
+            return array;
+        }
+    };
 }

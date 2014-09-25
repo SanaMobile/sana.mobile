@@ -92,6 +92,7 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
     public void onActivtyCreated(Bundle instance){
     	super.onActivityCreated(instance);
     	setRetainInstance(true);
+    	
     }
     
     public void storeCurrentProcedure(boolean finished) {
