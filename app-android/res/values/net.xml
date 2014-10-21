@@ -21,5 +21,7 @@
     <string name="path_sp_submit">json/procedure/submit/</string>
     <string name="path_etasks">tasks/encounter/</string>
     <string name="path_otasks">tasks/observation/</string>
+    <string name="path_app">clients/</string>
+    <integer name="packet_size">20</integer>
     -->
 </resources>
