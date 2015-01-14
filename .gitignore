@@ -24,3 +24,13 @@ local.properties
 
 # local private resource files
 *-private.xml
+
+app/app.iml
+.idea
+api/api.iml
+*.iml
+api-android/api-android.iml
+SanaMobile.iml
+
+# OS Files
+.DS_Store

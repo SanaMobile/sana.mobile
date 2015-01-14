@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_background"
+    android:gravity="fill_vertical"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/sana_logo" />
+
+    <Button
+        android:id="@+id/btn_main_register_patient"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="@string/button_main_register_patients" />
+
+    <Button
+        android:id="@+id/btn_main_select_patient"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="@string/button_main_select_patient" />
+
+    <Button
+        android:id="@+id/btn_main_procedures"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="@string/button_main_select_procedure" />
+
+    <Button
+        android:id="@+id/btn_main_transfers"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="@string/button_main_view_prior_encounters" />
+
+    <!--
+    <fragment
+        android:id="@+id/fragment1"
+        android:name="org.sana.android.fragment.AuthenticationDialogFragment"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <fragment
+        android:id="@+id/fragment2"
+        android:name="org.sana.android.activity.NavigationActivity"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/fragment1" />
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/sana_logo" />
+
+    <Button
+        android:id="@+id/btn_main_tasks"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_main_view_scheduled_tasks" />
+
+    <Button
+        android:id="@+id/btn_view_patients"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_main_view_patients" />
+
+    <Button
+        android:id="@+id/btn_main_procedure"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_main_new_encounter" />
+
+    <Button
+        android:id="@+id/btn_main_transfers"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_main_view_prior_encounters" />
+
+    <Button
+        android:id="@+id/btn_main_notifications"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_main_view_notifications" />
+    -->
+
+    <Button
+        android:id="@+id/button_main_notifications"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="submit"
+        android:text="@string/button_main_view_notifications" />
+
+</LinearLayout>
+<!-- From: file:/Users/arod/Documents/Workspace/SanaMobile/app/src/main/res/layout/main.xml -->

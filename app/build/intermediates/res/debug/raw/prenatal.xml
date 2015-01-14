@@ -1,0 +1,33 @@
+<Procedure title="Prenatal Screening" author="Moca">
+	<Page>
+		<Element type="MULTI_SELECT" concept="MEDICAL CONDITIONS" id="0" question="Do you have any medical conditions?" answer="" choices="Heart disease,Asthma,Hypertension,Diabetes"/>
+		<Element type="ENTRY" id="1" concept="MEDICAL CONDITIONS" question="Other conditions?" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="2" concept="PREVIOUS PREGNANCIES " question="How many previous pregnancies has the patient had?" answer=""/>
+		<Element type="ENTRY" id="3" concept="PREVIOUS MISCARRIAGES" question="How many previous miscarriages?" answer=""/>
+	</Page>
+	<Page>
+	<ShowIf>
+		<Criteria type="GREATER" id="2" value="0"/>
+	</ShowIf>
+		<Element type="MULTI_SELECT" concept="PREGNANCY COMPLICATIONS" id="4" question="Check complications during previous pregnancies:" answer="" choices="Hypertension,Bleeding,Diabetes,Infection"/>
+		<Element type="ENTRY" id="5" concept="PREGNANCY COMPLICATIONS"  question="Other complications?" answer=""/>
+	</Page>
+	<Page>
+	<ShowIf>
+		<Criteria type="GREATER" id="2" value="0"/>
+	</ShowIf>
+		<Element type="MULTI_SELECT" concept="DELIVERY COMPLICATIONS" id="6" question="Check complications during previous deliveries:" answer="" choices="Difficult labor,Excessive bleeding"/>
+		<Element type="ENTRY" id="7" concept="DELIVERY COMPLICATIONS" question="Other complications?" answer=""/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="8" concept="DECEASED CHILDREN"  question="Does the patient have any deceased children (not including miscarriages)?" answer="No" choices="Yes,No"/>
+	</Page>
+	<Page>
+	<ShowIf>
+		<Criteria type="EQUALS" id="8" value="Yes"/>
+	</ShowIf>
+		<Element type="ENTRY" id="9" concept="NUM DECEASED CHILDREN"  question="How many deceased children?" answer=""/>
+	</Page>
+</Procedure>

@@ -1,0 +1,51 @@
+<Procedure title="Find Patient">
+	<Page>
+		<Element type="PATIENT_ID" id="patientId" 
+		    concept="PATIENT ID" 
+		    required="true" 
+		    helpText="Enter the patient ID or hit 'Scan ID' to scan their barcode." 
+			question="Enter Patient's Medical Record ID Number:" 
+			answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="patientFirstName" 
+		    concept="FIRST NAME" 
+		    required="true" 
+		    helpText="Enter the patient's first name." 
+		    question="Enter Patient's First Name:" 
+		    answer=""/>
+	</Page>
+	<Page>
+        <Element type="ENTRY" id="patientLastName" 
+		   concept="LAST NAME" 
+		   required="true" 
+		   helpText="Enter the patient's last name." 
+		   question="Enter Patient's Last Name:" answer=""/>
+	</Page>
+	<Page>
+	    <Element type="SELECT" id="patientBirthdateMonth" 
+	       concept="BIRTHDATE MONTH" 
+	       question="Enter Patient's Birthdate Month:" 
+	       choices="January,February,March,April,May,June,July,August,September,October,November,December"/>
+	    <Element type="SELECT" id="patientBirthdateDay" 
+	       concept="BIRTHDATE DAY" 
+	       question="Day:" 
+	       choices="01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31"/>
+	   	<Element type="ENTRY" 
+	   	   id="patientBirthdateYear" 
+	   	   concept="BIRTHDATE YEAR" 
+	   	   numeric="DIALPAD" 
+	   	   required="true" 
+	   	   helpText="Enter the patient's birth year." 
+	   	   question="Year:" answer=""/>
+	</Page>
+ 
+	<Page>
+		<Element type="RADIO" id="patientGender" concept="GENDER" question="Select Patient's Gender:" required="true" helpText="Select the patient's gender." answer="" choices="Male,Female"/>
+	</Page>
+	
+	<Page>
+		<Element type="PICTURE" id="patientPhoto" concept="PATIENT PHOTO" question="Take a picture of the patient." answer=""/>
+	</Page>
+	
+</Procedure>

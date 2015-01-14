@@ -1,0 +1,65 @@
+<Procedure title="Surgery Follow-Up" author="Moca">
+	<Page>
+		<Element type="SELECT" concept="SURGERY SITE" id="1" question="Site of surgery" answer="" choices="Head and Neck,Chest,Abdomen,Pelvis,Extremities,Others"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<Criteria type="EQUALS" id="1" value="Abdomen"/>
+		</ShowIf>
+		<Element type="SELECT" concept="ORGAN" id="2" question="Organ" answer="" choices="Stomach,Intestines,Gallbladder,Appendix,Liver,Kidney,Spleen,Pancreas"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<Criteria type="EQUALS" id="1" value="Abdomen"/>
+				<Criteria type="EQUALS" id="2" value="Intestines"/>
+			</and>
+		</ShowIf>
+		<Element type="MULTI_SELECT" concept="SYMPTOMS" id="3" question="Check all that apply:" answer="" choices="Fever,Diarrhea,Constipation,Wound drainage,Pain surrounding wound"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<Criteria type="EQUALS" id="1" value="Abdomen"/>
+				<Criteria type="EQUALS" id="2" value="Intestines"/>
+				<Criteria type="EQUALS" id="3" value="Wound drainage"/>
+			</and>
+		</ShowIf>
+		<Element type="RADIO" concept="WOUND DRAINAGE" id="4" question="Is the wound drainage:" answer="" choices="Clear,Pus,Bloody"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<Criteria type="EQUALS" id="1" value="Abdomen"/>
+				<Criteria type="EQUALS" id="2" value="Intestines"/>
+				<Criteria type="EQUALS" id="3" value="Pain surrounding wound"/>
+			</and>
+		</ShowIf>
+		<Element type="RADIO" concept="PAIN LEVEL" id="5" question="How bad is the pain?" answer="" choices="Mild,Moderate,Severe"/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="6" concept="INITIAL DIAGNOSIS" question="Diagnosis" answer="" choices="No evidence of infection,Suspect infection"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" concept="RECOMMENDATION" id="7" question="Recommendation" answer="" choices="Refer to University Hospital,Antibiotics,Follow-up"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<Criteria type="EQUALS" id="7" value="Follow-up"/>
+		</ShowIf>
+		<Element type="SELECT" id="8" concept="FOLLOW UP PERIOD" question="Follow-up in:" answer="" choices="3 days,1 week,2 weeks,1 month"/>
+		<Element type="ENTRY" id="9" concept="FOLLOW UP PERIOD" question="Other duration:" answer=""/>
+	</Page>
+	<!-- <Page>
+		<Element type="SOUND" id="10" concept="VERBAL NOTES AUDIO" question="Record any verbal notes to send to the physician." answer=""/>
+	</Page>-->
+	<Page>
+		<Element type="ENTRY" id="11" concept="COMMENTS" question="Other comments:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="GPS" id="12" concept="GPS" question="Record Your Position" answer=""/>
+	</Page> 
+	<Page>
+		<Element type="PICTURE" id="13" concept="SURGERY SITE IMAGE" question="Take Picture of Surgery Site" answer=""/>
+	</Page> 
+</Procedure>

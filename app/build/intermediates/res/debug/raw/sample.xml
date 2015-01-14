@@ -1,0 +1,95 @@
+<Procedure title="Sample Procedure" author="Sana" id="0000-0000-0000-0000" 
+    version="1" description="An introduction to the Sana mobile client">
+    <!-- Plugin template
+    <Page>
+        <Element type="PLUGIN | ENTRY_PLUGIN" id="$VALUE" 
+        concept="$VALUE"
+        question="$VALUE per concept"
+        action="[Intent action string]"
+        package=""
+        text=""
+        answer=""/>
+    </Page>
+    -->
+    <!-- generic element
+    <Page>
+        <Element type="" id="" 
+    	    concept="" 
+    	    question=""
+    	    required="" 
+    	    answer=""
+    	    audio=""
+    	    figure=""/>
+    </Page>
+    -->
+    <Page>
+        <Element type="ENTRY" id="entry" 
+    	    concept="HEIGHT" 
+            question="Enter your height" 
+            answer=""
+            helpText="Enter a value before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="ENTRY" id="entry" 
+            concept="WEIGHT" 
+            question="Enter your weight" 
+            answer=""
+            helpText="Enter a value before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="ENTRY" id="entry" 
+            concept="AGE" 
+            question="Enter your age" 
+            answer=""
+            helpText="Enter a value before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="RADIO" id="radio" 
+    	    concept="FAMILY HX CHOLESTEROL" 
+            question="Do you have a family history of high cholesterol?" 
+            answer="" 
+            choices="Yes,No"
+            helpText="Select a value before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="SELECT" id="select" 
+    	    concept="TEST SELECT"  
+            question="Demonstrate selecting a single value" 
+            answer="" 
+            choices="1,2,3,4"
+            helpText="Select a value before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="MULTI_SELECT" id="multiSelect" 
+            concept="FOOT DISCOMFORT"  
+            question="Have you experienced discomfort in your foot during the past:" 
+            answer="" 
+            choices="Day,Week,Month,Never"
+            helpText="Select one or more values before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="GPS" id="gps" 
+        concept="GPS" 
+        question="Press button to record current location." 
+        answer=""
+        helpText="Capture your location before proceeding." 
+        required="" />
+    </Page>
+    <Page>
+        <Element type="PLUGIN" id="image" 
+        concept="TEST IMAGE PLUGIN"
+        question="Image media file for patient encounter"
+        action="android.media.action.IMAGE_CAPTURE"
+        mimeType="image/*"
+        text=""
+        answer=""
+        helpText="Capture data before proceeding." 
+        required="true"/>
+    </Page>
+</Procedure>

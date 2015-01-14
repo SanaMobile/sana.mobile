@@ -1,0 +1,195 @@
+<Procedure title="Oral Cancer Screening" author="SANA, Onconet">
+  <Page>
+  	<Element type="ENTRY" concept="PHONE NUMBER" id="patientPhoneNumber" numeric="DIALPAD" question="Enter the patient's mobile number:" answer="" required="true" helpText="Please enter the patient's mobile number."/>
+  </Page>
+  <Page>
+  	<Element type="ENTRY" concept="FATHERS NAME" id="patientFathersName" question="Enter the patient's father's name:" answer="" required="true" helpText="Please enter the patient's father's name."/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Age" id="2" question="Age (40+)" answer="" required="true" helpText="Please select whether the patient is over forty years old." choices="Yes,No"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Cancer History" id="3" question="Family history of Cancer?" required="true" helpText="Indicate whether there is a history of cancer in the patient's family." answer="" choices="Yes,No"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Education" id="9" question="Education Level" answer="" required="true" helpText="What is the patient's education level?" choices="None,High School,College"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Occupation" id="10" question="Employed?" answer="" required="true" helpText="Does the patient have a job?" choices="Yes,No"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Drinking Habit" id="5" question="Drinker?" answer="" required="true" helpText="How often does the patient drink alcohol?" choices="No,Social,Heavy"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Smoking Habit" id="6" question="Smoker?" answer="" required="true" helpText="How often does the patient smoke cigarettes?" choices="No,Social,Heavy"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Chewing Tobacco Habit" id="7" question="Paan or Chewing Tobacco?" answer="" required="true" helpText="Does the patient chew Paan or Tobacco?" choices="No,Social,Heavy"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Oral Care" id="4" question="Visit Dentist?" answer="" required="true" helpText="Does the patient visit the dentist?" choices="Yes,No"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Toothbrush" id="11" question="Use Toothbrush, and Paste?" required="true" helpText="Does the patient use toothbrush and paste?" answer="" choices="Yes,No"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Toothpowder" id="12" question="Use Toothpowder?" answer="" required="true" helpText="Does the patient use tooth powder?" choices="Yes,No"/>
+  </Page>
+  <Page>
+    <Element type="RADIO" concept="Lesion" id="8" question="Oral Lesion or Lump in Neck?" answer="" required="true" helpText="Is there an oral lesion or lump in the patient's neck?" choices="Yes,No"/>
+  </Page>
+  <Page>
+  	<Element type="GPS" concept="GPS LOCATION" id="gpsLocation" question="Press button to record current location." answer="" required="true" helpText="Please hit the button to record your location."/>
+  </Page>
+
+<Page>
+<ShowIf>
+	<or>
+		<Criteria type="EQUALS" id="8" value="Yes"/>
+		<and>
+			<Criteria type="EQUALS" id="7" value="Heavy"/>
+			<not> <Criteria type="EQUALS" id="4" value="Yes"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="6" value="Social"/>
+			<Criteria type="EQUALS" id="7" value="Social"/>
+			<not> <Criteria type="EQUALS" id="4" value="Yes"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="6" value="Social"/>
+			<Criteria type="EQUALS" id="7" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="6" value="Heavy"/>
+			<not> <Criteria type="EQUALS" id="7" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="5" value="Social"/>
+			<Criteria type="EQUALS" id="7" value="Social"/>
+			<not> <Criteria type="EQUALS" id="4" value="Yes"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="5" value="Social"/>
+			<Criteria type="EQUALS" id="7" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="5" value="Social"/>
+			<Criteria type="EQUALS" id="6" value="Social"/>
+			<not> <Criteria type="EQUALS" id="7" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="5" value="Social"/>
+			<Criteria type="EQUALS" id="6" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="5" value="Heavy"/>
+			<not> <Criteria type="EQUALS" id="6" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="10" value="No"/>
+			<Criteria type="EQUALS" id="7" value="Social"/>
+			<not> <Criteria type="EQUALS" id="4" value="Yes"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="10" value="No"/>
+			<Criteria type="EQUALS" id="7" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="10" value="No"/>
+			<Criteria type="EQUALS" id="6" value="Social"/>
+			<not> <Criteria type="EQUALS" id="7" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="10" value="No"/>
+			<Criteria type="EQUALS" id="6" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="10" value="No"/>
+			<Criteria type="EQUALS" id="5" value="Social"/>
+			<not> <Criteria type="EQUALS" id="6" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="10" value="No"/>
+			<Criteria type="EQUALS" id="5" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="3" value="Yes"/>
+			<Criteria type="EQUALS" id="7" value="Social"/>
+			<not> <Criteria type="EQUALS" id="4" value="Yes"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="3" value="Yes"/>
+			<Criteria type="EQUALS" id="7" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="3" value="Yes"/>
+			<Criteria type="EQUALS" id="6" value="Social"/>
+			<not> <Criteria type="EQUALS" id="7" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="3" value="Yes"/>
+			<Criteria type="EQUALS" id="6" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="3" value="Yes"/>
+			<Criteria type="EQUALS" id="5" value="Social"/>
+			<not> <Criteria type="EQUALS" id="6" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="3" value="Yes"/>
+			<Criteria type="EQUALS" id="5" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="3" value="Yes"/>
+			<Criteria type="EQUALS" id="10" value="No"/>
+			<not> <Criteria type="EQUALS" id="5" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="2" value="Yes"/>
+			<Criteria type="EQUALS" id="7" value="Social"/>
+			<not> <Criteria type="EQUALS" id="4" value="Yes"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="2" value="Yes"/>
+			<Criteria type="EQUALS" id="7" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="2" value="Yes"/>
+			<Criteria type="EQUALS" id="6" value="Social"/>
+			<not> <Criteria type="EQUALS" id="7" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="2" value="Yes"/>
+			<Criteria type="EQUALS" id="6" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="2" value="Yes"/>
+			<Criteria type="EQUALS" id="5" value="Social"/>
+			<not> <Criteria type="EQUALS" id="6" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="2" value="Yes"/>
+			<Criteria type="EQUALS" id="5" value="Heavy"/>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="2" value="Yes"/>
+			<Criteria type="EQUALS" id="10" value="No"/>
+			<not> <Criteria type="EQUALS" id="5" value="No"/> </not>
+		</and>
+		<and>
+			<Criteria type="EQUALS" id="2" value="Yes"/>
+			<Criteria type="EQUALS" id="3" value="Yes"/>
+			<not> <Criteria type="EQUALS" id="10" value="Yes"/> </not>
+		</and>
+	</or>
+</ShowIf>
+
+
+	<Element type="PICTURE" id="13" concept="ORAL LESION IMAGE" question="HIGH RISK PATIENT: Please take picture of oral lesion and refer to dental hospital" answer=""/>
+</Page>
+
+<Page>
+	<Element type="RADIO" concept="SHOW IN QUEUE" id="14" question="Was the patient high risk?" answer="" required="true" helpText="Was the patient high risk?" choices="Yes,No"/>
+</Page>
+
+</Procedure>

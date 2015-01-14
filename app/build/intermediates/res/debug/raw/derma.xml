@@ -1,0 +1,42 @@
+<Procedure title="Teledermatology" author="Click Diagnostics">
+	<Page>
+		<Element type="MULTI_SELECT" id="0" concept="CHARACTERISTICS" question="Is the patient:" answer="" choices="Pregnant,Living in poor conditions,Infected with HIV,Infected with Hep C,Infected with TB"/>
+	</Page>
+	<Page>
+		<Element type="SELECT" id="1" concept="LENGTH OF TIME WITH COMPLICATION" question="How long has the patient had this condition?" answer="" choices="1-2 days,3-5 days,About a week,About 2 weeks,More than 2 weeks,More than 1 month,More than 1 year,Since birth"/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="2" concept="HAD CONDITION BEFORE" question="Did the patient have this condition before?" answer="No" choices="Yes,No"/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="3" concept="OTHER FAMILY WITH CONDITION" question="Does anyone else in the family have this condition" answer="No" choices="Yes,No"/>
+	</Page>
+	<Page>
+		<Element type="SELECT" id="4" concept="INITIAL AREA OF RASH"  question="Where was the first area the rash began?" answer="" choices="All over,Arms,Back of the hands,Palms,Around fingers,Scalp,Face,Eyes,Mouth,Neck,Chest,Abdomen,Genital areas,Buttocks,Back,Legs,Feet"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" concept="AREAS INVOLVED"  id="5" question="Which areas of the skin are currently involved?" answer="" choices="All over,Arms,Back of the hands,Palms,Around fingers,Scalp,Face,Eyes,Mouth,Neck,Chest,Abdomen,Genital areas,Buttocks,Back,Legs,Feet"/>
+	</Page>
+	<Page>
+		<Element type="SELECT" id="6" concept="START OF CONDITION" question="How did it first start?" answer="" choices="Bump,Pus bump,Flat white patch,Flat dark patch,Blister (water filled),Ulcer (open lesion),Red scaly,Brown scaly"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="7" concept="AREA CHANGED"  question="How has the area changed?" answer="" choices="Thickened skin,Scaly,Scratch,No change"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="8" concept="SYMPTOMS"  question="What are the symptoms?" answer="" choices="Constant itching,Occasional itching,Itching all over,Constant pain,Burning bleeding,Fever"/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="9" concept="RASH"  question="The rash:" answer="Same" choices="Comes and goes,Worsened,Better,Same"/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" id="10" concept="TREATMENT"  question="The rash has been treated with:" answer="" choices="Steroid cream,Antifungal cream,Antibacterial cream,Antifungal pills,Antibacterial pills,Other,Traditional medicine"/>
+		<Element type="ENTRY" id="11" concept="MEDICATIONS"  question="Enter medications:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" id="12" concept="COMMENTS" question="Additional comments:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="PICTURE" id="15" concept="SKIN IMAGE"  question="Take picture of skin condition." answer=""/>
+	</Page> 
+</Procedure>

@@ -1,0 +1,16 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
+}
+
+apply plugin: 'java'
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.2.+'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

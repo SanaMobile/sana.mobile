@@ -1,0 +1,143 @@
+<Procedure title="Welcome" author="Sana" id="0000-0000-0000" 
+    version="1" description="An introduction to the Sana mobile client">
+    <!-- Plugin template
+    <Page>
+        <Element type="PLUGIN | ENTRY_PLUGIN" id="$VALUE" 
+        concept="$VALUE"
+        question="$VALUE per concept"
+        action="[Intent action string]"
+        package=""
+        text=""
+        answer=""/>
+    </Page>
+    -->
+    <!-- generic element
+    <Page>
+        <Element type="" id="" 
+    	    concept="" 
+    	    question=""
+    	    required="" 
+    	    answer=""
+    	    audio=""
+    	    figure=""/>
+    </Page>
+    -->
+    <Page>
+        <Element type="EDUCATION_RESOURCE" id="educationResource" 
+            concept="WELCOME TO SANA"
+            question="Welcome to the Sana Android Client"
+            figure="moca"
+            answer=""
+            helpText="View resource before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="ENTRY" id="entry" 
+    	    concept="TEST ENTRY" 
+            question="Demonstrate entering text" 
+            answer=""
+            helpText="Enter a value before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="RADIO" id="radio" 
+    	    concept="TEST RADIO" 
+            question="Demonstrate selecting a single value" 
+            answer="1" 
+            choices="1,2,3,4"
+            helpText="Select a value before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="SELECT" id="select" 
+    	    concept="TEST SELECT"  
+            question="Demonstrate selecting a single value" 
+            answer="" 
+            choices="1,2,3,4"
+            helpText="Select a value before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="MULTI_SELECT" id="multiSelect" 
+            concept="TEST MULTI SELECT"  
+            question="Demonstrate selecting multiple values" 
+            answer="" 
+            choices="1,2,3,4"
+            helpText="Select one or more values before proceeding." 
+            required="true"/>
+    </Page>
+    <Page>
+        <Element type="DATE" id="date" 
+    	    concept="TEST DATE" 
+    	    question="Demonstrate entering a date"
+    	    helpText="Enter a value before proceeding."  
+    	    answer=""
+    	    audio=""
+    	    figure=""
+    	    required="true"/>
+    </Page>
+    <Page>
+        <Element type="GPS" id="gps" 
+        concept="TEST GPS" 
+        question="Press button to record current location." 
+        answer=""
+        helpText="Capture your location before proceeding." 
+        required="true" />
+    </Page>
+    <Page>
+        <Element type="PLUGIN" id="video" 
+        concept="TEST VIDEO PLUGIN"
+        question="Video media file for patient encounter"
+        action="android.media.action.VIDEO_CAPTURE"
+        mimeType="video/*"
+        text=""
+        answer=""
+        helpText="Capture data before proceeding." 
+        required="true"/>
+    </Page>
+    <Page>
+        <Element type="PLUGIN" id="image" 
+        concept="TEST IMAGE PLUGIN"
+        question="Image media file for patient encounter"
+        action="android.media.action.IMAGE_CAPTURE"
+        mimeType="image/*"
+        text=""
+        answer=""
+        helpText="Capture data before proceeding." 
+        required="true"/>
+    </Page>
+    <Page>
+        <Element type="PLUGIN" id="sound" 
+        concept="TEST SOUND PLUGIN"
+        question="Audio media file for patient encounter"
+        action=""
+        mimeType="audio/*"
+        text=""
+        answer=""
+        helpText="Capture data before proceeding." 
+        required="true"/>
+    </Page>
+
+    <!-- Comment out if you are not using a barcode scanner -->
+    <Page>
+        <Element type="PLUGIN" id="barcode" 
+        concept="TEST BARCODE PLUGIN"
+        question="Scan barcode"
+        action="com.google.zxing.client.android.SCAN"
+        mimeType=""
+        text=""
+        answer=""/>
+    <!-- Placeholder for complex multi select -->
+    <!--
+    <Page>
+        <Element type="MULTI_SELECT" id="multiSelectCompund" 
+            concept="TEST COMPOUND SELECT"  
+            question="Demonstrate selecting multiple values" 
+            answer="" 
+            choices=""
+            helpText="Select one or more values before proceeding." 
+            required="true"/>
+    </Page>
+    -->
+    </Page>
+</Procedure>

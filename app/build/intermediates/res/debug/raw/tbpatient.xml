@@ -1,0 +1,176 @@
+<Procedure title="TB Patient Assessment" author="Click Diagnostics">
+	<Page>
+		<Element type="ENTRY" concept="FATHER NAME"  id="0" question="Father's name:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="PHONE NUMBER" id="1" question="Phone number:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="ENTRY" concept="ADDRESS" id="2" question="Address:" answer=""/>
+	</Page>
+	<Page>
+		<Element type="MULTI_SELECT" concept="SYMPTOMS" id="3" question="Symptoms (check all that apply):" answer="" choices="Cough for more than 2 weeks,Fever for more than 2 weeks,Poor weight gain (less than 0.5kg increase in preceding 6 months if greater than 1 year old; less than 1kg gain in preceding 3 months if greater than 1 year old),Profuse night sweats,Fatigue/reduced playfulness for 2 or more weeks,Chest pain"/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="4" concept="SYMPTOMS" question="Did patient have at least two of the symptoms on previous slide?" answer="No" choices="Yes,No"/>
+	</Page>
+	<Page>
+		<Element type="RADIO" id="5" concept="CONTACT WITH SMEAR POSITIVE CASE" question="Does patient have history of contact with a smear positive case?" answer="No" choices="Yes,No"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<or>
+				<Criteria type="EQUALS" id="4" value="No"/>
+				<Criteria type="EQUALS" id="5" value="No"/>
+			</or>
+		</ShowIf>
+		<Element type="TEXT" concept="DO NOT SUSPECT TB" id="6" question="Do not suspect TB for patient" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<or>
+					<not>
+						<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+					</not>
+					<Criteria type="EQUALS" id="3" value=""/>
+				</or>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="PICTURE" id="7" concept="XRAY IMAGE" question="Take a Chest X-Ray. Add picture of CXR here." answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="TEXT" id="8" concept="SPUTA" question="Send 3 sputa for microscopy. Consider giving antibiotics for 5-7 days." answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+			</and>
+		</ShowIf>
+		<Element type="RADIO" id="9" concept="AFB MICROSCOPY STAIN" question="AFB (Microscopy stain) is:" answer="Negative" choices="Positive,Negative"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+				<Criteria type="EQUALS" id="9" value="Positive"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="TEXT" id="10" concept="TREAT FOR TB" question="Treat for TB" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+				<Criteria type="EQUALS" id="9" value="Negative"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="RADIO" id="11" concept="SYMPTOMS AFTER ANTIBIOTICS" question="Do symptoms persist after antibiotic course?" answer="No" choices="Yes,No"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+				<Criteria type="EQUALS" id="9" value="Negative"/>
+				<Criteria type="EQUALS" id="11" value="No"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="TEXT" id="12" concept="DO NOT TREAT FOR TB" question="Do not treat for TB" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+				<Criteria type="EQUALS" id="9" value="Negative"/>
+				<Criteria type="EQUALS" id="11" value="Yes"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="TEXT" id="13" concept="REPEAT SPUTUM" question="Repeat Sputum smears 3 times and send for culture." answer=""/>
+		<Element type="TEXT" id="14" concept="METHOD" question="Method: Own cough, gastric aspirate, or sputum induction" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+				<Criteria type="EQUALS" id="9" value="Negative"/>
+				<Criteria type="EQUALS" id="11" value="Yes"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="RADIO" id="15" concept="POSITIVE CULTURE" question="Is culture positive?" answer="No" choices="Yes,No"/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+				<Criteria type="EQUALS" id="9" value="Negative"/>
+				<Criteria type="EQUALS" id="11" value="Yes"/>
+				<Criteria type="EQUALS" id="15" value="Yes"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="TEXT" id="16" concept="TREAT FOR TB" question="Treat for TB" answer=""/>
+	</Page>
+	<Page>
+		<ShowIf>
+			<and>
+				<not>
+						<Criteria type="EQUALS" id="3" value=""/>
+				</not>
+				<Criteria type="EQUALS" id="3" value="Cough for more than 2 weeks"/>
+				<Criteria type="EQUALS" id="9" value="Negative"/>
+				<Criteria type="EQUALS" id="11" value="Yes"/>
+				<Criteria type="EQUALS" id="15" value="No"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+			</and>
+		</ShowIf>
+		<Element type="TEXT" id="17" concept="TREAT FOR TB" question="If uncertain and the child is unwell, treat for TB" answer=""/>
+	</Page>
+</Procedure>
