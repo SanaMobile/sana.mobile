@@ -2,15 +2,6 @@
 <!-- Language: EN -->
 <!-- Docs say that all the identifiers should be in lower case -->
 <resources>
-    <!-- Start temporary values for Gradle import -->
-    <string name="default_phone_name">Name</string>
-    <string name="host_mds">Host MDS</string>
-    <integer name="port_mds">0</integer>
-    <integer name="packet_size">0</integer>
-    <string name="path_root">path</string>
-    <!-- End temporary values for Gradle import -->
-
-
     <string name="hello">Hello</string>
     <string name="app_name">Sana</string>
 

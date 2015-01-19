@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Uncomment this block
+    <!-- Uncomment this block -->
     <integer name="cfg_app_max_login_attempts">3</integer>
     <string name="cfg_app_workflow_default">org.sana.android.app.workflow.SSI</string>
     <string name="cfg_app_sync_delta">0</string>
@@ -19,7 +19,6 @@
     <string name="cfg_app_url_training">https://project1.sana.csail.mit.edu/mds/test/clients/</string>
     <string name="cfg_mds_url_training">https://project1.sana.csail.mit.edu/test/mds</string>
     <string name="cfg_mds_core_training">https://project1.sana.csail.mit.edu/test/mds/core</string>
-    <string name="path_root_training">test/mds/</string>
 
     <string name="cfg_path_core">core/</string>
     <string name="cfg_path_tasks">tasks/</string>
@@ -44,6 +43,7 @@
     
     <bool name="cfg_notify_task_status">true</bool>    
     <bool name="cfg_upload_foreground">true</bool>
-    -->
+    <!--
     <string name="display_date_time_format">MMM dd, yyyy HH:mm</string>
+    -->
 </resources>

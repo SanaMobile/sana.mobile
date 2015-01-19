@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Uncomment and add the uuid(s) of admin users as item(s) -->
-    <!--
     <string-array name="admins">
         <item></item>
     </string-array>
-    -->
 </resources>

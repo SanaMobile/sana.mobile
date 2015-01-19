@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Resource values used for connecting to the dispatch server -->
-    <!-- 
+
     <integer name="port_mds">443</integer>
     <string name="scheme_mds">https</string>
     <string name="host_mds">project1.sana.csail.mit.edu</string>
     
     <string name="path_root">mds/</string>
-    
+
     <string name="path_root_training">test/mds/</string>
     
     <string name="path_session">core/session/</string>
@@ -23,5 +23,5 @@
     <string name="path_otasks">tasks/observation/</string>
     <string name="path_app">clients/</string>
     <integer name="packet_size">20</integer>
-    -->
+
 </resources>
