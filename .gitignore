@@ -31,6 +31,7 @@ api/api.iml
 *.iml
 api-android/api-android.iml
 SanaMobile.iml
+*/build/
 
 # OS Files
 .DS_Store
