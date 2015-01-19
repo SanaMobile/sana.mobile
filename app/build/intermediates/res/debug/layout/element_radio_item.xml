@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RadioButton xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/element_radio_choice"
-    style="@style/Widget.CompoundButton.RadioButton.Large"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/admin_username"/>
-
-<!-- From: file:/Users/arod/Documents/Workspace/SanaMobile/app/src/main/res/layout/element_radio_item.xml -->
