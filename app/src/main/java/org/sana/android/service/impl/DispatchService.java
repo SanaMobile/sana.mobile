@@ -91,6 +91,7 @@ import org.sana.android.content.ModelContext;
 import org.sana.android.content.ModelEntity;
 import org.sana.android.content.Uris;
 import org.sana.android.content.Intents;
+import org.sana.android.content.core.PatientWrapper;
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.net.MDSInterface;
 import org.sana.android.net.MDSInterface2;
@@ -115,6 +116,7 @@ import org.sana.net.http.handler.EncounterResponseHandler;
 import org.sana.net.http.handler.EncounterTaskResponseHandler;
 
 import org.sana.net.http.handler.PatientResponseHandler;
+import org.sana.util.DateUtil;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -279,7 +281,7 @@ public class DispatchService extends Service{
                 vals.put(Patients.Contract.GIVEN_NAME, p.getGiven_name());
                 vals.put(Patients.Contract.FAMILY_NAME, p.getFamily_name());
                 vals.put(Patients.Contract.GENDER, p.getGender());
-                vals.put(Patients.Contract.LOCATION, p.getLocation().toString());
+                vals.put(Patients.Contract.LOCATION, p.getLocation().getUuid());
                 vals.put(Patients.Contract.UUID, p.getUuid());
                 vals.put(Patients.Contract.PATIENT_ID, p.system_id);
                 vals.put(Patients.Contract.DOB, p.getDob().toString());
@@ -479,6 +481,7 @@ public class DispatchService extends Service{
 
                         Intent intent = Intent.parseUri(msg.obj.toString(), 0);
                         String action = intent.getAction();
+                        int flags = intent.getFlags();
                         // set the request method.
                         String method = "GET";
                         if (action.contains("CREATE"))
@@ -493,6 +496,7 @@ public class DispatchService extends Service{
                         Logf.D(TAG, "handleMessage()",
                                 String.format("Method: %s", method));
                         Uri msgUri = intent.getData();
+                        Log.d(TAG,"..." + msgUri.getSchemeSpecificPart());
                         String path = "";
                         String query = "";
                         if(msgUri != null){
@@ -622,13 +626,6 @@ public class DispatchService extends Service{
                                 request = new HttpGet(uri);
                             break;
                         case Uris.SUBJECT_DIR:
-                            // only allows GET for pulling the patient list.
-                            // TODO switch over to newer methods
-
-                            //httpResponse = client.execute(MDSInterface
-                            //      .createSubjectRequest(DispatchService.this));
-                            //responseString = EntityUtils.toString(httpResponse
-                            //      .getEntity());
 
                             try {
                                 //List<ContentValues> content = new ArrayList<ContentValues>();
@@ -636,20 +633,73 @@ public class DispatchService extends Service{
                                 Response<Collection<Patient>> patientListResponse = MDSInterface2.apiGet(uri,username,password,
                                     pHandler);
                                 bcastCode = createOrUpdateSubjects(patientListResponse.message, startId);
-
+                                bcastMessage = "";
+                                Log.d(TAG, "" +Uris.SUBJECT_DIR+"...code " + bcastCode);
                             } catch (Exception e) {
                                     Log.e(TAG,"...." + e.getMessage());
                                     Locales.updateLocale(DispatchService.this, getString(R.string.force_locale));
                                     //bcastMessage = e.getMessage();
-                                    //bcastCode = 400;
+                                    bcastCode = 400;
                             }
                             break;
                         case Uris.SUBJECT_UUID:
-                            // TODO Allows get or post
+                        case Uris.SUBJECT_ITEM:
+                            Patient patient = PatientWrapper.get
+                                    (DispatchService.this, msgUri);
+                            PatientResponseHandler pHandler = new PatientResponseHandler();
+                            Response<Collection<Patient>> patientResponse =
+                                    null;
+                            Log.d(TAG, "...method=" + method + ", " +
+                                    "data=" + msgUri);
                             if (method.equals("GET"))
                                 request = new HttpGet(uri);
                             else if (method.equals("POST")) {
-                                request = new HttpPost(uri);
+                                patientResponse = MDSInterface2.postPatient(
+                                            DispatchService.this, patient,
+                                            username,password, pHandler);
+                                Log.d(TAG, "...response: code=" +
+                                        patientResponse.getCode() + ", data=" +
+                                        patientResponse.getMessage());
+                                bcastCode = createOrUpdateSubjects(
+                                        patientResponse.message, startId);
+                                // If successful create, we need to swap the
+                                // client side uuid out with the server side
+                                // value
+                                if(bcastCode == 200) {
+                                    bcastCode = 201;
+                                    List<Patient> pList = new
+                                            ArrayList<Patient>
+                                            (patientResponse.getMessage());
+                                    Patient p = pList.get(0);
+                                    String uuid = ModelWrapper.getUuid(msgUri,
+                                            DispatchService.this.getContentResolver());
+                                    if(!uuid.equalsIgnoreCase(p.getUuid())){
+                                        int isTemp = intent.getFlags()
+                                                & Intents.FLAG_REPLACE;
+                                        if(isTemp == 0){
+                                            DispatchService.this
+                                                    .getContentResolver()
+                                                    .delete(msgUri,null,null);
+                                        }
+                                        Uri u = Uris.withAppendedUuid
+                                                (Subjects.CONTENT_URI, p.getUuid());
+                                        bcastMessage = u.toString();
+                                    } else {
+                                        bcastMessage = msgUri.toString();
+                                    }
+                                }
+                                Log.d(TAG, "...method=" + method + ", " +
+                                        "data=" + msgUri);
+                            } else if (method.equals("PUT")) {
+                                patientResponse = MDSInterface2.updatePatient(
+                                        DispatchService.this, patient,
+                                        username,password, pHandler);
+                                Log.d(TAG, "...response: code=" + patientResponse
+                                        .getCode() + ", data=" + patientResponse.getMessage());
+                                bcastCode = patientResponse.getCode();
+                                if(patientResponse.code == 200) {
+                                    bcastMessage = msgUri.toString();
+                                }
                             }
                             break;
                         case Uris.ENCOUNTER_TASK_DIR:
@@ -705,6 +755,7 @@ public class DispatchService extends Service{
                             break;
                         default:
                         }
+                        Log.d(TAG, "" +Uris.SUBJECT_DIR+"...code " + bcastCode);
 
                         if(bcastCode != NO_BROADCAST)
                             broadcastResult(intent.getData(),bcastCode,bcastMessage);
@@ -1095,8 +1146,7 @@ public class DispatchService extends Service{
         Log.i(TAG,"broadcastResult() code=" + code
             + ", uri=" + data
             + ", message=" + message);
-        Intent broadcast = new Intent(Response.RESPONSE);
-        broadcast.setData(data);
+        Intent broadcast = new Intent(Response.RESPONSE,data);
         broadcast.putExtra(Response.MESSAGE, message);
         broadcast.putExtra(Response.CODE, code);
         LocalBroadcastManager.getInstance(this.getApplicationContext()).sendBroadcast(broadcast);
@@ -1251,8 +1301,13 @@ public class DispatchService extends Service{
 
 
     public final int createOrUpdateSubjects(Collection<Patient> t, int startId) {
-        Log.i(TAG, "createOrUpdatePatients() size="
-                    +((t != null)?t.size():"null"));
+        Log.i(TAG, "createOrUpdatePatients(Collection<Patient>,int)");
+        int size = (t != null)?t.size():0;
+        Log.d(TAG,"...size="+size);
+        // return a 404 not found code if size is zero
+        if(size == 0)
+            return Response.Code.NOT_FOUND.code;
+
         Uri result = Uri.EMPTY;
         final File dir = ModelContext.getExternalFilesDir(Subjects.CONTENT_URI);
 
@@ -1269,9 +1324,9 @@ public class DispatchService extends Service{
             vals.put(Patients.Contract.GIVEN_NAME, p.getGiven_name());
             vals.put(Patients.Contract.FAMILY_NAME, p.getFamily_name());
             vals.put(Patients.Contract.GENDER, p.getGender());
-            vals.put(Patients.Contract.LOCATION, p.getLocation().toString());
+            vals.put(Patients.Contract.LOCATION, p.getLocation().getUuid());
             vals.put(Patients.Contract.PATIENT_ID, p.system_id);
-            vals.put(Patients.Contract.DOB, p.getDob().toString());
+            vals.put(Patients.Contract.DOB, DateUtil.format(p.getDob()));
             ////////////////////////////////////////////////////////////
             // Handle images
             ////////////////////////////////////////////////////////////
@@ -1295,14 +1350,20 @@ public class DispatchService extends Service{
             }
 
         }
-        int inserted = getContentResolver().bulkInsert(Subjects.CONTENT_URI, toArray(insert));
-            Log.d(TAG, "....inserted=" + inserted);
-            Log.d(TAG, "....updates=" + update.size());
-            int updated = 0;
-            for(ModelEntity me:update){
-                updated += getContentResolver().update(me.getUri(),me.getEntityValues(),null,null);
-            }
-        return 200;
+        // Handle the insert(s)
+        int inserted = getContentResolver().bulkInsert(Subjects.CONTENT_URI,
+                toArray(insert));
+        Log.d(TAG, "....inserted=" + inserted);
+
+        // Handle the update(s)
+        int updated = 0;
+        for(ModelEntity me:update){
+            updated += getContentResolver().update(me.getUri(),
+                    me.getEntityValues(),null,null);
+        }
+        Log.d(TAG, "....updates=" + updated);
+        // Successful return a 200 code
+        return Response.Code.OK.code;
     }
 
     public final int createOrUpdateEncounterTasks(Collection<EncounterTask> t, int startId) {

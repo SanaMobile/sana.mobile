@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,9 +63,13 @@ import org.sana.android.procedure.ProcedureParseException;
 import org.sana.android.procedure.ProcedureElement.ElementType;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Observations;
+import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
+import org.sana.android.provider.Subjects;
 import org.sana.android.service.QueueManager;
 import org.sana.android.service.impl.DispatchService;
+import org.sana.android.util.Dates;
+import org.sana.core.Patient;
 import org.sana.net.MDSResult;
 import org.sana.net.Response;
 import org.sana.net.http.HttpTaskFactory;
@@ -122,7 +127,7 @@ public class MDSInterface2 {
 	 * Gets the value in the MDS url setting and add the correct scheme, i.e.
 	 * http or https, depending on the value of the use secure transmission
 	 * setting.
-	 * @param ctx The application context.
+	 * @param context The application context.
 	 * @return The mds url with correct scheme.
 	 */
 	public static String getMDSUrl(Context context){
@@ -155,8 +160,7 @@ public class MDSInterface2 {
 	 * Executes a POST method. Provides a wrapper around doExecute by
 	 * preparing the PostMethod.
 	 *
-	 * @param ctx the current Context
-	 * @param mUrl the request url
+	 * @param url the request url
 	 * @param postData the form data.
 	 * @return
 	 * @throws UnsupportedEncodingException
@@ -195,9 +199,8 @@ public class MDSInterface2 {
 	 * Executes a POST method. Provides a wrapper around doExecute by
 	 * preparing the PostMethod.
 	 *
-	 * @param ctx the current Context
-	 * @param mUrl the request url
-	 * @param parts the form data.
+	 * @param url the request url
+	 * @param entity the form data.
 	 * @return
 	 */
 	protected static MDSResult doPost(String url, HttpEntity entity)
@@ -210,7 +213,6 @@ public class MDSInterface2 {
 	/**
 	 * Executes a client HttpMethod.
 	 *
-	 * @param ctx The context which the method will be executed in
 	 * @param method The Http
 	 * @return
 	 */
@@ -1050,7 +1052,7 @@ public class MDSInterface2 {
 	 * @param uri
 	 * @param username
 	 * @param password
-	 * @param values
+	 * @param form
 	 * @param handler
 	 * @return
 	 */
@@ -1275,4 +1277,77 @@ public class MDSInterface2 {
         }
     }
 
+    public static Response<Collection<Patient>> postPatient(Context context,
+            Patient patient, String username, String password,
+            ResponseHandler<Response<Collection<Patient>>> handler){
+        Log.i(TAG, "postPatient(Context,Patient,String,String, " +
+                "ResponseHandler<Response<Collection<Patient>>>)");
+        Response<Collection<Patient>> response = Response.empty();
+        try {
+            URI target = getURI(context, Subjects.CONTENT_URI.getPath() + "/");
+            Map<String,String> values = new HashMap<String,String>();
+            values.put(Patients.Contract.GIVEN_NAME, patient.getGiven_name());
+            values.put(Patients.Contract.FAMILY_NAME, patient.getFamily_name());
+            values.put(Patients.Contract.GENDER, patient.getGender());
+            if(patient.getLocation() != null &&
+                    !TextUtils.isEmpty(patient.getLocation().getUuid())) {
+                values.put(Patients.Contract.LOCATION,
+                        patient.getLocation().getUuid());
+            } else {
+                values.put(Patients.Contract.LOCATION,
+                        context.getString(R.string.cfg_default_location));
+            }
+            values.put(Patients.Contract.UUID, patient.getUuid());
+            values.put(Patients.Contract.PATIENT_ID, patient.system_id);
+            values.put(Patients.Contract.DOB, Dates.toSQL(patient.getDob()));
+            response = MDSInterface2.apiPost(target, username, password,
+                    values, handler);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            response.code = 500;
+            response.message = Collections.EMPTY_LIST;
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.code = 500;
+            response.message = Collections.EMPTY_LIST;
+        }
+        return response;
+    }
+
+    public static Response<Collection<Patient>> updatePatient(Context context,
+         Patient patient, String username, String password,
+         ResponseHandler<Response<Collection<Patient>>> handler){
+        Log.i(TAG, "postPatient(Context,Patient,String,String, " +
+                "ResponseHandler<Response<Collection<Patient>>>)");
+        Response<Collection<Patient>> response = Response.empty();
+        try {
+            URI target = getURI(context, Subjects.CONTENT_URI.getPath() + "/"
+            + patient.getUuid());
+            Map<String,String> values = new HashMap<String,String>();
+            values.put(Patients.Contract.GIVEN_NAME, patient.getGiven_name());
+            values.put(Patients.Contract.FAMILY_NAME, patient.getFamily_name());
+            values.put(Patients.Contract.GENDER, patient.getGender());
+            if(patient.getLocation() != null &&
+                    !TextUtils.isEmpty(patient.getLocation().getUuid())) {
+                values.put(Patients.Contract.LOCATION + "__uuid",
+                        patient.getLocation().getUuid());
+            } else {
+                values.put(Patients.Contract.LOCATION + "__uuid",
+                        context.getString(R.string.cfg_default_location));
+            }
+            values.put(Patients.Contract.PATIENT_ID, patient.system_id);
+            values.put(Patients.Contract.DOB, Dates.toSQL(patient.getDob()));
+            response = MDSInterface2.apiPut(target, username, password,
+                    values, null, handler);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            response.code = 500;
+            response.message = Collections.EMPTY_LIST;
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.code = 500;
+            response.message = Collections.EMPTY_LIST;
+        }
+        return response;
+    }
 }
