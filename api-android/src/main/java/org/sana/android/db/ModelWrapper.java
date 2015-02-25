@@ -31,6 +31,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import org.sana.android.content.Uris;
 import org.sana.android.provider.BaseContract;
@@ -40,6 +41,7 @@ import org.sana.util.DateUtil;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -63,10 +65,11 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
     }
 
     public Date getDateField(String field){
+        String dateStr = getString(getColumnIndex(field));
         try {
-            return DateUtil.parseDate(getString(getColumnIndex(field)));
+            return DateUtil.parseDate(dateStr);
         } catch (ParseException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("date string=" + dateStr);
         }
     }
 
@@ -207,7 +210,6 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param contentUri The content style Uri to query
      * @param resolver The resolver which will perform the query.
      * @param field The field, or column, to select by.
-     * @param value The selection argument or, row value, to select by.
      * @return A cursor with a single row.
      * @throws IllegalArgumentException if multiple rows are returned.
      */
@@ -230,8 +232,8 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      *
      * @param contentUri The content style Uri to query
      * @param resolver The resolver which will perform the query.
-     * @param field The field, or column, to select by.
-     * @param value The selection argument or, row value, to select by.
+     * @param fields The field, or column, to select by.
+     * @param vals The selection argument or, row value, to select by.
      * @return A cursor with a single row.
      * @throws IllegalArgumentException if multiple rows are returned.
      */
@@ -277,7 +279,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param contentUri The content style Uri to query
      * @param resolver The resolver which will perform the query.
      * @param field The field, or column, to select by.
-     * @param value The selection argument or, row value, to select by.
+     * @param object The selection argument or, row value, to select by.
      * @return A cursor with zero or more rows.
      */
     public static synchronized Cursor getAllByField(Uri contentUri, ContentResolver resolver,
@@ -292,8 +294,8 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      *
      * @param contentUri The content style Uri to query
      * @param resolver The resolver which will perform the query.
-     * @param field The field, or column, to select by.
-     * @param value The selection argument or, row value, to select by.
+     * @param fields The field, or column, to select by.
+     * @param vals The selection argument or, row value, to select by.
      * @return A cursor with zero or more rows.
      */
     public static synchronized Cursor getAllByFields(Uri contentUri, ContentResolver resolver,
@@ -310,7 +312,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param contentUri The content style Uri to query
      * @param resolver The resolver which will perform the query.
      * @param field The field, or column, to select by.
-     * @param value The selection argument or, row value, to select by.
+     * @param object The selection argument or, row value, to select by.
      * @paeam order The order to return by.
      * @return A cursor with zero or more rows.
      */
@@ -334,8 +336,8 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      *
      * @param contentUri The content style Uri to query
      * @param resolver The resolver which will perform the query.
-     * @param field The field, or column, to select by.
-     * @param value The selection argument or, row value, to select by.
+     * @param fields The field, or column, to select by.
+     * @param vals The selection argument or, row values, to select by.
      * @paeam order The order to return by.
      * @return A cursor with zero or more rows.
      */
@@ -510,6 +512,77 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
     }
 
     /**
+     * Returns whether an item is unique and exists in the database
+     *
+     * @param context
+     * @param uri
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
+    public static synchronized boolean exists(Context context,
+                                          Uri uri,
+                                          String selection,
+                                          String[] selectionArgs)
+    {
+        Cursor cursor = null;
+        boolean exists = false;
+        boolean unique = false;
+
+        if(Uris.isEmpty(uri))
+            throw new NullPointerException("Empty object Uri.");
+
+        try {
+            // Do the query
+            cursor = context.getContentResolver().query(uri,
+                    BaseProjection.ID_PROJECTION,
+                    selection,
+                    selectionArgs, null);
+            // Check that the cursor returned
+            if (cursor != null){
+                if (cursor.getCount() == 1){
+                    // Count was one so exists and unique
+                    exists = true;
+                    unique = true;
+                } else if (cursor.getCount() > 1) {
+                    exists = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(cursor != null) cursor.close();
+        }
+
+        // Handle the existence and uniqueness constraints
+        if(exists && !unique) {
+            // TODO Class based exception
+            throw new IllegalArgumentException("MultipleObjectsReturned");
+        }
+        return exists;
+    }
+
+    /**
+     * Validates the existence of an object in the database when passed a
+     * Uri with the row id or object uuid as the last path segment.
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static synchronized boolean exists(Context context, Uri uri)
+    {
+        switch(Uris.getTypeDescriptor(uri)) {
+            case Uris.ITEM_UUID:
+            case Uris.ITEM_ID:
+                return exists(context,uri,null,null);
+            case Uris.ITEMS:
+            default:
+                throw new IllegalArgumentException("Invalid Uri. Directory type." + uri);
+        }
+    }
+
+    /**
      * Inserts or updates and returns
      * @param uri
      * @param values
@@ -522,14 +595,17 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
     {
         Uri result = Uri.EMPTY;
         Cursor c = null;
+        int updated = 0;
+        boolean created = false;
+
         switch(Uris.getTypeDescriptor(uri)){
         case Uris.ITEM_UUID:
         case Uris.ITEM_ID:
-            //if(exists(resolver, uri, null, null) != null){
-                resolver.update(uri, values, null, null);
-            //} else {
-            //  throw new IllegalArgumentException("Error updating. Item does not exist: " + uri);
-            //}
+            if(Uris.isEmpty(exists(resolver, uri, null, null))){
+                updated = resolver.update(uri, values, null, null);
+            } else {
+              throw new IllegalArgumentException("Error updating. Item does not exist: " + uri);
+            }
             break;
         case Uris.ITEMS:
             if(uri.getQuery() != null){
@@ -586,12 +662,13 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
     }
 
     /**
-     * Retrieves the local row id either from the last path segment, the '_id' column
-     * of the table, or throws an exception if a directory type Uri.
+     * Retrieves the local row id either from the last path segment or the
+     * {@link android.provider.BaseColumns#_ID _ID} column, of the table.
      *
-     * @param uri
+     * @param uri The Uri to get the row id value for
      * @param resolver
-     * @return
+     * @return The row id value
+     * @throws IllegalArgumentException
      */
     public static synchronized long getRowId(Uri uri, ContentResolver resolver){
         switch(Uris.getTypeDescriptor(uri)){
