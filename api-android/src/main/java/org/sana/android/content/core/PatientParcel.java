@@ -45,7 +45,7 @@ import android.os.Parcelable;
 public class PatientParcel extends Patient implements Parcelable {
 
 	public static final String TAG = PatientParcel.class.getSimpleName();
-	
+
 	/**
 	 * @param in
 	 */
@@ -63,15 +63,35 @@ public class PatientParcel extends Patient implements Parcelable {
 		setFamily_name(in.readString());
 		setGender(in.readString());
 		setImage(URI.create(in.readString()));
-
+        setSystemId(in.readString());
 	}
+
+    /**
+     * Copy constructor for creating a new instance of the Parcelable
+     * representation of a Patient.
+     *
+     * @param patient
+     */
+    public PatientParcel(Patient patient) {
+        setUuid(patient.getUuid());
+        setCreated(patient.getCreated());
+        setModified(patient.getModified());
+        setDob(patient.getDob());
+        setGiven_name(patient.getGiven_name());
+        setFamily_name(patient.getFamily_name());
+        setGender(patient.getGender());
+        setImage(patient.getImage());
+        setSystemId(patient.getSystemId());
+    }
+
+    public PatientParcel(){}
 
 	/* (non-Javadoc)
 	 * @see android.os.Parcelable#describeContents()
 	 */
 	@Override
 	public int describeContents() {
-		return Patient.class.hashCode();
+		return PatientParcel.class.hashCode();
 	}
 
 	/* (non-Javadoc)
@@ -87,6 +107,7 @@ public class PatientParcel extends Patient implements Parcelable {
 		dest.writeString(getFamily_name());
 		dest.writeString(getGender());
 		dest.writeString(getImage().toString());
+        dest.writeString(getSystemId());
 	}
 	
 	public static final Parcelable.Creator<PatientParcel> CREATOR = 

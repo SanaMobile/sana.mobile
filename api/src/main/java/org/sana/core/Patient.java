@@ -20,6 +20,21 @@ import com.google.gson.annotations.Expose;
  */
 public class Patient extends Subject implements IPatient{
 
+    @Expose
+    public String given_name;
+    @Expose
+    public String family_name;
+    @Expose
+    public Date dob;
+    @Expose
+    public String gender;
+    @Expose
+    public URI image;
+    @Expose
+    public Location location;
+    @Expose
+    public String system_id;
+
 	/* (non-Javadoc)
 	 * @see org.sana.core.IPatient#getGiven_name()
 	 */
@@ -85,20 +100,6 @@ public class Patient extends Subject implements IPatient{
 	public void setImage(URI image) {
 		this.image = image;
 	}
-	@Expose
-	public String given_name;
-	@Expose
-	public String family_name;
-	@Expose
-	public Date dob;
-	@Expose
-	public String gender;
-	@Expose
-	public URI image;
-	@Expose
-	public Location location;
-	@Expose
-	public String system_id;
 	
 	/* (non-Javadoc)
 	 * @see org.sana.api.IPatient#getLocation()
@@ -111,5 +112,13 @@ public class Patient extends Subject implements IPatient{
 	public void setLocation(Location location){
 		this.location = location;
 	}
-	
+
+
+    public String getSystemId(){
+        return system_id;
+    }
+
+    public void setSystemId(String systemId){
+        this.system_id = systemId;
+    }
 }
