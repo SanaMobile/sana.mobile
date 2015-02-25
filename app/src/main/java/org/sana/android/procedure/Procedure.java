@@ -21,6 +21,7 @@ import org.sana.android.Constants;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.db.PatientValidator;
 
+import org.sana.android.util.EnvironmentUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -704,7 +705,9 @@ public class Procedure {
      * @return An existing view of this object if cached or a new one.
      */
     public View toView(Context c) {
+        Log.i(TAG,"toView(Context)");
         if(cachedView == null || cachedContext != c) {
+            Log.d(TAG, "...generating cached view");
             cachedView = createView(c);
             cachedContext = c;
         }
@@ -736,8 +739,7 @@ public class Procedure {
 			Log.e(TAG, "Can not initialize sdcard procedure resource dir.");
 			return;
 		}
-		File p = new File(Environment.getExternalStorageDirectory() 
-				+ Constants.PATH_PROCEDURE);
+		File p = new File(EnvironmentUtil.getProcedureDirectory());
 		File r = new File(Environment.getExternalStorageDirectory() 
 				+ Constants.PATH_EDUCATION);
 		if (p.mkdirs() && r.mkdirs()){
