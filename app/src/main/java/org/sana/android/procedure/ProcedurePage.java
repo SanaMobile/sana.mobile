@@ -42,7 +42,7 @@ import android.widget.ScrollView;
  * @author Sana Development Team
  */
 public class ProcedurePage {
-	public static final String TAG = "ProcedurePage"; 
+	public static final String TAG = ProcedurePage.class.getSimpleName();
 
 	private View cachedView;
 	private Context cachedContext;
@@ -51,7 +51,7 @@ public class ProcedurePage {
 	
 	Procedure procedure;
 	Criteria criteria;
-
+    String label = null;
 	/**
 	 * Constructor for ProcedurePage if no entry criteria are desired for the
 	 * page (the page will always display).
@@ -85,13 +85,20 @@ public class ProcedurePage {
 	 * elements are displayed.
 	 *
 	 * @param elements a list of displayable elements
-	 * @param critera A set of logic conditions for determining visibility.
+	 * @param criteria A set of logic conditions for determining visibility.
 	 */
 	public ProcedurePage(List<ProcedureElement> elements, Criteria criteria) {
 		this.elements = elements;
 		this.criteria = criteria;
 	}
 
+    public String getLabel(){
+      return label;
+    }
+
+    public void setLabel(String label){
+        this.label = label;
+    }
 	/**
 	 * Returns the value of the answer attribute for a contained element.
 	 * 
@@ -101,12 +108,12 @@ public class ProcedurePage {
 	public String getElementValue(String key) {
 
 		String value = "";
-		List<ProcedureElement> els = getSpecialElements();
-		for (int i=0; i<els.size(); i++) {
-			if (els.get(i).getId().equals(key)) {
-				value = els.get(i).getAnswer();
-			}
-		}
+        for (ProcedureElement el:elements) {
+            if (el.getId().compareTo(key) == 0) {
+                value = el.getAnswer();
+                break;
+            }
+        }
 		return value;
 	}
 	
@@ -166,12 +173,38 @@ public class ProcedurePage {
 		ProcedureElement p = null;
 		List<ProcedureElement> els = elements;
 		for (int i=0; i<els.size(); i++) {
-			if (els.get(i).getId().toString().equals(type)) {
+			if (els.get(i).getId().equals(type)) {
 				p = els.get(i);
 			}
 		}
 		return p;
 	}
+
+    public ProcedureElement getElementById(String id) {
+        ProcedureElement p = null;
+        for (ProcedureElement el:elements) {
+            if (el.getId().compareTo(id) == 0) {
+                p = el;
+                break;
+            }
+        }
+        return p;
+    }
+
+    public List<ProcedureElement> getElements(){
+        return elements;
+    }
+
+    public boolean hasElementWithId(String id) {
+        boolean result = false;
+        for (ProcedureElement el:elements) {
+            if (el.getId().compareTo(id) == 0) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
 
 	/**
 	 * @return A list of elements which require non-standard processing.
@@ -286,7 +319,9 @@ public class ProcedurePage {
 	 * @return The question attribute of the first element.
 	 */
 	public String getSummary() {
-		if(!elements.isEmpty())
+        if(!TextUtils.isEmpty(label)) {
+            return label;
+        } else if (!elements.isEmpty())
 			return elements.get(0).getQuestion();
 		return "";
 	}
@@ -380,7 +415,9 @@ public class ProcedurePage {
 	 */
 	public void restoreAnswers(Map<String,String> answersMap) {
 		for(ProcedureElement s : elements) {
+            Log.d(TAG, "...checking for id=" + s.getId());
 			if(answersMap.containsKey(s.getId())) {
+                Log.d(TAG, "...setting answer" + answersMap.get(s.getId()));
 				s.setAnswer(answersMap.get(s.getId()));
 			}
 		}
@@ -398,7 +435,7 @@ public class ProcedurePage {
 
 	/**
 	 * Restores the state of a procedure by loading a collection of answers. 
-	 * @param answersMap A map of previously collected answers.
+	 * @param answers A map of previously collected answers.
 	 */
 	public void populateAnswers(Map<String,String> answers) {
 		for(ProcedureElement s : elements) {
@@ -422,7 +459,7 @@ public class ProcedurePage {
 	/**
      * Fills in the attributes for an element into a mapping of the element id
      * to its attributes. 
-     * @param a map to add to.
+     * @param elementMap map to add to.
      */
 	public void populateElementMap(Map<String,Map<String,String>> elementMap) {
 		for(ProcedureElement s : elements) {
