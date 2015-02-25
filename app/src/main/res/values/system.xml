@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="max_login_attempts">3</integer>
-    <!-- TODO remove this
-    <string name="default_workflow">org.sana.android.app.workflow.SSI</string>
-    -->
     <string name="sync_delta">0</string>
-    <string name="force_locale">ht</string>
-    <string name="display_version">Version: ssi-v22</string>
+    <string name="force_locale">en</string>
+    <string name="display_version">Version: 2.0.7</string>
 </resources>

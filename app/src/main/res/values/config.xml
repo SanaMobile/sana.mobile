@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Uncomment this block -->
+    <string name="cfg_build_variant">0</string>
     <integer name="cfg_app_max_login_attempts">3</integer>
     <string name="cfg_app_workflow_default">org.sana.android.app.workflow.SSI</string>
     <string name="cfg_app_sync_delta">0</string>
-    <string name="cfg_app_locale">ht</string>
+    <string name="cfg_app_locale">en</string>
     <string name="cfg_app_url">https://demo.sana.csail.mit.edu/mds/clients/</string>
     
     <string name="cfg_mds_scheme">https</string>
@@ -13,7 +13,7 @@
     
     <string name="cfg_mds_url">https://project1.sana.csail.mit.edu/mds</string>
     <string name="cfg_mds_core">https://project1.csail.mit.edu/mds/core</string>
-    <string name="cfg_path_root">mds/</string>  
+    <string name="cfg_path_root">/mds/</string>
     
     
     <string name="cfg_app_url_training">https://project1.sana.csail.mit.edu/mds/test/clients/</string>
@@ -38,12 +38,12 @@
     <string name="display_date_format">MMM dd, yyyy</string>
     <string name="display_date_time_format">MMM dd, yyyy HH:mm</string>
     
-    <integer name="sync_delta_subjects">1000</integer>
+    <integer name="sync_delta_subjects">60000</integer>
     <integer name="sync_delta_encountertasks">1000</integer>
     
     <bool name="cfg_notify_task_status">true</bool>    
     <bool name="cfg_upload_foreground">true</bool>
-    <!--
-    <string name="display_date_time_format">MMM dd, yyyy HH:mm</string>
-    -->
+    <string name="cfg_default_location">29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca</string>
+
+    <string name="cfg_alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>

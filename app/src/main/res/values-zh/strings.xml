@@ -35,4 +35,5 @@
 	<string name="question_standard_gender">選病人性別</string>
 	<string name="question_standard_male">男生</string>
 	<string name="question_standard_female">女生</string>
+    <string name="msg_no_encounters">No encounters</string>
 </resources>

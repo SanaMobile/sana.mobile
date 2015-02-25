@@ -2,7 +2,6 @@
 <!-- Language: EN -->
 <!-- Docs say that all the identifiers should be in lower case -->
 <resources>
-    <string name="hello">Hello</string>
     <string name="app_name">Sana</string>
 
     <!--  Activity titles  -->
@@ -66,6 +65,8 @@
     <string name="general_observation_list">Observation List</string>
     <string name="general_date_completed">Date Completed</string>
     <string name="general_synchronized">Synchronized</string>
+    <string name="general_synchronizing">Synchronizing</string>
+    <string name="general_fetching_patients">Getting patient list</string>
     <string name="general_upload_in_progress">Upload in progress</string>
     <string name="general_uploading">Uploading</string>
     <string name="general_incomplete">incomplete</string>
@@ -84,7 +85,7 @@
     <string name="dialog_no_reload_db_warn">Warning: reloading the database will clear all saved procedures and notifications. Proceed?</string>
     <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number</string>
     <string name="dialog_loading_procedure">Loading Procedure.</string>
-    <string name="dialog_look_up_patient">Looking up patient \"%d\"</string>
+    <string name="dialog_look_up_patient">Looking up patient \"%s\"</string>
     <string name="dialog_logging_in">Logging in.</string>
     <string name="dialog_synchronizing">Synchronizing</string>
 
@@ -218,6 +219,7 @@
     <string name="download_success">Download successful</string>
     <string name="download_status">Download status</string>
     <string name="network_alert">Network Alert</string>
+    <string name="msg_no_encounters">No encounters</string>
 
     <!-- PatientInfoDialog Activity  -->
     <string name="patient_out_of_sync">Patient information does not match database</string>
