@@ -284,15 +284,20 @@ public final class Intents{
 	
 
 
-        //-------------------------------------------------------------------------
-        // Intent flags
+    //-------------------------------------------------------------------------
+    // Intent flags
 	//-------------------------------------------------------------------------
-	/** Set to  indicate notifications should be sent  */    
-        public static final int FLAG_NOTIFY = 1;
-        /** Set to  indicate notifications should be sent when the action of the intent has been started */ 
-        public static final int FLAG_NOTIFY_TASK_INIT = 2;
-        /** Set to  indicate notifications should be sent after the action of the intent has completed  */ 
-        public static final int FLAG_NOTIFY_TASK_COMPLETE = 4; 
+
+    /** Indicates message should be placed into the retry queue on failure */
+    public static final int FLAG_RETRY_ON_FAIL = 1;
+    /** Indicates message should be placed into the retry queue on failure */
+    public static final int FLAG_REPLACE = 2;
+    /** Set to  indicate notifications should be sent  */
+    public static final int FLAG_NOTIFY = 4;
+    /** Set to  indicate notifications should be sent when the action of the intent has been started */
+    public static final int FLAG_NOTIFY_TASK_INIT = 8;
+    /** Set to  indicate notifications should be sent after the action of the intent has completed  */
+    public static final int FLAG_NOTIFY_TASK_COMPLETE = 16;
 
 	/**
 	 * Copies an intent into a new one including all data, type, extras, and 
