@@ -57,6 +57,7 @@
                 android:textIsSelectable="true" />
             <TextView
                 android:id="@+id/system_id"
+                android:text="system id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -67,6 +68,20 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/light_gray"
                 android:textIsSelectable="true" />
+
+            <TextView
+                android:id="@+id/dob"
+                android:text="date of birth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:padding="1dp"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/light_gray"
+                android:textIsSelectable="true"/>
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
@@ -88,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/unknown" />
+            android:src="@drawable/ic_contact_picture" />
     </LinearLayout>
 
 </LinearLayout>
