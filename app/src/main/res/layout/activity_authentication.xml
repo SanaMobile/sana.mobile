@@ -3,18 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/light_gray"
-    android:gravity="center_horizontal"
+    android:background="@color/alt_bg_color"
+    android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
     tools:context="org.sana.android.activity.AuthenticationActivity" >
 
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:layout_marginTop="24dp"
         android:contentDescription="@string/authentication_sana"
-        android:src="@drawable/sana_logo" />
+        android:src="@drawable/logo"
+        android:padding="5dp"
+        android:layout_margin="12dp" />
 
     <LinearLayout
         android:id="@+id/form"
@@ -28,7 +28,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/authentication_username"
             android:inputType="text"
-            android:textAppearance="?android:attr/textAppearanceLargeInverse" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_margin="5dp"
+            android:background="@color/dim_foreground_holo_dark"/>
 
         <EditText
             android:id="@+id/input_password"
@@ -36,7 +38,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/authentication_password"
             android:inputType="textPassword"
-            android:textAppearance="?android:attr/textAppearanceLargeInverse" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_margin="5dp"
+            android:background="@color/dim_foreground_holo_dark"/>
 
         <Button
             android:id="@+id/btn_login"
@@ -51,6 +55,7 @@
             android:layout_height="wrap_content"
             android:text="@string/general_exit"
             android:onClick="submit" />
+
     </LinearLayout>
 
     <TextView
@@ -58,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceInverse"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat"
         android:text="@string/display_version" />
 
 </LinearLayout>

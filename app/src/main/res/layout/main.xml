@@ -11,35 +11,40 @@
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/sana_logo" />
+        android:src="@drawable/logo"
+        android:layout_margin="12dp" />
 
     <Button
         android:id="@+id/btn_main_register_patient"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:onClick="submit"
-        android:text="@string/button_main_register_patients" />
+        android:text="@string/button_main_register_patients"
+        style="@style/Widget.Button.Large.Dark" />
 
     <Button
         android:id="@+id/btn_main_select_patient"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:onClick="submit"
-        android:text="@string/button_main_select_patient" />
+        android:text="@string/button_main_select_patient"
+        style="@style/Widget.Button.Large.Dark" />
 
     <Button
         android:id="@+id/btn_main_procedures"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:onClick="submit"
-        android:text="@string/button_main_select_procedure" />
+        android:text="@string/button_main_select_procedure"
+        style="@style/Widget.Button.Large.Dark" />
 
     <Button
         android:id="@+id/btn_main_transfers"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:onClick="submit"
-        android:text="@string/button_main_view_prior_encounters" />
+        android:text="@string/button_main_view_prior_encounters"
+        style="@style/Widget.Button.Large.Dark" />
 
     <!--
     <fragment
@@ -98,6 +103,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:onClick="submit"
-        android:text="@string/button_main_view_notifications" />
+        android:text="@string/button_main_view_notifications"
+        style="@style/Widget.Button.Large.Dark" />
 
 </LinearLayout>
