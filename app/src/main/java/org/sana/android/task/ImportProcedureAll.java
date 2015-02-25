@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sana.R;
 import org.sana.android.Constants;
+import org.sana.android.util.EnvironmentUtil;
 import org.sana.android.util.SanaUtil;
 
 import android.app.ProgressDialog;
@@ -48,8 +49,7 @@ public class ImportProcedureAll extends AsyncTask<Context, Void, Integer> {
 		String mount = Environment.getExternalStorageState();
 		if(!mount.equals(Environment.MEDIA_MOUNTED))
 			return 2;
-		String path = Environment.getExternalStorageDirectory() 
-							+ Constants.PATH_PROCEDURE;
+		String path = EnvironmentUtil.getProcedureDirectory();
 		Context c = params[0];
 		try {
 			for (String location:locations){
