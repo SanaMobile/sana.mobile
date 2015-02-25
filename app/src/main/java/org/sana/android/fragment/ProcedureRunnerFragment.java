@@ -11,6 +11,7 @@ import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.db.EncounterDAO;
 import org.sana.android.db.EventDAO;
 import org.sana.android.db.ModelWrapper;
+import org.sana.android.db.SanaDB;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.provider.BaseContract;
 import org.sana.android.provider.Encounters;
@@ -94,7 +95,24 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
     	setRetainInstance(true);
     	
     }
-    
+
+    @Override
+    public void deleteCurrentProcedure() {
+        try {
+            getActivity().getContentResolver().delete(uEncounter, null, null);
+            // Flush out any observations
+            getActivity().getContentResolver().delete(Observations.CONTENT_URI,
+                    Observations.Contract.ENCOUNTER + " = ?",
+                    new String[]{uEncounter.getLastPathSegment()});
+            getActivity().getContentResolver().delete(SanaDB.ImageSQLFormat.CONTENT_URI,
+                    SanaDB.ImageSQLFormat.ENCOUNTER_ID + " = ?",
+                    new String[]{uEncounter.getLastPathSegment()});
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void storeCurrentProcedure(boolean finished) {
     	this.storeCurrentProcedure(finished, true);
     }
@@ -219,6 +237,7 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 					+ " objects. (SHOULD ONLY BE 1)");
 		}
     }
+
     //TODO Fix this so we flush any unselected answers when navigating back and forth
     public int deleteRemovedAnswers(String answer){
     	return 0;
