@@ -1,6 +1,10 @@
 
 package org.sana.android.fragment;
 
+import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 
 import org.sana.R;
@@ -11,8 +15,11 @@ import org.sana.android.provider.Patients;
 import org.sana.android.provider.Patients.Contract;
 import org.sana.android.provider.Subjects;
 import org.sana.android.util.Bitmaps;
+import org.sana.android.util.Dates;
 import org.sana.android.util.Logf;
 
+import org.sana.core.Patient;
+import org.sana.util.DateUtil;
 import org.sana.util.StringUtil;
 
 import android.content.Context;
@@ -56,7 +63,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
 		Contract.FAMILY_NAME, 
 		Contract.PATIENT_ID,
 		Contract.LOCATION,
-		Contract.IMAGE
+		Contract.IMAGE,
+        Contract.DOB
 		};
     
     private Uri mUri;
@@ -64,7 +72,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     private OnPatientSelectedListener mListener;
     Handler mHandler; 
     private boolean doSync = false;
-    private int delta =1000;
+    private int delta =1000*60;
     //
     // Activity Methods
     //
@@ -76,6 +84,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         super.onCreate(savedInstanceState);
         //setRetainInstance(true);
     	Locales.updateLocale(this.getActivity(), getString(R.string.force_locale));
+        delta = getResources().getInteger(R.integer.sync_delta_subjects);
     }
 
     @Override
@@ -93,7 +102,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         setListAdapter(mAdapter);
         // Do we sync with server
         delta = getActivity().getResources().getInteger(R.integer.sync_delta_subjects);
-        sync(getActivity(), Subjects.CONTENT_URI);
+        //sync(getActivity(), Subjects.CONTENT_URI);
     	LoaderManager.enableDebugLogging(true);
         getActivity().getSupportLoaderManager().initLoader(PATIENTS_LOADER, null, this);
     }
@@ -169,6 +178,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     }
 
     static class ViewHolder{
+        Patient patient;
         ImageView image;
         TextView name;
         TextView systemId;
@@ -194,10 +204,14 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         private static final int STATE_UNLABELED = 2;
         
         private static final String ALPHABET = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        
+        private final String mAlphabet;
+        private String dateFormat = null;
+
         public PatientCursorAdapter(Context context, Cursor c) {
         	super(context.getApplicationContext(),c,false);
             mInflater = LayoutInflater.from(context);
+            dateFormat = context.getString(R.string.display_date_format);
+            mAlphabet = " " + mContext.getString(R.string.cfg_alphabet);
     		init(c);
         }
         
@@ -215,6 +229,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             */
             //this.context = context;
             mInflater = LayoutInflater.from(context);
+            dateFormat = context.getString(R.string.display_date_format);
+            mAlphabet = " " + mContext.getString(R.string.cfg_alphabet);
     		init(c);
         }
         
@@ -225,9 +241,12 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             //mWrapper = new PatientWrapper(c);
             //c.setNotificationUri(context.getContentResolver(), Patients.CONTENT_URI);
             mRowStates = new int[c.getCount()];
+            Arrays.fill(mRowStates, STATE_UNKNOWN);
+            if(mRowStates.length > 0)
+                mRowStates[0] = STATE_LABELED;
             mAlphaIndexer = new AlphabetIndexer(c, 
                     1, 
-                    ALPHABET);
+                    mAlphabet);
             mAlphaIndexer.setCursor(c);
         }
         
@@ -236,28 +255,30 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         		mRowStates = new int[cursor.getCount()];
         		mAlphaIndexer = new AlphabetIndexer(cursor, 
         		    		1, 
-        		    		ALPHABET);
+        		    		mAlphabet);
         		mAlphaIndexer.setCursor(cursor);
+                Arrays.fill(mRowStates, STATE_UNKNOWN);
         	} else {
         		mRowStates = new int[0];
         		mAlphaIndexer = null;
         	}
+            if(mRowStates.length > 0)
+                mRowStates[0] = STATE_LABELED;
             return cursor;
         }
         
         @Override
         public void changeCursor (Cursor cursor){
-        	Log.d(TAG+".mAdapter", "change cursor ");
+        	Log.d(TAG+".mAdapter", "changeCursor(Cursor)");
         	index(cursor);
         	super.changeCursor(cursor);
         }
         
         @Override
         public Cursor swapCursor(Cursor newCursor) {
-        	Log.d(TAG+".mAdapter", "swap cursor "); 
+        	Log.i(TAG+".mAdapter", "swapCursor(Cursor)");
         	index(newCursor);
             return super.swapCursor(newCursor);
-            
         }
         
         @Override
@@ -270,18 +291,20 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             
         	//image.setImageResource(R.drawable.unknown);
             if(imagePath != null){
-            	try{
-            		//image.setImageURI(Uri.parse(imagePath));
-                	//Log.d(TAG+".mAdapter", "bindView(): " + i.getPath());
-                	//image.setImageURI(Uri.parse(imagePath));
-            		image.setImageBitmap(Bitmaps.decodeSampledBitmapFromFile(Uri.parse(imagePath).getPath(), 128,128));
+            	try {
+                    image.setImageBitmap(Bitmaps.decodeSampledBitmapFromFile(
+                            Uri.parse(imagePath).getPath(), 128, 128));
+                } catch(java.io.FileNotFoundException e){
+                    Log.e(TAG, e.getMessage());
+                    image.setImageResource(R.drawable.ic_contact_picture);
             	} catch (Exception e){
-            		e.printStackTrace();
+                    Log.e(TAG, e.getMessage());
+                    image.setImageResource(R.drawable.ic_contact_picture);
             	}
             } 
             
-            String familyName = ((Cursor) this.getItem(position)).getString(2);
-            String givenName = ((Cursor) this.getItem(position)).getString(1);
+            String familyName = ((Cursor) getItem(position)).getString(2);
+            String givenName = ((Cursor) getItem(position)).getString(1);
             String displayName = StringUtil.formatPatientDisplayName(givenName, familyName);
             TextView name = (TextView) view.findViewById(R.id.name);
             name.setText(displayName);
@@ -290,6 +313,20 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             String id = ((Cursor) this.getItem(position)).getString(3);
             //String id = mWrapper.getStringField(Contract.PATIENT_ID);
             systemId.setText((TextUtils.isEmpty(id)? "000000":id));
+
+            TextView dobView = (TextView)view.findViewById(R.id.dob);
+            String dobStr = ((Cursor) this.getItem(position)).getString(6);
+            String localDobStr = null;
+            Date dob = null;
+            try {
+                dob = Dates.fromSQL(dobStr);
+                localDobStr = Dates.formatForDisplay(dob, dateFormat);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            //String id = mWrapper.getStringField(Contract.PATIENT_ID);
+            dobView.setText((TextUtils.isEmpty(localDobStr)? dobStr:
+                    localDobStr));
             
             TextView location = (TextView)view.findViewById(R.id.location);
             String locationVal = ((Cursor) this.getItem(position)).getString(4);
@@ -298,15 +335,12 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             
             // Alphabet divider
             boolean needsSeparator = false;
-            int pos = ((Cursor) this.getItem(position)).getPosition();
+            // pos is 0 based array index,
+            int pos = ((Cursor) getItem(position)).getPosition();
+            char currentSectionLabel = getSectionLabel(displayName);
 
-            displayName = displayName.trim();
-            if (!TextUtils.isEmpty(displayName)) {
-                displayName = displayName.substring(0, 1).toLowerCase(Locale.getDefault());
-            } else {
-                displayName = " ";
-            }
-            
+            Log.d(TAG, "...Checking if needs row separator label. " +
+                    "position="+pos);
             switch (mRowStates[pos]) {
                 case STATE_LABELED:
                     needsSeparator = true;
@@ -319,36 +353,37 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
                     // First cell always needs to be sectioned
                     if (pos == 0) {
                         needsSeparator = true;
+                        mRowStates[pos] = STATE_LABELED;
                     } else {
-                    	((Cursor) this.getItem(position)).moveToPosition(pos - 1);
-                        String prevName = StringUtil.formatPatientDisplayName(givenName, familyName);
-                        prevName = prevName.trim();
-                        if (!TextUtils.isEmpty(prevName)) {
-                            prevName = prevName.substring(0, 1).toLowerCase(Locale.getDefault());
-                        } else {
-                            prevName = " ";
-                        }
-
-                        if (prevName.charAt(0) != displayName.charAt(0)) {
+                        char prevSectionLabel = getSectionLabel(
+                                formatName(((Cursor) getItem(position -1))));
+                        Log.d(TAG,"...prev section=" + prevSectionLabel +", " +
+                                "current section=" + currentSectionLabel);
+                        if (prevSectionLabel != currentSectionLabel) {
                             needsSeparator = true;
+                            mRowStates[pos] = STATE_LABELED;
+                        } else {
+                            needsSeparator = false;
+                            mRowStates[pos] = STATE_UNLABELED;
                         }
                         ((Cursor) this.getItem(position)).moveToPosition(pos);
                     }
                     break;
             }
-
             if (needsSeparator) {
+                Log.d(TAG, "...adding separator");
                 view.findViewById(R.id.header).setVisibility(View.VISIBLE);
                 TextView label = (TextView) view.findViewById(R.id.txt_section);
-                label.setText(("" + displayName.charAt(0)).toUpperCase(Locale.getDefault()));
+                label.setText(("" + currentSectionLabel).toUpperCase(Locale.getDefault()));
             } else {
+                Log.d(TAG, "...hiding separator");
                 view.findViewById(R.id.header).setVisibility(View.GONE);
             }
         }
         
         public View getView(int position, View convertView, ViewGroup parent) {
         	Log.d(TAG+".mAdapter", "get view ");
-        	return super.getView(position,convertView, parent);
+            return super.getView(position,convertView, parent);
         }
         
         @Override
@@ -383,11 +418,30 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
 	        return mAlphaIndexer.getSections();
 	    }
 
-        
+        public String formatName(Cursor cursor){
+            String givenName = cursor.getString(cursor.getColumnIndex(Contract
+                    .GIVEN_NAME));
+            String familyName = cursor.getString(cursor.getColumnIndex(Contract
+                    .FAMILY_NAME));
+            String displayName = StringUtil.formatPatientDisplayName(givenName,
+                    familyName);
+            return displayName;
+        }
+
+        public char getSectionLabel(String str){
+            str = str.trim();
+            if (!TextUtils.isEmpty(str)) {
+                str = str.substring(0, 1).toLowerCase(Locale.getDefault());
+            } else {
+                str = " ";
+            }
+            return str.charAt(0);
+        }
     }
     
-    public final void sync(Context context, Uri uri){
-    	Logf.D(TAG, "sync()");
+    public final boolean sync(Context context, Uri uri){
+    	Log.d(TAG, "sync(Context,Uri)");
+        boolean result = false;
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
     	long lastSync = prefs.getLong("patient_sync", 0);
     	long now = System.currentTimeMillis();
@@ -399,6 +453,21 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     		prefs.edit().putLong("patient_sync", now).commit();
     		Intent intent = new Intent(Intents.ACTION_READ,uri);
     		context.startService(intent);
+            result = true;
     	}
+        return result;
+    }
+
+    public final boolean syncForced(Context context, Uri uri){
+        Log.d(TAG, "syncForced(Context,Uri)");
+        boolean result = false;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        long now = System.currentTimeMillis();
+        // Once a day 86400000
+        prefs.edit().putLong("patient_sync", now).commit();
+        Intent intent = new Intent(Intents.ACTION_READ,uri);
+        context.startService(intent);
+        result = true;
+        return result;
     }
 }
