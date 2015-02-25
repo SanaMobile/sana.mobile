@@ -109,8 +109,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         Log.d(TAG, "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
         df = new SimpleDateFormat(
-//                getActivity().getString(R.string.display_date_format),
-                "yyyy-MM-dd", Locale.US);
+                getString(R.string.display_date_format));
         // signal the dispatcher to sync
         mUri = getActivity().getIntent().getData();
         if (mUri == null) {
@@ -153,7 +152,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         Log.d(TAG, "onLoadFinished() ");
 
         if (cursor == null || (cursor !=null && cursor.getCount() == 0)) {
-            setEmptyText(getString(R.string.msg_no_patients));
+            setEmptyText(getString(R.string.msg_no_encounters));
         }
         if(cursor != null)
             ((EncounterCursorAdapter) this.getListAdapter()).swapCursor(cursor);
