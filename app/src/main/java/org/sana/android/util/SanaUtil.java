@@ -349,8 +349,6 @@ public class SanaUtil {
          * R.raw.cervicalcancer); insertProcedure(ctx, R.raw.surgery_demo);
          * insertProcedure(ctx, R.raw.tbcontact); insertProcedure(ctx,
          * R.raw.multiupload_test);
-         */
-        /*
          * insertProcedure(ctx, R.raw.upload_test); insertProcedure(ctx,
          * R.raw.hiv); insertProcedure(ctx, R.raw.cervicalcancer);
          * insertProcedure(ctx, R.raw.prenatal); insertProcedure(ctx,
@@ -359,13 +357,16 @@ public class SanaUtil {
          * R.raw.ophthalmology); insertProcedure(ctx, R.raw.tbcontact2);
          * insertProcedure(ctx, R.raw.tbpatient); insertProcedure(ctx,
          * R.raw.oral_cancer);
-         */
-        // insertProcedure(ctx, R.raw.cvd_protocol);
-        //insertProcedure(ctx, R.raw.api_test);
+
+        insertProcedure(ctx, R.raw.cvd_protocol);
+        insertProcedure(ctx, R.raw.api_test);
         insertProcedure(ctx, R.raw.ssi);
-        //insertProcedure(ctx, R.raw.haitivit_camera);
         insertProcedure(ctx, R.raw.ssi_two_site);
-        // insertProcedure(ctx, R.raw.audio_upload_test);
+        insertProcedure(ctx, R.raw.audio_upload_test);
+        */
+        insertProcedure(ctx, R.raw.demonstration);
+        insertProcedure(ctx, R.raw.api_test_entry);
+        insertProcedure(ctx, R.raw.api_test_select);
     }
 
     /** Returns true if the phone has telphony or wifi service
