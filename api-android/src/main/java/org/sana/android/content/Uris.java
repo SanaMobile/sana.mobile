@@ -343,12 +343,13 @@ public final class Uris {
 	 * @return
 	 */
     public static Uri withAppendedUuid(Uri uri, String uuid){
-        //Uri.Builder builder = uri.buildUpon();
-        //Uri result = builder.appendPath(uuid).build();
+        // verify that the Uri is valid
+        if(Uris.isEmpty(uri))
+            throw new NullPointerException("Empty uri. Can not append UUID");
         Uri result = Uri.parse(uri.toString() + "/" + uuid);
         return result;
     }
-	
+
 
 	/**
 	 * Will return the mime type represented by the Uri. For item or uuid 
