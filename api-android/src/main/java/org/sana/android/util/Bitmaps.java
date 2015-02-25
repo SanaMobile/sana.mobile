@@ -1,10 +1,12 @@
 package org.sana.android.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
 public class Bitmaps {
 	
@@ -46,10 +48,28 @@ public class Bitmaps {
 	    options.inJustDecodeBounds = false;
 	    return BitmapFactory.decodeResource(res, resId, options);
 	}
-	
-	
-	public static Bitmap decodeSampledBitmapFromFile(String imagePath, int reqWidth, int reqHeight) {
 
+    /**
+     *
+     * @param imagePath
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     * @throws java.io.FileNotFoundException if the file provided by
+     *  <code>imagePath</code> does not exist.
+     */
+	public static Bitmap decodeSampledBitmapFromFile(String imagePath,
+       int reqWidth, int reqHeight) throws FileNotFoundException{
+        // Check that we have a valid file
+        boolean exists = false;
+        if(!TextUtils.isEmpty(imagePath)){
+            File file = new File(imagePath);
+            exists = file.exists();
+            file = null;
+        }
+        if(!exists)
+            throw new FileNotFoundException("Bitmap does not exist. path=" +
+                    imagePath);
 	    // First decode with inJustDecodeBounds=true to check dimensions
 	    final BitmapFactory.Options options = new BitmapFactory.Options();
 	    options.inJustDecodeBounds = true;
