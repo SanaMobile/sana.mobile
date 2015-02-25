@@ -49,8 +49,9 @@ public class PatientLookupTask extends AsyncTask<String, Void, PatientInfo> {
 		PatientInfo pi = null;
 		try {
 			if (SanaUtil.checkConnection(mContext)) {
-				String mdsPatientInfo = MDSInterface.getUserInfo(mContext, 
+				String mdsPatientInfo = MDSInterface.getUserInfo(mContext,
 						patientId);
+                Log.d(TAG, "NET Result" + mdsPatientInfo);
 				pi = UserDatabase.getPatientFromMDSRecord(patientId, 
 						mdsPatientInfo);
 				Log.i(TAG, "Acquired patient record from MDS");
