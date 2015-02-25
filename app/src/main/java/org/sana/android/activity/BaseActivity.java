@@ -370,13 +370,15 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      */
     void hideProgressDialogFragment() {
         Log.i(TAG,"hideProgressDialogFragment");
+        mWaiting.set(false);
         if (mWaitDialog == null) {
             return;
         }
         // dismiss if finishing
         try{
             if(isFinishing()){
-                cancelProgressDialogFragment();
+                mWaitDialog.dismiss();
+                //cancelProgressDialogFragment();
             } else {
                 mWaitDialog.dismiss();
             }
@@ -473,13 +475,13 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     }
 
     protected void dump(){
-        Logf.D(this.getClass().getSimpleName(),"dump()", String.format("{ 'encounter': '%s',"
+        Logf.D(this.getComponentName().getShortClassName(),"dump()", String.format("{ 'encounter': '%s',"
                 +" 'observer': '%s', 'subject': '%s', 'procedure': '%s', 'task': '%s' }",
                 mEncounter, mObserver, mSubject, mProcedure, mTask));
     }
 
     protected void dump(String method){
-        Logf.D(this.getClass().getSimpleName(),method+".dump()", String.format("{ 'encounter': '%s',"
+        Logf.D(this.getComponentName().getShortClassName(),method+".dump()", String.format("{ 'encounter': '%s',"
                 +" 'observer': '%s', 'subject': '%s', 'procedure': '%s', 'task': '%s' }",
                 mEncounter, mObserver, mSubject, mProcedure, mTask));
 
@@ -513,7 +515,7 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     }
 
     public String getBuildString() {
-        String localVersion = "sana-v%s-%d-%s";
+        String localVersion = "sana-v%s.%d.%s";
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(
                 getPackageName(), 0);
@@ -521,8 +523,10 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
             ApplicationInfo ai  = getPackageManager().getApplicationInfo(
                 getPackageName(), PackageManager.GET_META_DATA);
             Bundle metadata = ai.metaData;
+            String local = (TextUtils.isEmpty(metadata.getString("local_build"))) ?
+                    "0" : metadata.getString("local_build");
             return String.format(localVersion, pi.versionName, pi.versionCode,
-                metadata.getString("local_build"));
+                local);
         } catch (Exception e) {
 
         }
@@ -530,8 +534,8 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     }
 
     protected void handleBroadcast(Intent intent){
+        Log.i(TAG, "handleBroadcast(Intent)");
         // Extract data included in the Intent
-        Log.d(TAG, "context: " + this.getClass().getSimpleName() + ", intent: " + intent.toUri(Intent.URI_INTENT_SCHEME));
     }
 
     static final IntentFilter filter = new IntentFilter();
