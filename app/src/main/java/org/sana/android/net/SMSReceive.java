@@ -285,7 +285,7 @@ public class SMSReceive extends BroadcastReceiver {
 		String tickerText = "PATIENT DIAGNOSIS RECEIVED";
 
 		// Construct the Notification object.
-		Notification notif = new Notification(R.drawable.icon2, tickerText,
+		Notification notif = new Notification(R.drawable.ic_notification, tickerText,
 				System.currentTimeMillis());
 
 		// Set the info for the views that show in the notification panel
