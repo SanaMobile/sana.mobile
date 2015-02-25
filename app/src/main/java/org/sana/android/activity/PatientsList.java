@@ -3,14 +3,18 @@ package org.sana.android.activity;
 
 import org.sana.R;
 import org.sana.android.app.Locales;
+import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
+import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Subjects;
 import org.sana.android.service.impl.DispatchService;
 import org.sana.android.util.SanaUtil;
+import org.sana.net.Response;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentUris;
@@ -26,6 +30,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,7 +57,17 @@ public class PatientsList extends FragmentActivity implements
     // Fragments
     private PatientListFragment mFragmentPatientList;
     private boolean mAdmin = true;
-    
+    protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Extract data included in the Intent
+            Log.d(TAG, "context: " + context.getClass().getSimpleName() +
+                    ", intent: " + intent.toUri(Intent.URI_INTENT_SCHEME));
+            handleBroadcast(intent);
+        }
+    };
+    protected ProgressDialog mProgressDialog = null;
+
     /** {@inheritDoc} */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +86,10 @@ public class PatientsList extends FragmentActivity implements
         if (fragment.getClass() == PatientListFragment.class) {
             mFragmentPatientList = (PatientListFragment) fragment;
             mFragmentPatientList.setOnPatientSelectedListener(this);
+            if(mFragmentPatientList.sync(this, Subjects.CONTENT_URI)) {
+                showProgressDialog(getString(R.string.general_synchronizing),
+                        getString(R.string.general_fetching_patients));
+            }
         }
     }
 
@@ -107,10 +126,12 @@ public class PatientsList extends FragmentActivity implements
                 registerNewPatient();
                 return true;
             case R.id.menu_sync_patients:
-            	mFragmentPatientList.sync(this, Subjects.CONTENT_URI);
+                getContentResolver().delete(Subjects.CONTENT_URI, null,null);
+            	mFragmentPatientList.syncForced(this, Subjects.CONTENT_URI);
                 return true;
             case R.id.menu_delete_patients:
             	getContentResolver().delete(Subjects.CONTENT_URI, null,null);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -118,19 +139,20 @@ public class PatientsList extends FragmentActivity implements
 
     // Starts PatientRunnerFragment for creating a new patient.
     private void registerNewPatient() {
-        Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT);
-        intent.setType(Patients.CONTENT_TYPE);
-        intent.setData(Patients.CONTENT_URI);
-        Toast.makeText(this, "Not available.", Toast.LENGTH_LONG);
-        // startActivityForResult(intent, CREATE_PATIENT);
+        Intent intent = new Intent(Intent.ACTION_INSERT_OR_EDIT,
+                Subjects.CONTENT_URI);
+        //Toast.makeText(this, "Not available.", Toast.LENGTH_LONG);
+        startActivityForResult(intent, CREATE_PATIENT);
     }
 
     /** {@inheritDoc} */
     @Override
     public void onPatientSelected(long patientId) {
+        Log.i(TAG, "onPatientSelected(long)");
         // A patient was selected so return to caller activity.
         //Intent data = getIntent();
     	Uri uri = ContentUris.withAppendedId(Patients.CONTENT_URI,patientId);
+        Log.d(TAG,"...patient selected: " + uri);
         Intent data = new Intent();
         data.setDataAndType(uri,Patients.CONTENT_ITEM_TYPE);
         data.putExtra(EXTRA_PATIENT_ID, patientId);
@@ -144,6 +166,20 @@ public class PatientsList extends FragmentActivity implements
     	super.onStart();
     	Log.d(TAG, "onStart()");
     	//bindService(new Intent(Intent.ACTION_SYNC, Subjects.CONTENT_URI), null, 0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideProgressDialog();
+        LocalBroadcastManager.getInstance(
+                getApplicationContext()).unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerLocalBroadcastReceiver(mReceiver);
     }
 
     Binder mBinder = null;
@@ -163,4 +199,67 @@ public class PatientsList extends FragmentActivity implements
 		}
  		
  	};
+
+    protected void handleBroadcast(Intent intent){
+        Log.i(TAG,"handleBroadcast(Intent)");
+        // Extract data included in the Intent
+        Log.d(TAG, "...intent: " + ((intent != null)?
+                intent.toUri(Intent.URI_INTENT_SCHEME):
+                "null"
+        ));
+        int result = intent.getIntExtra(Response.CODE, 400);
+        Log.d(TAG, "...code=" + result);
+        if (result == 100) {
+            Log.d(TAG, "...code=100, CONTINUE" );
+            // do nothing
+        }  else if (result == 200){
+            Log.d(TAG, "...code=" + result + ", unknown");
+            hideProgressDialog();
+        } else if (result >= 400){
+
+        }
+    }
+
+    public void showProgressDialog(String title, String message){
+        Log.i(TAG,"hideProgressDialog(String,String)");
+        hideProgressDialog();
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setTitle(title);
+        mProgressDialog.setMessage(message);
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog(){
+        Log.i(TAG,"hideProgressDialog()");
+        if(mProgressDialog != null){
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+    }
+
+    public IntentFilter buildFilter(){
+        Log.i(TAG,"buildFilter()");
+        IntentFilter filter = new IntentFilter(Response.RESPONSE);
+        filter.addDataScheme(Subjects.CONTENT_URI.getScheme());
+        try {
+
+            filter.addDataType(Subjects.CONTENT_TYPE);
+            filter.addDataType(Subjects.CONTENT_ITEM_TYPE);
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+
+        }
+        return filter;
+    }
+
+    protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver, IntentFilter filter){
+        Log.i(TAG, "registerLocalBroadcastReceiver(BroadcastReceiver,IntentFilter)");
+        LocalBroadcastManager.getInstance(
+                getApplicationContext()).registerReceiver(receiver, filter);
+    }
+
+    protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver){
+        Log.i(TAG, "registerLocalBroadcastReceiver(BroadcastReceiver)");
+        IntentFilter filter = buildFilter();
+        registerLocalBroadcastReceiver(receiver,filter);
+    }
 }
