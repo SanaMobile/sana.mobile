@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="procs_subject_default">18785afb-6160-45a0-ac8c-1f5cbfaa6d91</string>
+    <string-array name="procs_encounter_defaults">
+        <item>cef8b187-038e-4a24-a724-02ba8c81745e</item>
+    </string-array>
+    <string name="procs_encounter_training">cef8b187-038e-4a24-a724-02ba8c81745e</string>
+
+</resources>
