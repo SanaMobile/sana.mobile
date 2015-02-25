@@ -20,7 +20,7 @@
     </style>
     
     <style name="Widget.Button.Alt" parent="@android:style/Widget.Button">
-        <item name="android:layout_width">240px</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/alt_bg_color</item>
         <item name="android:textColor">@color/alt_fg_color</item>
@@ -42,7 +42,7 @@
         <item name="android:textColor">?android:attr/textColorPrimaryDisableOnly</item>
         <item name="android:gravity">center_vertical|left</item>
         <item name="android:background">@drawable/btn_radio_label_background_s</item>
-        <item name="android:drawableLeft">@drawable/btn_radio_off</item>
+        <item name="android:drawable">@drawable/btn_radio_off</item>
         <item name="android:checked">false</item>
         <item name="android:button">@drawable/btn_radio</item>
     </style>
