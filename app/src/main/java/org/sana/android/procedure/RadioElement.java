@@ -37,10 +37,11 @@ import android.widget.ScrollView;
  * 
  * @author Sana Development Team
  */
-public class RadioElement extends ProcedureElement {
-    private List<String> choicelist;
-    private String[] choices;
+public class RadioElement extends SelectionElement {
+    protected static final String TAG = RadioElement.class.getSimpleName();
+
     ArrayList<RadioButton> rblist;
+    RadioGroup mRadioGroup;
 
     /** {@inheritDoc} */
     @Override
@@ -51,76 +52,83 @@ public class RadioElement extends ProcedureElement {
     /** {@inheritDoc} */
     @Override
     protected View createView(Context c) {
-        
-        
+        Log.i(TAG, "[" + id + "]createView()");
         ScrollView radioView = new ScrollView(c);
-        RadioGroup rg = new RadioGroup(c);
-        rg.setOrientation(LinearLayout.VERTICAL);
-        choicelist = java.util.Arrays.asList(choices);
-        rblist = new ArrayList<RadioButton>();
-        
+        mRadioGroup = new RadioGroup(c);
+        mRadioGroup.setOrientation(LinearLayout.VERTICAL);
+        rblist = new ArrayList<RadioButton>(values.length);
+
         if(answer == null)
-        	answer = "";
-        RadioButton checked = null;
-        for(Object choice : choicelist) {
+            answer = "";
+        for(String value : values) {
+            Log.d(TAG, "..." + value +":" + getLabelFromValue(value));
             RadioButton rb = new RadioButton(c);
-            rb.setText((String)choice);
-            rg.addView(rb);
-            if(answer.equals(choice)) {
-                checked = rb;
+            rb.setText(getLabelFromValue(value));
+            rb.setTag(value);
+            if(value.equals(answer)) {
+                rb.setChecked(true);
             }
             rblist.add(rb);
+            mRadioGroup.addView(rb);
         }
-        if(checked != null)
-            checked.setChecked(true);
-        radioView.addView(rg, new ViewGroup.LayoutParams(
-        		LayoutParams.MATCH_PARENT,
-        		LayoutParams.WRAP_CONTENT));
-        
+        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                setAnswer(String.valueOf(group.findViewById(checkedId).getTag
+                        ()));
+            }
+        });
+        radioView.addView(mRadioGroup, new ViewGroup.LayoutParams(-1,-1));
         return encapsulateQuestion(c, radioView);
     }
-    
 
-    /** {@inheritDoc} */
     @Override
     public void setAnswer(String answer) {
-    	if(!isViewActive()) {
-    		this.answer = answer;
-    	} else { 
-	    	for(RadioButton r : rblist) {
-	    		if(r.getText().toString().equals(answer))
-	    			r.setChecked(true);
-	    		else
-	    			r.setChecked(false);
-	    	}
-    	}
+        Log.i(TAG, "[" + id + "]setAnswer() --> " + answer);
+        this.answer = answer;
+
+        if(isViewActive()) {
+            for(RadioButton r : rblist) {
+                if(TextUtils.isEmpty(answer))
+                    continue;
+                r.setChecked((String.valueOf(r.getTag()).equals(this.answer))?
+                    true:false);
+            }
+        }
+
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getAnswer() {
-        if(!isViewActive())
-            return answer;
-        String s = "";
-        for (RadioButton r : rblist) {
-            if (r.isChecked())
-                s += r.getText().toString();
+        Log.i(TAG, "[" + id + "]getAnswer()");
+        /*
+        boolean active = isViewActive();
+        // If visible get pressed item
+        if (active) {
+            Log.d(TAG, "...checked id " + mRadioGroup.getCheckedRadioButtonId
+                    ());
+            String value = "";
+            for (RadioButton r : rblist) {
+                value = (r.isChecked()) ? String.valueOf(r.getTag()) : value;
+            }
+            answer = value;
         }
-        return s;
-    }
-    
-    /** Appends <code>choices</code> attribute */
-    @Override
-    protected void appendOptionalAttributes(StringBuilder sb){
-        sb.append("\" choices=\"" + TextUtils.join(ProcedureElement.CHOICE_DELIMITER, choices)+ "\"");
+        */
+        return answer;
     }
     
     /** Default constructor */
     private RadioElement(String id, String question, String answer, 
     		String concept, String figure, String audio, String[] choices) 
     {
-        super(id,question,answer, concept, figure, audio);
-        this.choices = choices;
+        super(id,question,answer, concept, figure, audio, choices);
+    }
+
+    private RadioElement(String id, String question, String answer,
+                         String concept, String figure, String audio,
+                         String[] choices, String[] values)
+    {
+        super(id,question,answer, concept, figure, audio, choices, values);
     }
 
     /** @see ProcedureElement#fromXML(String, String, String, String, String, String, Node) */
@@ -130,8 +138,11 @@ public class RadioElement extends ProcedureElement {
     {
         String choicesStr = SanaUtil.getNodeAttributeOrDefault(node, 
         		"choices", "");
+        String valuesStr = SanaUtil.getNodeAttributeOrDefault(node, "values",
+                choicesStr);
         return new RadioElement(id, question, answer, concept, figure, audio, 
-        		choicesStr.split(ProcedureElement.CHOICE_DELIMITER));
+        		choicesStr.split(SelectionElement.TOKEN_DELIMITER),
+                valuesStr.split(SelectionElement.TOKEN_DELIMITER));
     }
     
     

@@ -8,6 +8,7 @@ import org.w3c.dom.Node;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -25,9 +26,8 @@ import android.widget.Spinner;
  * 
  * @author Sana Development Team
  */
-public class SelectElement extends ProcedureElement {
+public class SelectElement extends SelectionElement {
     private Spinner spin;
-    private List<String> choicelist;
     private String[] choices;
     private ArrayAdapter<String> adapter;
 
@@ -41,74 +41,67 @@ public class SelectElement extends ProcedureElement {
     @Override
     protected View createView(Context c) {
         spin = new Spinner(c);
-    
-        if(choices == null) 
-            choicelist = new ArrayList<String>();
-        else
-            choicelist = java.util.Arrays.asList(choices);
-
         adapter = new ArrayAdapter<String>(c,
                 android.R.layout.simple_spinner_item,
-                choicelist);
+                labels());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
-        int selected =  choicelist.indexOf(answer);
+        int selected =  adapter.getPosition(getLabelFromValue(answer));
         if(selected != -1)
             spin.setSelection(selected);
         return encapsulateQuestion(c, spin);
     }
-    
 
-    /** {@inheritDoc} */
     @Override
     public void setAnswer(String answer) {
-    	if(!isViewActive()) {
-    		this.answer = answer;
-    	} else {
-    		this.answer = answer;
-    		// TODO: Fix this so that the adapter has the correct selected item.
-    		int index = choicelist.indexOf(answer);
-    		spin.setSelection(index);
-    		spin.refreshDrawableState();
-    	}
+        Log.i(TAG,"["  + id +"]setAnswer() --> " + answer);
+        this.answer = answer;
+        if(isViewActive()) {
+            int index = adapter.getPosition(getLabelFromValue(answer));
+            if(index > -1)
+                spin.setSelection(index);
+            spin.refreshDrawableState();
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public String getAnswer() {
+        Log.i(TAG, "[" + id + "]getAnswer()");
         if(!isViewActive())
             return answer;
-        return adapter.getItem(spin.getSelectedItemPosition()).toString(); 
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void buildXML(StringBuilder sb) {
-        sb.append("<Element type=\"" + getType().name() + "\" id=\"" + id);
-        sb.append("\" question=\"" + question);
-        sb.append("\" choices=\"" + TextUtils.join(",", choices));
-        sb.append("\" answer=\"" + getAnswer()); 
-        sb.append("\" concept=\"" + getConcept());
-        sb.append("\"/>\n");
+        return this.getValueFromLabel(adapter.getItem(spin
+                .getSelectedItemPosition()));
     }
 
     /** Default constructor */
-    private SelectElement(String id, String question, String answer, 
-    		String concept, String figure, String audio, String[] choices) 
+    protected SelectElement(String id, String question, String answer,
+                            String concept, String figure, String audio, String[] choices)
     {
-        super(id,question,answer, concept, figure, audio);
-        this.choices = choices;
+        super(id,question,answer, concept, figure, audio, choices);
     }
+
+    protected SelectElement(String id, String question, String answer,
+                            String concept, String figure, String audio,
+                            String[] choices, String[] values)
+    {
+        super(id, question, answer, concept, figure, audio, choices, values);
+    }
+
     
-    /** @see ProcedureElement#fromXML(String, String, String, String, String, String, Node) */
+    /** @see SelectionElement#fromXML(String, String, String, String, String,
+     * String, Node) */
     public static SelectElement fromXML(String id, String question, 
     		String answer, String concept, String figure, String audio, 
     		Node node) throws ProcedureParseException  
     {
-        String choicesStr = SanaUtil.getNodeAttributeOrDefault(node, "choices", 
-        		"");
+        String choicesStr = SanaUtil.getNodeAttributeOrDefault(node, "choices",
+                "");
+        String valuesStr = SanaUtil.getNodeAttributeOrDefault(node, "values",
+                choicesStr);
         return new SelectElement(id, question, answer, concept, figure, audio, 
-        		choicesStr.split(","));
+        		choicesStr.split(SelectionElement.TOKEN_DELIMITER),
+                valuesStr.split(SelectionElement.TOKEN_DELIMITER)
+        );
     }
-
 }

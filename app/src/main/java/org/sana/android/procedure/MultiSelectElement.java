@@ -1,6 +1,7 @@
 package org.sana.android.procedure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -28,11 +29,9 @@ import android.widget.ScrollView;
  * 
  * @author Sana Development Team
  */
-public class MultiSelectElement extends ProcedureElement {
-    private List<String> choicelist;
+public class MultiSelectElement extends SelectionElement {
     private String[] choices;
     private ArrayList<CheckBox> cblist;
-    public static final String TOKEN_DELIMITER = ",";
     
     /** {@inheritDoc} */
     @Override
@@ -57,12 +56,12 @@ public class MultiSelectElement extends ProcedureElement {
         }
         
         ll.setOrientation(LinearLayout.VERTICAL);
-        choicelist = java.util.Arrays.asList(choices);
         cblist = new ArrayList<CheckBox>();
-        for(Object choice : choicelist) {
+        for(String choice : labels()) {
             CheckBox cb = new CheckBox(c);
-            cb.setText((String)choice);
-            cb.setChecked(selectedSet.contains(choice));
+            cb.setTag(getValueFromLabel(choice));
+            cb.setText(choice);
+            cb.setChecked(selectedSet.contains(String.valueOf(cb.getTag())));
             cblist.add(cb);
             ll.addView(cb);
         }
@@ -73,71 +72,73 @@ public class MultiSelectElement extends ProcedureElement {
     /** {@inheritDoc} */
     @Override
     public void setAnswer(String answer) {
-    	this.answer = answer;
-    	    		
-    	if(isViewActive()) {
-    		String[] answers = answer.split(TOKEN_DELIMITER);
-    		HashSet<String> answerSet = new HashSet<String>();
-    		for(String a : answers) {
-    			answerSet.add(a);
-    			Log.i(TAG, "SetAnswer a:" + a + ":");
-    		}
-    		for (CheckBox c : cblist) {
-    			Log.i(TAG, "SetAnswer - :" + c.getText().toString() + ":");
-    			if(answerSet.contains(c.getText().toString())) {
-    				c.setChecked(true);
-    			} else{
-    				c.setChecked(false);
-    			}
-    		}
-    	}
+        Log.i(TAG,"["  + id +"]setAnswer() --> " + answer);
+        this.answer = (answer == null)?"":answer;
+        // Update UI if visible
+        if(isViewActive()) {
+            for (CheckBox c : cblist) {
+                String label = c.getText().toString();
+                String value = String.valueOf(c.getTag());
+                if(answer.contains(value)) {
+                    c.setChecked(true);
+                } else{
+                    c.setChecked(false);
+                }
+            }
+        }
     }
     
     /** {@inheritDoc} */
     @Override
     public String getAnswer() {
+        Log.i(TAG,"["  + id +"]getAnswer()");
+        String val = "";
         if(!isViewActive())
-            return answer;
-        String s = "";
-        boolean any = false;
-        for (CheckBox c : cblist) {
-            if (c.isChecked()) {
-                s += c.getText().toString() + TOKEN_DELIMITER;
-                any = true;
+            val = (answer == null)?"":answer;
+        else {
+            boolean any = false;
+            // loop over list and add to answer if checked
+            for (CheckBox c : cblist) {
+                if (c.isChecked()) {
+                    val += c.getTag() + TOKEN_DELIMITER;
+                    any = true;
+                }
             }
+            //Remove trailing
+            if(any)
+                val = val.substring(0, val.length()-1);
         }
-        if(any)
-            s = s.substring(0, s.length()-1);
-        return s;
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void buildXML(StringBuilder sb) {
-        sb.append("<Element type=\"" + getType().name() + "\" id=\"" + id);
-        sb.append("\" question=\"" + question);
-        sb.append("\" choices=\"" + TextUtils.join(TOKEN_DELIMITER, choices));
-        sb.append("\" answer=\"" + getAnswer());
-        sb.append("\" concept=\"" + getConcept());
-        sb.append("\"/>\n");
+        Log.d(TAG, "...returning " + val);
+        return val;
     }
 
     /** Default constructor */
     private MultiSelectElement(String id, String question, String answer, 
-    		String concept, String figure, String audio, String[] choices) 
+    		String concept, String figure, String audio, String[] labels)
     {
-        super(id, question, answer, concept, figure, audio);
-        this.choices = choices;
+        super(id, question, answer, concept, figure, audio, labels);
     }
-    
-    /** @see ProcedureElement#fromXML(String, String, String, String, String, String, Node) */
+
+    private MultiSelectElement(String id, String question, String answer,
+                               String concept, String figure, String audio,
+                               String[] labels, String[] values)
+    {
+        super(id, question, answer, concept, figure, audio, labels,values);
+    }
+
+    /** @see SelectionElement#fromXML(String, String, String, String, String,
+     * String,
+     *  Node) */
     public static MultiSelectElement fromXML(String id, String question, 
     	String answer, String concept, String figure, String audio, Node node) 
 		throws ProcedureParseException  
     {
         String choicesStr = SanaUtil.getNodeAttributeOrDefault(node, "choices",
         		"");
+        String valuesStr = SanaUtil.getNodeAttributeOrDefault(node, "values",
+                choicesStr);
         return new MultiSelectElement(id, question, answer, concept, figure, 
-        		audio, choicesStr.split(","));
+        		audio, choicesStr.split(SelectionElement.TOKEN_DELIMITER),
+                valuesStr.split(SelectionElement.TOKEN_DELIMITER));
     }
 }
