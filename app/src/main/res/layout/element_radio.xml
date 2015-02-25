@@ -10,7 +10,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" >
 
-            <RadioButton android:text="@string/general_yes" />
+            <RadioButton
+                android:text="@string/general_yes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
 
         </RadioGroup>
 
