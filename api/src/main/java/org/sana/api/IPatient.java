@@ -62,4 +62,6 @@ public interface IPatient extends ISubject{
 	
 	public abstract ILocation getLocation();
 
+    public abstract String getSystemId();
+
 }
