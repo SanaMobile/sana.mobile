@@ -10,6 +10,7 @@ import org.sana.android.Constants;
 import org.sana.android.app.Locales;
 import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
+import org.sana.android.content.Uris;
 import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.db.BinaryDAO;
 import org.sana.android.db.EncounterDAO;
@@ -31,6 +32,8 @@ import org.sana.android.task.ImageProcessingTask;
 import org.sana.android.task.ImageProcessingTaskRequest;
 import org.sana.android.util.Logf;
 import org.sana.android.util.SanaUtil;
+import org.sana.android.util.Strings;
+import org.sana.net.Response;
 import org.sana.util.UUIDUtil;
 
 import android.app.AlertDialog;
@@ -108,20 +111,12 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
     protected AtomicBoolean mUploading = new AtomicBoolean(false);
     protected String mPluginId = null;
 
-    private BaseRunnerFragment mRunnerFragment = null;
+    protected BaseRunnerFragment mRunnerFragment = null;
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Extract data included in the Intent
-            Log.d(TAG, "context: " + context.getClass().getSimpleName() + ", intent: " + intent.toUri(Intent.URI_INTENT_SCHEME));
-            setUploading(false);
-            hideUploadingDialog();
-            String text = intent.hasExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE)? intent.getStringExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE): "Upload Result Received: " + intent.getDataString();
-            int result = intent.getIntExtra(DispatchService.RESPONSE_CODE, 400);
-            if(result == 200)
-                createUploadResultSuccessDialog(text).show();
-            else
-                createUploadResultFailDialog(text).show();
+            Log.i(TAG, "onReceive(Context,Intent)");
+            handleBroadcast(intent);
         }
     };
 
@@ -135,8 +130,8 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
     
     @Override
     public void onPause(){
+        Log.i(TAG, "onPause()");
         super.onPause();
-    	Logf.D(TAG, "onPause()");
     	if(mUploading.get() && mUploadingDialog != null){
     		mUploadingDialog.dismiss();
     		mUploadingDialog = null;
@@ -146,15 +141,15 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
     
     @Override
     public void onResume(){
+        Log.i(TAG, "onResume()");
         super.onResume();
-    	Logf.D(TAG, "onResume()");
-    	Logf.D(TAG, "uploading: " + mUploading.get());
+    	Log.d(TAG, "...uploading: " + mUploading.get());
     	if(mUploading.get()){
     		if(mUploadingDialog != null){
-    			Logf.D(TAG, "mUploadingDialog != null && mUploading.get() = true");
+                Log.d(TAG, "...mUploadingDialog != null && mUploading.get() = true");
     			mUploadingDialog.show();
     		} else {
-    			Logf.D(TAG, "mUploadingDialog == null && mUploading.get() = true");
+    			Log.d(TAG, "...mUploadingDialog == null && mUploading.get() = true");
     			mUploadingDialog = new ProgressDialog(this);
     			mUploadingDialog.setTitle(R.string.general_upload_in_progress);
     			mUploadingDialog.setCancelable(false);
@@ -163,11 +158,11 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
     	} else {
 			Logf.D(TAG, "mUploading.get() = false");
     	}
-        LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(mReceiver, buildFilter());
-    	
+        registerLocalBroadcastReceiver(mReceiver);
     }
     
     public IntentFilter buildFilter(){
+        Log.i(TAG,"buildFilter()");
     	IntentFilter filter = new IntentFilter(DispatchResponseReceiver.BROADCAST_RESPONSE);
         filter.addDataScheme(Encounters.CONTENT_URI.getScheme());
         try {
@@ -178,7 +173,19 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
         }
         return filter;
     }
-    
+
+    protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver, IntentFilter filter){
+        Log.i(TAG, "registerLocalBroadcastReceiver(BroadcastReceiver,IntentFilter)");
+        LocalBroadcastManager.getInstance(
+                getApplicationContext()).registerReceiver(receiver, filter);
+    }
+
+    protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver){
+        Log.i(TAG, "registerLocalBroadcastReceiver(BroadcastReceiver)");
+        IntentFilter filter = buildFilter();
+        registerLocalBroadcastReceiver(receiver,filter);
+    }
+
     /** {@inheritDoc} */
     @Override
     public void onAttachFragment(Fragment fragment) {
@@ -186,20 +193,6 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
         if (fragment instanceof BaseRunnerFragment) {
             mRunnerFragment = (BaseRunnerFragment) fragment;
         }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        Locales.updateLocale(this, getString(R.string.force_locale));
-        //menu.add(0, OPTION_SAVE_EXIT, 0, getString(R.string.menu_save_exit));
-        menu.add(0, OPTION_DISCARD_EXIT, 1, getString(R.string.menu_discard_exit));
-        menu.add(0, OPTION_VIEW_PAGES, 2, getString(R.string.menu_view_pages));
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-                Constants.PREFERENCE_EDUCATION_RESOURCE, false))
-            menu.add(0, OPTION_HELP, 3, "Help");
-        return true;
     }
 
     ReentrantLock lock = new ReentrantLock();
@@ -630,6 +623,41 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
     	}
     		
     }
+
+    /**
+     * Creates a new ProgressDialog with a specified message
+     *
+     * @param message
+     */
+    public void showProgressDialog(String message){
+        if(mUploadingDialog != null && !mUploadingDialog.isShowing())
+            mUploadingDialog.show();
+        else{
+            mUploadingDialog = new ProgressDialog(this);
+            mUploadingDialog.setTitle(message);
+            mUploadingDialog.setCancelable(false);
+            mUploadingDialog.show();
+        }
+    }
+
+    /**
+     * Creates a new ProgressDialog with the title specified by a string resource
+     *
+     * @param resId The id of the string resource to display
+     */
+    public void showProgressDialog(int resId){
+        showProgressDialog(Strings.getLocalizedString(this, resId));
+    }
+
+    /**
+     * Hides the progress dialog if it is being displayed
+     */
+    public void hideProgressDialog(){
+        if(mUploadingDialog != null && mUploadingDialog.isShowing()){
+            mUploadingDialog.dismiss();
+            mUploadingDialog = null;
+        }
+    }
     
     public void setUploading(boolean state){
     	mUploading.set(state);
@@ -678,5 +706,55 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
     }
     
     public void onProcedureCancelled(String message){
+    }
+
+    protected void handleBroadcast(Intent intent){
+        Log.i(TAG,"handleBroadcast(Intent)");
+        int result = intent.getIntExtra(Response.CODE, 400);
+        Log.d(TAG, "...code=" + result);
+        if (result >= 100 && result < 200) {
+            Log.d(TAG, "...CONTINUE" );
+            // do nothing
+        } else if(result >= 200 && result < 300) {
+            Log.d(TAG, "...SUCCESS");
+            handleBroadcastResultSuccess(intent);
+        } else if(result >= 400){
+            Log.d(TAG, "...FAILURE");
+            handleBroadcastResultFailure(intent);
+        }  else {
+            Log.d(TAG, "...UNKNOWN");
+        }
+    }
+
+    /**
+     * Handles a local broadcast response success. Subclasses should override
+     * this method to change behavior.
+     *
+     * @param intent The response message
+     */
+    protected void handleBroadcastResultSuccess(Intent intent){
+        Log.i(TAG, "handleBroadcastResultSuccess(Intent)");
+        setUploading(false);
+        hideUploadingDialog();
+        String text = intent.hasExtra(Response.MESSAGE)?
+                intent.getStringExtra(Response.MESSAGE):
+                "Upload Result Received: " + intent.getDataString();
+        createUploadResultSuccessDialog(text).show();
+    }
+
+    /**
+     * Handles a local broadcast response failure. Subclasses should override
+     * this method to change behavior.
+     *
+     * @param intent The response message
+     */
+    protected void handleBroadcastResultFailure(Intent intent){
+        Log.i(TAG, "handleBroadcastResultFailure(Intent)");
+        setUploading(false);
+        hideUploadingDialog();
+        String text = intent.hasExtra(Response.MESSAGE)?
+                intent.getStringExtra(Response.MESSAGE):
+                "Upload Result Received: " + intent.getDataString();
+        createUploadResultFailDialog(text).show();
     }
 }
