@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.text.method.DialerKeyListener;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,6 +32,7 @@ import android.widget.LinearLayout;
 public class PatientIdElement extends ProcedureElement implements 
 	OnClickListener 
 {
+    public static final String TAG = PatientIdElement.class.getSimpleName();
     private EditText et;
     private Button barcodeButton;
 
@@ -79,10 +81,12 @@ public class PatientIdElement extends ProcedureElement implements
     /** {@inheritDoc} */
     @Override
     public void setAnswer(String answer) {
-    	this.answer = answer;
-    	if(isViewActive()) {
-    		et.setText(answer);
-    	}
+        Log.i(TAG,"["+id+"]setAnswer(String)");
+        this.answer = new String(answer);
+        if(isViewActive()) {
+            et.setText(this.answer);
+        }
+        Log.d(TAG,"...answer='"+this.answer+"'");
     }
     
     /**
@@ -100,21 +104,13 @@ public class PatientIdElement extends ProcedureElement implements
     /** {@inheritDoc} */
     @Override
     public String getAnswer() {
-        if(!isViewActive())
-            return answer;
-        else if(et.getText().length() == 0)
-            return "";
-        return et.getText().toString();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void buildXML(StringBuilder sb) {
-        sb.append("<Element type=\"" + getType().name() + "\" id=\"" + id);
-        sb.append("\" question=\"" + question);
-        sb.append("\" answer=\"" + getAnswer());
-        sb.append("\" concept=\"" + getConcept());
-        sb.append("\"/>\n");
+        Log.i(TAG,"["+id+"]getAnswer()");
+        if(isViewActive()) {
+            // Need to be certain the answer value is stored
+            answer = (et.getText().length() == 0)? "":et.getText().toString();
+        }
+        Log.d(TAG,"...returning answer='" + answer + "'");
+        return answer;
     }
 
     /** Default constructor */

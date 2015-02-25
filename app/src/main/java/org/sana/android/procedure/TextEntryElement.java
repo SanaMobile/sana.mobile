@@ -26,6 +26,7 @@ import android.widget.EditText;
  * @author Sana Development Team
  */
 public class TextEntryElement extends ProcedureElement {
+    public static final String TAG = TextEntryElement.class.getSimpleName();
     private EditText et;
     private NumericType numericType = NumericType.NONE;
     /**
@@ -93,30 +94,24 @@ public class TextEntryElement extends ProcedureElement {
     /** {@inheritDoc} */
     @Override
     public void setAnswer(String answer) {
-    	this.answer = answer;
+        Log.i(TAG,"["+id+"]setAnswer(String)");
+    	this.answer = new String(answer);
     	if(isViewActive()) {
-    		et.setText(answer);
+    		et.setText(this.answer);
     	}
+        Log.d(TAG,"...answer='"+this.answer+"'");
     }
 
     /** {@inheritDoc} */
     @Override
     public String getAnswer() {
-        if(!isViewActive())
-            return answer;
-        else if(et.getText().length() == 0)
-            return "";
-        return et.getText().toString();
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void buildXML(StringBuilder sb) {
-        sb.append("<Element type=\"" + getType().name() + "\" id=\"" + id);
-        sb.append("\" question=\"" + question);
-        sb.append("\" answer=\"" + getAnswer());
-        sb.append("\" concept=\"" + getConcept());
-        sb.append("\"/>\n");
+        Log.i(TAG,"["+id+"]getAnswer()");
+        if(isViewActive()) {
+            // Need to be certain the answer value is stored
+            answer = (et.getText().length() == 0)? "":et.getText().toString();
+        }
+        Log.d(TAG,"...returning answer='" + answer + "'");
+        return answer;
     }
 
     /** Default constructor */

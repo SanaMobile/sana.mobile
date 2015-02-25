@@ -121,7 +121,6 @@ public abstract class ProcedureElement {
         	return filename;
         }
     }
-    public static String CHOICE_DELIMITER = "\\|";
     
     protected String id;
     protected String question;
@@ -239,7 +238,7 @@ public abstract class ProcedureElement {
      * Set the value of the answer attribute as a String representation of 
      * collected data.
      * 
-     * @param the new answer 
+     * @param answer the new answer
      */
     public void setAnswer(String answer){
     	this.answer = answer;
@@ -543,14 +542,15 @@ public abstract class ProcedureElement {
     	// Add question view
     	TextView textView = new TextView(c);
     	textView.setSingleLine(false);
+        textView.setGravity(Gravity.LEFT);
 		String q = question.replace("\\n", "\n");
     	if(!getType().equals(ElementType.TEXT)){
-    		textView.setText(String.format("%s: %s",  getId(), q));
+            textView.setText(q);
+    		//textView.setText(String.format("%s: %s",  getId(), q));
     	}else{
-        	textView.setGravity(Gravity.LEFT);
         	textView.setText(q);
     	}
-    	textView.setGravity(Gravity.CENTER_HORIZONTAL);
+    	//textView.setGravity(Gravity.CENTER_HORIZONTAL);
     	textView.setTextAppearance(c, android.R.style.TextAppearance_Large);
     	View questionView = textView;
     	

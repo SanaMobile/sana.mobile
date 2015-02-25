@@ -1,11 +1,17 @@
 package org.sana.android.procedure;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
+import org.sana.util.DateUtil;
 import org.w3c.dom.Node;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 
@@ -21,27 +27,34 @@ import android.widget.DatePicker;
  */
 public class DateElement extends ProcedureElement {
 
+    class DateValueSetter implements DatePicker.OnDateChangedListener{
+        final String TAG = DateValueSetter.class.getSimpleName();
+        @Override
+        public void onDateChanged(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+            Log.i(TAG, "onDateChanged()");
+            Log.d(TAG, "current value: " + answer);
+            dateValue.set(Calendar.YEAR, year);
+            dateValue.set(Calendar.MONTH, monthOfYear);
+            dateValue.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            answer = DateUtil.format(dateValue.getTime());
+            Log.d(TAG, "new value: " + answer);
+        }
+
+    }
 	DatePicker dp = null;
 	Date dateAnswer = new Date();
-
-    /** {@inheritDoc} */
-	@Override
-	public void buildXML(StringBuilder sb) {
-        sb.append("<Element type=\"" + getType().name() + "\" id=\"" + id);
-        sb.append("\" question=\"" + question);
-        sb.append("\" answer=\"" + getAnswer());
-        sb.append("\" concept=\"" + getConcept());
-        sb.append("\"/>\n");
-    }
+    Calendar dateValue = Calendar.getInstance(TimeZone.getDefault());
 
     /** {@inheritDoc} */
 	@Override
 	protected View createView(Context c) {
 		dp = new DatePicker(c);
-		if (dateAnswer != null) {
-			dp.init(dateAnswer.getYear() + 1900, dateAnswer.getMonth(), 
-					dateAnswer.getDate(), null);
-		}
+
+        dp.init(dateValue.get(Calendar.YEAR),
+                dateValue.get(Calendar.MONTH),
+                dateValue.get(Calendar.DAY_OF_MONTH),
+                new DateValueSetter());
 		return encapsulateQuestion(c, dp);
 	}
 
@@ -51,10 +64,10 @@ public class DateElement extends ProcedureElement {
 		 if(!isViewActive())
 			 return answer;
 		 else {
-			 dateAnswer = new Date(dp.getYear(), dp.getMonth(), 
-					 dp.getDayOfMonth());
-			 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			 return sdf.format(dateAnswer);
+             dateValue.set(Calendar.YEAR, dp.getYear());
+             dateValue.set(Calendar.MONTH, dp.getMonth());
+             dateValue.set(Calendar.DAY_OF_MONTH, dp.getDayOfMonth());
+			 return DateUtil.format(dateValue.getTime());
 		 }
 	}
 
@@ -67,11 +80,21 @@ public class DateElement extends ProcedureElement {
     /** {@inheritDoc} */
 	@Override
 	public void setAnswer(String answer) {
-		dateAnswer = new Date(answer);
-		if (isViewActive()) {
-			dp.updateDate(dateAnswer.getYear(), dateAnswer.getMonth(), 
-					dateAnswer.getDay());
-		}
+        if(!TextUtils.isEmpty(answer)){
+            try {
+                dateValue.setTime(DateUtil.parseDate(answer));
+            } catch (ParseException e) {
+                Log.e(DateElement.class.getSimpleName(),
+                        "Invalid date string? " + answer);
+                e.printStackTrace();
+            }
+        }
+
+        if (isViewActive()) {
+            dp.updateDate(dateValue.get(Calendar.YEAR),
+                    dateValue.get(Calendar.MONTH),
+                    dateValue.get(Calendar.DAY_OF_MONTH));
+        }
 	}
 	
 	private DateElement(String id, String question, String answer, 
@@ -95,7 +118,7 @@ public class DateElement extends ProcedureElement {
      * 		additional information from the Node
      */
 	public static DateElement fromXML(String id, String question, String answer,
-			String concept, String figure, String audio, Node n) throws 
+			String concept, String figure, String audio, Node node) throws
 			ProcedureParseException 
 	{
 		return new DateElement(id, question, answer, concept, figure, audio);
