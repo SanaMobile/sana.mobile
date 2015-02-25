@@ -6,7 +6,7 @@
     <string name="scheme_mds">https</string>
     <string name="host_mds">project1.sana.csail.mit.edu</string>
     
-    <string name="path_root">mds/</string>
+    <string name="path_root">/mds/</string>
 
     <string name="path_root_training">test/mds/</string>
     
