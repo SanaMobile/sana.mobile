@@ -39,7 +39,9 @@ import org.sana.android.procedure.ValidationError;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Events.EventType;
 import org.sana.android.provider.Observations;
+import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
+import org.sana.android.provider.Subjects;
 import org.sana.android.service.BackgroundUploader;
 import org.sana.android.service.ServiceConnector;
 import org.sana.android.service.ServiceListener;
@@ -93,7 +95,7 @@ import android.widget.ViewAnimator;
  * @author Sana Development Team
  */
 public abstract class BaseRunnerFragment extends BaseFragment implements View.OnClickListener,
-        ServiceListener<BackgroundUploader>, PatientLookupListener {
+        ServiceListener<BackgroundUploader>, PatientLookupListener{
 
     public static final String TAG = BaseRunnerFragment.class.getSimpleName();
 
@@ -107,6 +109,11 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     public static final int INFO_INTENT_REQUEST_CODE = 7;
     public static final int PLUGIN_INTENT_REQUEST_CODE = 4;
     public static final int IMPLICIT_PLUGIN_INTENT_REQUEST_CODE = 8;
+
+    public static final int FLAG_OBJECT_TEMPORARY = 0;
+    public static final int FLAG_OBJECT_UPDATED = 1;
+    public static final int FLAG_OBJECT_PERSISTED = 2;
+
 
     public static interface ProcedureListener{
         void onProcedureComplete(Intent data);
@@ -136,6 +143,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     
     protected int startPage = 0;
     protected boolean onDonePage = false;
+    protected int objectFlag = FLAG_OBJECT_TEMPORARY;
     private PatientLookupTask patientLookupTask = null;
 
     // Activity Methods ///////////////////////////////////////////////////////
@@ -149,6 +157,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     /** {@inheritDoc} */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i(TAG,"onCreateView(LayoutInflater,ViewGroup,Bundle");
         return inflater.inflate(R.layout.base_runner_fragment, container, false);
     }
     
@@ -158,14 +167,14 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
      */
     @Override
     public void onActivityCreated(Bundle instance) {
+        Log.i(getClassTag(), "onActivityCreated()");
         super.onActivityCreated(instance);
-        Log.v(getClass().getSimpleName(), "onActivityCreated()");
         
         try {;
             //mConnector.setServiceListener(this);
             //mConnector.connect(getActivity());
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(),
+            Log.e(getClassTag(),
                     "Exception starting background upload service: " + e.toString());
             e.printStackTrace();
         }
@@ -240,16 +249,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     */
     
     /** Removes the current procedure form the database. */
-    public void deleteCurrentProcedure() {
-        getActivity().getContentResolver().delete(uEncounter, null, null);
-        // Flush out any observations
-        getActivity().getContentResolver().delete(Observations.CONTENT_URI, 
-        		Observations.Contract.ENCOUNTER + " = ?", 
-        		new String[]{ uEncounter.getLastPathSegment() });
-        getActivity().getContentResolver().delete(ImageSQLFormat.CONTENT_URI, 
-        		ImageSQLFormat.ENCOUNTER_ID + " = ?", 
-        		new String[]{ uEncounter.getLastPathSegment() });
-    }
+    public abstract void deleteCurrentProcedure();
     
     /**
      * Navigates to the next page.
@@ -258,6 +258,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
      *         false.
      */
     public synchronized boolean nextPage() {
+        Log.i(TAG, "nextPage()");
         boolean succeed = true;
         try {
             mProcedure.current().validate();
@@ -267,15 +268,11 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
             SanaUtil.createAlertMessage(getActivity(), message);
             return false;
         }
-        /*
-        ProcedureElement patientId = mProcedure.current().getElementByType("patientId");
-        if (patientId != null && mProcedure.getPatientInfo() == null) {
-            // The patient ID question is on this page. Look up the ID in an
-            // AsyncTask
-            lookupPatient(patientId.getAnswer());
+        // Handles any post processing - allows pages to block
+        if(!handlePostProcessedElements()){
             return false;
         }
-		*/
+
         // Save answers
         storeCurrentProcedure(false);
         if (!mProcedure.hasNextShowable()) {
@@ -291,7 +288,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         } else {
             //mProcedure.advance();
             ProcedurePage cp = mProcedure.advanceNext();
-            while (cp != null){ 
+            while (cp != null){
             	
             	if(cp.displayForeground()) {
             		break;
@@ -308,8 +305,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
             if (imm != null && mProcedure != null && mProcedure.getCachedView() != null)
                 imm.hideSoftInputFromWindow(mProcedure.getCachedView().getWindowToken(), 0);
 
-            Log.v(TAG,
-                    "In nextPage(), current page index is: "
+            Log.d(TAG, "...current page index is: "
                             + Integer.toString(mProcedure.getCurrentIndex()));
             getActivity().setProgress(currentProg());
 
@@ -319,6 +315,17 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
 
         updateNextPrev();
         return succeed;
+    }
+
+    /**
+     * Child classes should override to allow for any additional processing
+     * that needs to occur prior to advancing.
+     *
+     * @return true if any post processing was handled. Default is to always
+     *          return true
+     */
+    protected boolean handlePostProcessedElements() {
+        return true;
     }
 
     /**
@@ -417,10 +424,6 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     	uEncounter = (!Uris.isEmpty(uEncounter))? uEncounter: Uri.EMPTY;
     	Intent instrumentation = new Intent(getActivity(),InstrumentationService.class);
     	getActivity().stopService(instrumentation);
-    	// use the uEncounter field to Post the data.
-    	//Intent upload = new Intent(Intents.ACTION_CREATE, uEncounter);
-    	//getActivity().startService(upload);
-        //logEvent(EventType.ENCOUNTER_SAVE_UPLOAD, uEncounter.toString());
         Intent data;
         if(mProcedureListener != null){
             data = getResult(Intents.ACTION_CREATE);
@@ -432,7 +435,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     	}
     }
     // current progress in the procedure
-    private int currentProg() {
+    protected int currentProg() {
         int pageCount = mProcedure.getVisiblePageCount();
         if (pageCount == 0)
             return 10000;
@@ -464,7 +467,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     /** {@inheritDoc} */
     @Override
     public void onClick(View v) {
-
+        Log.i(TAG, "onClick(View)");
         if (v == next) {
             nextPage();
         } else if (v == prev) {
@@ -477,6 +480,8 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
                     prevPage();
                     break;
                 case R.id.procedure_done_upload:
+                    // finished so we do a final call to persist data
+                    storeCurrentProcedure(true);
                     //uploadProcedureInBackground();
                     //showUploadingDialog();
                     uploadProcedureInBackground2();
@@ -546,6 +551,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
 
     /** Creates the base view of this object. */
     public void createView() {
+        Log.i(TAG, "createView()");
         if (mProcedure == null)
             return;
         getActivity().setTitle(mProcedure.getTitle());
@@ -643,6 +649,10 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         // ScrollView sv = new ScrollView(this);
         // sv.addView(sub, new ViewGroup.LayoutParams(-1,-1));
         // base.addView(sv, new LinearLayout.LayoutParams(-1,-2,0.99f));
+        ViewGroup parent = (ViewGroup) sub.getParent();
+        if (parent != null) {
+            parent.removeView(sub);
+        }
         base.addView(sub, new LinearLayout.LayoutParams(-1, -2, 0.99f));
         base.addView(ll, new LinearLayout.LayoutParams(-1, -2, 0.01f));
 
@@ -949,6 +959,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
      * correct patient.
      */
     public void onPatientLookupSuccess(final PatientInfo patientInfo) {
+        Log.i(TAG,"onPatientLookupSuccess(PatientInfo)");
         logEvent(EventType.ENCOUNTER_LOOKUP_PATIENT_SUCCESS, patientInfo.getPatientIdentifier());
         hideProgressDialogFragment();
 
@@ -1127,7 +1138,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     			uEncounter, uObserver, uSubject, uProcedure, uTask));
     }
     protected String getClassTag(){
-    	return this.getClass().getSimpleName();
+    	return BaseRunnerFragment.class.getSimpleName();
     }
     
 	/**
@@ -1259,9 +1270,12 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         String uuid = ModelWrapper.getUuid(uEncounter,getActivity().getContentResolver());
         Uri uri = Uris.withAppendedUuid(Encounters.CONTENT_URI, uuid);
         uEncounter = uri;
+        return getResult(action,uri);
+    }
+
+    public Intent getResult(String action, Uri uri){
         Intent result = new Intent(action,uri);
         onSaveAppState(result);
         return result;
     }
-    
 }
