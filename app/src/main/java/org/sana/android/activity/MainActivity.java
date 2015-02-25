@@ -111,6 +111,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         Logf.I(TAG, "onActivityResult()", ((resultCode == RESULT_OK)? "OK":"CANCELED" ));
+        Uri uri = Uri.EMPTY;
         switch(resultCode){
         case RESULT_CANCELED:
 
@@ -132,6 +133,9 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             switch(requestCode){
             case AUTHENTICATE:
                 hideViewsByRole();
+                break;
+            case RUN_REGISTRATION:
+                mEncounter = Uri.EMPTY;
                 break;
             case PICK_PATIENT:
                 intent.setAction(Intent.ACTION_PICK)
@@ -156,7 +160,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             case PICK_ENCOUNTER_TASK:
                     //Uri task = data.getParcelableExtra(Intents.EXTRA_TASK);
                     int flags = data.getFlags();
-                    Uri uri = Uri.EMPTY;
+                    uri = Uri.EMPTY;
                     if(data.hasCategory(Intents.CATEGORY_TASK_COMPLETE)){
                         Log.i(TAG, "....Task complete: "+ mTask);
                         uri = intent.getParcelableExtra(Intents.EXTRA_ENCOUNTER);
@@ -198,7 +202,8 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         mRoot = isAdmin(mObserver);
         if(!mRoot){
             LinearLayout main = (LinearLayout) findViewById(R.id.main_root);
-            main.removeView(findViewById(R.id.btn_main_select_patient));
+            // TODO RBAC
+            //main.removeView(findViewById(R.id.btn_main_select_patient));
         }
     }
 
@@ -209,7 +214,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 
         mDebug = this.getResources().getBoolean(R.bool.debug);
         Locales.updateLocale(this, getString(R.string.force_locale));
-        setContentView(R.layout.main_ht);
+        setContentView(R.layout.main);
         /*
         if(mDebug)
             setContentView(R.layout.main);
@@ -560,14 +565,18 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             intent.setDataAndType(Encounters.CONTENT_URI, Encounters.CONTENT_TYPE);
             startActivityForResult(intent, PICK_ENCOUNTER);
             break;
-        //case R.id.btn_main_register_patient:
-        //  intent = new Intent(Intent.ACTION_INSERT);
-        //  intent.setDataAndType(Patients.CONTENT_URI, Patients.CONTENT_TYPE);
-        //  startActivityForResult(intent, RUN_REGISTRATION);
-        //  break;
+        case R.id.btn_main_register_patient:
+            intent = new Intent(Intent.ACTION_INSERT);
+            intent.setDataAndType(Patients.CONTENT_URI, Subjects.CONTENT_TYPE)
+            .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
+                            getString(R.string.procs_subject_default)))
+            .putExtra(Intents.EXTRA_OBSERVER, mObserver);
+            startActivityForResult(intent, RUN_REGISTRATION);
+            break;
         case R.id.btn_main_procedures:
             intent = new Intent(Intent.ACTION_PICK);
             intent.setDataAndType(Procedures.CONTENT_URI, Procedures.CONTENT_TYPE);
+
             startActivityForResult(intent, PICK_PROCEDURE);
             break;
         case R.id.btn_main_tasks:
@@ -577,7 +586,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             startActivityForResult(intent, PICK_ENCOUNTER_TASK);
             break;
         case R.id.btn_training_mode:
-            String subj = this.getString(R.string.tr_subject);
+            String subj = getString(R.string.tr_subject);
             String proc = getString(R.string.tr_procedure);
             intent = new Intent(Intent.ACTION_VIEW)
             .setData(Uris.withAppendedUuid(Procedures.CONTENT_URI, proc))
