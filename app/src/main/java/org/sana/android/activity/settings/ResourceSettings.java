@@ -4,10 +4,12 @@ import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.activity.EducationResourceList;
 import org.sana.android.media.EducationResource.Audience;
+import org.sana.android.util.EnvironmentUtil;
 import org.sana.android.util.SanaUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
@@ -44,7 +46,7 @@ public class ResourceSettings extends PreferenceActivity{
 		// Binary file location
 		EditTextPreference binaryFileLocation = (EditTextPreference) findPreference(Constants.PREFERENCE_STORAGE_DIRECTORY);
 		if (TextUtils.isEmpty(binaryFileLocation.getText())) {
-		    binaryFileLocation.setText(Constants.DEFAULT_BINARY_FILE_FOLDER);
+		    binaryFileLocation.setText(EnvironmentUtil.getProcedureDirectory());
 		}
 		
 		// Image downscale factor

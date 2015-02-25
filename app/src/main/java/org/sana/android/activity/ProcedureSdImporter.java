@@ -11,6 +11,7 @@ import org.sana.android.task.ClearDatabaseTask;
 import org.sana.android.task.ImportProcedure;
 import org.sana.android.task.ImportProcedureAll;
 import org.sana.android.task.ResetDatabaseTask;
+import org.sana.android.util.EnvironmentUtil;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -33,6 +34,8 @@ import android.widget.ListView;
  */
 public class ProcedureSdImporter extends ListActivity {
 
+    public static final String TAG = ProcedureSdImporter.class.getSimpleName();
+
 	// Option menu codes
 	private static final int OPTION_LOAD_ALL = 0;
 	private static final int OPTION_RESET_DATABASE = 1;
@@ -53,8 +56,7 @@ public class ProcedureSdImporter extends ListActivity {
 	 * 	Refreshes the available procedures on the sdcard
 	 */
 	public void updateProcedureList() {
-		File home = new File(Environment.getExternalStorageDirectory() 
-								+ Constants.PATH_PROCEDURE);
+		File home = new File(EnvironmentUtil.getProcedureDirectory());
 		if(!home.exists()){
 			home.mkdirs();
 		}
@@ -84,10 +86,11 @@ public class ProcedureSdImporter extends ListActivity {
 			String mount = Environment.getExternalStorageState();
 			if(!mount.equals(Environment.MEDIA_MOUNTED))
 				return;
-			doInsertProcedure(Environment.getExternalStorageDirectory() 
-					+ Constants.PATH_PROCEDURE+ procedures.get(position));
+			doInsertProcedure(EnvironmentUtil.getProcedureDirectory()+
+                    procedures.get(position));
 		} catch(Exception e) {
-			Log.v(getString(R.string.app_name), e.getMessage());
+            e.printStackTrace();
+			Log.e(TAG, e.getMessage());
 		} 
 	}
 
