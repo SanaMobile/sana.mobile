@@ -1,0 +1,64 @@
+<Procedure title="API Test - Select Inputs" author="Sana"
+           uuid="8752366d-96e3-4538-84e7-aca58e887112"
+           version="1">
+    <!--
+    This procedure tests the following SelecctionElement child classes
+    MULTI_SELECT
+    RADIO
+    SELECT
+    For each element type a mapped and non-mapped input is included.
+    -->
+    <Page>
+        <Element type="RADIO" id="1a" concept="TEST RADIO"
+                 question="1a. Demonstrate selecting a single value"
+                 answer=""
+                 choices="1;2;3;4"
+                 helpText="Select a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="RADIO" id="1b" concept="TEST RADIO MAP"
+                 question="1b. Demonstrate selecting a single value(Mapped)"
+                 answer=""
+                 choices="a;b;c;d"
+                 values="1;2;3;4"
+                 helpText="Select a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="SELECT" id="2a" concept="SELECT"
+                 question="2a. Demonstrate selecting a single value"
+                 answer=""
+                 choices="1;2;3;4"
+                 helpText="Select a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="SELECT" id="2b" concept="SELECT MAP"
+                 question="2b. Demonstrate selecting a single value(Mapped)"
+                 answer=""
+                 choices="a;b;c;d"
+                 values="1;2;3;4"
+                 helpText="Select a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="MULTI_SELECT" id="3a"
+                 concept="TEST MULTI SELECT"
+                 question="3. Demonstrate selecting multiple values"
+                 answer=""
+                 choices="1;2;3;4"
+                 helpText="Select one or more values before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="MULTI_SELECT" id="3b"
+                 concept="TEST MULTI SELECT MAP"
+                 question="Demonstrate selecting multiple values(Mapped)"
+                 answer=""
+                 choices="a;b;c;d"
+                 values="1;2;3;4"
+                 helpText="Select one or more values before proceeding."
+                 required="true"/>
+    </Page>
+</Procedure>

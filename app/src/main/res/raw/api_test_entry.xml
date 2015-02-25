@@ -1,0 +1,56 @@
+<Procedure title="API Test - Text Inputs"
+           author="Sana"
+           uuid="9efab0a8-8963-47d3-ab7b-6975966"
+           version="1">
+    <!--
+    This procedure tests the ENTRY type element. An element is included to
+    test each 0f the allowed 'numeric' attribute values.
+    -->
+    <Page>
+        <Element type="ENTRY" id="1a" concept="TEST ENTRY"
+                 question="1a Enter Text(type: DIALPAD)"
+                 numeric="DIALPAD"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="ENTRY" id="1b" concept="TEST ENTRY"
+                 question="1b Enter Text(type: INTEGER)"
+                 numeric="INTEGER"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="ENTRY" id="1d" concept="TEST ENTRY"
+                 question="1c Enter Text(type: SIGNED)"
+                 numeric="SIGNED"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="ENTRY" id="1d" concept="TEST ENTRY"
+                 question="1d Enter Text(type: DECIMAL)"
+                 numeric="DECIMAL"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="ENTRY" id="1e" concept="TEST ENTRY"
+                 question="1e Enter Text(type: NONE)"
+                 numeric="NONE"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="ENTRY" id="1f" concept="TEST ENTRY"
+                 question="1f Enter Text(type: null)"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
+    </Page>
+</Procedure>
