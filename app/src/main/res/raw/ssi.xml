@@ -186,7 +186,7 @@
         <Element id="i3" type="TEXT" 
         concept="REFER INFECTION RISK"
         question="Respons yo w te bay siyifi malad la ka gen yon enfeksyon. Fok li ale nan lopital pou we chirijyen an byen vit. \n\nSivouple, rele sipevize la kouye-a:\n\n"
-        action="intent:42898704#Intent;scheme=tel;action=android.intent.action.CALL;S.android.intent.extra.TITLE=rele%20sipevize%3A%20428998704;end"
+        action="intent:000000000#Intent;scheme=tel;action=android.intent.action.CALL;S.android.intent.extra.TITLE=rele%20sipevize%3A%20000000000;end"
         />
     </Page>
     <!-- End referral page -->
