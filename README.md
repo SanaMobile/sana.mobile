@@ -1,75 +1,82 @@
-sana.mobile
-===========
-
-The libraries and Android code for the Sana mobile client.
+Sana Mobile Client
+==================
 
 Overview
 --------
-The new client code is intended to be a self-contained, modularized, 
-project including all necessary support libraries and unit testing code
-for the Sana Mobile Android client. 
+The new client code is intended to be a self-contained, modularized, project 
+including all necessary support libraries and unit testing code. 
 
-Code structure
+### Development Requirements
+1.  [Android Studio](http://developer.android.com/sdk/index.html) Additional prerequisites are required for installing Android 
+Studio. Please see the [System Requirements](http://developer.android.com/sdk/index.html#Requirements) 
+for Android Studio for your platform.
+2. The Android support libraries available for installation through the SDK manager.
+3. Emulator or Hardware device connected via USB with API level 8 or higher.
+
+**Notes** 
+1. If you do not have a hardware device available, additional instructions for
+creating an emulator are available on the Android Developer Site’s [Managing Virtual Devices](http://developer.android.com/tools/devices/index.html) page.
+2. If your workstation includes an Intel processor with hardware virtualization support
+and you are developing on Windows, you will find the emulator runs significantly faster 
+if you also install the  Intel Hardware Accelerated Execution Manager available through
+the SDK manager.
+
+Source Code
+-----------
+Source code for the Android based mobile client is available by cloning the sana.mobile 
+repository.
+
+`git clone https://github.com/SanaMobile/sana.mobile.git`
+
+We highly recommend creating a Github account and forking the repository in lieu of 
+directly cloning the repository so that any changes that you may make may be more easily 
+contributed to the platform later via a pull request.
+
+Import, Build, and Run instructions
+-----------------------------------
+The recommended method for building the code is to use Android Studio. The following steps 
+should allow you to obtain, build, and run the code with minimal difficulty.
+
+1. Open Android studio.
+2. Import project from Version control.
+3. Enter either the url for the official Sana repository listed above or a fork under 
+4. your own account if you created one.
+5. Select the defaults presented on the import page.
+6. When the gradle project has finished importing and building, select the app module and press run.
+When the app starts you will be presented with an authentication screen. The resources in the 
+source code includes a flag that loads a set of default credentials which will successfully 
+authenticate against a Sana demo server.
+
+For additional details on working with Android Studio, including testing and debugging, please 
+consult the [Workflow](http://developer.android.com/tools/workflow/index.html) page on the 
+Android Developer site.
+
+Code Structure
 --------------
-1.  api - Pure Java library consisting of POJO's and code w/o Android 
-    dependencies
-2.  api-android - Common library for Sana mobile Android client as well 
-    external plugin apps. 
-3.  app-android - Sana mobile client
-4.  api/libs - Additional libraries required by the projects.
+The gradle based project is split into three distinct modules.
+1. **api** – A pure java library that includes the POJO’s, network functions, and utilities for processing data.
+2. **api-android** – Android implementation and wrappers around the pure Java api.
+3. **app** – The code and resources for the Android based application.
 
-Development Requirements
-------------------------
-1.  Git
-2.  JDK(latest 1.6 release)
-3.  Android ADT Bundle
-      http://developer.android.com/sdk/index.html
-4.  Android v4-support and v7-appcompat support libraries(Install using SDK 
-      manager).
-      http://developer.android.com/tools/support-library/setup.html
-    Should be included with ADT
-5.  Add API 7 using SDK manager
-5.  Android virtual device or phone which supports API 7
+The motivation for splitting the project into the three discrete modules was to allow developers
+who may be interested wished to implement an alternate frontend, develop a client on another
+platform, or otherwise may find some portion of the libraries useful to do so more easily.
+The following sections contain additional details and features of each project that should
+assist developers working with the code.
 
-Code installation instructions.
--------------------------------
-1.  Start Eclipse bundled with ADT 
-2.  Import the sana code projects:
-    a. File --> Import --> Git --> Projects from Git
-    b. Use following URI for import
-        https://github.com/SanaHealth/sana.mobile
-    c. Select all branches
-    d. Use defaults for local destination
-    e. Select all of the projects
-       api
-       api-android
-       app-android
-       app-android-tests
-3.  Add android-support-v7-appcompat project to your workspace
-    *** The sana.mobile code assumes it has been copied into the workspace.
-    *** If you do not copy you will need to update the library reference later.
-    Important:
-    a. Add to Java Build Path
-         android-support-v4.jar
-         android-support-v7-appcompat.jar
-    b. Select Android Private Libraries in Export tab of Java build path
-    For more info:
-        http://developer.android.com/tools/support-library/setup.html#libs-with-res
+### api Module
+The **api** module provides a pure Java library that contains the POJO’s that correlate with the 
+data model used by the client, basic network code for communicating with the Sana middleware,
+and a number of utility functions.
 
-Troubleshooting
----------------
-A.  Missing Android dependencies. Use the "Android SDK Manager" to add any 
-    missing API levels. In Eclipse, it can be launched by selecting
-        Window --> Android SDK Manager 
-B.  "NoClassDefFoundError" when running the client application. By default, the 
-    ADT plugin does not export libraries included in the build. To correct this
-    issue, right click on the project in Eclipse and open the Properties window.
-    Select: Java Build Path --> Order and Export 
-C.  Path issues with v7-appcompat library reference in api-android. Open
-    Project Properties --> Android and check the Library references at the 
-    bottom of the window. A large red x by the v7-appcompat indicates the path needs to
-    be corrected. Remove and re-add the appcompat project from your workspace.
-    
+### api-android Module
+The **api-android** module contains source code for non-application classes and interface to work 
+with the Sana mobile code including communication with MDS.
+
+### app Module
+The **app** module contains the source code for the front end visual components and classes 
+specific to the application.
+
 Licensing
 ---------
 This software is released under the BSD License. Please see LICENSE for a full
