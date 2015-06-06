@@ -244,7 +244,7 @@ public class MDSInterface {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		host = preferences.getString(Constants.PREFERENCE_MDS_URL, host);
 		boolean useSecure = preferences.getBoolean(
-				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
+				Constants.PREFERENCE_SECURE_TRANSMISSION, false);
 		String scheme = (useSecure)? "https": "http";
 		/*
 		String host = context.getString(R.string.host_mds);
@@ -320,7 +320,7 @@ public class MDSInterface {
 		String sProxyPort = preferences.getString(
 				Constants.PREFERENCE_PROXY_PORT, "0");
 		boolean useSecure = preferences.getBoolean(
-				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
+				Constants.PREFERENCE_SECURE_TRANSMISSION, false);
 
 		int proxyPort = 0;
 		try {
@@ -1350,7 +1350,8 @@ public class MDSInterface {
 
 	// returns the scheme basef on the "Use secure transmission" setting.
 	static String getScheme(SharedPreferences preferences){
-		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION,
+				false))
 			return "https";
 		else
 			return "http";
@@ -1371,7 +1372,8 @@ public class MDSInterface {
 
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
-		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION,
+				false))
 			return 443;
 		else
 			return c.getResources().getInteger(R.integer.port_mds);

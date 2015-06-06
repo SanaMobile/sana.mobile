@@ -3,6 +3,7 @@ package org.sana.android.activity;
 
 import org.sana.R;
 import org.sana.android.Constants;
+import org.sana.android.activity.settings.NetworkSettings;
 import org.sana.android.app.Locales;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
@@ -21,9 +22,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -289,13 +292,16 @@ public class AuthenticationActivity extends BaseActivity {
     
     public void submit(View v){
         switch(v.getId()){
-        case R.id.btn_login:
-            logIn();
-            break;
-        case R.id.btn_exit:
-            setResult(RESULT_CANCELED);
-            finish();
-            break;
+            case R.id.btn_login:
+                logIn();
+                break;
+            case R.id.btn_exit:
+                setResult(RESULT_CANCELED);
+                finish();
+                break;
+            case R.id.btn_configure:
+                Intent settings = new Intent(this, NetworkSettings.class);
+                this.startActivity(settings);
         default:
         }
     }

@@ -117,7 +117,7 @@ public class MDSInterface2 {
 		host = preferences.getString(Constants.PREFERENCE_MDS_URL, host);
 		// Realistacally should never use http
 		boolean useSecure = preferences.getBoolean(
-				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
+				Constants.PREFERENCE_SECURE_TRANSMISSION, false);
 		String scheme = (useSecure)? "https": "http";
 		String url = scheme + "://" + host +"/"+ root;
 		return (TextUtils.isEmpty(path)? url: url + path);
@@ -1137,7 +1137,7 @@ public class MDSInterface2 {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		host = preferences.getString(Constants.PREFERENCE_MDS_URL, host);
 		boolean useSecure = preferences.getBoolean(
-				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
+				Constants.PREFERENCE_SECURE_TRANSMISSION, false);
 		String scheme = (useSecure)? "https": "http";
 		String path = "/mds" + uri.getPath();
                 if(!path.endsWith("/"))
@@ -1152,7 +1152,8 @@ public class MDSInterface2 {
 	}
 
 	static String getScheme(SharedPreferences preferences){
-		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION,
+				false))
 			return "https";
 		else
 			return "http";
@@ -1161,7 +1162,8 @@ public class MDSInterface2 {
 	static int getPort(Context c){
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
-		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
+		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION,
+				false))
 			return 443;
 		else
 			return c.getResources().getInteger(R.integer.port_mds);
