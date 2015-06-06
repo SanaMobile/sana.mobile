@@ -28,7 +28,7 @@
     <application
         tools:replace="android:icon, android:theme"
         android:icon="@drawable/ic_app_logo"
-        android:label="@string/app_name" android:theme="@style/Theme.AppCompat">
+        android:label="@string/app_name" android:theme="@style/Theme.Large.NoActionBar">
         <meta-data android:name="local_build" android:value="@string/cfg_build_variant">
         </meta-data>
         <service

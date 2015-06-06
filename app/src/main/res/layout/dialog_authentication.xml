@@ -18,7 +18,8 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginTop="16dp"
-        android:hint="@string/authentication_username"/>
+        android:hint="@string/authentication_username"
+        android:textColor="@color/background_material_light"/>
 
     <EditText
         android:id="@+id/password"
@@ -31,7 +32,7 @@
         android:fontFamily="sans-serif"
         android:hint="@string/authentication_password"
         android:inputType="textPassword" />
-    <View 
+    <View
         android:id="@+id/extra_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -553,7 +553,7 @@ public abstract class ProcedureElement {
     	//textView.setGravity(Gravity.CENTER_HORIZONTAL);
     	textView.setTextAppearance(c, android.R.style.TextAppearance_Large);
     	View questionView = textView;
-    	
+    	questionView.setPadding(10,5,10,5);
     	// Add image if provided
         ImageView imageView = null;
         
@@ -623,6 +623,7 @@ public abstract class ProcedureElement {
     	// Add Buttons if provided
     	if(!TextUtils.isEmpty(action)){
     		View actionView = getActions(c);
+            actionView.setPadding(5,5,5,5);
     		ll.addView(actionView);
     	} else {
             //Log.w(TAG, "Empty action string!");	

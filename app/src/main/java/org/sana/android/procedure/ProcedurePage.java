@@ -383,7 +383,7 @@ public class ProcedurePage {
 		scroll.addView(ill);
 
 		ll.addView(scroll);
-		ll.setGravity(Gravity.CENTER);
+        ll.setGravity(Gravity.CENTER);
 		return ll;
 	}
 

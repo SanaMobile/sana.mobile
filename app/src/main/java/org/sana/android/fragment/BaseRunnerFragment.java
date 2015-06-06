@@ -621,6 +621,9 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         prev = new Button(getActivity());
         prev.setOnClickListener(this);
 
+        next.setPadding(5,5,5,5);
+        prev.setPadding(5,5,5,5);
+        info.setPadding(5,5,5,5);
         updateNextPrev();
         // Are we dispalying Info button
         boolean showEdu = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(

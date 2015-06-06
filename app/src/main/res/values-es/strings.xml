@@ -16,6 +16,7 @@
 	<string name="button_main_view_prior_encounters">Ver Ultimo Citas</string>
 	<string name="button_main_view_notifications">Ver Notificaciones</string>
     <string name="button_main_help">Ver Media</string>
+	<string name="button_configure">Configure</string>
 	
 	<!-- Menu options strings -->
 	<string name="menu_reload_db">Reload Database</string>

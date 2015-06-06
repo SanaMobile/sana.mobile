@@ -114,7 +114,8 @@ public class Constants {
      **************************************************************************/
     //DEFAULT PREFERENCE VALUES
     /** Default location of the Sana mobile Dispatch Server */
-    public static final String DEFAULT_DISPATCH_SERVER ="demo.sana.csail.mit.edu";
+    public static final String DEFAULT_DISPATCH_SERVER ="sana-mds-demo" +
+            ".cloudapp.net";
 
     /** A default phone number */
     public static final String DEFAULT_PHONE_NUMBER = "5555555555";

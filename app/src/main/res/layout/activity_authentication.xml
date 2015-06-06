@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/alt_bg_color"
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
-    tools:context="org.sana.android.activity.AuthenticationActivity" >
+    tools:context="org.sana.android.activity.AuthenticationActivity"
+    android:background="@drawable/bg_hdpi">
 
     <ImageView
         android:layout_width="fill_parent"
@@ -14,13 +14,17 @@
         android:contentDescription="@string/authentication_sana"
         android:src="@drawable/logo"
         android:padding="5dp"
-        android:layout_margin="12dp" />
+        android:layout_margin="0dp" />
 
     <LinearLayout
         android:id="@+id/form"
-        android:layout_width="@dimen/auth_input_width"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp">
 
         <EditText
             android:id="@+id/input_username"
@@ -29,8 +33,8 @@
             android:hint="@string/authentication_username"
             android:inputType="text"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_margin="5dp"
-            android:background="@color/dim_foreground_holo_dark"/>
+            android:layout_margin="10dp"
+            android:textStyle="normal"/>
 
         <EditText
             android:id="@+id/input_password"
@@ -39,8 +43,9 @@
             android:hint="@string/authentication_password"
             android:inputType="textPassword"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_margin="5dp"
-            android:background="@color/dim_foreground_holo_dark"/>
+            android:layout_margin="10dp"
+            android:layout_margin_bottom="16dp"
+            />
 
         <Button
             android:id="@+id/btn_login"
@@ -48,13 +53,24 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/authentication_login"
-            android:onClick="submit" />
+            android:onClick="submit"
+            android:layout_margin="5dp"
+            android:layout_margin_top="5dp"/>
         <Button
             android:id="@+id/btn_exit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/general_exit"
-            android:onClick="submit" />
+            android:onClick="submit"
+            android:layout_margin="5dp"/>
+        <Button
+            android:id="@+id/btn_configure"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_configure"
+            android:onClick="submit"
+            android:layout_margin="5dp"/>
+
 
     </LinearLayout>
 
@@ -64,6 +80,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textAppearance="@style/Base.TextAppearance.AppCompat"
-        android:text="@string/display_version" />
+        android:text="@string/display_version"
+        android:textColor="@color/light_gray"/>
 
 </LinearLayout>

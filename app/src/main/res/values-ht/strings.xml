@@ -35,6 +35,7 @@
     <string name="button_main_select_procedure">Chwazi Pwosedi</string>
     <string name="button_main_select_patient">Chwazi Pasyan</string>
     <string name="button_main_training_mode">Pratike</string>
+    <string name="button_configure">Configure</string>
 
     <!--  General Phrases -->
     <string name="general_ok">Oke</string>

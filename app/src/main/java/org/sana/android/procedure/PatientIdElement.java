@@ -49,6 +49,7 @@ public class PatientIdElement extends ProcedureElement implements
     protected View createView(Context c) {
     	
         et = new EditText(c);
+        et.setPadding(10,5,10,5);
         et.setText(answer);
         et.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
         		LayoutParams.WRAP_CONTENT));
