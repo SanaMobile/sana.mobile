@@ -2,9 +2,9 @@
 <resources>
     <!-- Resource values used for connecting to the dispatch server -->
 
-    <integer name="port_mds">443</integer>
-    <string name="scheme_mds">https</string>
-    <string name="host_mds">project1.sana.csail.mit.edu</string>
+    <integer name="port_mds">80</integer>
+    <string name="scheme_mds">http</string>
+    <string name="host_mds">sana-mds-demo.cloudapp.net</string>
     
     <string name="path_root">/mds/</string>
 

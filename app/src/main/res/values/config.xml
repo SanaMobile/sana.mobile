@@ -5,20 +5,24 @@
     <string name="cfg_app_workflow_default">org.sana.android.app.workflow.SSI</string>
     <string name="cfg_app_sync_delta">0</string>
     <string name="cfg_app_locale">en</string>
-    <string name="cfg_app_url">https://demo.sana.csail.mit.edu/mds/clients/</string>
+    <string name="cfg_app_url">http://sana-mds.cloudapp.net/mds/clients/</string>
     
-    <string name="cfg_mds_scheme">https</string>
-    <string name="cfg_mds_host">project1.sana.csail.mit.edu</string>
-    <integer name="cfg_mds_port">443</integer>
+    <string name="cfg_mds_scheme">http</string>
+    <string name="cfg_mds_host">sana-mds.cloudapp.net</string>
+    <integer name="cfg_mds_port">80</integer>
     
-    <string name="cfg_mds_url">https://project1.sana.csail.mit.edu/mds</string>
-    <string name="cfg_mds_core">https://project1.csail.mit.edu/mds/core</string>
+    <string name="cfg_mds_url">http://sana-mds-demo.cloudapp.netd/mds</string>
+    <string name="cfg_mds_core">http://sana-mds-demo.cloudapp
+        .net/mds/core</string>
     <string name="cfg_path_root">/mds/</string>
     
     
-    <string name="cfg_app_url_training">https://project1.sana.csail.mit.edu/mds/test/clients/</string>
-    <string name="cfg_mds_url_training">https://project1.sana.csail.mit.edu/test/mds</string>
-    <string name="cfg_mds_core_training">https://project1.sana.csail.mit.edu/test/mds/core</string>
+    <string name="cfg_app_url_training">http://sana-mds-demo.cloudapp
+        .net/mds/test/clients/</string>
+    <string name="cfg_mds_url_training">http://sana-mds-demo.cloudapp
+        .net/test/mds</string>
+    <string name="cfg_mds_core_training">http://sana-mds-demo.cloudapp
+        .net/test/mds/core</string>
 
     <string name="cfg_path_core">core/</string>
     <string name="cfg_path_tasks">tasks/</string>
