@@ -1,76 +1,115 @@
 <Procedure title="Procedure API Demo"
-    uuid="cef8b187-038e-4a24-a724-02ba8c81745e"
+    uuid="dd4bef0a-4fcc-4576-a965-ce3259967808"
     version="1"
     author="Sana"
     description="A demonstration of functional elements">
+    <!--
     <Page>
-
     <Element id="1"
         type="DATE"
         concept="DATE"
         question="Entry a date value."
         answer=""/>
     </Page>
+    -->
     <Page>
-    <Element id="2"
-        type="ENTRY"
-        concept="TEXT"
-        question="Enter text"
-        answer=""/>
+        <Element type="ENTRY" id="1" concept="TEST ENTRY"
+                 question="1. Enter Text(type: DIALPAD)"
+                 numeric="DIALPAD"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
     </Page>
     <Page>
-    <Element id="3"
-        type="SELECT"
-        concept="TEXT"
-        question="Select a single value."
-        choices="1,2,3,4"
-        answer=""/>
+        <Element type="ENTRY" id="2" concept="TEST ENTRY"
+                 question="2. Enter Text(type: INTEGER)"
+                 numeric="INTEGER"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
     </Page>
     <Page>
-    <Element id="4"
-        type="MULTI_SELECT"
-        concept="MULTIVALUE TEXT"
-        question="Select one or more values."
-        choices="1,2,3,4"
-        answer=""/>
+        <Element type="ENTRY" id="3" concept="TEST ENTRY"
+                 question="3. Enter Text(type: SIGNED)"
+                 numeric="SIGNED"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
     </Page>
     <Page>
-    <Element id="5"
-        type="RADIO"
-        concept="TEXT"
-        question="Select a single value."
-        choices="1,2,3,4"
-        answer="1"/>
+        <Element type="ENTRY" id="4" concept="TEST ENTRY"
+                 question="4. Enter Text(type: DECIMAL)"
+                 numeric="DECIMAL"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
     </Page>
     <Page>
-    <Element id="6"
-        type="PICTURE"
-        concept="IMAGE"
-        question="Take a picture"
-        answer=""/>
+        <Element type="ENTRY" id="5" concept="TEST ENTRY"
+                 question="5. Enter Text(type: NONE)"
+                 numeric="NONE"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
     </Page>
     <Page>
-    <Element type="PLUGIN" id="7"
-        concept="FILE"
-        question="Demonstrate file input from another app."
-        action="org.sana.plugin.CAPTURE_FILE"
-        mimeType="application/xml"/>
+        <Element type="ENTRY" id="6" concept="TEST ENTRY"
+                 question="6. Enter Text(type: null)"
+                 answer=""
+                 helpText="Enter a value before proceeding."
+                 required="true"/>
     </Page>
     <Page>
-    <Element type="ENTRY_PLUGIN" id="8"
-        concept="TEXT"
-        question="Demonstrate text input from another app."
-        action="org.sana.plugin.CAPTURE_CHARS"
-        mimeType="text/plain"/>
+        <Element type="RADIO" id="7" concept="TEST RADIO"
+                 question="7. Demonstrate selecting a single value"
+                 answer=""
+                 choices="1;2;3;4"
+                 helpText="Select a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="SELECT" id="8" concept="SELECT"
+                 question="8. Demonstrate selecting a single value"
+                 answer=""
+                 choices="1;2;3;4"
+                 helpText="Select a value before proceeding."
+                 required="true"/>
+    </Page>
+    <Page>
+        <Element type="MULTI_SELECT" id="9"
+                 concept="TEST MULTI SELECT"
+                 question="9. Demonstrate selecting multiple values"
+                 answer=""
+                 choices="1;2;3;4"
+                 helpText="Select one or more values before proceeding."
+                 required="true"/>
     </Page>
     <Page>
     <ShowIf>
-        <Criteria type="EQUALS" id="4" value="1"/>
+        <or>
+            <Criteria type="EQUALS" id="7" value="1"/>
+            <Criteria type="EQUALS" id="8" value="1"/>
+            <Criteria type="EQUALS" id="9" value="1"/>
+        </or>
     </ShowIf>
-    <Element id="9"
+    <Element id="10"
         type="TEXT"
         concept="OUTPUT"
-        question="EQUALS criteria. This will display if '1' was selected for question with id=4"
+        question="EQUALS criteria. This will display if '1' was selected for any of questions 7,8, or 9"
         answer=""/>
+    </Page>
+    <Page>
+        <ShowIf>
+            <and>
+                <Criteria type="EQUALS" id="7" value="1"/>
+                <Criteria type="EQUALS" id="8" value="1"/>
+                <Criteria type="EQUALS" id="9" value="1"/>
+            </and>
+        </ShowIf>
+        <Element id="11"
+                 type="TEXT"
+                 concept="OUTPUT"
+                 question="EQUALS criteria. This will display if '1' was selected for questions 7,8, and 9"
+                 answer=""/>
     </Page>
 </Procedure>

@@ -1,36 +1,5 @@
 <Procedure title="Welcome" author="Sana" id="0000-0000-0000" 
     version="1" description="An introduction to the Sana mobile client">
-    <!-- Plugin template
-    <Page>
-        <Element type="PLUGIN | ENTRY_PLUGIN" id="$VALUE" 
-        concept="$VALUE"
-        question="$VALUE per concept"
-        action="[Intent action string]"
-        package=""
-        text=""
-        answer=""/>
-    </Page>
-    -->
-    <!-- generic element
-    <Page>
-        <Element type="" id="" 
-    	    concept="" 
-    	    question=""
-    	    required="" 
-    	    answer=""
-    	    audio=""
-    	    figure=""/>
-    </Page>
-    -->
-    <Page>
-        <Element type="EDUCATION_RESOURCE" id="educationResource" 
-            concept="WELCOME TO SANA"
-            question="Welcome to the Sana Android Client"
-            figure="moca"
-            answer=""
-            helpText="View resource before proceeding." 
-            required="true"/>
-    </Page>
     <Page>
         <Element type="ENTRY" id="entry" 
     	    concept="TEST ENTRY" 
