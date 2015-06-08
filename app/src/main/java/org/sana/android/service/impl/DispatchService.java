@@ -580,7 +580,8 @@ public class DispatchService extends Service{
                                             .update(intent.getData(), update,
                                                     null, null);
 
-                                    addFailedToQueue(what, arg1, arg2, obj, data, msgUri);
+                                    //addFailedToQueue(what, arg1, arg2, obj,
+                                    //        data, msgUri);
                                     //DispatchService.this.notifyForeground(
                                     //      UPLOAD_RESPONSE,
                                     //      R.string.upload_fail,
@@ -592,7 +593,8 @@ public class DispatchService extends Service{
                                 }
                                 }
                                 catch (Exception e){
-                                    addFailedToQueue(what, arg1, arg2, obj, data, msgUri);
+                                    //addFailedToQueue(what, arg1, arg2, obj,
+                                    //        data, msgUri);
                                     Log.e(TAG, "POST failed: " + msgUri);
                                     Log.e(TAG,"...." + e.getMessage());
                                     Locales.updateLocale(DispatchService.this, getString(R.string.force_locale));
@@ -1339,6 +1341,7 @@ public class DispatchService extends Service{
             }
 
             // Don't add uuid initially
+            Log.d(TAG,"Returned subject with uuid: " + p.uuid);
             if(!exists(Subjects.CONTENT_URI, p)){
                 vals.put(Patients.Contract.UUID, p.uuid);
                 insert.add(vals);
