@@ -69,11 +69,25 @@
         <item name="android:padding">10dp</item>
     </style>
 
-    <style name="Widget.EditText.Light"
+    <style name="Widget.EditText.Alt"
                         parent="@android:style/Widget.EditText">
-    <item name="android:textColor">@android:color/black</item>
-    <item name="android:background">@drawable/oval</item>
-    <item name="android:gravity">left|start|center_vertical</item>
-    <item name="android:padding">10dp</item>
-</style>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:gravity">left|start|center_vertical</item>
+        <item name="android:background">@android:drawable/editbox_background</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:padding">10dp</item>
+    </style>
+    <style name="Widget.Spinner.Alt"
+           parent="@android:style/Widget.TextView.SpinnerItem">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+    <style name="Widget.DropDownItem.Spinner.Alt"
+           parent="@android:style/Widget.DropDownItem.Spinner">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    <style name="Widget.TextView.Alt"
+           parent="@android:style/Widget.TextView">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
 </resources>
