@@ -574,6 +574,10 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             startActivityForResult(intent, RUN_REGISTRATION);
             break;
         case R.id.btn_main_procedures:
+            if(Uris.isEmpty(mSubject)) {
+                Toast.makeText(this,"No patient selected",Toast.LENGTH_LONG);
+                break;
+            }
             intent = new Intent(Intent.ACTION_PICK);
             intent.setDataAndType(Procedures.CONTENT_URI, Procedures.CONTENT_TYPE);
 
