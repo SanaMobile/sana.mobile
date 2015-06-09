@@ -13,7 +13,7 @@
     	    concept="TEST RADIO" 
             question="Demonstrate selecting a single value" 
             answer="1" 
-            choices="1,2,3,4"
+            choices="1;2;3;4"
             helpText="Select a value before proceeding." 
             required="true"/>
     </Page>
@@ -22,7 +22,7 @@
     	    concept="TEST SELECT"  
             question="Demonstrate selecting a single value" 
             answer="" 
-            choices="1,2,3,4"
+            choices="1;2;3;4"
             helpText="Select a value before proceeding." 
             required="true"/>
     </Page>
@@ -31,7 +31,7 @@
             concept="TEST MULTI SELECT"  
             question="Demonstrate selecting multiple values" 
             answer="" 
-            choices="1,2,3,4"
+            choices="1;2;3;4"
             helpText="Select one or more values before proceeding." 
             required="true"/>
     </Page>
