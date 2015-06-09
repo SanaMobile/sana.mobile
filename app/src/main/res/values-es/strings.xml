@@ -4,7 +4,7 @@
 <resources>
 
     <string name="hello">Hello</string>
-    <string name="app_name">Moca</string>
+    <string name="app_name">Sana</string>
     <string name="title_procedures_list">Available Procedures</string>
     <string name="title_savedprocedure_list">Saved Procedures</string>
 	<string name="title_procedure_runner">Moca Perform Procedure</string>
