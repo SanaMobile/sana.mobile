@@ -1,0 +1,35 @@
+<Procedure title="Plugin API Demo" author="Sana"
+           uuid="f1d49895-2180-4118-90f9-78fdcb1bf254"
+           version="1"
+           description="A demonstration of the plugin architecture">
+    <Page>
+        <Element type="ENTRY_PLUGIN" id="1"
+                 concept="TEST TEXT PLUGIN"
+                 question="Run app to capture text"
+                 action="com.sana.plugin.TEXT"
+                 mimeType="text/plain"
+                 text=""
+                 answer=""
+                 helpText="Capture data before proceeding." />
+    </Page>
+    <Page>
+        <Element type="PLUGIN" id="2"
+        concept="TEST VIDEO PLUGIN"
+        question="Video media file for patient encounter"
+        action="android.media.action.VIDEO_CAPTURE"
+        mimeType="video/3gpp"
+        text=""
+        answer=""
+        helpText="Capture data before proceeding." />
+    </Page>
+    <Page>
+        <Element type="PLUGIN" id="3"
+        concept="TEST IMAGE PLUGIN"
+        question="Image media file for patient encounter"
+        action="android.media.action.IMAGE_CAPTURE"
+        mimeType="image/jpeg"
+        text=""
+        answer=""
+        helpText="Capture data before proceeding."/>
+    </Page>
+</Procedure>
