@@ -344,6 +344,7 @@ public class SanaUtil {
     /** Loading Sana with XML-described procedures is currently hard-coded. New
      * files can be added or removed here. */
     public static void loadDefaultDatabase(Context ctx) {
+        insertProcedure(ctx, R.raw.plugin_api_test);
         insertProcedure(ctx, R.raw.demonstration);
         /*
         insertProcedure(ctx, R.raw.api_test_entry);
