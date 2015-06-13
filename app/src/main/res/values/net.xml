@@ -4,7 +4,7 @@
 
     <integer name="port_mds">80</integer>
     <string name="scheme_mds">http</string>
-    <string name="host_mds">sana-mds-demo.cloudapp.net</string>
+    <string name="host_mds">sana-colombia.cloudapp.net</string>
     
     <string name="path_root">/mds/</string>
 

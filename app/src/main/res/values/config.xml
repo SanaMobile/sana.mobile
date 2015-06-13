@@ -5,23 +5,23 @@
     <string name="cfg_app_workflow_default">org.sana.android.app.workflow.SSI</string>
     <string name="cfg_app_sync_delta">0</string>
     <string name="cfg_app_locale">en</string>
-    <string name="cfg_app_url">http://sana-mds.cloudapp.net/mds/clients/</string>
+    <string name="cfg_app_url">http://sana-colombia.cloudapp.net/mds/clients/</string>
     
     <string name="cfg_mds_scheme">http</string>
-    <string name="cfg_mds_host">sana-mds.cloudapp.net</string>
+    <string name="cfg_mds_host">sana-colombia.cloudapp.net</string>
     <integer name="cfg_mds_port">80</integer>
     
-    <string name="cfg_mds_url">http://sana-mds-demo.cloudapp.netd/mds</string>
-    <string name="cfg_mds_core">http://sana-mds-demo.cloudapp
+    <string name="cfg_mds_url">http://sana-colombia.cloudapp.netd/mds</string>
+    <string name="cfg_mds_core">http://sana-colombia.cloudapp
         .net/mds/core</string>
     <string name="cfg_path_root">/mds/</string>
     
     
-    <string name="cfg_app_url_training">http://sana-mds-demo.cloudapp
+    <string name="cfg_app_url_training">http://sana-colombia.cloudapp
         .net/mds/test/clients/</string>
-    <string name="cfg_mds_url_training">http://sana-mds-demo.cloudapp
+    <string name="cfg_mds_url_training">http://sana-colombia.cloudapp
         .net/test/mds</string>
-    <string name="cfg_mds_core_training">http://sana-mds-demo.cloudapp
+    <string name="cfg_mds_core_training">http://sana-colombia.cloudapp
         .net/test/mds/core</string>
 
     <string name="cfg_path_core">core/</string>
