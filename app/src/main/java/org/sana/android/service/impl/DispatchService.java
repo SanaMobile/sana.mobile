@@ -116,6 +116,7 @@ import org.sana.net.http.handler.EncounterResponseHandler;
 import org.sana.net.http.handler.EncounterTaskResponseHandler;
 
 import org.sana.net.http.handler.PatientResponseHandler;
+import org.sana.text.json.ISODateAdapter;
 import org.sana.util.DateUtil;
 
 import com.google.gson.FieldNamingPolicy;
@@ -201,12 +202,11 @@ public class DispatchService extends Service{
         public Response<T> fromJson(Message msg){
             Log.d("JSONHandler<T>", msg.obj.toString());
             Type type = new TypeToken<Response<T>>(){}.getType();
-
-
             Gson gson = new GsonBuilder()
-                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                     .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                     .create();
+                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                    .registerTypeAdapter(new TypeToken<Date>(){}.getType(),
+                            ISODateAdapter.get())
+                    .create();
             Response<T> response = gson.fromJson(msg.obj.toString(), type);
             Log.d("JSONHandler<T>", msg.obj.toString());
             return response;
@@ -251,27 +251,6 @@ public class DispatchService extends Service{
     };
 
     final SyncHandler<Collection<Patient>> patientListHandler = new SyncHandler<Collection<Patient>>(){
-        public  Response<Collection<Patient>> fromJson(Message msg){
-            Type type = new TypeToken<Response<List<Patient>>>(){}.getType();
-            Gson gson = new GsonBuilder()
-                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                     .setDateFormat(DispatchService.this.getString(R.string.cfg_format_date_value))
-                     .create();
-            Response<Collection<Patient>> response = gson.fromJson(msg.obj.toString(), type);
-            return response;
-        }
-
-        public  Response<Collection<Patient>> fromJson(String json){
-            Type type = new TypeToken<Response<List<Patient>>>(){}.getType();
-            Gson gson = new GsonBuilder()
-                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                     .setDateFormat(DispatchService.this.getString(R.string.cfg_format_date_value))
-                     .create();
-            Response<Collection<Patient>> response = gson.fromJson(json, type);
-            return response;
-
-        }
-
         @Override
         public List<ContentValues> values(Response<Collection<Patient>> response) {
             List<ContentValues> list = new ArrayList<ContentValues>();
@@ -595,6 +574,7 @@ public class DispatchService extends Service{
                                 catch (Exception e){
                                     //addFailedToQueue(what, arg1, arg2, obj,
                                     //        data, msgUri);
+                                    e.printStackTrace();
                                     Log.e(TAG, "POST failed: " + msgUri);
                                     Log.e(TAG,"...." + e.getMessage());
                                     Locales.updateLocale(DispatchService.this, getString(R.string.force_locale));
@@ -638,10 +618,11 @@ public class DispatchService extends Service{
                                 bcastMessage = "";
                                 Log.d(TAG, "" +Uris.SUBJECT_DIR+"...code " + bcastCode);
                             } catch (Exception e) {
-                                    Log.e(TAG,"...." + e.getMessage());
-                                    Locales.updateLocale(DispatchService.this, getString(R.string.force_locale));
-                                    //bcastMessage = e.getMessage();
-                                    bcastCode = 400;
+                                e.printStackTrace();
+                                Log.e(TAG,"...." + e.getMessage());
+                                Locales.updateLocale(DispatchService.this, getString(R.string.force_locale));
+                                //bcastMessage = e.getMessage();
+                                bcastCode = 400;
                             }
                             break;
                         case Uris.SUBJECT_UUID:
