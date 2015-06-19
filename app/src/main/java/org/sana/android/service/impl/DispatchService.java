@@ -199,27 +199,11 @@ public class DispatchService extends Service{
 
         public abstract List<ContentValues> values(Response<T> response);
 
-        public Response<T> fromJson(Message msg){
-            Log.d("JSONHandler<T>", msg.obj.toString());
-            Type type = new TypeToken<Response<T>>(){}.getType();
-            Gson gson = new GsonBuilder()
-                    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                    .registerTypeAdapter(new TypeToken<Date>(){}.getType(),
-                            ISODateAdapter.get())
-                    .create();
-            Response<T> response = gson.fromJson(msg.obj.toString(), type);
-            Log.d("JSONHandler<T>", msg.obj.toString());
-            return response;
-        }
-
-
         public Response<T> fromJson(String json){
             return null;
         }
 
         public abstract ContentValues[] values(T t);
-
-
 
     }
 

@@ -15,10 +15,15 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
-import org.sana.net.Response;
 import org.sana.net.ResponseException;
 import org.sana.text.json.ISODateAdapter;
 
+/**
+ * Generic deserialization handler for HTTPResponse objects returned by the MDS
+ * REST API.
+ *
+ * @param <T> The Type that will be returned when deserializing.
+ */
 public abstract class ApiResponseHandler<T> implements ResponseHandler<T>{
 
     final static Gson gson = new GsonBuilder()
@@ -36,13 +41,8 @@ public abstract class ApiResponseHandler<T> implements ResponseHandler<T>{
         Type type = getType();
         try{
             return gson.fromJson(json, type);
-                } catch (JsonSyntaxException e){
-                    throw new ResponseException(json, e);
-                }
+        } catch (JsonSyntaxException e){
+            throw new ResponseException(json, e);
+        }
     }
-
-    public static <K> K fromJson(String json, Type typeOf){
-        return gson.fromJson(json, typeOf);
-    }
-
 }
