@@ -2,7 +2,7 @@
 <!-- Docs say that all the identifiers should be in lower case -->
 <!-- Strings in Mandarin  -->
 <resources>
-    <string name="app_name">Moca 國語</string>
+    <string name="app_name">國語</string>
     <string name="title_procedures_list">可用的互動</string>
     <string name="title_savedprocedure_list">之前的互動</string>
 	<string name="title_procedure_runner">Moca Perform Procedure</string>

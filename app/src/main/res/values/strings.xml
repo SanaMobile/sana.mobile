@@ -67,7 +67,7 @@
     <string name="general_date_completed">Date Completed</string>
     <string name="general_synchronized">Synchronized</string>
     <string name="general_synchronizing">Synchronizing</string>
-    <string name="general_fetching_patients">Getting patient list</string>
+    <string name="general_fetching_patients">Fetching patient list</string>
     <string name="general_upload_in_progress">Upload in progress</string>
     <string name="general_uploading">Uploading</string>
     <string name="general_incomplete">incomplete</string>
@@ -80,11 +80,11 @@
     <string name="dialog_already_uploaded">This procedure has already been uploaded.</string>
     <string name="dialog_exit_procedure">Exit Current Procedure</string>
     <string name="dialog_save_changes">Save Changes</string>
-    <string name="dialog_incorrect_credentials">Could not upload: OpenMRS username/password incorrect!</string>
+    <string name="dialog_incorrect_credentials">Could not upload: Incorrect credentials!</string>
     <string name="dialog_no_help_available">No help Available</string>
-    <string name="dialog_no_network">Could not check username/password - no network connection.</string>
+    <string name="dialog_no_network">Could not check credentials - no network connection.</string>
     <string name="dialog_no_reload_db_warn">Warning: reloading the database will clear all saved procedures and notifications. Proceed?</string>
-    <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number</string>
+    <string name="dialog_no_phone_name">Phone number required!</string>
     <string name="dialog_loading_procedure">Loading Procedure.</string>
     <string name="dialog_look_up_patient">Looking up patient \"%s\"</string>
     <string name="dialog_logging_in">Logging in.</string>
@@ -242,4 +242,5 @@
     <!-- Encounter Task Strings -->
     <string name="assigned">Assigned</string>
     <string name="completed">Completed</string>
+    <string name="button_main_help">Hlelp</string>
 </resources>
