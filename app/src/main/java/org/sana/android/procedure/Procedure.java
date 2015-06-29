@@ -49,7 +49,8 @@ public class Procedure {
     
     private View cachedView;
     private Context cachedContext;
-    
+
+    private String onComplete = null;
     private Uri instanceUri = null;
     private String title;
     private String author;
@@ -87,6 +88,22 @@ public class Procedure {
         pagesIterator = pages.listIterator();
         
         next();
+    }
+
+    /**
+     * Constructor which provides the onComplete String
+     * @param title
+     * @param author
+     * @param guid
+     * @param pages
+     * @param elements
+     * @param onComplete
+     */
+    public Procedure(String title, String author, String guid, List<ProcedurePage> pages, HashMap<String,
+            ProcedureElement> elements, String onComplete)
+    {
+        this(title,author,guid,pages,elements);
+        this.onComplete = onComplete;
     }
 
     public void init() {
@@ -561,7 +578,7 @@ public class Procedure {
         }
         String title = "Untitled Procedure";
         Node titleNode = node.getAttributes().getNamedItem("title");
-        
+
         if(titleNode != null) {
         	title = titleNode.getNodeValue();
             Log.i(TAG, "Loading Procedure from XML: " + title);
@@ -581,7 +598,6 @@ public class Procedure {
         if(guidNode != null) {
         	uuid = guidNode.getNodeValue();
             Log.i(TAG, "Unique Id of procedure: " + uuid);
-            
         }
         
         String version = "";
@@ -589,9 +605,15 @@ public class Procedure {
         if(n != null) {
         	version = n.getNodeValue();
             Log.i(TAG, "Version: " + version);
-            
         }
-        
+
+        String onComplete = "";
+        n = node.getAttributes().getNamedItem("on_complete");
+        if(n != null) {
+            onComplete = n.getNodeValue();
+            Log.i(TAG, "Version: " + version);
+        }
+
         Procedure procedure = new Procedure(title, author, uuid, pages, elts);
         procedure.version = version;
         return procedure;
