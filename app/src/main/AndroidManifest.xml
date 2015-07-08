@@ -55,17 +55,22 @@
         <provider
             android:name="org.sana.android.db.BinaryProvider"
             android:authorities="org.sana.provider.Binary" />
-
+        <provider
+            android:name=".android.content.MessageQueueProvider"
+            android:authorities="org.sana.provider.dispatch"
+            />
         <activity
             android:name="org.sana.android.activity.PatientRunner"
             android:label="@string/title_register_new_patient" >
             <intent-filter>
+                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
                 <action android:name="android.intent.action.INSERT" />
                 <action android:name="android.intent.action.INSERT_OR_EDIT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.patient" />
             </intent-filter>
             <intent-filter>
+                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
                 <action android:name="android.intent.action.INSERT" />
                 <action android:name="android.intent.action.INSERT_OR_EDIT" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -198,6 +203,7 @@
             android:label="@string/title_procedure_runner" android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
             </intent-filter>
