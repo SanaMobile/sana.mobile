@@ -28,12 +28,19 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.net;
+package org.sana.net.queue;
 
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Map;
 import java.util.Hashtable;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static java.lang.Long.SIZE;
 
 
 /**
@@ -41,20 +48,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  */
 public class MessageQueue<E>{
-    
-    private ConcurrentHashMap<Integer,E> queue;
+
+    public static enum Priority{
+        LOW(SIZE),
+        HIGH(1),
+        FIRST(0);
+        public final long priority;
+        Priority(long i){
+            this.priority = i;
+        }
+        public long val(){
+            return priority;
+        }
+    }
+    private AtomicLong current = new AtomicLong(Priority.FIRST.val());
+
+    private ConcurrentHashMap<Long, Set<E>> queue;
+
     /**
      * Creates a new <code>MessageQueue</code> that is initially empty.
      */
-    public MessageQueue(){}
-   
-    
-    public MessageQueue(int size){
-     
-    }
-    
-    public boolean addAll(Collection<? extends E> c){
-        return false;
+    public MessageQueue(){
+        queue = new ConcurrentHashMap<Long, Set<E>>();
     }
     
     public E clear(){
@@ -97,10 +112,19 @@ public class MessageQueue<E>{
     }
     
     public boolean isEmpty(){
-        return true;
+        boolean empty = true;
+        for(Set<E> e: queue.values()){
+            // exit on first non empty set
+            if(!e.isEmpty()) { break; }
+        }
+        return empty;
     }
     
     public int size(){
-        return 0;
+        int size = 0;
+        for(Set<E> e: queue.values()){
+            size += e.size();
+        }
+        return size;
     }
 }
