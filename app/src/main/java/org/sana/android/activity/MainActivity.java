@@ -128,6 +128,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         case RESULT_OK:
             if(data != null)
                 onUpdateAppState(data);
+            Uri dataUri = (data != null)? data.getData(): Uri.EMPTY;
             Intent intent = new Intent();
             onSaveAppState(intent);
             switch(requestCode){
@@ -144,7 +145,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                 startActivityForResult(intent, PICK_PROCEDURE);
                 break;
             case PICK_PROCEDURE:
-                intent.setAction(Intent.ACTION_VIEW)
+                intent.setAction(Intents.ACTION_RUN_PROCEDURE)
                 .setData(data.getData())
                 .putExtras(data);
                 startActivityForResult(intent, RUN_PROCEDURE);
@@ -186,9 +187,26 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                     mEncounter = Uri.EMPTY;
                     break;
             case RUN_PROCEDURE:
-                    startService(data);
-                    mEncounter = Uri.EMPTY;
+                Intent next = null;
+                String onComplete = data.getStringExtra(Intents.EXTRA_ON_COMPLETE);
+                // Handle any content type specific actions
+                switch(Uris.getDescriptor(dataUri)){
+                    case Uris.ENCOUNTER_ITEM:
+                        startService(data);
                     break;
+                    default:
+                }
+                mEncounter = Uri.EMPTY;
+                // If procedure onComplete was set start it
+                try {
+                    next = Intent.parseUri(onComplete, Intent
+                            .URI_INTENT_SCHEME);
+                    onSaveAppState(next);
+                    startActivityForResult(next, RUN_PROCEDURE);
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
             default:
             }
 
@@ -571,12 +589,11 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
                             getString(R.string.procs_subject_default)))
             .putExtra(Intents.EXTRA_OBSERVER, mObserver);
-            startActivityForResult(intent, RUN_REGISTRATION);
+            startActivityForResult(intent, Intents.RUN_PROCEDURE);
             break;
         case R.id.btn_main_procedures:
             intent = new Intent(Intent.ACTION_PICK);
             intent.setDataAndType(Procedures.CONTENT_URI, Procedures.CONTENT_TYPE);
-
             startActivityForResult(intent, PICK_PROCEDURE);
             break;
         case R.id.btn_main_tasks:
