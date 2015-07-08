@@ -1,4 +1,4 @@
-package org.sana.qos;
+package org.sana.net.qos;
 
 import java.util.Date;
 

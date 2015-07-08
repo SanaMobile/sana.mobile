@@ -1,10 +1,9 @@
-package org.sana.android.qos;
+package org.sana.android.net.qos;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.sana.android.util.Dates;
-import org.sana.qos.QOS;
+import org.sana.net.qos.QOS;
 
 import java.util.Date;
 
