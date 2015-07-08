@@ -462,7 +462,14 @@ public class Procedure {
     public String getVersion(){
     	return version;
     }
-    
+
+    public String getOnComplete() {
+        return onComplete;
+    }
+
+    public void setOnComplete(String onComplete) {
+        this.onComplete = onComplete;
+    }
     /**
      * Writes the procedure, including all of its child elements, to an XML 
      * String. 
