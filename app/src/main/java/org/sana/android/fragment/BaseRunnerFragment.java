@@ -427,9 +427,11 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         Intent data;
         if(mProcedureListener != null){
             data = getResult(Intents.ACTION_CREATE);
+            data.putExtra(Intents.EXTRA_ON_COMPLETE, mProcedure.getOnComplete());
             mProcedureListener.onProcedureComplete(data);
         } else{
             data = getResult();
+            data.putExtra(Intents.EXTRA_ON_COMPLETE, mProcedure.getOnComplete());
             getActivity().setResult(Activity.RESULT_OK, data);
             getActivity().finish();
     	}
