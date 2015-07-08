@@ -278,7 +278,10 @@ public final class Intents{
 	
 	/** A content: Uri holding the current observation task */ 
 	public static final String EXTRA_TASK_OBSERVATION = "org.sana.android.intent.extra.task.OBSERVATION";
-	
+
+	/** */
+	public static final String EXTRA_ON_COMPLETE = "org.sana.android.intent" +
+			".extra.ON_COMPLETE";
 
 	public static final String SERVICE_DISPATCH = "org.sana.service.START_DISPATCH";
 	
