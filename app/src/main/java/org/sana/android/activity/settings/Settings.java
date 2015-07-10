@@ -38,19 +38,7 @@ public class Settings extends PreferenceActivity {
 
     /** Sets the default values for the the preferences */
     private void initPreferences() {
-        
-        // Phone name
-        String phoneNum = ((TelephonyManager) getSystemService(
-                Context.TELEPHONY_SERVICE))
-                        .getLine1Number();
-        Log.d(TAG, "Phone number of this phone: " + phoneNum);
-        if (TextUtils.isEmpty(phoneNum))
-            phoneNum = Constants.DEFAULT_PHONE_NUMBER;
-        EditTextPreference prefPhoneName = (EditTextPreference) findPreference(Constants.PREFERENCE_PHONE_NAME);
-        if (TextUtils.isEmpty(prefPhoneName.getText())) {
-            prefPhoneName.setText(phoneNum);
-        }
-        
+
         // Health worker username for OpenMRS
         EditTextPreference prefEmrUsername = (EditTextPreference) findPreference(Constants.PREFERENCE_EMR_USERNAME);
         if (TextUtils.isEmpty(prefEmrUsername.getText())) {
