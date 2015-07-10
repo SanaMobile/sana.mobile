@@ -1,7 +1,10 @@
 package org.sana.android.procedure;
 
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 
+import org.sana.android.Constants;
+import org.sana.android.app.Preferences;
 import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.provider.Observations;
 import org.w3c.dom.Node;
@@ -10,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -24,7 +28,7 @@ import android.view.View;
  * @author Sana Dev Team
  */
 public class HiddenElement extends ProcedureElement {
-	
+	public static final String TAG = HiddenElement.class.getSimpleName();
     /** {@inheritDoc} */
     @Override
     protected View createView(Context c) {
@@ -40,9 +44,27 @@ public class HiddenElement extends ProcedureElement {
     /** {@inheritDoc} */
     @Override
     public String getAnswer() {
-        if(!isViewActive())
-            return answer;
-        return "";
+        Log.i(TAG, "getAnswer()");
+        // set the default value if answer is empty
+        if(TextUtils.isEmpty(answer) && hasDefault()){
+            Log.d(TAG, "\tUsing default value");
+            setAnswer(getDefault());
+        }
+        //if(!isViewActive())
+        //    return answer;)
+        Log.d(TAG, "..." + answer);
+        return answer;
+    }
+
+    public void setAnswer(String answer){
+        Log.i(TAG, "setAnswer(String)");
+        Log.d(TAG, "..." + answer);
+        // set the default value if answer is empty
+        if(TextUtils.isEmpty(answer) && hasDefault()){
+            Log.d(TAG, "\tUsing default value");
+            answer = getDefault();
+        }
+        this.answer = answer;
     }
     
     @Override
@@ -62,7 +84,32 @@ public class HiddenElement extends ProcedureElement {
 		}
 		return intent;
     }
-    
+
+
+    public String getDefault(){
+        Log.i(TAG, "getDefault()");
+        final SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        StringBuilder sb = new StringBuilder();
+        String val = super.getDefault();
+        Log.d(TAG, "..." + val);
+        for(String str:val.split(":")){
+            String segment = "";
+            if(str.length() > 1 && str.startsWith("@")){
+                    str = str.substring(1);
+                    if(str.compareTo("DEVICE") == 0){
+                        // Get device id
+                        str = Preferences.getString(getContext(),
+                                Constants.PREFERENCE_PHONE_NAME);
+                    } else if (str.compareTo("NOW") == 0){
+                        // formats current date time as 'yyyyMMddHHmmss'
+                        str = df.format(new java.util.Date());
+                    }
+            }
+            sb.append(str);
+        }
+        return sb.toString();
+    }
+
     /** Default constructor */
     private HiddenElement(String id, String question, String answer, 
     		String concept, String figure, String audio) 
