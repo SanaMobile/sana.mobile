@@ -1,0 +1,56 @@
+<Procedure
+    title="Patient Registration: Short Form"
+    author="Sana"
+    uuid="18785afb-6160-45a0-ac8c-1f5cbfaa6d92"
+    version="1.0"
+    locale="en"
+    class="org.sana.core.Subject"
+	onComplete="intent://org.sana.provider/core/procedure/5299055a-c5e6-47e7-b649-dc17dac6019b#Intent;scheme=content;action=org.sana.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
+	<Page>
+		<Element type="ENTRY" id="1"
+		    concept="FIRST NAME" 
+		    required="true"
+		    question="Prenom"
+		    answer=""/>
+        <Element type="ENTRY" id="2"
+		   concept="FAMILY NAME"
+		   required="true"
+		   question="Nòm" answer=""/>
+	</Page>
+	<Page>
+		<Element
+			type="SELECT" id="3"
+			concept="GENDER"
+			question="Sexe"
+			required="true"
+            answer=""
+            choices="M;F"
+            values="M;F"
+			/>
+	</Page>
+    <Page>
+    <Element type="DATE"
+             id="4"
+             concept="DOB"
+             required="true"
+             helpText="Enter the patient's date of birth."
+             question="Dat de Naissance"
+             answer="" />
+    </Page>
+    <Page>
+        <Element id="5"
+                 type="HIDDEN"
+                 concept="SYSTEM ID"
+                 question="HAS #"
+                 default="U@DEV:@NOW:"/>
+    </Page>
+	<!--
+	<Page>
+		<Element
+		    id="patientPhoto"
+		    type="PICTURE"
+		    concept="PATIENT PHOTO"
+		    question="Foto"/>
+	</Page>
+	-->
+</Procedure>
