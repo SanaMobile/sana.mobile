@@ -104,7 +104,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
     @Override
     public void storeCurrentProcedure(boolean finished) {
         Log.i(TAG, "storeCurrentProcedure(boolean)");
-        storeCurrentProcedure(finished, true);
+        storeCurrentProcedure(finished, false);
     }
 
     public void storeCurrentProcedure(boolean finished, boolean skipHidden) {
@@ -117,76 +117,46 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
         // Update the patient object from the elements
         ProcedurePage page = mProcedure.current();
         Log.d(TAG, "...Patient: " + String.valueOf(mPatient));
-        /*
-        List<ProcedureElement> elements = page.getElements();
-        Log.d(TAG, "...page has n=" + elements.size() + " elements");
-        for(ProcedureElement pe: elements){
-            Log.d(TAG, "...element: id=" + pe.getId() + ", " +
-                    "value="+pe.getAnswer());
-            if(pe.getId().equals(Patients.Contract.PATIENT_ID))
-                mPatient.setSystemId(pe.getAnswer());
-            else if(pe.getId().equals(Patients.Contract.GIVEN_NAME))
-                mPatient.setGiven_name(pe.getAnswer());
-            else if(pe.getId().equals(Patients.Contract.FAMILY_NAME))
-                mPatient.setFamily_name(pe.getAnswer());
-            else if(pe.getId().equals(Patients.Contract.GENDER))
-                mPatient.setGender(pe.getAnswer());
-            else if(pe.getId().equals(Patients.Contract.DOB)) {
+
+        // Set any patient fields from current page elements
+        for(String concept: page.getConcepts()){
+            String id = page.elementWithConcept(concept);
+            String val = page.getElementValue(id);
+            String field = concept.replace(" ","_");
+            Log.d(TAG,"\tsetting field'" + field + "' for concept '" +
+                    concept + "'");
+            if(field.compareToIgnoreCase(Patients.Contract.PATIENT_ID) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.PATIENT_ID +"'=" +val);
+                mPatient.setSystemId(val);
+            }
+            if(field.compareToIgnoreCase(Patients.Contract.GIVEN_NAME) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.GIVEN_NAME +"'=" +val);
+                mPatient.setGiven_name(val);
+            }
+            if(field.compareToIgnoreCase(Patients.Contract.FAMILY_NAME) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.FAMILY_NAME +"'=" +val);
+                mPatient.setFamily_name(val);
+            }
+            if(field.compareToIgnoreCase(Patients.Contract.DOB) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.DOB +"'=" +val);
                 try {
-                    Date patientDob = DateUtil.parseDate(pe.getAnswer());
-                    mPatient.setDob(patientDob);
+                    mPatient.setDob(DateUtil.parseDate(val));
                 } catch (ParseException e) {
                     Log.e(TAG, e.getMessage());
                     e.printStackTrace();
                 }
-            } else if(pe.getId().equals(Patients.Contract.IMAGE)) {
-                URI file = URI.create(
-                        page.getElementValue(Patients.Contract.IMAGE));
+            }
+            if(field.compareToIgnoreCase(Patients.Contract.GENDER) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.GENDER +"'=" +val);
+                mPatient.setGender(val);
+            }
+            if(field.compareToIgnoreCase(Patients.Contract.IMAGE) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.IMAGE +"'=" +val);
+                URI file = URI.create(val);
                 mPatient.setImage(file);
             }
         }
-        */
-
-        // Extract patient information from procedure
-        if (page.hasElementWithId(Patients.Contract.PATIENT_ID)) {
-            Log.d(TAG, "...setting patient system id");
-            mPatient.setSystemId(page.getElementValue(Patients.Contract.PATIENT_ID));
-        }
-
-        if (page.hasElementWithId(Patients.Contract.GIVEN_NAME)) {
-            Log.d(TAG, "...setting patient given name");
-            mPatient.setGiven_name(page.getElementValue(Patients.Contract.GIVEN_NAME));
-        }
-
-        if (page.hasElementWithId(Patients.Contract.FAMILY_NAME)) {
-            Log.d(TAG, "...setting patient last name");
-            mPatient.setFamily_name(page.getElementValue(Patients.Contract.FAMILY_NAME));
-        }
-
-        if (page.hasElementWithId(Patients.Contract.DOB)) {
-            Log.d(TAG, "...setting patient dob");
-            try {
-                Date patientDob = DateUtil.parseDate(page.getElementValue
-                        (Patients.Contract.DOB));
-            } catch (ParseException e) {
-                Log.e(TAG, e.getMessage());
-                e.printStackTrace();
-            }
-        }
-
-        if (page.hasElementWithId(Patients.Contract.GENDER)) {
-            Log.d(TAG, "...setting patient gender");
-            mPatient.setGender(page.getElementValue(Patients.Contract.GENDER));
-        }
-
-        // TODO figure out patient image
-        if (page.hasElementWithId(Patients.Contract.IMAGE)) {
-            Log.d(TAG, "...setting patient image");
-            URI file = URI.create(
-                    page.getElementValue(Patients.Contract.IMAGE));
-            mPatient.setImage(file);
-        }
-
+        Log.d(TAG, "...Updated Patient: " + String.valueOf(mPatient));
         // Only save to database after we are finished
         Log.d(TAG,"...finished=" + finished);
         if (finished) {
@@ -245,10 +215,14 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                 uuid = ModelWrapper.getUuid(procedure,getActivity().getContentResolver());
                 procedure = Uris.withAppendedUuid(Procedures.CONTENT_URI, uuid);
             }
-            try {
 
+
+            try {
+                // Check for the
+                int procedureResource = intent.getIntExtra(
+                        Intents.EXTRA_PROCEDURE_ID, R.raw.findpatient);
                 InputStream rs = getActivity().getResources()
-                        .openRawResource(R.raw.findpatient);
+                        .openRawResource(procedureResource);
                 byte[] data = new byte[rs.available()];
                 rs.read(data);
                 procedureXml = new String(data);
