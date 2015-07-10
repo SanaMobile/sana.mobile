@@ -35,9 +35,9 @@ public class BasicNetworkSettings extends PreferenceActivity {
                 .getLine1Number();
         String deviceId = ((TelephonyManager) getSystemService(
                 Context.TELEPHONY_SERVICE)).getDeviceId();
-        Log.d(TAG, "...line1 number: " + phoneNum);
+        Log.d(TAG, "...line1 number: " + line1Number);
         Log.d(TAG, "...device id: " + deviceId);
-        String phoneNum = (!TextUtils.isEmpty(phoneNum))? line1Number:
+        String phoneNum = (!TextUtils.isEmpty(line1Number))? line1Number:
                 (!TextUtils.isEmpty(deviceId))? deviceId: Constants
                         .DEFAULT_PHONE_NUMBER;
         EditTextPreference prefPhoneName = (EditTextPreference) findPreference(Constants.PREFERENCE_PHONE_NAME);
