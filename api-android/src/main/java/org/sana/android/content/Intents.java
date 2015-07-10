@@ -263,6 +263,8 @@ public final class Intents{
 	
 	/** A content: Uri holding the current procedure */
 	public static final String EXTRA_PROCEDURE = "org.sana.android.intent.extra.PROCEDURE";
+	public static final String EXTRA_PROCEDURE_ID = "org.sana.android.intent" +
+			".extra.PROCEDURE_ID";
 	
 	/** A content: Uri holding the current subject */ 
 	public static final String EXTRA_SUBJECT = "org.sana.android.intent.extra.SUBJECT";
