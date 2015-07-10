@@ -4,24 +4,24 @@
 
     <integer name="port_mds">443</integer>
     <string name="scheme_mds">https</string>
-    <string name="host_mds">project1.sana.csail.mit.edu</string>
+    <string name="host_mds" translatable="false">project1.sana.csail.mit.edu</string>
     
-    <string name="path_root">/mds/</string>
+    <string name="path_root" translatable="false">/mds/</string>
 
-    <string name="path_root_training">test/mds/</string>
+    <string name="path_root_training" translatable="false">test/mds/</string>
     
-    <string name="path_session">core/session/</string>
-    <string name="path_encounter"></string>
-    <string name="path_notification"></string>
-    <string name="path_observation"></string>
+    <string name="path_session" translatable="false">core/session/</string>
+    <string name="path_encounter" translatable="false"></string>
+    <string name="path_notification" translatable="false"></string>
+    <string name="path_observation" translatable="false"></string>
     <string name="path_procedure"></string>
-    <string name="path_subject">core/subject/</string>
-    <string name="path_subject_sync">json/patient/list/</string>
-    <string name="path_sch_encounter">sch/encounter/</string>
-    <string name="path_sp_submit">json/procedure/submit/</string>
-    <string name="path_etasks">tasks/encounter/</string>
-    <string name="path_otasks">tasks/observation/</string>
-    <string name="path_app">clients/</string>
+    <string name="path_subject" translatable="false">core/subject/</string>
+    <string name="path_subject_sync" translatable="false">json/patient/list/</string>
+    <string name="path_sch_encounter" translatable="false">sch/encounter/</string>
+    <string name="path_sp_submit" translatable="false">json/procedure/submit/</string>
+    <string name="path_etasks" translatable="false">tasks/encounter/</string>
+    <string name="path_otasks" translatable="false">tasks/observation/</string>
+    <string name="path_app" translatable="false">clients/</string>
     <integer name="packet_size">20</integer>
 
 </resources>
