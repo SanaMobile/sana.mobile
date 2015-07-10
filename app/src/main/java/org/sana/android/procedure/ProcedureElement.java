@@ -127,14 +127,17 @@ public abstract class ProcedureElement {
     protected String answer;
     protected String concept;
     protected String action = null;
-    
+
     // Resource of a corresponding figure for this element.
     protected String figure;
     // Resource of a corresponding audio prompt for this element.
     protected String audioPrompt;
     // Whether a null answer is allowed
     private boolean bRequired = false;
-    
+
+    // Optional attributes - specific element types must implement as necessary
+    private String defaultValue = null;
+
     private Procedure procedure;
     private Context cachedContext;
     private View cachedView;
@@ -318,6 +321,7 @@ public abstract class ProcedureElement {
         sb.append("concept=\"" + getConcept()+ "\" ");
         sb.append("audio=\"" + getAudioPrompt()+ "\" ");
         sb.append("required=\"" + isRequired()+ "\" ");
+        sb.append("default=\"" + getDefault()+ "\" ");
         appendOptionalAttributes(sb);
         sb.append("/>\n");
     }
@@ -465,8 +469,13 @@ public abstract class ProcedureElement {
     }
     
     public static void parseOptionalAttributes(Node node, ProcedureElement el){
-    	String actionStr = SanaUtil.getNodeAttributeOrDefault(node, 
+        Log.i(TAG, "parseOptionalAttributes(Node,ProcedureElement)");
+        String actionStr = SanaUtil.getNodeAttributeOrDefault(node,
         		"action", "");
+        String val = SanaUtil.getNodeAttributeOrDefault(node,
+                "default", "");
+        el.setDefault(val);
+        Log.i(TAG, "..." + val);
         if(!TextUtils.isEmpty(actionStr))
         	el.action = actionStr;
     }
@@ -712,7 +721,19 @@ public abstract class ProcedureElement {
 		launcher.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		getContext().startActivity(launcher);
     }
-    
+
+    public String getDefault(){
+        return defaultValue;
+    }
+
+    public void setDefault(String defaultValue){
+        this.defaultValue = defaultValue;
+    }
+
+    public boolean hasDefault(){
+        return TextUtils.isEmpty(defaultValue);
+    }
+
     /** 
      * Creates the element from an XML procedure definition.
      * 
