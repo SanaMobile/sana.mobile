@@ -2,5 +2,5 @@
 <resources>
     <string name="admin_username">admin</string>
     <string name="admin_password">Sanamobile1</string>
-    <string name="keypass">Sanamobile1</string>
+    <string name="keypass" translatable="false">Sanamobile1</string>
 </resources>
