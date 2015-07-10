@@ -206,6 +206,27 @@ public class ProcedurePage {
         return result;
     }
 
+	public String elementWithConcept(String concept) {
+		String result = null;
+		for (ProcedureElement el:elements) {
+			String compare = concept.replace("_"," ").toUpperCase();
+			if (el.getConcept().compareToIgnoreCase(compare) == 0) {
+				result = el.getId();
+				break;
+			}
+		}
+		return result;
+	}
+
+    public List<String> getConcepts(){
+        List<String> result = new ArrayList<String>();
+        for (ProcedureElement el:elements) {
+            result.add(el.getConcept());
+        }
+        return result;
+    }
+
+
 	/**
 	 * @return A list of elements which require non-standard processing.
 	 */
