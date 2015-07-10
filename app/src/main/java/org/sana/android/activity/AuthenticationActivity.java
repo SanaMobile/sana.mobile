@@ -2,7 +2,7 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.activity.settings.BasicNetworkSettings;
+import org.sana.android.activity.settings.BasicSettings;
 import org.sana.android.app.Locales;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
@@ -296,7 +296,7 @@ public class AuthenticationActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_configure:
-                Intent configure = new Intent(this, BasicNetworkSettings.class);
+                Intent configure = new Intent(this, BasicSettings.class);
                 startActivity(configure);
                 break;
         default:
