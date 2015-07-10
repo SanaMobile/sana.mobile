@@ -4,11 +4,14 @@ package org.sana.android.activity.settings;
 import org.sana.R;
 import org.sana.android.Constants;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 
 /**
  * Creates the settings window for communicating with the Sana network layer If
@@ -32,7 +35,18 @@ public class NetworkSettings extends PreferenceActivity {
 
     /** Sets the default values for the preference screen */
     private void initPreferences() {
+        // Phone name
+        String phoneNum = ((TelephonyManager) getSystemService(
+                Context.TELEPHONY_SERVICE))
+                .getLine1Number();
+        Log.d(TAG, "Phone number of this phone: " + phoneNum);
+        if (TextUtils.isEmpty(phoneNum))
+            phoneNum = Constants.DEFAULT_PHONE_NUMBER;
 
+        EditTextPreference prefPhoneName = (EditTextPreference) findPreference(Constants.PREFERENCE_PHONE_NAME);
+        if (TextUtils.isEmpty(prefPhoneName.getText())) {
+            prefPhoneName.setText(phoneNum);
+        }
         // Sana Dispatch Server URL
         EditTextPreference prefMdsUrl = (EditTextPreference) findPreference(Constants.PREFERENCE_MDS_URL);
         if (TextUtils.isEmpty(prefMdsUrl.getText())) {
