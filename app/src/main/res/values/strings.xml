@@ -9,14 +9,14 @@
     <string name="title_patients_list">All Patients</string>
     <string name="title_procedures_list">Available Procedures</string>
     <string name="title_savedprocedure_list">Saved Procedures</string>
-    <string name="title_procedure_runner">Sana Perform Procedure</string>
-    <string name="title_notification_viewer">Sana Notification Viewer</string>
+    <string name="title_procedure_runner">Perform Procedure</string>
+    <string name="title_notification_viewer">Notification Viewer</string>
     <string name="title_notifications_list">Notifications List (by Patient ID)</string>
     <string name="title_help_list">Help List</string>
-    <string name="title_settings">Sana Settings</string>
-    <string name="title_network_settings">Sana Network Settings</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_network_settings">Network Settings</string>
     <string name="title_resource_settings">Sana Resource Settings</string>
-    <string name="title_upload_service">Sana Upload Service</string>
+    <string name="title_upload_service">Upload Service</string>
     <string name="title_patient_list">Patient List</string>
     <string name="title_synchronize">Sync</string>
     <string name="title_synch_subjects">Sync Patients</string>
@@ -82,9 +82,9 @@
     <string name="dialog_save_changes">Save Changes</string>
     <string name="dialog_incorrect_credentials">Could not upload: OpenMRS username/password incorrect!</string>
     <string name="dialog_no_help_available">No help Available</string>
-    <string name="dialog_no_network">Could not check username/password - no network connection.</string>
-    <string name="dialog_no_reload_db_warn">Warning: reloading the database will clear all saved procedures and notifications. Proceed?</string>
-    <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number</string>
+    <string name="dialog_no_network">Could not check credentials - no network connection.</string>
+    <string name="dialog_no_reload_db_warn">Warning: reloading the database will clear all saved data. Proceed?</string>
+    <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number.</string>
     <string name="dialog_loading_procedure">Loading Procedure.</string>
     <string name="dialog_look_up_patient">Looking up patient \"%s\"</string>
     <string name="dialog_logging_in">Logging in.</string>
@@ -105,10 +105,11 @@
     <string name="menu_view_pages">View pages</string>
 
     <!-- Settings Activity Strings -->
-    <string name="settings_title">Sana Configuration</string>
-    <string name="settings_network_title">Sana Configuration</string>
-    <string name="settings_resource_title">Sana Configuration</string>
-    <string name="setting_mds_url">Mobile Dispatch Server URL</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_network_title">Advanced Network Configuration</string>
+    <string name="settings_basic_network_title">Basic Network Configuration</string>
+    <string name="settings_resource_title">Resource settings</string>
+    <string name="setting_mds_url">Mobile Dispatch Server</string>
     <string name="setting_mds_url_summary">Hostname or IP address of MDS, do NOT add a trailing /</string>
     <string name="setting_mds_port">Mobile Dispatch Server Port</string>
     <string name="setting_mds_port_summary">Do not change unless using non-standard port</string>
@@ -149,7 +150,7 @@
     <string name="setting_procedure_summary">update, add, and delete available procedures</string>
     <string name="setting_resource">Sana Resources</string>
     <string name="setting_resource_summary">Configure and view available resources</string>
-    <string name="setting_network">Sana Network</string>
+    <string name="setting_network">Network settings</string>
     <string name="setting_network_summary">Configure network settings</string>
     <string name="setting_upload_foreground">Foreground upload</string>
     <string name="setting_upload_foreground_summary">The app will display a progress dialog while uploading encounter data.</string>
@@ -235,11 +236,14 @@
     <string name="authentication_sana">Sana</string>
     <string name="authentication_username">Username</string>
     <string name="authentication_password">Password</string>
-    <string name="authentication_login">Log-In</string>
+    <string name="authentication_login">Login</string>
     <string name="authentication_logins_remaining">Remaining</string>
     <string name="msg_login_failed">Login attempt failed!</string>
 
     <!-- Encounter Task Strings -->
     <string name="assigned">Assigned</string>
     <string name="completed">Completed</string>
+    <string name="button_main_help">Help</string>
+    <string name="button_main_unregistered_patient_encounter">Unregistered patient visit</string>
+    <string name="title_basic_settings">Basic Settings</string>
 </resources>
