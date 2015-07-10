@@ -17,8 +17,8 @@ import org.sana.android.Constants;
  *
  * @author Sana Development
  */
-public class BasicNetworkSettings extends PreferenceActivity {
-    public static final String TAG = BasicNetworkSettings.class.getSimpleName();
+public class BasicSettings extends PreferenceActivity {
+    public static final String TAG = BasicSettings.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
