@@ -4,16 +4,21 @@
     style="@style/Widget.Button.Large.Dark"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/main_background"
-    android:gravity="fill_vertical"
-    android:orientation="vertical" >
+              android:gravity="fill_vertical"
+    android:orientation="vertical"
+              android:background="@drawable/main_background">
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo" />
-    
+        android:src="@drawable/logo"
+        android:cropToPadding="false"
+        android:adjustViewBounds="true"
+        android:maxHeight="64dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"/>
+
     <Button
         android:id="@+id/btn_main_tasks"
         style="@style/Widget.Button.Large.Dark"
@@ -22,14 +27,6 @@
         android:onClick="submit"
         android:text="@string/button_main_view_scheduled_tasks" />
 
-<!--
-    <Button
-        android:id="@+id/btn_main_register_patient"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="submit"
-        android:text="@string/button_main_register_patients" />
--->    
 
     <Button
         android:id="@+id/btn_main_select_patient"
@@ -39,14 +36,30 @@
         android:onClick="submit"
         android:text="@string/button_main_select_patient" />
 
-<!--
     <Button
-        android:id="@+id/btn_main_procedures"
+        android:id="@+id/btn_main_unregistered_subject"
+        style="@style/Widget.Button.Large.Dark"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:onClick="submit"
-        android:text="@string/button_main_select_procedure" />
--->
+        android:text="@string/button_main_unregistered_patient_encounter" />
+
+    <!--
+        <Button
+            android:id="@+id/btn_main_register_patient"
+            style="@style/Widget.Button.Large.Dark"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:text="@string/button_main_register_patients" />
+
+        <Button
+            android:id="@+id/btn_main_procedures"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:text="@string/button_main_select_procedure" />
+    -->
 
     <Button
         android:id="@+id/btn_main_transfers"
