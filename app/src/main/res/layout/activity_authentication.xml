@@ -6,15 +6,31 @@
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
     tools:context="org.sana.android.activity.AuthenticationActivity"
-    android:background="@drawable/bg_hdpi">
+    android:background="@drawable/bg_hdpi"
+    >
 
-    <ImageView
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/authentication_sana"
-        android:src="@drawable/logo"
-        android:padding="5dp"
-        android:layout_margin="0dp" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/authentication_sana"
+            android:src="@drawable/logo"
+            android:padding="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="0dp"
+            android:maxWidth="128dp"
+            android:adjustViewBounds="false"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/form"
@@ -23,8 +39,8 @@
         android:orientation="vertical"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp">
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
 
         <EditText
             android:id="@+id/input_username"
@@ -49,27 +65,33 @@
 
         <Button
             android:id="@+id/btn_login"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/authentication_login"
             android:onClick="submit"
             android:layout_margin="5dp"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="5dp"
+            android:minWidth="128dp"
+            android:nestedScrollingEnabled="false"
+            android:layout_gravity="center"/>
         <Button
             android:id="@+id/btn_exit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/general_exit"
             android:onClick="submit"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:minWidth="128dp"/>
         <Button
             android:id="@+id/btn_configure"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_configure"
             android:onClick="submit"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:minWidth="128dp"
+            android:layout_gravity="center"/>
 
 
     </LinearLayout>
