@@ -2,14 +2,14 @@
 <!-- Docs say that all the identifiers should be in lower case -->
 <!-- Strings in Mandarin  -->
 <resources>
-    <string name="app_name">Moca 國語</string>
+    <string name="app_name">Sana 國語</string>
     <string name="title_procedures_list">可用的互動</string>
     <string name="title_savedprocedure_list">之前的互動</string>
-	<string name="title_procedure_runner">Moca Perform Procedure</string>
-	<string name="title_notification_viewer">Moca Notification Viewer</string>
+	<string name="title_procedure_runner">Perform Procedure</string>
+	<string name="title_notification_viewer">Notification Viewer</string>
 	<string name="title_notifications_list">Notifications List (by Patient ID)</string>
 	<string name="title_settings">Moca 設置</string>
-	<string name="title_upload_service">Moca 上傳服務</string>
+	<string name="title_upload_service">上傳服務</string>
 	<string name="button_main_new_encounter">開始一個新的互動</string>
 	<string name="button_main_view_prior_encounters">之前的互動</string>
 	<string name="button_main_view_notifications">瀏覽通知</string>

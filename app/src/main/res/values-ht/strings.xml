@@ -35,7 +35,7 @@
     <string name="button_main_select_procedure">Chwazi Pwosedi</string>
     <string name="button_main_select_patient">Chwazi Pasyan</string>
     <string name="button_main_training_mode">Pratike</string>
-    <string name="button_configure">Configure</string>
+    <string name="button_configure">Paramètres</string>
 
     <!--  General Phrases -->
     <string name="general_ok">Oke</string>
@@ -78,16 +78,16 @@
     <!--  Dialog Strings -->
     <string name="dialog_already_uploaded">Sa a te pwosedi deja te Uploaded.</string>
     <string name="dialog_exit_procedure">Sòti Kouran Pwosedi</string>
-    <string name="dialog_save_changes">Save Changes</string>
+    <string name="dialog_save_changes">Save chanjman?</string>
     <string name="dialog_incorrect_credentials">Could not upload: OpenMRS username/password incorrect!</string>
     <string name="dialog_no_help_available">No help Available</string>
-    <string name="dialog_no_network">Could not check username/password - no network connection.</string>
-    <string name="dialog_no_reload_db_warn">Warning: reloading the database will clear all saved procedures and notifications. Proceed?</string>
-    <string name="dialog_no_phone_name">Phone Name is blank! Must enter a phone number</string>
+    <string name="dialog_no_network">Pa t \'kapab tcheke kalifikasyon - pa gen okenn koneksyon rezo.</string>
+    <string name="dialog_no_reload_db_warn">Avètisman: rupture baz done a pral klè tout done sove. Kontinye?</string>
+    <string name="dialog_no_phone_name">Non Telefòn se vid! Dwe antre nan yon nimewo telefòn.</string>
     <string name="dialog_loading_procedure">Loading Pwosedi</string>
     <string name="dialog_look_up_patient">Leve je l \'pasyan \"%s\"</string>
     <string name="dialog_logging_in">Otantifye</string>
-    <string name="dialog_synchronizing">senkronism</string>
+    <string name="dialog_synchronizing">Senkronism</string>
 
     <!-- Menu options strings -->
     <string name="menu_new_patient">Pasyan New</string>
@@ -104,48 +104,48 @@
     <string name="menu_view_pages">wè paj</string>
 
     <!-- Settings Activity Strings -->
-    <string name="settings_title">Sana konfigirasyon</string>
-    <string name="settings_network_title">Sana konfigirasyon</string>
-    <string name="settings_resource_title">Sana konfigirasyon</string>
-    <string name="setting_mds_url">Mobile Dispatch Server URL</string>
-    <string name="setting_mds_url_summary">IP address of MDS, do NOT add a trailing /</string>
-    <string name="setting_secure">Secure Transmission</string>
-    <string name="setting_secure_summary">Encrypt data sent over the network</string>
-    <string name="setting_phone_name">Phone Name</string>
-    <string name="setting_phone_name_summary">(typically the phone number)</string>
-    <string name="setting_pkt_size">Initial Packet Size</string>
-    <string name="setting_pkt_size_summary">(should be lower in poor coverage areas)</string>
+    <string name="settings_title">Konfigirasyon</string>
+    <string name="settings_network_title">Rezo konfigirasyon</string>
+    <string name="settings_resource_title">Resous konfigirasyon</string>
+    <string name="setting_mds_url">Mobile Dispatch Server</string>
+    <string name="setting_mds_url_summary">IP adrès nan medsen, PA ajoute yon fin /</string>
+    <string name="setting_secure">Sekirite téléchargement</string>
+    <string name="setting_secure_summary">Done Chiffrer voye sou rezo a</string>
+    <string name="setting_phone_name">Non telefòn</string>
+    <string name="setting_phone_name_summary">Itilize nimewo telefòn</string>
+    <string name="setting_pkt_size">Inisyal gwosè pake</string>
+    <string name="setting_pkt_size_summary">Pwoteksyon redwi nan zòn pòv</string>
     <string name="setting_storage_directory">External Device File Folder</string>
     <string name="setting_storage_directory_summary">Folder where binary files for upload are stored</string>
-    <string name="setting_emr_refresh">OpenMRS Database Refresh Interval</string>
-    <string name="setting_emr_refresh_summary">Interval at which the OpenMRS database will be cached, in hours</string>
+    <string name="setting_emr_refresh">OpenMRS Database Refresh Entèval</string>
+    <string name="setting_emr_refresh_summary">Entèval nan ki pral baz done a OpenMRS dwe kach, nan èdtan</string>
     <string name="setting_emr_username">Username</string>
     <string name="setting_emr_username_summary">Username for medical records system</string>
     <string name="setting_emr_password">Password</string>
-    <string name="setting_emr_password_summary">Password for medical records system</string>
+    <string name="setting_emr_password_summary">Modpas pou medikal sistèm dosye</string>
     <string name="setting_proxy_host">Proxy Hostname</string>
-    <string name="setting_proxy_host_summary">Enter the hostname of a proxy to use if required  (ex: 10.10.1.100). Leave blank if not required.</string>
+    <string name="setting_proxy_host_summary">Antre nan hostname a nan yon prokurasyon yo sèvi ak si li nesesè (ansyen: 10.10.1.100). Kite vid si se pa yo mande yo.</string>
     <string name="setting_proxy_port">Proxy Port</string>
-    <string name="setting_proxy_port_summary">Enter the port number of your proxy if required (ex: 9401). Leave blank if not required.</string>
-    <string name="setting_bandwidth">Estimated Network Bandwidth </string>
-    <string name="setting_bandwidth_summary">Used for calculating timeouts</string>
-    <string name="setting_bandwidth_dialog">The network bandwidth value will be used to calculate appropriate timeouts for uploading. Enter in kilobytes per second.</string>
-    <string name="setting_image_scale">Image downscale factor</string>
-    <string name="setting_image_scale_summary">Scales down pictures taken with the camera.</string>
+    <string name="setting_proxy_port_summary">Antre nimewo a pò nan prokurasyon ou a si yo mande yo (ansyen: 9401). Kite vid si se pa yo mande yo.</string>
+    <string name="setting_bandwidth">Estimasyon Rezo Bandwidth</string>
+    <string name="setting_bandwidth_summary">Yo itilize pou kalkile timeouts</string>
+    <string name="setting_bandwidth_dialog">Pral Pleasant nan rezo valè dwe itilize yo kalkile timeouts Apwopriye pou uploading. Antre nan kilookte pou chak dezyèm.</string>
+    <string name="setting_image_scale">Imaj faktè echèl</string>
+    <string name="setting_image_scale_summary">Balans desann foto pran ak kamera a.</string>
     <string name="setting_barcode">Enable barcode reading</string>
     <string name="setting_barcode_summary">Enable barcode reading of patient and physician ids.</string>
-    <string name="setting_upload_hack">Enable Upload Hack</string>
-    <string name="setting_upload_hack_summary">Enable a hack to send images as text to the MDS. This is a workaround for cell phone carriers which block file uploads</string>
+    <string name="setting_upload_hack">Pèmèt Voye Hack</string>
+    <string name="setting_upload_hack_summary">Pèmèt yo Hack yo voye imaj kòm tèks medsen an. Sa a se yon solisyon pou transpòtè telefòn selilè Ki bloke téléchargements dosye</string>
     <string name="setting_edu">Visible Education Resources</string>
     <string name="setting_edu_summary">Make education resources visible in procedures</string>
     <string name="setting_edu_viewer">View All Education Resources</string>
     <string name="setting_edu_viewer_summary">Displays a list of all available resources</string>
     <string name="setting_procedure">Manage Procedures</string>
-    <string name="setting_procedure_summary">update, add, and delete available procedures</string>
-    <string name="setting_resource">Sana Resources</string>
-    <string name="setting_resource_summary">Configure and view available resources</string>
-    <string name="setting_network">Sana Network</string>
-    <string name="setting_network_summary">Configure network settings</string>
+    <string name="setting_procedure_summary">Aktyalizasyon, ajoute, ak efase pwosedi ki disponib</string>
+    <string name="setting_resource">Resous aplikasyon</string>
+    <string name="setting_resource_summary">Configured ak wè resous ki disponib</string>
+    <string name="setting_network">Rezo konfigirasyon</string>
+    <string name="setting_network_summary">Configured anviwònman rezo</string>
 
     <!-- Strings describing standard questions and common UI elements once inside a Procedure -->
     <string name="next">Pwochen</string>
@@ -153,7 +153,7 @@
     <string name="question_standard_new_mrn">Enter New Patient\'s Medical Record Number</string>
     <string name="question_standard_firstname">Enter Patient\'s First Name</string>
     <string name="question_standard_lastname">Last Name</string>
-    <string name="question_standard_birthdate">Enter Patient\'s Birthdate</string>
+    <string name="question_standard_birthdate">Antre nan Pasyan \'s Dat nesans</string>
     <string name="question_standard_month">Month</string>
     <string name="question_standard_day">Day</string>
     <string name="question_standard_year">Year</string>
@@ -161,8 +161,8 @@
     <string name="question_standard_male">Male</string>
     <string name="question_standard_female">Female</string>
     <string name="question_standard_view_resource">View Resource</string>
-    <string name="question_standard_capture">Capture Data</string>
-    <string name="question_standard_binary_element">Capture Data</string>
+    <string name="question_standard_capture">Done Capture</string>
+    <string name="question_standard_binary_element">Done Capture</string>
     <string name="btn_add_photo">Add Foto</string>
     <string name="question_standard_picture_element">Attach a picture</string>
 
@@ -186,7 +186,7 @@
     <string name="procedurerunner_info">Enfòmasyon</string>
 
     <!-- SD card Procedure updater -->
-    <string name="sd_import_empty">No new procedures found. Check settings?</string>
+    <string name="sd_import_empty">Pa gen pwosedi nouvo te jwenn. Tcheke anviwònman?</string>
     <string name="import_proc_all">Importing all procedures from SD card</string>
     <string name="import_load_all">Load All Procedures</string>
     <string name="import_proc">Importing procedure</string>
@@ -212,7 +212,7 @@
     <string name="network_alert">rezo alèt</string>
 
     <!-- PatientInfoDialog Activity  -->
-    <string name="patient_out_of_sync">Patient information does not match database</string>
+    <string name="patient_out_of_sync">Enfòmasyon Pasyan pa matche ak baz done</string>
 
     <!-- Notification Viewer Activity -->
     <string name="note_pt_diagnosis">Diagnosis for Patient</string>
@@ -232,5 +232,12 @@
     <string name="assigned">Plase</string>
     <string name="completed">Konplete</string>
     <string name="msg_no_encounters">No encounters</string>
+    <string name="general_fetching_patients">Lè w lis pasyan</string>
+    <string name="general_synchronizing">Senkronizasyon</string>
+    <string name="setting_notify_task_status">Objektif Travay la Ki dènye nouvèl Notifikasyon</string>
+    <string name="setting_notify_task_status_summary">Yo pral voye Notifikasyon nan sèvè a Lè yon chanjman sitiyasyon travay.</string>
+    <string name="button_main_unregistered_patient_encounter">Anrejistre vizit pasyan</string>
+    <string name="settings_basic_network_title">Rezo konfigirasyon</string>
+    <string name="title_basic_settings">Paramètres Debaz</string>
 </resources>
 

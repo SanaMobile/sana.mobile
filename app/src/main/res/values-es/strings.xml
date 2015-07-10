@@ -4,14 +4,14 @@
 <resources>
 
     <string name="hello">Hello</string>
-    <string name="app_name">Moca</string>
+    <string name="app_name">Sana</string>
     <string name="title_procedures_list">Available Procedures</string>
     <string name="title_savedprocedure_list">Saved Procedures</string>
-	<string name="title_procedure_runner">Moca Perform Procedure</string>
+	<string name="title_procedure_runner">Perform Procedure</string>
 	<string name="title_notification_viewer">Moca Notification Viewer</string>
 	<string name="title_notifications_list">Notifications List (by Patient ID)</string>
-	<string name="title_settings">Moca Settings</string>
-	<string name="title_upload_service">Moca Upload Service</string>
+	<string name="title_settings">Settings</string>
+	<string name="title_upload_service">Upload Service</string>
 	<string name="button_main_new_encounter">Empezar Nueva Cita</string>
 	<string name="button_main_view_prior_encounters">Ver Ultimo Citas</string>
 	<string name="button_main_view_notifications">Ver Notificaciones</string>
