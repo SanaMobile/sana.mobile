@@ -4,12 +4,14 @@
            version="1.0"
     >
 	<Page>
+
 		<Element type="PATIENT_ID" id="system_id"
-		    concept="PATIENT ID" 
+		    concept="SYSTEM ID"
 		    required="true" 
 		    helpText="Enter the patient ID or hit 'Scan ID' to scan their barcode." 
 			question="Enter Patient's Medical Record ID Number:" 
-			answer=""/>
+			answer=""
+			default=""/>
 	</Page>
 	<Page>
 		<Element type="ENTRY" id="given_name"
