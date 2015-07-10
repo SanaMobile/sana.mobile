@@ -3,6 +3,7 @@ package org.sana.android.activity;
 
 import org.sana.R;
 import org.sana.android.Constants;
+import org.sana.android.activity.settings.NetworkSettings;
 import org.sana.android.app.Locales;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
@@ -289,13 +290,17 @@ public class AuthenticationActivity extends BaseActivity {
     
     public void submit(View v){
         switch(v.getId()){
-        case R.id.btn_login:
-            logIn();
-            break;
-        case R.id.btn_exit:
-            setResult(RESULT_CANCELED);
-            finish();
-            break;
+            case R.id.btn_login:
+                logIn();
+                break;
+            case R.id.btn_exit:
+                setResult(RESULT_CANCELED);
+                finish();
+                break;
+            case R.id.btn_configure:
+                Intent configure = new Intent(this, NetworkSettings.class);
+                startActivity(configure);
+                break;
         default:
         }
     }
