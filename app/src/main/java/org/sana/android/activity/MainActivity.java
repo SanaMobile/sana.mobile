@@ -199,6 +199,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                 mEncounter = Uri.EMPTY;
                 // If procedure onComplete was set start it
                 try {
+                    Log.d(TAG,Intents.EXTRA_ON_COMPLETE +"=" + onComplete );
                     next = Intent.parseUri(onComplete, Intent
                             .URI_INTENT_SCHEME);
                     onSaveAppState(next);
@@ -232,7 +233,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 
         mDebug = this.getResources().getBoolean(R.bool.debug);
         Locales.updateLocale(this, getString(R.string.force_locale));
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_ht);
         /*
         if(mDebug)
             setContentView(R.layout.main);
@@ -573,49 +574,59 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     public void submit(View v){
         Intent intent = null;
         switch(v.getId()){
-        case R.id.btn_main_select_patient:
-            intent = new Intent(Intent.ACTION_PICK);
-            intent.setDataAndType(Subjects.CONTENT_URI, Subjects.CONTENT_TYPE);
-            startActivityForResult(intent, PICK_PATIENT);
-            break;
-        case R.id.btn_main_transfers:
-            intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Encounters.CONTENT_URI, Encounters.CONTENT_TYPE);
-            startActivityForResult(intent, PICK_ENCOUNTER);
-            break;
-        case R.id.btn_main_register_patient:
-            intent = new Intent(Intent.ACTION_INSERT);
-            intent.setDataAndType(Patients.CONTENT_URI, Subjects.CONTENT_TYPE)
-            .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
-                            getString(R.string.procs_subject_default)))
-            .putExtra(Intents.EXTRA_OBSERVER, mObserver);
-            startActivityForResult(intent, Intents.RUN_PROCEDURE);
-            break;
-        case R.id.btn_main_procedures:
-            intent = new Intent(Intent.ACTION_PICK);
-            intent.setDataAndType(Procedures.CONTENT_URI, Procedures.CONTENT_TYPE);
-            startActivityForResult(intent, PICK_PROCEDURE);
-            break;
-        case R.id.btn_main_tasks:
-            intent = new Intent(Intent.ACTION_PICK);
-            intent.setDataAndType(EncounterTasks.CONTENT_URI, EncounterTasks.CONTENT_TYPE);
-            onSaveAppState(intent);
-            startActivityForResult(intent, PICK_ENCOUNTER_TASK);
-            break;
-        case R.id.btn_training_mode:
-            String subj = getString(R.string.tr_subject);
-            String proc = getString(R.string.tr_procedure);
-            intent = new Intent(Intent.ACTION_VIEW)
-            .setData(Uris.withAppendedUuid(Procedures.CONTENT_URI, proc))
-            .putExtra(Intents.EXTRA_SUBJECT, Uris.withAppendedUuid(Subjects.CONTENT_URI, subj))
-            .putExtra(Intents.EXTRA_OBSERVER, mObserver);
-            startActivityForResult(intent, RUN_PROCEDURE);
-            break;
-        case R.id.btn_exit:
-            clearCredentials();
-            onClearAppState();
-            onNext(null);
-            break;
+            case R.id.btn_main_select_patient:
+                intent = new Intent(Intent.ACTION_PICK);
+                intent.setDataAndType(Subjects.CONTENT_URI, Subjects.CONTENT_TYPE);
+                startActivityForResult(intent, PICK_PATIENT);
+                break;
+            case R.id.btn_main_transfers:
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Encounters.CONTENT_URI, Encounters.CONTENT_TYPE);
+                startActivityForResult(intent, PICK_ENCOUNTER);
+                break;
+            case R.id.btn_main_register_patient:
+                intent = new Intent(Intent.ACTION_INSERT);
+                intent.setDataAndType(Patients.CONTENT_URI, Subjects.CONTENT_TYPE)
+                        .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
+                                getString(R.string.procs_subject_default)))
+                        .putExtra(Intents.EXTRA_OBSERVER, mObserver);
+                startActivityForResult(intent, Intents.RUN_PROCEDURE);
+                break;
+            case R.id.btn_main_procedures:
+                intent = new Intent(Intent.ACTION_PICK);
+                intent.setDataAndType(Procedures.CONTENT_URI, Procedures.CONTENT_TYPE);
+                startActivityForResult(intent, PICK_PROCEDURE);
+                break;
+            case R.id.btn_main_tasks:
+                intent = new Intent(Intent.ACTION_PICK);
+                intent.setDataAndType(EncounterTasks.CONTENT_URI, EncounterTasks.CONTENT_TYPE);
+                onSaveAppState(intent);
+                startActivityForResult(intent, PICK_ENCOUNTER_TASK);
+                break;
+            case R.id.btn_training_mode:
+                String subj = getString(R.string.tr_subject);
+                String proc = getString(R.string.tr_procedure);
+                intent = new Intent(Intent.ACTION_VIEW)
+                        .setData(Uris.withAppendedUuid(Procedures.CONTENT_URI, proc))
+                        .putExtra(Intents.EXTRA_SUBJECT, Uris.withAppendedUuid(Subjects.CONTENT_URI, subj))
+                        .putExtra(Intents.EXTRA_OBSERVER, mObserver);
+                startActivityForResult(intent, RUN_PROCEDURE);
+                break;
+            case R.id.btn_main_unregistered_subject:
+                intent = new Intent(Intents.ACTION_RUN_PROCEDURE);
+                intent.setDataAndType(Patients.CONTENT_URI, Subjects.CONTENT_TYPE)
+                        .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
+                                getString(R.string.procs_subject_short_form)))
+                        .putExtra(Intents.EXTRA_PROCEDURE_ID,R.raw
+                                .registration_short_ht)
+                        .putExtra(Intents.EXTRA_OBSERVER, mObserver);
+                startActivityForResult(intent, Intents.RUN_PROCEDURE);
+                break;
+            case R.id.btn_exit:
+                clearCredentials();
+                onClearAppState();
+                onNext(null);
+                break;
         }
     }
 
