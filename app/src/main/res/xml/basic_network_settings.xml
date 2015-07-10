@@ -5,7 +5,7 @@
         <EditTextPreference
             android:key="s_phone_name"
             android:summary="@string/setting_phone_name_summary"
-            android:title="@string/setting_phone_name" android:defaultValue="@string/default_phone_name"/>
+            android:title="@string/setting_phone_name" />
         <EditTextPreference
             android:key="s_mds_url"
             android:title="@string/setting_mds_url"
