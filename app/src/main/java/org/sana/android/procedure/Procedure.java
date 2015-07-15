@@ -623,6 +623,7 @@ public class Procedure {
 
         Procedure procedure = new Procedure(title, author, uuid, pages, elts);
         procedure.version = version;
+        procedure.setOnComplete(onComplete);
         return procedure;
     }
     
