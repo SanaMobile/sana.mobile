@@ -5,20 +5,30 @@
     version="1.0"
     locale="en"
     class="org.sana.core.Subject"
-	onComplete="intent://org.sana.provider/core/procedure/5299055a-c5e6-47e7-b649-dc17dac6019b#Intent;scheme=content;action=org.sana.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
+	on_complete="intent://org.sana.provider/core/procedure/5299055a-c5e6-47e7-b649-dc17dac6019b#Intent;scheme=content;action=org.sana.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
 	<Page>
-		<Element id="1"
+        <Element id="1"
+                 type="HIDDEN"
+                 concept="SYSTEM ID"
+                 question="HAS Number"
+                 default="U:@DEVICE:@NOW:"/>
+        <Element id="2"
+                 type="HIDDEN"
+                 concept="LOCATION"
+                 question="Kote"
+                 default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca:"/>
+		<Element id="3"
             type="ENTRY"
-		    concept="FIRST NAME" 
+		    concept="GIVEN NAME"
 		    required="true"
 		    question="Given name"/>
-        <Element id="2"
+        <Element id="4"
             type="ENTRY"
 		    concept="FAMILY NAME"
 		    required="true"/>
 	</Page>
 	<Page>
-		<Element type="SELECT" id="3" concept="GENDER"
+		<Element type="SELECT" id="5" concept="GENDER"
 				 question="Enter the patient gender:"
 				 required="true"
 				 helpText="Select the patient's gender."
@@ -28,22 +38,20 @@
 	</Page>
     <Page>
         <Element
-            id="4"
+            id="6"
             type="DATE"
             concept="DOB"
             required="true"
             question="Date of Birth"/>
     </Page>
-    <Page>
-        <Element id="5"
-                 type="HIDDEN"
-                 concept="SYSTEM ID"
-                 question="HAS Number"
-                 default="U@DEV:@NOW:"/>
-    </Page>
 	<!--
 	<Page>
-		<Element type="PICTURE" id="patientPhoto" concept="PATIENT PHOTO" question="Take a picture of the patient." answer=""/>
+		<Element
+		type="PICTURE"
+		id="7"
+		concept="IMAGE"
+		question="Take a picture of the patient."
+		answer=""/>
 	</Page>
 	-->
 </Procedure>
