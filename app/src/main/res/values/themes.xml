@@ -11,5 +11,15 @@
         <item name="android:editTextStyle">@style/Widget.EditText.Light</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        
+        <!-- For the resting Spinner style -->
+        <item name="android:spinnerItemStyle">
+            @style/spinnerItemStyle
+        </item>
+
+        <!-- For each individual Spinner list item once clicked on -->
+        <item name="android:spinnerDropDownItemStyle">
+            @style/spinnerDropDownItemStyle
+        </item>
     </style>
 </resources>
