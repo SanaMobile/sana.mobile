@@ -3,5 +3,5 @@
     <integer name="max_login_attempts">3</integer>
     <string name="sync_delta">0</string>
     <string name="force_locale" translatable="false">ht</string>
-    <string name="display_version">Version: 2.0.7</string>
+    <string name="display_version">Version: 2.1.0</string>
 </resources>

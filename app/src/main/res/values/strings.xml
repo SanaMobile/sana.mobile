@@ -152,8 +152,7 @@
     <string name="setting_resource_summary">Configure and view available resources</string>
     <string name="setting_network">Network settings</string>
     <string name="setting_network_summary">Configure network settings</string>
-    <string name="setting_upload_foreground">Foreground upload</string>
-    <string name="setting_upload_foreground_summary">The app will display a progress dialog while uploading encounter data.</string>
+    <string name="setting_upload_foreground_summary">Display a progress dialog while uploading data.</string>
     <!-- Notification settings -->
     <string name="setting_notify_task_status">Task Status Notification</string>
     <string name="setting_notify_task_status_summary">Notifications will be sent to the server when a task status changes.</string>
@@ -222,6 +221,8 @@
     <string name="download_status">Download status</string>
     <string name="network_alert">Network Alert</string>
     <string name="msg_no_encounters">No encounters</string>
+    <string name="network_synch_error">Error synchronizing</string>
+    <string name="network_synchronizing">Synchronizing</string>
 
     <!-- PatientInfoDialog Activity  -->
     <string name="patient_out_of_sync">Patient information does not match database</string>
@@ -246,4 +247,5 @@
     <string name="button_main_help">Help</string>
     <string name="button_main_unregistered_patient_encounter">Unregistered patient visit</string>
     <string name="title_basic_settings">Basic Settings</string>
+    <string name="setting_upload_foreground">Notify upload</string>
 </resources>
