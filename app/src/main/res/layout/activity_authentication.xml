@@ -18,8 +18,8 @@
         >
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
             android:contentDescription="@string/authentication_sana"
             android:src="@drawable/logo"
             android:padding="5dp"
@@ -27,7 +27,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="0dp"
-            android:maxWidth="128dp"
+            android:maxWidth="64dp"
             android:adjustViewBounds="false"
             />
     </LinearLayout>
@@ -73,7 +73,8 @@
             android:layout_marginTop="5dp"
             android:minWidth="128dp"
             android:nestedScrollingEnabled="false"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:padding="16dp"/>
         <Button
             android:id="@+id/btn_exit"
             android:layout_width="fill_parent"
@@ -82,7 +83,8 @@
             android:onClick="submit"
             android:layout_margin="5dp"
             android:layout_gravity="center"
-            android:minWidth="128dp"/>
+            android:minWidth="128dp"
+            android:padding="16dp"/>
         <Button
             android:id="@+id/btn_configure"
             android:layout_width="wrap_content"
@@ -91,7 +93,8 @@
             android:onClick="submit"
             android:layout_margin="5dp"
             android:minWidth="128dp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:padding="16dp"/>
 
 
     </LinearLayout>
