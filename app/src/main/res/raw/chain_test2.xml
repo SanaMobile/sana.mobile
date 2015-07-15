@@ -1,0 +1,14 @@
+<Procedure
+    uuid="18785afb-6160-45a0-ac8c-1f5cbfaa6d95"
+    title="Procedure Chain 2"
+    author="Sana"
+    version="1"
+    description="Second in the chain test">
+    <Page>
+        <Element
+            id="1"
+            type="TEXT"
+            concept="OUTPUT"
+            question="Procedure sequence./nProcedure 2"/>
+    </Page>
+</Procedure>
