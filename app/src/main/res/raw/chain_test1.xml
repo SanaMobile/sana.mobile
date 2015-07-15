@@ -1,0 +1,15 @@
+<Procedure
+    uuid="18785afb-6160-45a0-ac8c-1f5cbfaa6d93"
+    title="Procedure Chain 1"
+    author="Sana"
+    version="1"
+    description="first in the chain test"
+    on_complete="intent://org.sana.provider/core/procedure/18785afb-6160-45a0-ac8c-1f5cbfaa6d95#Intent;scheme=content;action=org.sana.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
+    <Page>
+        <Element
+            id="1"
+            type="TEXT"
+            concept="OUTPUT"
+            question="Procedure sequence./nProcedure 1"/>
+    </Page>
+</Procedure>
