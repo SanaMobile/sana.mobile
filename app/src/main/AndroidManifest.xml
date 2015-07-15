@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="org.sana"
-    android:versionCode="7"
-    android:versionName="2.0"
+    android:versionCode="8"
+    android:versionName="2.1"
     android:installLocation="auto">
 
     <uses-sdk
@@ -36,7 +36,7 @@
             android:enabled="true"
             android:icon="@drawable/ic_app_logo"
             android:label="@string/title_upload_service" />
-
+        <!-- Content Providers -->
         <provider
             android:name=".android.db.impl.ModelContentProviderImpl"
             android:authorities="org.sana.provider"
@@ -59,6 +59,7 @@
             android:name=".android.content.MessageQueueProvider"
             android:authorities="org.sana.provider.dispatch"
             />
+        <!-- Activity section -->
         <activity
             android:name="org.sana.android.activity.PatientRunner"
             android:label="@string/title_register_new_patient" >
@@ -131,7 +132,7 @@
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.PICK" />
+                6E3L;<action android:name="android.intent.action.PICK" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter" />
             </intent-filter>
@@ -200,9 +201,15 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.ProcedureRunner"
-            android:label="@string/title_procedure_runner" android:configChanges="orientation">
+            android:label="@string/title_procedure_runner"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
@@ -299,11 +306,8 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </activity>
-        <receiver android:name=".android.net.SMSReceive" >
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
+
+        <!-- Service section -->
         <service android:name=".android.service.impl.SessionService">
             <intent-filter>
                 <action android:name="org.sana.service.SessionService.START"/>
@@ -348,6 +352,7 @@
                 <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
             </intent-filter>
         </activity>
+        <!-- Receiver section -->
         <!--
         <receiver android:name=".android.content.DispatchResponseReceiver">
             <intent-filter>
@@ -355,6 +360,11 @@
                 <data android:scheme="content"
                     android:host="org.sana.provider"
                     android:mimeType="vnd.android.cursor.item/*"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".android.net.SMSReceive" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
         -->
