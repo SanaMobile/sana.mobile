@@ -713,8 +713,10 @@ public class DispatchService extends Service{
                                     bcastCode = createOrUpdateEncounterTasks(response.message, startId);
 
                                 } catch (Exception e) {
-                                    Log.e(TAG, "GET failed: " + uri.toASCIIString());
-                                    Log.e(TAG,"...." + e.getMessage());
+                                    Log.w(TAG, "GET failed: " + uri
+                                            .toASCIIString());
+                                    Log.w(TAG,"...." + e.getMessage());
+                                    e.printStackTrace();
                                     Locales.updateLocale(DispatchService.this, getString(R.string.force_locale));
                                     bcastMessage = e.getMessage();//getString(R.string.upload_fail);
                                     bcastCode = 400;
@@ -1510,8 +1512,9 @@ public class DispatchService extends Service{
         holder.arg1 = arg1;
         holder.arg2 = arg2;
         holder.object = object;
-        if(data != null)
+        if(data != null) {
             holder.data = new Bundle(data);
+        }
         holder.uri = uri;
         Log.d(TAG,"....Queue size: "  + failQueue.size());
         Log.d(TAG,"....adding 1 item");
