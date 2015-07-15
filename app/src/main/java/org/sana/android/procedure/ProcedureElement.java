@@ -321,7 +321,6 @@ public abstract class ProcedureElement {
         sb.append("concept=\"" + getConcept()+ "\" ");
         sb.append("audio=\"" + getAudioPrompt()+ "\" ");
         sb.append("required=\"" + isRequired()+ "\" ");
-        sb.append("default=\"" + getDefault()+ "\" ");
         appendOptionalAttributes(sb);
         sb.append("/>\n");
     }
@@ -329,6 +328,8 @@ public abstract class ProcedureElement {
     protected void appendOptionalAttributes(StringBuilder sb){
     	if(!TextUtils.isEmpty(action))
     		sb.append("action=\"" + action+ "\" ");
+        if(hasDefault())
+            sb.append("default=\"" + getDefault()+ "\" ");
     	return;
     }
     
@@ -448,7 +449,7 @@ public abstract class ProcedureElement {
         	throw new ProcedureParseException("Failed to parse node with id " 
         			+ idStr);
         }
-        
+
         String helpStr = SanaUtil.getNodeAttributeOrDefault(node, "helpText",
         		"");
         el.setHelpText(helpStr);
@@ -468,16 +469,39 @@ public abstract class ProcedureElement {
         return el;
     }
     
-    public static void parseOptionalAttributes(Node node, ProcedureElement el){
+    public static void parseOptionalAttributes(Node node, ProcedureElement el)
+            throws ProcedureParseException {
         Log.i(TAG, "parseOptionalAttributes(Node,ProcedureElement)");
-        String actionStr = SanaUtil.getNodeAttributeOrDefault(node,
+        String attr = null;
+
+        // action
+        attr = SanaUtil.getNodeAttributeOrDefault(node,
         		"action", "");
-        String val = SanaUtil.getNodeAttributeOrDefault(node,
+        if(!TextUtils.isEmpty(attr))
+            el.action = new String(attr);
+
+        // default
+        attr = SanaUtil.getNodeAttributeOrDefault(node,
                 "default", "");
-        el.setDefault(val);
-        Log.i(TAG, "..." + val);
-        if(!TextUtils.isEmpty(actionStr))
-        	el.action = actionStr;
+        el.setDefault(new String(attr));
+
+        // helpText
+        attr = SanaUtil.getNodeAttributeOrDefault(node, "helpText",
+                "");
+        el.setHelpText(new String(attr));
+
+        // required
+        attr = SanaUtil.getNodeAttributeOrDefault(node,
+                "required", "false");
+        if ("true".equals(attr)) {
+            el.setRequired(true);
+        } else if ("false".equals(attr)) {
+            el.setRequired(false);
+        } else {
+            throw new ProcedureParseException("Argument to \'required\' " +
+                    "attribute invalid for id " + el.getId()+
+                    ". Must be \'true\' or \'false\'");
+        }
     }
     
     
@@ -723,15 +747,18 @@ public abstract class ProcedureElement {
     }
 
     public String getDefault(){
+        Log.i(TAG, "getDefault()");
         return defaultValue;
     }
 
     public void setDefault(String defaultValue){
+        Log.i(TAG, "setDefault(String)");
         this.defaultValue = defaultValue;
     }
 
     public boolean hasDefault(){
-        return TextUtils.isEmpty(defaultValue);
+        Log.i(TAG, "hasDefault()");
+        return !TextUtils.isEmpty(defaultValue);
     }
 
     /** 
