@@ -3,6 +3,7 @@ package org.sana.android.fragment;
 
 import java.io.FileNotFoundException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
@@ -206,11 +207,13 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         private static final String ALPHABET = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private final String mAlphabet;
         private String dateFormat = null;
+        private SimpleDateFormat sdf;
 
         public PatientCursorAdapter(Context context, Cursor c) {
         	super(context.getApplicationContext(),c,false);
             mInflater = LayoutInflater.from(context);
             dateFormat = context.getString(R.string.display_date_format);
+            sdf = new SimpleDateFormat(dateFormat);
             mAlphabet = " " + mContext.getString(R.string.cfg_alphabet);
     		init(c);
         }
@@ -276,7 +279,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         
         @Override
         public Cursor swapCursor(Cursor newCursor) {
-        	Log.i(TAG+".mAdapter", "swapCursor(Cursor)");
+        	Log.i(TAG + ".mAdapter", "swapCursor(Cursor)");
         	index(newCursor);
             return super.swapCursor(newCursor);
         }
@@ -319,8 +322,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             String localDobStr = null;
             Date dob = null;
             try {
-                dob = Dates.fromSQL(dobStr);
-                localDobStr = Dates.formatForDisplay(dob, dateFormat);
+                localDobStr = this.getDateStringFromSQL(dobStr);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -437,6 +439,11 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             }
             return str.charAt(0);
         }
+
+        public String getDateStringFromSQL(String date) throws ParseException {
+            return sdf.format(Dates.fromSQL(date));
+        }
+
     }
     
     public final boolean sync(Context context, Uri uri){
