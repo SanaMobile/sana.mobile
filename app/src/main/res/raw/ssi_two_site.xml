@@ -13,7 +13,7 @@
         <Element id="1" type="RADIO" 
         concept="LOCATION PATIENT HOUSE"
         question="Eske w kay malad la kounye-a?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -42,7 +42,7 @@
         <Element id="2" type="RADIO" 
         concept="FEVER POST SX"
         question="Depi w soti l’opital la, eske w gen lafyèv?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -50,7 +50,7 @@
         <Element id="3" type="RADIO" 
         concept="SX SITE PAIN"
         question="Kote yo te opere w la, eske w santi doule ladan ki ogmante?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -58,7 +58,7 @@
         <Element id="4" type="RADIO" 
         concept="SX SITE REDNESS"
         question="Kote yo te opere w la, eske li vin pi wouj?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -66,7 +66,7 @@
         <Element id="5" type="RADIO" 
         concept="SX SITE SWELLING"
         question="Kote yo te opere w la, eske li gen anfle ki ogmante?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -74,7 +74,7 @@
         <Element id="6" type="RADIO"
         concept="FIRMNESS SX SITE"
         question="Kote yo te opere w la, eske li vin pi di?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -83,7 +83,7 @@
         <Element id="7" type="RADIO" 
         concept="SX SITE DRAINAGE"
         question="Kote yo te opere w la, eske li gen likid ki vide?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -96,7 +96,7 @@
         <Element id="7a" type="RADIO" 
         concept="SX SITE DRAINAGE VISCOSITY"
         question="Eske likid la epè, w eske li tankou dlo-a?"
-        choices="epè|tankou dlo-a"
+        choices="epè;tankou dlo-a"
         required="true"
         />
     </Page>
@@ -107,7 +107,7 @@
         <Element id="7b" type="RADIO" 
         concept="SX SITE DRAINAGE COLOR"
         question="Ki koulè likid la?"
-        choices="Mawon, jòn, vèt w blan|wouj, woz, w klè"
+        choices="Mawon, jòn, vèt w blan;wouj, woz, w klè"
         required="true"
         />
     </Page>
@@ -118,7 +118,7 @@
         <Element id="7c" type="RADIO" 
         concept="SX SITE DRAINAGE ODOR"
         question="Eske likid la santi move?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -128,7 +128,7 @@
         <Element id="8" type="RADIO" 
         concept="SX SITE OPEN SPONTANEOUS"
         question=" Kote yo te opere w la, eske li ouvri pi laj?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -144,7 +144,7 @@
         <Element id="10" type="RADIO" 
         concept="SX SITE INFECTION SUSPECTED"
         question="Eske w panse malad la gen enfeksyon?"
-        choices="wi|non|pa konnen"
+        choices="wi;non;pa konnen"
         required="true"
         />
     </Page>
@@ -156,7 +156,7 @@
         <Element id="11" type="RADIO" 
         concept="FEVER POST SX"
         question="Depi w soti l’opital la, eske w gen lafyèv?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -164,7 +164,7 @@
         <Element id="12" type="RADIO" 
         concept="SX SITE PAIN"
         question="Kote yo te opere w la, eske w santi doule ladan ki ogmante?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -172,7 +172,7 @@
         <Element id="13" type="RADIO" 
         concept="SX SITE REDNESS"
         question="Kote yo te opere w la, eske li vin pi wouj?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -180,7 +180,7 @@
         <Element id="14" type="RADIO" 
         concept="SX SITE SWELLING"
         question="Kote yo te opere w la, eske li gen anfle ki ogmante?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -188,7 +188,7 @@
         <Element id="15" type="RADIO"
         concept="FIRMNESS SX SITE"
         question="Kote yo te opere w la, eske li vin pi di?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -197,7 +197,7 @@
         <Element id="16" type="RADIO" 
         concept="SX SITE DRAINAGE"
         question="Kote yo te opere w la, eske li gen likid ki vide?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -210,7 +210,7 @@
         <Element id="16a" type="RADIO" 
         concept="SX SITE DRAINAGE VISCOSITY"
         question="Eske likid la epè, w eske li tankou dlo-a?"
-        choices="epè|tankou dlo-a"
+        choices="epè;tankou dlo-a"
         required="true"
         />
     </Page>
@@ -221,7 +221,7 @@
         <Element id="16b" type="RADIO" 
         concept="SX SITE DRAINAGE COLOR"
         question="Ki koulè likid la?"
-        choices="Mawon, jòn, vèt w blan|wouj, woz, w klè"
+        choices="Mawon, jòn, vèt w blan;wouj, woz, w klè"
         required="true"
         />
     </Page>
@@ -232,7 +232,7 @@
         <Element id="16c" type="RADIO" 
         concept="SX SITE DRAINAGE ODOR"
         question="Eske likid la santi move?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -242,7 +242,7 @@
         <Element id="17" type="RADIO" 
         concept="SX SITE OPEN SPONTANEOUS"
         question=" Kote yo te opere w la, eske li ouvri pi laj?"
-        choices="wi|non"
+        choices="wi;non"
         required="true"
         />
     </Page>
@@ -258,7 +258,7 @@
         <Element id="19" type="RADIO" 
         concept="SX SITE INFECTION SUSPECTED"
         question="Eske w panse malad la gen enfeksyon?"
-        choices="wi|non|pa konnen"
+        choices="wi;non;pa konnen"
         required="true"
         />
     </Page>
