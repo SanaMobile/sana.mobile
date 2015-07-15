@@ -228,25 +228,6 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     
 
     public abstract void storeCurrentProcedure(boolean finished, boolean skipHidden);
-    /*
-    {
-        if (mProcedure != null && uEncounter != null) {
-            JSONObject answersMap = new JSONObject(mProcedure.toAnswers());
-            String json = answersMap.toString();
-
-            ContentValues cv = new ContentValues();
-            cv.put(Encounters.Contract.STATE, json);
-
-            if (finished)
-                cv.put(Encounters.Contract.FINISHED, finished);
-
-            int updatedObjects = getActivity().getContentResolver().update(uEncounter, cv,
-                    null, null);
-            Log.i(TAG, "storeCurrentProcedure updated " + updatedObjects
-                    + " objects. (SHOULD ONLY BE 1)");
-        }
-    }
-    */
     
     /** Removes the current procedure form the database. */
     public abstract void deleteCurrentProcedure();
