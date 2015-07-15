@@ -44,7 +44,7 @@ public final class Strings{
 
     private Strings(){}
 
-    public static void intialize(Context context, int resId){
+    public static void initialize(Context context, int resId){
         locale = context.getString(resId);
     }
 
@@ -60,7 +60,7 @@ public final class Strings{
      * Returns the localized string from a resource id using the locale
      * provided when calling (@link #intialize}
      *
-     * @param context The COntext which contains the localized resource
+     * @param context The Context which contains the localized resource
      * @param resId The String resource id to fetch
      */
     public static String getLocalizedString(Context context, int resId){
