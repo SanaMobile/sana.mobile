@@ -515,7 +515,7 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     }
 
     public String getBuildString() {
-        String localVersion = "sana-v%s.%d.%s";
+        String localVersion = "%s.vc%d%s";
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(
                 getPackageName(), 0);
@@ -524,7 +524,7 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
                 getPackageName(), PackageManager.GET_META_DATA);
             Bundle metadata = ai.metaData;
             String local = (TextUtils.isEmpty(metadata.getString("local_build"))) ?
-                    "0" : metadata.getString("local_build");
+                    "" : "-" + metadata.getString("local_build");
             return String.format(localVersion, pi.versionName, pi.versionCode,
                 local);
         } catch (Exception e) {
