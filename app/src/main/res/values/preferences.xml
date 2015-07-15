@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="setting_locale" translatable="false">s_locale</string>
+    <string name="setting_title_locale">s_locale</string>
+    <string name="setting_summary_locale">s_locale</string>
+    <array name="setting_entries_locale">
+        <item>English</item>
+        <item>Kreyòl</item>
+    </array>
+    <array name="setting_entryValues_locale">
+        <item>en</item>
+        <item>ht</item>
+    </array>
+</resources>
