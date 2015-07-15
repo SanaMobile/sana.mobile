@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cfg_build_variant">0</string>
+    <string name="cfg_build_variant">ssi</string>
     <integer name="cfg_app_max_login_attempts">3</integer>
     <string name="cfg_app_workflow_default">org.sana.android.app.workflow.SSI</string>
     <string name="cfg_app_sync_delta">0</string>
