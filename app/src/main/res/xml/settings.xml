@@ -2,6 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/settings_title" >
+        <ListPreference
+            android:key="@string/setting_locale"
+            android:summary=""
+            android:title="@string/setting_title_locale"
+            android:entries="@array/setting_entries_locale"
+            android:entryValues="@array/setting_entryValues_locale"
+            />
         <EditTextPreference
             android:key="s_phone_name"
             android:summary="@string/setting_phone_name_summary"
@@ -14,7 +21,6 @@
             android:key="s_password"
             android:summary="@string/setting_emr_password_summary"
             android:title="@string/setting_emr_password" android:defaultValue="@string/debug_password"/>
-
         <PreferenceScreen
             android:key="s_network_settings"
             android:summary="@string/setting_network_summary"
