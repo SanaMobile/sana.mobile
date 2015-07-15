@@ -120,7 +120,7 @@
             android:maxHeight="96dp"
             android:maxWidth="96dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/unknown" />
+            android:src="@drawable/ic_contact_picture" />
 
     </LinearLayout>
 
