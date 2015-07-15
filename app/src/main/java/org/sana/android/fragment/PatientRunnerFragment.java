@@ -28,6 +28,7 @@ import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
 import org.sana.android.service.impl.InstrumentationService;
 import org.sana.android.util.Dates;
+import org.sana.core.Location;
 import org.sana.core.Patient;
 import org.sana.net.Response;
 import org.sana.util.DateUtil;
@@ -138,7 +139,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                 mPatient.setFamily_name(val);
             }
             if(field.compareToIgnoreCase(Patients.Contract.DOB) == 0) {
-                Log.d(TAG, "\tsetting '" + Patients.Contract.DOB +"'=" +val);
+                Log.d(TAG, "\tsetting '" + Patients.Contract.DOB + "'=" + val);
                 try {
                     mPatient.setDob(DateUtil.parseDate(val));
                 } catch (ParseException e) {
@@ -154,6 +155,16 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.IMAGE +"'=" +val);
                 URI file = URI.create(val);
                 mPatient.setImage(file);
+            }
+            if(field.compareToIgnoreCase(Patients.Contract.LOCATION) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.LOCATION + "'=" + val);
+                Location location = new Location();
+                if(UUIDUtil.isValid(val)) {
+                    location.setUuid(val);
+                } else {
+                    location.setName(val);
+                }
+                mPatient.setLocation(location);
             }
         }
         Log.d(TAG, "...Updated Patient: " + String.valueOf(mPatient));
