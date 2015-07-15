@@ -239,5 +239,11 @@
     <string name="button_main_unregistered_patient_encounter">Anrejistre vizit pasyan</string>
     <string name="settings_basic_network_title">Rezo konfigirasyon</string>
     <string name="title_basic_settings">Paramètres Debaz</string>
+    <string name="setting_title_locale">Language</string>
+    <string name="setting_summary_locale">Mete lang nan pi pito</string>
+    <string name="setting_upload_foreground">Notifye téléchargement</string>
+    <string name="setting_upload_foreground_summary">Montre yon dyalòg pwogrè pandan y ap uploading done.</string>
+    <string name="network_synch_error">Erè senkronizasyon</string>
+    <string name="network_synchronizing">Senkronizasyon</string>
 </resources>
 
