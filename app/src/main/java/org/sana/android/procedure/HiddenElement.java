@@ -50,18 +50,14 @@ public class HiddenElement extends ProcedureElement {
             Log.d(TAG, "\tUsing default value");
             setAnswer(getDefault());
         }
-        //if(!isViewActive())
-        //    return answer;)
-        Log.d(TAG, "..." + answer);
         return answer;
     }
 
     public void setAnswer(String answer){
         Log.i(TAG, "setAnswer(String)");
-        Log.d(TAG, "..." + answer);
         // set the default value if answer is empty
         if(TextUtils.isEmpty(answer) && hasDefault()){
-            Log.d(TAG, "\tUsing default value");
+            Log.w(TAG, "\tUsing default value");
             answer = getDefault();
         }
         this.answer = answer;
@@ -91,9 +87,7 @@ public class HiddenElement extends ProcedureElement {
         final SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         StringBuilder sb = new StringBuilder();
         String val = super.getDefault();
-        Log.d(TAG, "..." + val);
         for(String str:val.split(":")){
-            String segment = "";
             if(str.length() > 1 && str.startsWith("@")){
                     str = str.substring(1);
                     if(str.compareTo("DEVICE") == 0){
