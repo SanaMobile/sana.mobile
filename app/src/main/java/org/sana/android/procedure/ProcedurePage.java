@@ -391,14 +391,21 @@ public class ProcedurePage {
 		ll.setOrientation(LinearLayout.VERTICAL);
 		ill.setOrientation(LinearLayout.VERTICAL);
 
-		float weight = 1.0f / elements.size();
+        List<View> visibleElements = new ArrayList<View>();
 		for (ProcedureElement e : elements) {
-			View v = e.toView(c);
-			LinearLayout subll = new LinearLayout(c);
-			// subll.addView(v, new LinearLayout.LayoutParams(-1,-1));
-			subll.addView(v);
-			subll.setGravity(Gravity.CENTER);
-			ill.addView(subll, new LinearLayout.LayoutParams(-1, -1, weight));
+            View v = e.toView(c);
+            if (e.getType() != ElementType.HIDDEN) {
+                visibleElements.add(v);
+            }
+        }
+        int size = visibleElements.size();
+        float weight = 1.0f / ((size > 0)? size: 1);
+        // Only add and set layout parameters
+        for(View v: visibleElements){
+            LinearLayout subll = new LinearLayout(c);
+            subll.addView(v);
+            subll.setGravity(Gravity.CENTER);
+            ill.addView(subll, new LinearLayout.LayoutParams(-1, -1, weight));
 		}
 		ill.setWeightSum(1.0f);
 		scroll.addView(ill);
