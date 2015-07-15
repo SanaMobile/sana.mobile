@@ -577,9 +577,10 @@ public abstract class ProcedureElement {
     	textView.setSingleLine(false);
         textView.setGravity(Gravity.LEFT);
 		String q = question.replace("\\n", "\n");
-    	if(!getType().equals(ElementType.TEXT)){
-            textView.setText(q);
-    		//textView.setText(String.format("%s: %s",  getId(), q));
+        boolean useId = c.getResources().getBoolean(
+                R.bool.display_input_element_id);
+    	if(useId && !getType().equals(ElementType.TEXT)){
+    		textView.setText(String.format("%s: %s",  getId(), q));
     	}else{
         	textView.setText(q);
     	}

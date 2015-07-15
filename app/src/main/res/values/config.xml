@@ -37,7 +37,8 @@
     <string name="default_phone_name">5555555555</string>
     <string name="display_date_format" translatable="false">MMM dd, yyyy</string>
     <string name="display_date_time_format" translatable="false">MMM dd, yyyy HH:mm</string>
-    
+    <bool name="display_input_element_id">true</bool>
+
     <integer name="sync_delta_subjects">60000</integer>
     <integer name="sync_delta_encountertasks">1000</integer>
     
