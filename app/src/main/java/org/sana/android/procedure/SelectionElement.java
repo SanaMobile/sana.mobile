@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Adapter;
 
 /**
  * SelectElement is a ProcedureElement that creates a question and provides a
@@ -19,12 +21,20 @@ public abstract class SelectionElement extends ProcedureElement {
 
     protected String[] labels;
     protected String[] values;
+    protected View mView;
+    protected Adapter mAdapter;
+
     private LinkedHashMap<String,String> valueToLabelMap;
     private LinkedHashMap<String,String> labelToValueMap;
 
     protected String[] labels() {
         String[] arr = new String[labelToValueMap.keySet().size()];
-        labelToValueMap.keySet().toArray(arr);
+        int index = 0;
+        for(String key: labelToValueMap.keySet()){
+            arr[index] = key;
+            index++;
+        }
+        //labelToValueMap.keySet().toArray(arr);
         return arr;
     }
 
@@ -46,8 +56,8 @@ public abstract class SelectionElement extends ProcedureElement {
      */
     @Override
     protected void appendOptionalAttributes(StringBuilder sb){
-        sb.append("\" choices=\"" + TextUtils.join(TOKEN_DELIMITER, labels()));
-        sb.append("\" values=\"" + TextUtils.join(TOKEN_DELIMITER, values()));
+        sb.append("\" choices=\"" + TextUtils.join(TOKEN_DELIMITER, labels));
+        sb.append("\" values=\"" + TextUtils.join(TOKEN_DELIMITER, values));
     }
 
     /**
@@ -125,11 +135,11 @@ public abstract class SelectionElement extends ProcedureElement {
                                String[] values)
     {
         super(id,question,answer, concept, figure, audio);
-        this.labels = (labels == null)? new String[]{}: labels;
-        this.values = (values == null)? labels:
-                (values.length == labels.length)? values: labels;
-        valueToLabelMap = new LinkedHashMap<String,String>(labels.length);
-        labelToValueMap = new LinkedHashMap<String,String>(labels.length);
+        this.values = (values == null)? new String[]{}: labels;
+        this.labels = (labels == null)? values:
+                (values.length == labels.length)? labels: values;
+        valueToLabelMap = new LinkedHashMap<String,String>(values.length);
+        labelToValueMap = new LinkedHashMap<String,String>(values.length);
         mapValues(values,labels);
     }
 }

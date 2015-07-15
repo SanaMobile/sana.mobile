@@ -3,6 +3,7 @@ package org.sana.android.procedure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sana.R;
 import org.sana.android.util.SanaUtil;
 import org.w3c.dom.Node;
 
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 
 /**
@@ -28,7 +30,6 @@ import android.widget.Spinner;
  */
 public class SelectElement extends SelectionElement {
     private Spinner spin;
-    private String[] choices;
     private ArrayAdapter<String> adapter;
 
     /** {@inheritDoc} */
@@ -42,9 +43,9 @@ public class SelectElement extends SelectionElement {
     protected View createView(Context c) {
         spin = new Spinner(c);
         adapter = new ArrayAdapter<String>(c,
-                android.R.layout.simple_spinner_item,
-                labels());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.layout.simple_spinner_item,
+                labels);
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
         int selected =  adapter.getPosition(getLabelFromValue(answer));
         if(selected != -1)
