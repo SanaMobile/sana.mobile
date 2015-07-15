@@ -187,8 +187,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                     mEncounter = Uri.EMPTY;
                     break;
             case RUN_PROCEDURE:
-                Intent next = null;
-                String onComplete = data.getStringExtra(Intents.EXTRA_ON_COMPLETE);
+            case Intents.RUN_PROCEDURE:
                 // Handle any content type specific actions
                 switch(Uris.getDescriptor(dataUri)){
                     case Uris.ENCOUNTER_ITEM:
@@ -197,15 +196,18 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                     default:
                 }
                 mEncounter = Uri.EMPTY;
+                String onComplete = data.getStringExtra(Intents.EXTRA_ON_COMPLETE);
                 // If procedure onComplete was set start it
-                try {
-                    Log.d(TAG,Intents.EXTRA_ON_COMPLETE +"=" + onComplete );
-                    next = Intent.parseUri(onComplete, Intent
+                if(!TextUtils.isEmpty(onComplete)) {
+                    try {
+                        Intent next = null;
+                        next = Intent.parseUri(onComplete, Intent
                             .URI_INTENT_SCHEME);
-                    onSaveAppState(next);
-                    startActivityForResult(next, RUN_PROCEDURE);
-                } catch(Exception e){
-                    e.printStackTrace();
+                        onSaveAppState(next);
+                        startActivityForResult(next, RUN_PROCEDURE);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             default:
