@@ -14,17 +14,11 @@ import org.sana.android.fragment.EncounterTaskListFragment;
 import org.sana.android.fragment.EncounterTaskListCompleteFragment;
 import org.sana.android.fragment.EncounterTaskListFragment.OnModelItemSelectedListener;
 import org.sana.android.provider.EncounterTasks;
-import org.sana.android.provider.Encounters;
-import org.sana.android.provider.Models;
-import org.sana.android.provider.Patients;
-import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
-import org.sana.android.service.impl.DispatchService;
 import org.sana.android.util.Logf;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -37,6 +31,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /** Activity for creating new and display existing patients. The resulting
  * patient selected or created, will be returned to the calling Activity.
@@ -74,12 +69,12 @@ public class EncounterTaskList extends FragmentActivity implements
         if (fragment.getClass() == EncounterTaskListFragment.class) {
             mListFragment = (EncounterTaskListFragment) fragment;
             mListFragment.setOnModelItemSelectedListener(this);
-            showProgressDialogFragment(null);
+            showProgressDialogFragment(getString(R.string.network_synchronizing));
         }
         else if (fragment.getClass() == EncounterTaskListCompleteFragment.class) {
             mCompleteListFragment = (EncounterTaskListCompleteFragment) fragment;
             mCompleteListFragment.setOnModelItemSelectedListener(this);
-            showProgressDialogFragment(null);
+            showProgressDialogFragment(getString(R.string.network_synchronizing));;
         }
     }
 
@@ -261,7 +256,7 @@ public class EncounterTaskList extends FragmentActivity implements
                 Log.d(TAG, ".... got subject 200");
                 String observerUuid = ModelWrapper.getUuid(observer, getContentResolver());
                 Uri u = EncounterTasks.CONTENT_URI.buildUpon().appendQueryParameter("assigned_to__uuid",observerUuid).build();
-                //mListFragment.sync(this, u);
+                mListFragment.sync(this, u);
             break;
             case Uris.ENCOUNTER_TASK:
                 Log.d(TAG, ".... got EncounterTask 200");
@@ -280,9 +275,13 @@ public class EncounterTaskList extends FragmentActivity implements
             break;
             }
             return;
+        } else if(result == 400){
+            Log.e(TAG, ".... got error");
+            hideProgressDialogFragment();
+            Toast.makeText(this, R.string.network_synch_error,
+                    Toast.LENGTH_LONG);
         } else {
-            Log.d(TAG, ".... got error");
-            //hideProgressDialogFragment();
+            hideProgressDialogFragment();
         }
     }
 }
