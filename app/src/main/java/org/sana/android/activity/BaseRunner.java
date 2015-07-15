@@ -471,7 +471,7 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                             Log.d(TAG, "........page         : " + page);
                             // set and store the value
                             setValue(page, id, answer);
-                            storeCurrentProcedure(false, true);
+                            storeCurrentProcedure(false, false);
                             break;
 
                         case OBSERVATION_RESULT_CODE:
