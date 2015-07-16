@@ -45,6 +45,5 @@
     <bool name="cfg_notify_task_status">true</bool>    
     <bool name="cfg_upload_foreground">true</bool>
     <string name="cfg_default_location">29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca</string>
-
     <string name="cfg_alphabet" translatable="false">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>
