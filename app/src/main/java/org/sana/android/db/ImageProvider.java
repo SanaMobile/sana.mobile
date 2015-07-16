@@ -66,7 +66,7 @@ public class ImageProvider extends ContentProvider {
     }
 
     private String basePath() {
-    	return "/data/data/org.sana/files/";
+    	return "/data/data/org.sana.android/files/";
     }
 
     private String buildImageFilenameFromId(String imageId) {
