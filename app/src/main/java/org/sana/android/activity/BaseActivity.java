@@ -26,6 +26,7 @@ import org.sana.BuildConfig;
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.app.Locales;
+import org.sana.android.app.Preferences;
 import org.sana.android.app.State.Keys;
 import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
@@ -456,6 +457,10 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
         super.onResume();
         if(mWaiting.get() && mDialogString != null)
             showProgressDialogFragment(mDialogString);
+        // simple way to set the locale
+        // Should probably be replaced with a change listener
+        mLocale = Preferences.getString(this,
+                getString(R.string.setting_locale), "en");
     }
 
     /* (non-Javadoc)
@@ -545,9 +550,13 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
         filter.addDataAuthority("org.sana.provider", null);
     }
 
+
     public String getStringLocalized(int resId){
-        if(!TextUtils.isEmpty(mLocale))
-            Locales.updateLocale(this, mLocale);
+        if(!TextUtils.isEmpty(mLocale)) {
+            mLocale = Preferences.getString(this,
+                    getString(R.string.setting_locale), "en");
+        }
+        Locales.updateLocale(this, mLocale);
         return super.getString(resId);
     }
 
