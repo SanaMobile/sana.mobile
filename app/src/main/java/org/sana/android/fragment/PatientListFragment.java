@@ -233,6 +233,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             //this.context = context;
             mInflater = LayoutInflater.from(context);
             dateFormat = context.getString(R.string.display_date_format);
+            sdf = new SimpleDateFormat(dateFormat);
             mAlphabet = " " + mContext.getString(R.string.cfg_alphabet);
     		init(c);
         }
@@ -323,7 +324,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             Date dob = null;
             try {
                 localDobStr = this.getDateStringFromSQL(dobStr);
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             //String id = mWrapper.getStringField(Contract.PATIENT_ID);
@@ -441,7 +442,11 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         }
 
         public String getDateStringFromSQL(String date) throws ParseException {
-            return sdf.format(Dates.fromSQL(date));
+            Date d = Dates.fromSQL(date);
+            return sdf.format(d);
+        }
+        public String getDateString(Date date) {
+            return sdf.format(date);
         }
 
     }
