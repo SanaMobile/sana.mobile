@@ -100,6 +100,7 @@ public class ProcedureRunner extends BaseRunner
     @Override
     public void onProcedureComplete(Intent data){
         Log.d(TAG, "onProcedureComplete(): " + data);
+        startService(data);
         setResult(RESULT_OK,data);
         finish();
     }

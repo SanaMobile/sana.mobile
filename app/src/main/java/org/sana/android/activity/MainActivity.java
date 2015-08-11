@@ -191,7 +191,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                 // Handle any content type specific actions
                 switch(Uris.getDescriptor(dataUri)){
                     case Uris.ENCOUNTER_ITEM:
-                        startService(data);
+                        //startService(data);
                     break;
                     default:
                 }
@@ -769,7 +769,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         values.put(Tasks.Contract.MODIFIED, now);
 
         Bundle form = new Bundle();
-        form.putString(Tasks.Contract.STATUS, "Completed");
+        form.putString(Tasks.Contract.STATUS, status.toString());
         form.putString(Tasks.Contract.MODIFIED,now);
         form.putString(Tasks.Contract.COMPLETED,now);
         form.putString(EncounterTasks.Contract.ENCOUNTER, uuid);
