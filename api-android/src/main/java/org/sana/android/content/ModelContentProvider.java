@@ -129,11 +129,19 @@ public abstract class ModelContentProvider extends ContentProvider {
 				Uris.getDescriptor(uri), 
 				selection);
 
+		switch(Uris.getTypeDescriptor(uri)){
+		case(Uris.ITEM_ID):
+			selection = DBUtils.getWhereClauseWithID(uri, selection);
+			break;
+		case(Uris.ITEM_UUID):
+			selection = DBUtils.getWhereClauseWithUUID(uri, selection);
+		default:
+		}
         TableHelper<?> helper = getTableHelper(uri);
 		String table = helper.getTable();
-        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();//mOpener.getWritableDatabase();
-		int count = db.delete(table, selection, selectionArgs); //getTableHelper(uri).onDelete(db, whereClause, selectionArgs);
-        DatabaseManager.getInstance().closeDatabase();//
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+		int count = db.delete(table, selection, selectionArgs);
+        DatabaseManager.getInstance().closeDatabase();
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
 	}
