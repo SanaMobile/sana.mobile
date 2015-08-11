@@ -3,7 +3,7 @@
     android:id="@+id/observation_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rounded_rectangle_light_goldenrod"
+    android:background="@drawable/rounded_rectangle_grey"
     android:orientation="vertical" >
 
     <TextView
@@ -11,7 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/general_question_id"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/text_question_id_value"
@@ -20,7 +21,7 @@
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/text_uuid"
         android:hint="@string/general_no_value"
-        android:textAppearance="?android:attr/textAppearanceLargeInverse" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <RelativeLayout
         android:id="@+id/layout_concept"
@@ -35,7 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text="@string/general_concept"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/text_question_concept_value"
@@ -47,7 +49,7 @@
             android:layout_toRightOf="@+id/text_question_concept"
             android:hint="@string/general_no_value"
             android:singleLine="false"
-            android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -63,17 +65,18 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text="@string/general_response"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/image_response_value"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_alignTop="@+id/text_response"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/text_response"
             android:scaleType="fitCenter"
-            android:src="@drawable/unknown" />
+            android:src="@drawable/unknown"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/text_response_value"
+            android:layout_alignStart="@+id/text_response_value"/>
 
         <TextView
             android:id="@+id/text_response_value"
@@ -84,7 +87,7 @@
             android:hint="@string/general_no_value"
             android:singleLine="false"
             android:layout_marginLeft="5dp"
-            android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
 </RelativeLayout>
