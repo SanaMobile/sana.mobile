@@ -364,14 +364,17 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         String title = "null";
         Cursor cur2 = null;
         Uri procedure = Uri.parse(Procedures.CONTENT_URI.toString() + "/" + uuid);
-        try{
+        try {
             cur2 = getActivity().getContentResolver().query(procedure,
-                new String[] {
-                    Procedures.Contract._ID,
-                    Procedures.Contract.TITLE },
-                null, null, null);
-            cur2.moveToFirst();
-            title = cur2.getString(1);
+                    new String[]{
+                            Procedures.Contract._ID,
+                            Procedures.Contract.TITLE},
+                    null, null, null);
+            if (cur2.moveToFirst()) {
+                title = cur2.getString(1);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         } finally {
             if(cur2 != null) cur2.close();
         }
