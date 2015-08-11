@@ -31,7 +31,8 @@ import android.widget.TextView;
 
 /**
  * Activity that handles user authentication. When finishing with RESULT_OK,
- * will return a valid session key String or {@link org.sana.android.service.impl.SessionService#INVALID INVALID}
+ * will return a valid session key String or
+ * {@link org.sana.android.service.impl.SessionService#INVALID INVALID}
  * as an Intent extra String keyed to {@link BaseActivity#SESSION_KEY}.
  *
  * @author Sana Dev Team
@@ -113,11 +114,11 @@ public class AuthenticationActivity extends BaseActivity {
                 loginsRemaining = 0;
                 loginSuccessful = true;
                 Bundle b = msg.getData(); //(Bundle)msg.obj;
-                Log.i(TAG+".mHandler.handleMessage(...)","SUCCESS: ");
+                Log.i(TAG,"...handleMessage(...) SUCCESS: ");
                 for(String key:b.keySet())
-                    Log.d(TAG+".mHandler.handleMessage(...)", "...."+key +":"+ String.valueOf(b.get(key)));
+                    Log.d(TAG+".handleMessage(...)", "...."+key +":"+ String.valueOf(b.get(key)));
                 String uuid = b.getString(Intents.EXTRA_OBSERVER);
-                Log.i(TAG+".mHandler.handleMessage(...)","SUCCESS: " + uuid);
+                Log.i(TAG,"...handleMessage(...) SUCCESS: observer=" + uuid);
                 Uri uri = Uris.withAppendedUuid(Observers.CONTENT_URI, uuid);
                 Log.i(TAG, uri.toString());
                 b.remove(Intents.EXTRA_OBSERVER);
@@ -174,21 +175,23 @@ public class AuthenticationActivity extends BaseActivity {
 
     protected void showBuildString(int id){
         TextView tv = (TextView) findViewById(id);
+        // TODO Fix the getBuildString to read from the manifest correctly
         tv.setText(getBuildString());
+        tv.setText(getString(R.string.display_version));
     }
 
     private void disableInput(){
         mInputUsername.setEnabled(false);
         mInputPassword.setEnabled(false);
         ((Button) findViewById(R.id.btn_login)).setEnabled(false);
-        ((Button) findViewById(R.id.btn_login)).setEnabled(false);
+        ((Button) findViewById(R.id.btn_configure)).setEnabled(false);
     }
 
     private void enableInput(){
         mInputUsername.setEnabled(true);
         mInputPassword.setEnabled(true);
         ((Button) findViewById(R.id.btn_login)).setEnabled(true);
-        ((Button) findViewById(R.id.btn_login)).setEnabled(true);
+        ((Button) findViewById(R.id.btn_configure)).setEnabled(true);
     }
 
     // Attempts a log-in
@@ -235,29 +238,23 @@ public class AuthenticationActivity extends BaseActivity {
      */
     @Override
     protected void onStart(){
+        Log.i(TAG, "onStart()");
         super.onStart();
         bindSessionService();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.actionbarsherlock.app.SherlockActivity#onStop()
-     */
     @Override
     protected void onStop() {
-        unbindSessionService();
+        Log.i(TAG, "onStop()");
         super.onStop();
+        unbindSessionService();
     }
 
     // handles initiating the session service binding
     private void bindSessionService(){
         Log.i(TAG, "bindSessionService()");
         if(!mBound){
-            if(mService == null){
-                Log.d(TAG, "mService binder is null");
-                bindService(new Intent(SessionService.ACTION_START), mConnection, Context.BIND_AUTO_CREATE);
-                //bindService(new Intent(SessionService.BIND_REMOTE), mCallbackConnection, Context.BIND_AUTO_CREATE);
-            }
+            bindService(new Intent(SessionService.ACTION_START), mConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
