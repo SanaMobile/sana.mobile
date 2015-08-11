@@ -965,7 +965,7 @@ public class MDSInterface2 {
 
 	public static  Response<String> apiGet(URI uri) throws UnsupportedEncodingException
 	{
-		return apiGet(uri,null,null);
+		return apiGet(uri, null, null);
 	}
 
 	public static  Response<String> apiGet(URI uri, String username, String password) throws UnsupportedEncodingException
@@ -1006,12 +1006,36 @@ public class MDSInterface2 {
 		} catch (ClientProtocolException e) {
 			response.setCode(500);
 			response.setStatus(Response.FAILURE);
+            response.errors = new String[]{
+                    "ClientProtocolException executing request",
+                    e.toString()
+            };
 			e.printStackTrace();
 		} catch (IOException e) {
 			response.setCode(501);
 			response.setStatus(Response.FAILURE);
+            response.errors = new String[]{
+                    "IOException executing request",
+                    e.toString()
+            };
 			e.printStackTrace();
-		}
+		} catch (OutOfMemoryError e){
+			response.setCode(500);
+			response.setStatus(Response.FAILURE);
+            response.errors = new String[]{
+                    "OutOfMemoryError reading server response",
+                    e.toString()
+            };
+			e.printStackTrace();
+		} catch (Exception e) {
+            response.setCode(501);
+            response.setStatus(Response.FAILURE);
+            response.errors = new String[]{
+                "Exception",
+                e.toString()
+        };
+        e.printStackTrace();
+    }
 		return response;
 	}
 
