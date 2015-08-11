@@ -27,7 +27,6 @@
     <!-- Main menu buttons  -->
     <string name="button_main_education">Edikasyon resous</string>
     <string name="button_main_new_encounter">Rankont pou</string>
-    <string name="button_main_view_prior_encounters">View Rankont Anvan</string>
     <string name="button_main_view_notifications">Notifikasyon</string>
     <string name="button_main_view_patients">Pasyan</string>
     <string name="button_main_view_scheduled_tasks">Pwograme vizit</string>
@@ -236,8 +235,8 @@
     <string name="general_synchronizing">Senkronizasyon</string>
     <string name="setting_notify_task_status">Objektif Travay la Ki dènye nouvèl Notifikasyon</string>
     <string name="setting_notify_task_status_summary">Yo pral voye Notifikasyon nan sèvè a Lè yon chanjman sitiyasyon travay.</string>
-    <string name="button_main_unregistered_patient_encounter">Anrejistre vizit pasyan</string>
-    <string name="settings_basic_network_title">Rezo konfigirasyon</string>
+    <string name="button_main_unregistered_patient_encounter">Nouvo vizit pasyan</string>
+    <string name="settings_basic_network_title">Konfigirasyon</string>
     <string name="title_basic_settings">Paramètres Debaz</string>
     <string name="setting_title_locale">Language</string>
     <string name="setting_summary_locale">Mete lang nan pi pito</string>
@@ -245,5 +244,8 @@
     <string name="setting_upload_foreground_summary">Montre yon dyalòg pwogrè pandan y ap uploading done.</string>
     <string name="network_synch_error">Erè senkronizasyon</string>
     <string name="network_synchronizing">Senkronizasyon</string>
+    <string name="button_main_view_prior_encounters">View Rankont Anvan</string>
+    <string name="setting_mds_port_summary">Pa chanje sof si lè l sèvi avèk ki pa estanda pò</string>
+    <string name="setting_mds_root_summary">Rasin chemen prefiks - default mds/</string>
 </resources>
 

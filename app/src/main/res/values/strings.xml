@@ -107,7 +107,7 @@
     <!-- Settings Activity Strings -->
     <string name="settings_title">Settings</string>
     <string name="settings_network_title">Advanced Network Configuration</string>
-    <string name="settings_basic_network_title">Basic Network Configuration</string>
+    <string name="settings_basic_network_title">Basic Configuration</string>
     <string name="settings_resource_title">Resource settings</string>
     <string name="setting_mds_url">Mobile Dispatch Server</string>
     <string name="setting_mds_url_summary">Hostname or IP address of MDS, do NOT add a trailing /</string>
@@ -245,7 +245,7 @@
     <string name="assigned">Assigned</string>
     <string name="completed">Completed</string>
     <string name="button_main_help">Help</string>
-    <string name="button_main_unregistered_patient_encounter">Unregistered patient visit</string>
+    <string name="button_main_unregistered_patient_encounter">New patient visit</string>
     <string name="title_basic_settings">Basic Settings</string>
     <string name="setting_upload_foreground">Notify upload</string>
 </resources>
