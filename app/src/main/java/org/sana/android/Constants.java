@@ -179,6 +179,9 @@ public class Constants {
     /** Key for looking up whether education resources are visible */
     public static final String PREFERENCE_EDUCATION_RESOURCE = "s_edu_rsrc";
 
+    /** Key for in-app locale setting */
+    public static final String PREFERENCE_LOCALE = "s_locale";
+
     /** The root authority */
     public static final String AUTHORITY = "org.sana.provider";
 
