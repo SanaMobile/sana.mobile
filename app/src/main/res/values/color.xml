@@ -7,6 +7,8 @@
     <color name="past_due">#FF3300</color>
     <color name="complete">#00CC00</color>
     <color name="due_today">#FF9933</color>
+    <color name="grey_medium">#808080</color>
+    <color name="grey_dark">#404040</color>
     <!-- Progress Dialog colors -->
     <color name="bg_progressdialog">#8C4406</color>
     <color name="fg_progressdialog">#FFFFFF</color>
