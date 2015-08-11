@@ -473,7 +473,8 @@ public class DispatchService extends Service{
                             Constants.PREFERENCE_EMR_PASSWORD, Constants.DEFAULT_PASSWORD);
                     switch (msg.arg2) {
                     case REQUEST:
-                        Logf.I(TAG, "handleMessage(Message)", "Got a REQUEST");
+                        Log.i(TAG, "...handleMessage(Message) + Got a " +
+                                "REQUEST");
                         HttpUriRequest request = null;
                         HttpResponse httpResponse = null;
                         String responseString = null;
@@ -493,7 +494,7 @@ public class DispatchService extends Service{
                         else if (action.contains("DELTE"))
                             method = "DELETE";
 
-                        Logf.D(TAG, "handleMessage()",
+                        Log.d(TAG, "...handleMessage()" +
                                 String.format("Method: %s", method));
                         Uri msgUri = intent.getData();
                         Log.d(TAG,"..." + msgUri.getSchemeSpecificPart());
@@ -709,7 +710,8 @@ public class DispatchService extends Service{
                                 try {
                                     Response<Collection<EncounterTask>> response = MDSInterface2.apiGet(uri,username,password,handler);
                                     objs = response.message;
-                                    Log.i(TAG, "GET EncounterTask: " + objs.size());
+                                    Log.i(TAG, "GET EncounterTask: Returned " +
+                                            "n=" + objs.size());
                                     bcastCode = createOrUpdateEncounterTasks(response.message, startId);
 
                                 } catch (Exception e) {
@@ -757,7 +759,8 @@ public class DispatchService extends Service{
                             break;
                         default:
                         }
-                        Log.d(TAG, "" +Uris.SUBJECT_DIR+"...code " + bcastCode);
+                        Log.d(TAG, "...REQUEST: " + msgUri);
+                        Log.d(TAG, "...   code="+ bcastCode);
 
                         if(bcastCode != NO_BROADCAST)
                             broadcastResult(intent.getData(),bcastCode,bcastMessage);
@@ -901,6 +904,7 @@ public class DispatchService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand()" + ((intent != null)? intent.getAction(): null));
+        Log.d(TAG, "..." + intent);
         if (intent != null) {
             // handleCommand(intent);
             // We want this service to continue running until it is explicitly
@@ -910,14 +914,11 @@ public class DispatchService extends Service{
             int matchesModel = filter.match(getContentResolver(), intent,
                     false, TAG);
             int what = Uris.getDescriptor(intent.getData());
-            Log.e(TAG, String.format("Message what: %d, match: %d, pkg: %d",
+            Log.d(TAG, String.format("...Message what: %d, match: %d, pkg: %d",
                     what, matchesModel, matchesPackage));
 
             // msg.what <=> [REQUEST|RESPONSE] and msg.arg1 <=> startId
             if (matchesModel >= 0) {
-                Log.w(TAG, String.format(
-                        "Obtaining message what: %d, match: %d", what,
-                        matchesModel));
                 Message msg = mHandler.obtainMessage(what,
                         intent.toUri(Intent.URI_INTENT_SCHEME));
                 msg.arg1 = startId;
@@ -927,9 +928,6 @@ public class DispatchService extends Service{
                 msg.setData(intent.getExtras());
                 mHandler.sendMessage(msg);
             } else if (matchesPackage >= 0) {
-                Log.w(TAG, String.format(
-                        "Obtaining message what: %d, match: %d", what,
-                        matchesPackage));
                 Message msg = mHandler.obtainMessage(what,
                         intent.toUri(Intent.URI_INTENT_SCHEME));
                 msg.arg1 = startId;
