@@ -98,15 +98,32 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 
     @Override
     public void deleteCurrentProcedure() {
+        Log.i(TAG, "deleteCurrentProcedure()");
         try {
-            getActivity().getContentResolver().delete(uEncounter, null, null);
+            // Remove related first
             // Flush out any observations
-            getActivity().getContentResolver().delete(Observations.CONTENT_URI,
-                    Observations.Contract.ENCOUNTER + " = ?",
-                    new String[]{uEncounter.getLastPathSegment()});
-            getActivity().getContentResolver().delete(SanaDB.ImageSQLFormat.CONTENT_URI,
+            String uuid = ModelWrapper.getUuid(uEncounter, getActivity()
+                    .getContentResolver());
+            int deleted = getActivity().getContentResolver().delete(Observations
+                            .CONTENT_URI,
+                    Observations.Contract.ENCOUNTER + " = '"+uuid + "'",
+                    null);
+                    //new String[]{ uuid });
+            Log.d(TAG, "...deleted n=" + deleted + " observation(s)");
+
+            // flush out any images
+            long id = ModelWrapper.getRowId(uEncounter, getActivity()
+                    .getContentResolver());
+            deleted = getActivity().getContentResolver().delete(SanaDB
+                            .ImageSQLFormat.CONTENT_URI,
                     SanaDB.ImageSQLFormat.ENCOUNTER_ID + " = ?",
-                    new String[]{uEncounter.getLastPathSegment()});
+                    new String[]{ String.valueOf(id)});
+            Log.d(TAG, "...deleted n=" + deleted + " image(s)");
+
+            // Finally flush the encounter
+            deleted = getActivity().getContentResolver().delete(uEncounter,
+                    null, null);
+            Log.d(TAG, "...deleted n=" + deleted + " encounter(s)");
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -153,8 +170,7 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 				vals.put(Observations.Contract.ID, el.getId());
 
 				// if(!TextUtils.isEmpty(el.getAnswer())){
-				Log.d(TAG + ".storeCurrentProcedure()", "observation uri ::"
-						+ mData);
+				Log.d(TAG, "...observation uri="+ mData);
 				if (mData == Observations.CONTENT_URI) {
 					vals.put(Observations.Contract.UUID, UUID.randomUUID()
 							.toString());
