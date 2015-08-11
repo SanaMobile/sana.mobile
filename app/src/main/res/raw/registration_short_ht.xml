@@ -43,7 +43,6 @@
              id="4"
              concept="DOB"
              required="true"
-             helpText="Enter the patient's date of birth."
              question="Dat de Naissance"
              answer="" />
     </Page>

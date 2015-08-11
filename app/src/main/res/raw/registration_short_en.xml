@@ -5,7 +5,7 @@
     version="1.0"
     locale="en"
     class="org.sana.core.Subject"
-	on_complete="intent://org.sana.provider/core/procedure/5299055a-c5e6-47e7-b649-dc17dac6019b#Intent;scheme=content;action=org.sana.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
+	on_complete="intent://org.sana.provider/core/procedure/5299055a-c5e6-47e7-b649-dc17dac6019c#Intent;scheme=content;action=org.sana.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
 	<Page>
         <Element id="h1"
                  type="HIDDEN"
@@ -17,18 +17,20 @@
                  concept="LOCATION"
                  question="Kote"
                  default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca:"/>
-		<Element id="1"
+        <Element id="1"
+                 type="ENTRY"
+                 concept="FAMILY NAME"
+                 required="true"
+                 question="Family name"/>
+        <Element id="2"
             type="ENTRY"
 		    concept="GIVEN NAME"
 		    required="true"
 		    question="Given name"/>
-        <Element id="2"
-            type="ENTRY"
-		    concept="FAMILY NAME"
-		    required="true"/>
+
 	</Page>
 	<Page>
-		<Element type="SELECT" id="3" concept="GENDER"
+		<Element type="RADIO" id="3" concept="GENDER"
 				 question="Enter the patient gender:"
 				 required="true"
 				 helpText="Select the patient's gender."
