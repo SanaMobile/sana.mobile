@@ -22,7 +22,6 @@ import android.util.Log;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import org.sana.BuildConfig;
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.app.Locales;
@@ -459,8 +458,7 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
             showProgressDialogFragment(mDialogString);
         // simple way to set the locale
         // Should probably be replaced with a change listener
-        mLocale = Preferences.getString(this,
-                getString(R.string.setting_locale), "en");
+        mLocale = Preferences.getString(this,getString(R.string.setting_locale), "en");
     }
 
     /* (non-Javadoc)
@@ -530,11 +528,15 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
             Bundle metadata = ai.metaData;
             String local = (TextUtils.isEmpty(metadata.getString("local_build"))) ?
                     "" : "-" + metadata.getString("local_build");
+            Log.i(TAG, "Version info: name=" + pi.versionName +", code=" +
+                    pi.versionCode);
             return String.format(localVersion, pi.versionName, pi.versionCode,
                 local);
         } catch (Exception e) {
 
         }
+        // Temporary work around.
+        localVersion = getString(R.string.display_version);
         return localVersion;
     }
 
@@ -585,6 +587,4 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
         }
 
     }
-    
-
 }
