@@ -20,7 +20,7 @@ public abstract class ApiResponseHandler<T> implements ResponseHandler<T>{
 
     final static Gson gson = new GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+        .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
         .create();
 
     public abstract Type getType();
@@ -32,9 +32,9 @@ public abstract class ApiResponseHandler<T> implements ResponseHandler<T>{
         Type type = getType();
         try{
             return gson.fromJson(json, type);
-                } catch (JsonSyntaxException e){
-                    throw new ResponseException(json, e);
-                }
+        } catch (JsonSyntaxException e){
+            throw new ResponseException(json, e);
+        }
     }
 
     public static <K> K fromJson(String json, Type typeOf){
