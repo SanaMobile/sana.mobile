@@ -15,7 +15,7 @@
 	</Page>
 	<Page>
 		<Element type="ENTRY" id="given_name"
-		    concept="FIRST NAME" 
+		    concept="GIVEN NAME"
 		    required="true" 
 		    helpText="Enter the patient's first name." 
 		    question="Enter Patient's First Name:" 
@@ -23,7 +23,7 @@
 	</Page>
 	<Page>
         <Element type="ENTRY" id="family_name"
-		   concept="LAST NAME" 
+		   concept="FAMILY NAME"
 		   required="true" 
 		   helpText="Enter the patient's last name." 
 		   question="Enter Patient's Last Name:" answer=""/>
