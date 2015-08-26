@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Locale;
 
 import org.sana.R;
+import org.sana.android.Constants;
 import org.sana.android.app.Locales;
+import org.sana.android.app.Preferences;
 import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
@@ -108,8 +110,11 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
+        Locale locale = new Locale(Preferences.getString(getActivity(),
+                Constants.PREFERENCE_LOCALE, "EN"));
         df = new SimpleDateFormat(
-                getString(R.string.display_date_format));
+                getString(R.string.display_date_format),
+                locale);
         // signal the dispatcher to sync
         mUri = getActivity().getIntent().getData();
         if (mUri == null) {
