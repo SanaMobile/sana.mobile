@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -148,10 +149,11 @@ public class ImageProcessingTask extends
 			int iHeight = options.outHeight;
 
 			Log.i(TAG, "Image capture activity returned bitmap of width "
-					+ iWidth + " and height " + iHeight);
+                    + iWidth + " and height " + iHeight);
 
 			OutputStream os = c.getContentResolver().openOutputStream(imageUri);
-			is = getImageInputStreamWithWorkaround(request);
+            is = getImageInputStreamWithWorkaround(request);
+            BitmapFactory.decodeStream(is);
 
 			final int bufSize = 4096;
 			byte[] buffer = new byte[bufSize];
@@ -165,6 +167,15 @@ public class ImageProcessingTask extends
 			is.close();
 			os.flush();
 			os.close();
+            // Correct orientation of original file
+            try {
+                ImageProvider.correctOrientation(request.c, imageUri);
+            } catch (OutOfMemoryError e){
+                e.printStackTrace();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
 			Log.d(TAG, "Wrote n bytes = " + bytesWritten);
 			int thumbCompression = 50;
 			int thumbMaxSize = 100;
@@ -210,4 +221,12 @@ public class ImageProcessingTask extends
 		return null;
 	}
 
+    protected int rotateBitmap(File file, Bitmap bitmap) throws IOException {
+
+        ExifInterface exif = new ExifInterface(file.getAbsolutePath());
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+
+        return orientation;
+    }
 }
