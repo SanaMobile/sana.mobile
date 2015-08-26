@@ -40,10 +40,11 @@ import org.sana.core.Observer;
 public abstract class Task extends Model implements ITask{
 
 	public Date dueDate = null;
-	public String due_on;
-        public String completed;
-        public String started;
+	public Date due_on;
+	public Date completed;
+	public Date started;
 	public Observer assigned_to;
+
 	public static class Status{
 		public String current;
 	}
