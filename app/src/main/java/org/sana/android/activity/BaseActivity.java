@@ -518,26 +518,26 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     }
 
     public String getBuildString() {
-        String localVersion = "%s.vc%d%s";
+        String version = "";
+        String versionFormat = "%s-%s";
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(
-                getPackageName(), 0);
-
+                    getPackageName(), 0);
             ApplicationInfo ai  = getPackageManager().getApplicationInfo(
-                getPackageName(), PackageManager.GET_META_DATA);
+                    getPackageName(), PackageManager.GET_META_DATA);
             Bundle metadata = ai.metaData;
-            String local = (TextUtils.isEmpty(metadata.getString("local_build"))) ?
-                    "" : "-" + metadata.getString("local_build");
+            String local = metadata.getString("local_build");
             Log.i(TAG, "Version info: name=" + pi.versionName +", code=" +
                     pi.versionCode);
-            return String.format(localVersion, pi.versionName, pi.versionCode,
-                local);
+            version = (!TextUtils.isEmpty(local))?
+                    String.format(versionFormat, pi.versionName, local): pi.versionName;
         } catch (Exception e) {
 
         }
+        Log.d(TAG, "...version string=" +version);
         // Temporary work around.
-        localVersion = getString(R.string.display_version);
-        return localVersion;
+        //version = getString(R.string.display_version);
+        return version;
     }
 
     protected void handleBroadcast(Intent intent){
