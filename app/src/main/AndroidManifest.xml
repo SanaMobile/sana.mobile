@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.sana"
     android:versionCode="8"
-    android:versionName="2.1"
+    android:versionName="2.1.0"
     android:installLocation="auto">
 
     <uses-sdk
@@ -62,6 +62,7 @@
         <!-- Activity section -->
         <activity
             android:name="org.sana.android.activity.PatientRunner"
+            android:screenOrientation="portrait"
             android:label="@string/title_register_new_patient" >
             <intent-filter>
                 <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
@@ -105,6 +106,7 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.ProceduresList"
+            android:screenOrientation="portrait"
             android:label="@string/title_procedures_list" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -165,7 +167,8 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.NotificationList"
-            android:label="@string/title_notifications_list" >
+            android:label="@string/title_notifications_list"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.PICK" />
@@ -180,7 +183,8 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.EducationResourceList"
-            android:label="@string/title_help_list" >
+            android:label="@string/title_help_list"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.PICK" />
@@ -193,7 +197,8 @@
                 <data android:mimeType="vnd.android.cursor.item/org.sana.info" />
             </intent-filter>
         </activity>
-        <activity android:name="org.sana.android.activity.ProcedureSdImporter" >
+        <activity android:name="org.sana.android.activity.ProcedureSdImporter"
+                  android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="org.sana.android.activity.IMPORT_PROCEDURE" />
                 <category android:name="android.intent.category.DEFAULT" />
