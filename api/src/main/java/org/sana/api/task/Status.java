@@ -32,21 +32,40 @@ package org.sana.api.task;
  *
  */
 public enum Status {
+    UNKNOWN(-1),
 	ASSIGNED(1),
 	REVIEWED(5),
 	REJECTED(3),
 	COMPLETED(2),
-        IN_PROGRESS(4);
-        public final int code;
-        Status(int code){
-            this.code = code;
-        }
+    IN_PROGRESS(4);
+    public final int code;
+    Status(int code){
+        this.code = code;
+    }
         
-        public static Status fromCode(int code){
-            for(Status status: Status.values()){
-                if(status.code == code)
-                    return status;
-            }
-            throw new IllegalArgumentException();
+    public static Status fromCode(int code){
+        for(Status status: Status.values()){
+            if(status.code == code)
+                return status;
         }
+        throw new IllegalArgumentException();
+    }
+
+    /**
+     * Returns a new Status based on a case insensitive comparison to the
+     * allowed Status Strings.
+     *
+     * @param statusStr
+     * @return
+     */
+    public static Status fromString(String statusStr){
+        Status status = UNKNOWN;
+        for(Status stat:Status.values()){
+            if(statusStr.compareToIgnoreCase(stat.toString()) == 0){
+                status = stat;
+                break;
+            }
+        }
+        return status;
+    }
 }
