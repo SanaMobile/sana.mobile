@@ -3,10 +3,12 @@ package org.sana.android.db;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.sana.android.content.ExifUtil;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 
 import android.content.ContentProvider;
@@ -18,6 +20,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
@@ -62,7 +66,38 @@ public class ImageProvider extends ContentProvider {
     public static Uri getThumbUri(Uri imageUri) {
     	Uri.Builder thumbBuilder = imageUri.buildUpon();
     	thumbBuilder.appendQueryParameter(VIEW_PARAMETER, THUMBNAIL_VIEW);
-    	return thumbBuilder.build();
+        return thumbBuilder.build();
+    }
+
+    public static void correctOrientation(Context context, Uri uri){
+        Log.i(TAG, "correctOrientation()");
+        List<String> segments = uri.getPathSegments();
+
+        // Invalid URI
+        if (segments.size() != 2)
+            return;
+
+        String imageId = segments.get(1);
+        String imagePath = "/data/data/org.sana.android/files/" + imageId;
+        File src = new File(imagePath);
+        if(src.exists()){
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            try {
+                OutputStream os =context.getContentResolver().openOutputStream
+                        (uri);
+                Bitmap oriented = ExifUtil.rotateBitmap(src, bitmap);
+                boolean saved = oriented.compress(Bitmap.CompressFormat.JPEG,
+                        100, os);
+                Log.d(TAG, "Compressed rotated bitmap: saved=" + saved);
+                os.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.e(TAG, "File not found: " + src);
+        }
     }
 
     private String basePath() {
@@ -144,7 +179,7 @@ public class ImageProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
-        Log.i(TAG, "query() uri="+uri.toString() + " projection="
+                Log.i(TAG, "query() uri="+uri.toString() + " projection="
         		+ ((projection == null)?"":TextUtils.join(",",projection))
         		+ ", selection="+selection
         		+ ", selectionArgs=" + ((selectionArgs == null)?"":TextUtils.join(",",selectionArgs)));
