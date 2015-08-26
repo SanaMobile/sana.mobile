@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.sana.R;
+import org.sana.android.Constants;
 import org.sana.android.app.Locales;
+import org.sana.android.app.Preferences;
 import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
@@ -25,6 +27,7 @@ import org.sana.android.util.Logf;
 import org.sana.api.IModel;
 import org.sana.api.task.EncounterTask;
 
+import org.sana.api.task.Status;
 import org.sana.util.StringUtil;
 
 import android.content.Context;
@@ -62,7 +65,7 @@ import android.widget.TextView;
 public class EncounterTaskListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
     public static final String TAG = EncounterTaskListFragment.class.getSimpleName();
 
-    public static final SimpleDateFormat sdf = new SimpleDateFormat(IModel.DATE_FORMAT,
+    public static SimpleDateFormat sdf = new SimpleDateFormat(IModel.DATE_FORMAT,
             Locale.US);
     public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm",
                     Locale.US);
@@ -122,9 +125,11 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
+        Locale locale = new Locale(Preferences.getString(getActivity(),
+                Constants.PREFERENCE_LOCALE, "EN"));
         df = new SimpleDateFormat(
                 getActivity().getString(R.string.display_date_time_format),
-                Locale.US);
+                locale);
         // signal the dispatcher to sync
         mUri = getActivity().getIntent().getData();
         if (mUri == null) {
@@ -216,7 +221,7 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         /**
          * Callback when a patient is selected in the list.
          *
-         * @param patientId The selected patient's ID.
+         * @param id The selected patient's ID.
          */
         public void onModelItemSelected(long id);
     }
@@ -261,6 +266,15 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
     public class EncounterTaskCursorAdapter extends CursorAdapter{
 
         private final LayoutInflater mInflater;
+        // Holders for the cursor column index values
+        protected int idIndex = -1;
+        protected int subjectIndex = -1;
+        protected int procedureIndex = -1;
+        protected int dueOnIndex = -1;
+        protected int statusIndex = -1;
+        protected int completedIndex = -1;
+        protected int uuidIndex = -1;
+        protected int encounterIndex = -1;
 
         public EncounterTaskCursorAdapter(Context context, Cursor c) {
             super(context.getApplicationContext(),c,false);
@@ -272,18 +286,21 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         }
 
         public EncounterTaskCursorAdapter(Context context, Cursor c, int flags) {
-            super(context,c, flags);
+            super(context, c, flags);
             mInflater = LayoutInflater.from(context);
+            setColumnIndexes(c);
         }
 
 
         @Override
         public void changeCursor (Cursor cursor){
+            setColumnIndexes(cursor);
             super.changeCursor(cursor);
         }
 
         @Override
         public Cursor swapCursor(Cursor newCursor) {
+            setColumnIndexes(newCursor);
             return super.swapCursor(newCursor);
 
         }
@@ -293,20 +310,30 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
             Log.d(TAG+".mAdapter", "bindView(): cursor position: "
                 + ((cursor != null)? cursor.getPosition(): 0));
             int position = this.getCursor().getPosition();
-            String uuid = ((Cursor) getItem(position)).getString(4);
-            String due_on = ((Cursor) this.getItem(position)).getString(3);
-            String status = ((Cursor) this.getItem(position)).getString(3);
-            String completed = ((Cursor) getItem(position)).getString(6);
-            boolean complete = !TextUtils.isEmpty(completed);
+            String uuid = ((Cursor) getItem(position)).getString(uuidIndex);
+            String due_on = ((Cursor) this.getItem(position)).getString(dueOnIndex);
+            String status = ((Cursor) this.getItem(position)).getString(statusIndex);
+            String completed = ((Cursor) getItem(position)).getString(completedIndex);
+            boolean complete = false;
+            boolean reviewed = false;
+            Status stat = Status.fromString(status);
+            switch(stat){
+                case COMPLETED:
+                case REVIEWED:
+                    complete = true;
+                    break;
+                default:
+                    complete = false;
+            }
             if(complete)
                 setDate(view,true,completed,position);
             else
                 setDate(view,due_on, position);
-            String patientUUid = ((Cursor) getItem(position)).getString(1);
+            String patientUUid = ((Cursor) getItem(position)).getString(subjectIndex);
             setPatient(context,view,patientUUid);
-            String procedureUuid = ((Cursor) getItem(position)).getString(2);
+            String procedureUuid = ((Cursor) getItem(position)).getString(procedureIndex);
             setProcedure(context,view,procedureUuid);
-            String encounter = ((Cursor) getItem(position)).getString(7);
+            String encounter = ((Cursor) getItem(position)).getString(encounterIndex);
             Bundle data = new Bundle();
             data.putString(Contract.STATUS, status);
             data.putParcelable(Intents.EXTRA_TASK,
@@ -337,6 +364,22 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
             View view = mInflater.inflate(R.layout.encountertask_list_item, null);
             bindView(view, context, cursor);
             return view;
+        }
+
+        protected void setColumnIndexes(Cursor cursor){
+            // Do a null check just in case
+            if(cursor == null) {
+                Log.w(TAG, "setColumnIndexes(null)");
+                return;
+            }
+            idIndex = cursor.getColumnIndex(Contract._ID);
+            subjectIndex = cursor.getColumnIndex(Contract.SUBJECT);
+            procedureIndex = cursor.getColumnIndex(Contract.PROCEDURE);
+            dueOnIndex = cursor.getColumnIndex(Contract.DUE_DATE);
+            statusIndex = cursor.getColumnIndex(Contract.STATUS);
+            completedIndex = cursor.getColumnIndex(Contract.COMPLETED);
+            uuidIndex = cursor.getColumnIndex(Contract.UUID);
+            encounterIndex = cursor.getColumnIndex(Contract.ENCOUNTER);
         }
     }
 
