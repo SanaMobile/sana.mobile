@@ -349,7 +349,8 @@ public class DispatchService extends Service{
             for(EncounterTask task:response.message){
                 ContentValues value = new ContentValues();
                 value.put(EncounterTasks.Contract.UUID , task.uuid);
-                value.put(EncounterTasks.Contract.DUE_DATE , task.due_on);
+                value.put(EncounterTasks.Contract.DUE_DATE , DateUtil.format
+                        (task.due_on));
                 value.put(EncounterTasks.Contract.PROCEDURE , task.procedure.uuid);
                 value.put(EncounterTasks.Contract.SUBJECT , task.subject.uuid );
                 value.put(EncounterTasks.Contract.ENCOUNTER, task.encounter.uuid);
@@ -369,7 +370,8 @@ public class DispatchService extends Service{
                 EncounterTask task = iterator.next();
                 ContentValues value = new ContentValues();
                 value.put(EncounterTasks.Contract.UUID , task.uuid);
-                value.put(EncounterTasks.Contract.DUE_DATE , task.due_on);
+                value.put(EncounterTasks.Contract.DUE_DATE , DateUtil.format
+                        (task.due_on));
                 value.put(EncounterTasks.Contract.PROCEDURE , task.procedure.uuid);
                 value.put(EncounterTasks.Contract.SUBJECT , task.subject.uuid );
                 if(task.encounter != null)
@@ -1125,7 +1127,7 @@ public class DispatchService extends Service{
     }
 
     protected final void notify(int resID, int code, Intent notifyIntent){
-        Log.d(TAG, "notify(...) " + resID +", " + notifyIntent.toUri(Intent.URI_INTENT_SCHEME));
+        Log.d(TAG, "notify(...) " + resID + ", " + notifyIntent.toUri(Intent.URI_INTENT_SCHEME));
         // Pending intent used to launch the notification intent
         PendingIntent actionIntent =
                 PendingIntent.getActivity(
@@ -1138,7 +1140,7 @@ public class DispatchService extends Service{
         Locales.updateLocale(getBaseContext(), getString(R.string.force_locale));
         mNotificationFactory
             .setContentIntent(actionIntent)
-            .setContentText(resID,code)
+            .setContentText(resID, code)
             .doNotify();
     }
 
@@ -1381,7 +1383,8 @@ public class DispatchService extends Service{
                 EncounterTask task = iterator.next();
                 ContentValues value = new ContentValues();
                 value.put(EncounterTasks.Contract.UUID , task.uuid);
-                value.put(EncounterTasks.Contract.DUE_DATE , task.due_on);
+                value.put(EncounterTasks.Contract.DUE_DATE ,
+                        DateUtil.format(task.due_on));
                 value.put(EncounterTasks.Contract.PROCEDURE , task.procedure.uuid);
                 value.put(EncounterTasks.Contract.SUBJECT , task.subject.uuid );
                 subjects.put(task.subject.uuid, task.subject);
@@ -1389,6 +1392,14 @@ public class DispatchService extends Service{
                     value.put(EncounterTasks.Contract.ENCOUNTER, task.encounter.uuid);
                 value.put(EncounterTasks.Contract.OBSERVER , task.assigned_to.uuid);
                 value.put(EncounterTasks.Contract.STATUS , task.getStatus());
+                if (task.completed != null) {
+                    value.put(EncounterTasks.Contract.COMPLETED,
+                            DateUtil.format(task.completed));
+                }
+                if (task.started != null) {
+                    value.put(EncounterTasks.Contract.STARTED,
+                            DateUtil.format(task.started));
+                }
                 if(!exists(EncounterTasks.CONTENT_URI, task))
                     insert.add(value);
                 else
