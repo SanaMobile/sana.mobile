@@ -1,0 +1,194 @@
+<Procedure title="Surgical Monitoring(English)"
+    author="Alexi Matousek"
+    uuid="5299055a-c5e6-47e7-b649-dc17dac6019c"
+    version="1.2" >
+    <!-- Instruction screen 1 -->
+    <Page>
+       <Element id="i1" type="TEXT" 
+        concept="INSTRUCTION 1"
+        question="Please walk to the patient's home and ask the following questions.\n\nIf the patient is not at home, go to where the patient is located."
+        />
+    </Page>
+    <Page>
+        <Element id="1" type="RADIO" 
+        concept="LOCATION PATIENT HOUSE"
+        question="Are you at the patient's home?"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <ShowIf>
+			<Criteria type="EQUALS" id="1" value="Yes"/>
+        </ShowIf>
+        <Element id="1a" type="HIDDEN" 
+        concept="LOCATION GPS"
+        question="GPS"
+        action="intent://org.sana.provider/observation/1#Intent;scheme=content;action=org.sana.android.intent.ACTION_RECORD_GPS;end"
+        />
+    </Page>
+    <!--  Instruction screen 2 -->
+    <Page>
+       <Element id="instruction2" type="TEXT" 
+        concept="INSTRUCTION 2"
+        question="If the patient has any of the following:\n\na. Fever\nb. Increased pain\nc. Inflammation\nd. Liquid drainage\ne. Puss\nf. Opening\n\nThis may indicate infection and the patient should be evaluated promptly."
+        />
+    </Page>
+    <!-- Will trigger automatic GPS if 1 positive -->
+    <!-- 
+    Do something here
+    -->
+    <Page>
+        <Element id="2" type="RADIO" 
+        concept="FEVER POST SX"
+        question="Since you left the hospital, have you had a fever?"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <Element id="3" type="RADIO" 
+        concept="SX SITE PAIN"
+        question="Where they operated on you, is there more pain?"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <Element id="4" type="RADIO" 
+        concept="SX SITE REDNESS"
+        question="Where they operated on you, has it become more red?"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <Element id="5" type="RADIO" 
+        concept="SX SITE SWELLING"
+        question="Where they operated on you, is there more swelling?"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <Element id="6" type="RADIO"
+        concept="FIRMNESS SX SITE"
+        question="Where they operated on you, is it more firm?"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    
+    <Page>
+        <Element id="7" type="RADIO" 
+        concept="SX SITE DRAINAGE"
+        question="Where they operated on you, is there fluid drainage"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    
+    <!-- Begin follow ups to question 7 if positive response -->
+    <Page>
+        <ShowIf>
+			<Criteria type="EQUALS" id="7" value="Yes"/>
+        </ShowIf>
+        <Element id="7a" type="RADIO" 
+        concept="SX SITE DRAINAGE VISCOSITY"
+        question="Is the fluid thick or watery?"
+        choices="Thick;Watery"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <ShowIf>
+				<Criteria type="EQUALS" id="7" value="Yes"/>
+        </ShowIf>
+        <Element id="7b" type="RADIO" 
+        concept="SX SITE DRAINAGE COLOR"
+        question="What color is the liquid?"
+        choices="Brown, yellow, green to white; Red, pink, or clear"
+        required="true"
+        />
+    </Page>
+    <Page>
+        <ShowIf>
+				<Criteria type="EQUALS" id="7" value="Yes"/>
+        </ShowIf>
+        <Element id="7c" type="RADIO" 
+        concept="SX SITE DRAINAGE ODOR"
+        question="Does the fluid smell bad?"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    <!-- End follow ups to question 7 -->
+    
+    <Page>
+        <Element id="8" type="RADIO" 
+        concept="SX SITE OPEN SPONTANEOUS"
+        question="Where they operated on you, is the opening wider?"
+        choices="Yes;No"
+        required="true"
+        />
+    </Page>
+    <!-- May want to do 9 as an info screen then picture -->
+    <Page>
+        <Element id="9" type="PICTURE" 
+        concept="SX SITE IMAGE"
+        question="Please take a photo of the entire operation site. Include any liquid drainage or stains on dressing if present."
+        required="true"
+        />
+    </Page>  
+    <Page>
+        <Element id="10" type="RADIO" 
+        concept="SX SITE INFECTION SUSPECTED"
+        question="Do you think the patient has an infection?"
+        choices="Yes;No;Unsure"
+        required="true"
+        />
+    </Page>
+    <!-- Referral Page -->
+    <!--  
+    	Referral logic   
+		Question	Item		High Risk		Low Risk		Other
+		1			Location	-				-	
+		2			Fever		yes				no	
+		3			Pain		yes				no	
+		4			Redness		yes				no	
+		5			Swelling	yes				no	
+		6			Hardness	yes				no	
+		7			Drainage	yes				no	
+		7a			thick/thin	thick			watery
+		7b			Color		brown, yellow,  red, pink,clear
+								  green, white		
+		7c			smell		yes				no
+		8			opening		yes				no
+		9			picture		-				-
+		10			CHW			yes				no				unsure
+    -->
+    <Page>
+        <ShowIf>
+    		<or>
+				<Criteria type="EQUALS" id="2" value="Yes"/>
+				<Criteria type="EQUALS" id="3" value="Yes"/>
+				<Criteria type="EQUALS" id="4" value="Yes"/>
+				<Criteria type="EQUALS" id="5" value="Yes"/>
+    			<Criteria type="EQUALS" id="6" value="Yes"/>
+    			<Criteria type="EQUALS" id="7" value="Yes"/>
+    			<Criteria type="EQUALS" id="7a" value="Thick"/>
+    			<Criteria type="EQUALS" id="7b" value="Brown, yellow, green to white"/>
+    			<Criteria type="EQUALS" id="7c" value="Yes"/>
+    			<Criteria type="EQUALS" id="8" value="Yes"/>
+    			<Criteria type="EQUALS" id="10" value="Yes"/>
+    		</or>
+        </ShowIf>
+        <Element id="i3" type="TEXT" 
+        concept="REFER INFECTION RISK"
+        question="Your responses indicate the patient may have an infection. The patient should be taken to the clinic to see the surgeon promptly:\n\nPlease call the supervisor."
+        action="intent:000000000#Intent;scheme=tel;action=android.intent.action.CALL;S.android.intent.extra.TITLE=Call%20supervisor%3A%20000000000;end"
+        />
+    </Page>
+    <!-- End referral page -->
+   <!-- End translate -->
+</Procedure>
