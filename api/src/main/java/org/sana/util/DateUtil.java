@@ -88,5 +88,10 @@ public class DateUtil {
 	public static long formatAsLong(Date date){
 		return date.getTime();
 	}
-	
+
+	public static void main(String...args){
+        String longFormat = "MMM dd, yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(longFormat);
+        System.out.println(sdf.format(new Date()));
+    }
 }
