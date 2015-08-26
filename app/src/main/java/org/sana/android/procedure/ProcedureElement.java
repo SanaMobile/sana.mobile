@@ -106,7 +106,8 @@ public abstract class ProcedureElement {
          *  is not returned directly and must be manually entered by the user. 
          */
         ENTRY_PLUGIN(""),
-        HIDDEN("");
+        HIDDEN(""),
+        AGE("");
     	
         private String filename;
         private ElementType(String filename) {
@@ -439,6 +440,11 @@ public abstract class ProcedureElement {
             el = HiddenElement.fromXML(idStr, questionStr, answerStr, conceptStr, 
             		figureStr, audioStr, node);
             break;
+
+            case AGE:
+                el = AgeElement.fromXML(idStr, questionStr, answerStr, conceptStr,
+                        figureStr, audioStr, node);
+                break;
         case INVALID:
         default:
             throw new ProcedureParseException("Got invalid node type : " 
