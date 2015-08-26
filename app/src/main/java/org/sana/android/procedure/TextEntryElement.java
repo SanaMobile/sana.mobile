@@ -27,8 +27,8 @@ import android.widget.EditText;
  */
 public class TextEntryElement extends ProcedureElement {
     public static final String TAG = TextEntryElement.class.getSimpleName();
-    private EditText et;
-    private NumericType numericType = NumericType.NONE;
+    protected EditText et;
+    protected NumericType numericType = NumericType.NONE;
     /**
      * Available numeric types for entry. It is used to determine acceptable
      * values and an appropriate key listener.
@@ -55,7 +55,7 @@ public class TextEntryElement extends ProcedureElement {
     }
     
     /** gets the key listener by type */
-    private static KeyListener getKeyListenerForType(NumericType type) {
+    protected static KeyListener getKeyListenerForType(NumericType type) {
     	switch (type) {
     	case DIALPAD:
     		return new DialerKeyListener();
@@ -115,7 +115,7 @@ public class TextEntryElement extends ProcedureElement {
     }
 
     /** Default constructor */
-    private TextEntryElement(String id, String question, String answer, 
+    protected TextEntryElement(String id, String question, String answer,
     		String concept, String figure, String audio, 
     		NumericType numericType) {
         super(id, question, answer, concept, figure, audio);
