@@ -18,4 +18,5 @@ dependencies {
     compile 'commons-codec:commons-codec:1.7'
     compile 'org.apache.james:apache-mime4j-core:0.7.2'
     compile group: 'com.google.guava', name: 'guava', version: '18.0'
+    compile 'joda-time:joda-time:2.3'
 }
