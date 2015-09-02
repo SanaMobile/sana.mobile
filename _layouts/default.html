@@ -4,16 +4,28 @@
   {% include head.html %}
 
   <body>
+    
+    {% include sidebar.html %}
+    
+    <main id="content" class="content">
 
     {% include header.html %}
 
-    <div class="page-content">
+    <div class="page-content container">
       <div class="wrapper">
         {{ content }}
       </div>
     </div>
 
     {% include footer.html %}
+
+    </main>
+
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <script type="text/javascript" src="{{ site.baseurl }}/static/js/jquery.slide-transition.js"></script>
+
+    <script type="text/javascript" src="{{ site.baseurl }}/static/js/toggle.js"></script>
 
   </body>
 

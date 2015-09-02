@@ -27,8 +27,6 @@ $content-width:    800px;
 $on-palm:          600px;
 $on-laptop:        800px;
 
-
-
 // Using media queries with like this:
 // @include media-query($on-palm) {
 //     .wrapper {
@@ -43,10 +41,14 @@ $on-laptop:        800px;
 }
 
 
+// Header
+$header-color: #E24B4B;
+$header-spacing:   64px;
 
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import
         "base",
         "layout",
-        "syntax-highlighting"
+        "syntax-highlighting",
+        "sidebar"
 ;

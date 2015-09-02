@@ -1,0 +1,39 @@
+<aside id="sidebar" class="sidebar">
+    <h3 class="sidebar-title"><a href="{{ site.baseurl }}/">{{ site.title }}</a></h3>
+    <nav class="navigation">
+      <ul>
+        {% for page in site.pages %}
+          {% if page.title %}
+            <li><a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+      <ul>
+          <li class=".toggle-wrapper">
+            <h4 class="sidebar-navigation-title">User Docs</h4>
+            <ul>
+            {% for page in site.users %}
+              {% if page.title %}
+                <li><a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a></li>
+              {% endif %}
+            {% endfor %}
+            </ul>
+          </ul>
+      </ul>
+      <ul>
+          <li class="toggle-wrapper">
+            <a class="sidebar-navigation-title toggle">Wiki</a>
+            <nav class="toggle-menu height-transition height-transition-hidden">
+                <ul>
+                {% for page in site.wiki %}
+                    {% if page.title %}
+                    <li><a class="subpage-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            </nav>
+            
+          </li>
+      </ul>
+  </nav>
+</aside>
