@@ -109,7 +109,11 @@ public final class Patients{
     	
     	/** A location code for the patient */
     	public static final String LOCATION = "location";
-    	
+
+        public static final String CONFIRMED = "confirmed";
+
+        public static final String DOB_ESTIMATED = "dob_estimated";
+
     	public static final String ADDRESS_ONE = "address_one";
     	public static final String ADDRESS_TWO = "address_two";
     	public static final String ADDRESS_THREE = "address_three";

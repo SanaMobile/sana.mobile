@@ -34,6 +34,10 @@ public class Patient extends Subject implements IPatient{
     public Location location;
     @Expose
     public String system_id;
+	@Expose
+	boolean confirmed;
+    @Expose
+    boolean dobEstimated;
 
 	/* (non-Javadoc)
 	 * @see org.sana.core.IPatient#getGiven_name()
@@ -120,5 +124,21 @@ public class Patient extends Subject implements IPatient{
 
     public void setSystemId(String systemId){
         this.system_id = systemId;
+    }
+
+	public boolean getConfirmed(){
+		return confirmed;
+	}
+
+	public void setConfirmed(boolean confirmed){
+		this.confirmed = confirmed;
+	}
+
+    public boolean isDobEstimated() {
+        return dobEstimated;
+    }
+
+    public void setDobEstimated(boolean dobEstimated) {
+        this.dobEstimated = dobEstimated;
     }
 }
