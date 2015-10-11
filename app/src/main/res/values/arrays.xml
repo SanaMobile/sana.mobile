@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="yes_no">
+        <item>@string/general_yes</item>
+        <item>@string/general_no</item>
+    </string-array>
+    <array name="ok_cancel">
+        <item>OK</item>
+        <item>Cancel</item>
+    </array>
+</resources>

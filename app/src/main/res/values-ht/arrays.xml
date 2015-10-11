@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Language: HT -->
+<resources>
+    <string-array name="months_long_format">
+    <item>Janvye</item>
+    <item>Fevriye</item>
+    <item>Mas</item>
+    <item>Avril</item>
+    <item>Me</item>
+    <item>Jwen</item>
+    <item>Jiye</item>
+    <item>Out</item>
+    <item>Septanm</item>
+    <item>Oktob</item>
+    <item>Novanm</item>
+    <item>Desanm</item>
+    </string-array>
+
+    <string-array name="months_short_format">
+        <item>Jan</item>
+        <item>Fev</item>
+        <item>Mas</item>
+        <item>Avr</item>
+        <item>Me</item>
+        <item>Jwe</item>
+        <item>Jiy</item>
+        <item>Out</item>
+        <item>Sep</item>
+        <item>Okt</item>
+        <item>Nov</item>
+        <item>Des</item>
+    </string-array>
+</resources>
