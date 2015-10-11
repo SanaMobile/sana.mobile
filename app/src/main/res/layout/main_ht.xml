@@ -36,14 +36,6 @@
         android:onClick="submit"
         android:text="@string/button_main_select_patient" />
 
-    <Button
-        android:id="@+id/btn_main_unregistered_subject"
-        style="@style/Widget.Button.Large.Dark"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="submit"
-        android:text="@string/button_main_unregistered_patient_encounter" />
-
     <!--
         <Button
             android:id="@+id/btn_main_register_patient"
