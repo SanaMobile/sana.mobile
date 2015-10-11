@@ -235,7 +235,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 
         mDebug = this.getResources().getBoolean(R.bool.debug);
         Locales.updateLocale(this, getString(R.string.force_locale));
-        setContentView(R.layout.main_ht);
+        setContentView(R.layout.main);
         /*
         if(mDebug)
             setContentView(R.layout.main);
@@ -272,13 +272,6 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         // This prevents us from relaunching the login on every resume
         dump();
         hideViewsByRole();
-        /*
-        if(mIntent != null){
-            String action = mIntent.getAction();
-            if(action != null && action.equals(Intent.ACTION_MAIN))
-                onNext(mIntent);
-        }
-        */
     }
 
     @Override
@@ -352,11 +345,6 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         clearCredentials();
         onClearAppState();
         onNext(null);
-        
-        //Intent setIntent = new Intent(Intent.ACTION_MAIN);
-        //setIntent.addCategory(Intent.CATEGORY_HOME);
-        //setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //startActivity(setIntent);
     }
 
     /**
@@ -564,7 +552,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     }
 
     /**
-     * REtrieves the device phone number using the TelephonyManager
+     * Retrieves the device phone number using the TelephonyManager
      * @return the device phone number
      */
     public String getPhoneNumber(){
@@ -620,7 +608,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                         .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
                                 getString(R.string.procs_subject_short_form)))
                         .putExtra(Intents.EXTRA_PROCEDURE_ID,R.raw
-                                .registration_short_ht)
+                                .registration_short_en)
                         .putExtra(Intents.EXTRA_OBSERVER, mObserver);
                 startActivityForResult(intent, Intents.RUN_PROCEDURE);
                 break;
