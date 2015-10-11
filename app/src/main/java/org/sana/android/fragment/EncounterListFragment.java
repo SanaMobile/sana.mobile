@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.app.Locales;
@@ -25,6 +26,7 @@ import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
 import org.sana.android.service.impl.DispatchService;
 import org.sana.android.service.QueueManager;
+import org.sana.android.util.Dates;
 import org.sana.android.util.Logf;
 import org.sana.android.util.SanaUtil;
 import org.sana.api.IModel;
@@ -91,7 +93,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
     private OnModelItemSelectedListener mListener;
     Handler mHandler;
     private boolean doSync = false;
-
+    String[] months;
     LongSparseArray<Bundle> mData = new LongSparseArray<Bundle>();
 
     //
@@ -115,6 +117,9 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         df = new SimpleDateFormat(
                 getString(R.string.display_date_format),
                 locale);
+
+        Locales.updateLocale(getActivity(), locale);
+        months = getActivity().getResources().getStringArray(R.array.months_long_format);
         // signal the dispatcher to sync
         mUri = getActivity().getIntent().getData();
         if (mUri == null) {
@@ -228,7 +233,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
 
         private final LayoutInflater mInflater;
         private ArrayList<Boolean> itemChecked = new ArrayList<Boolean>();
-
+        String[] months;
         public EncounterCursorAdapter(Context context, Cursor c) {
             super(context.getApplicationContext(),c,false);
             mInflater = LayoutInflater.from(context);
@@ -410,6 +415,8 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
 
     public void setDate(View view, String date){
         Log.i(TAG, "setDate() " + date);
+
+        /*
         TextView dateView = (TextView)view.findViewById(R.id.procedure_date);
         Date dateObj = null;
         try {
@@ -419,6 +426,19 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         }
         String display = (dateObj == null)? "null date": df.format(dateObj);
         dateView.setText(display);
+        */
+        TextView dateView = (TextView)view.findViewById(R.id.procedure_date);
+        try {
+            Date d = Dates.fromSQL(date);
+            DateTime dt = new DateTime(d);
+            int month = dt.getMonthOfYear();
+            int dayOfMonth = dt.getDayOfMonth();
+            int year = dt.getYear();
+            String localizedMonth = months[month - 1];
+            dateView.setText(String.format("%02d %s %04d", dayOfMonth, localizedMonth, year));
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
     }
 
     public void setUploadStatus(View view, int queueStatus, int queuePosition,boolean complete){
