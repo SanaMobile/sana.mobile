@@ -37,12 +37,14 @@
     <string name="display_date_format" translatable="false">MMMM dd, yyyy</string>
     <string name="display_date_time_format" translatable="false">MMMM dd, yyyy HH:mm</string>
     <bool name="display_input_element_id">true</bool>
+    <bool name="display_registration_input_element_id">false</bool>
+    <bool name="display_registration_confirmation_page">false</bool>
 
     <integer name="sync_delta_subjects">60000</integer>
     <integer name="sync_delta_encountertasks">1000</integer>
     
     <bool name="cfg_notify_task_status">true</bool>    
     <bool name="cfg_upload_foreground">true</bool>
-    <string name="cfg_default_location" translatable="false">29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca</string>
+    <string name="cfg_default_location" translatable="false">d4b7efb4-7ade-4700-936c-7bf34b0feef1</string>
     <string name="cfg_alphabet" translatable="false">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>
