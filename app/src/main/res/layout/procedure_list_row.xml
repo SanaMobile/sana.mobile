@@ -2,13 +2,15 @@
 
 <!-- Used in ProcedureList activity-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="6dip">
+    android:padding="12dip"
+    >
         <TextView
-        	android:text="" 
+        	android:text="Title"
             android:id="@+id/toptext"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -20,12 +22,12 @@
         	android:textAppearance="?android:attr/textAppearanceLarge"
         	/>
         <TextView
-        	android:text="" 
+        	android:text="version"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" 
             android:id="@+id/bottomtext"
             android:ellipsize="marquee"
         	android:focusable="false" 
-        	android:focusableInTouchMode="false"/>
+        	android:focusableInTouchMode="false" android:textAppearance="?android:attr/textAppearanceLarge"/>
 </LinearLayout>
