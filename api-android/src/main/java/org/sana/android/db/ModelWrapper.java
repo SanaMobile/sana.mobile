@@ -64,6 +64,12 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
         super(cursor);
     }
 
+    public boolean getBooleanField(int columnIndex){
+        boolean field = false;
+        field = (getInt(columnIndex) == 1);
+        return field;
+    }
+
     public Date getDateField(String field){
         String dateStr = getString(getColumnIndex(field));
         try {
@@ -79,6 +85,10 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
 
     public String getStringField(String field){
         return getString(getColumnIndex(field));
+    }
+
+    public boolean getBooleanField(String field){
+        return getBooleanField(getColumnIndex(field));
     }
 
     /* (non-Javadoc)
