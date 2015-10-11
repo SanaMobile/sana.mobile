@@ -33,6 +33,7 @@ import java.util.Locale;
 import org.sana.BuildConfig;
 import org.sana.android.activity.ProcedureRunner;
 import org.sana.android.content.Uris;
+import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.provider.Observations;
 
 import android.annotation.SuppressLint;
@@ -275,7 +276,7 @@ public class InstrumentationService extends Service {
 	}
 	
 	class LocationInstrumentationListener implements LocationListener{
-		
+
 		final int id;
 		final Uri uri;
 		final PendingIntent replyTo;
@@ -299,17 +300,27 @@ public class InstrumentationService extends Service {
 			this.uri = uri;
 			bundle.putAll(data.getBundle("extra_data"));
 			this.minAccuracy = minAccuracy;
+            currentLocation = null;
 		}
 		
 		@Override
 		public void onLocationChanged(Location location) {
-			Log.d(TAG, "Got location update." + location.getLatitude() + ":" + location.getLongitude());
-			Log.d(TAG, "Got location update." + location);
+            Log.i(TAG, "onLocationChanged()");
+            if(currentLocation == null){
+                currentLocation = location;
+            }
+            if (currentLocation.getAccuracy() > location.getAccuracy()){
+                Log.d(TAG, "...Location update more accurate. Swapping");
+                currentLocation = location;
+            } else {
+                Log.d(TAG, "...Location update less accurate. Not swapping");
+                location = currentLocation;
+            }
+            Log.i(TAG, "Location update." + location);
 			float accuracy = location.getAccuracy();
 			Log.d(TAG, "Accuracy: " + accuracy);
 			String locStr = "( "+location.getLatitude() +", "+ location.getLongitude()+", " + accuracy+" )";
-			// Bail if accuracy is > minimum acceptable
-			
+
 			if(!Uris.isEmpty(uri))
 				updateObservation(uri,locStr);
 			if(replyTo != null){
@@ -330,6 +341,7 @@ public class InstrumentationService extends Service {
 				Log.w(TAG, "No Pending Intent replyTo. Did you provide extra" 
 						+ "Intent.EXTRA_INTENT in Intent sent to service?");
 			}
+            // Keep listening if accuracy is > minimum acceptable
 			if(accuracy > minAccuracy)
 				return;
 			removeListener(id);
@@ -364,6 +376,4 @@ public class InstrumentationService extends Service {
         	}
 		}
 	}
-	
-	
 }
