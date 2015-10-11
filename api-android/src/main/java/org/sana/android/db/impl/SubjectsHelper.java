@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.sana.android.db.TableHelper;
+import org.sana.android.provider.Patients;
 import org.sana.android.provider.Patients.Contract;
 import org.sana.core.Subject;
 
@@ -82,26 +83,30 @@ public class SubjectsHelper extends TableHelper<Subject>{
 	public String onCreate() {
 		Log.i(TAG, "onCreate()");
 		return "CREATE TABLE " + getTable() + " ("
-		+ Contract._ID 			+ " INTEGER PRIMARY KEY,"
-		+ Contract.UUID 		+ " TEXT NOT NULL,"
-        + Contract.CREATED 		+ " DATE,"
-        + Contract.MODIFIED 	+ " DATE,"
-		+ Contract.PATIENT_ID 	+ " TEXT,"
-		+ Contract.GIVEN_NAME 	+ " TEXT NOT NULL,"
-		+ Contract.FAMILY_NAME	+ " TEXT NOT NULL,"
-		+ Contract.GENDER 		+ " TEXT NOT NULL,"
-		+ Contract.IMAGE 		+ " TEXT,"
-		+ Contract.STATE 		+ " INTEGER DEFAULT '-1',"
-		+ Contract.DOB 			+ " DATE, "
-		+ Contract.LOCATION		+ " TEXT,"
-		+ Contract.ADDRESS_ONE + " TEXT,"
-		+ Contract.ADDRESS_TWO + " TEXT,"
-		+ Contract.ADDRESS_THREE + " TEXT,"
-		+ Contract.ADDRESS_FOUR + " TEXT,"
-		+ Contract.CONTACT_ONE + " TEXT,"
-		+ Contract.CONTACT_TWO + " TEXT,"
-		+ Contract.CONTACT_THREE + " TEXT,"
-		+ Contract.CONTACT_FOUR + " TEXT"
+                + Contract._ID 			+ " INTEGER PRIMARY KEY,"
+		        + Contract.UUID 		+ " TEXT NOT NULL,"
+                + Contract.CREATED 		+ " DATE,"
+                + Contract.MODIFIED 	+ " DATE,"
+                + Contract.PATIENT_ID 	+ " TEXT,"
+                + Contract.GIVEN_NAME 	+ " TEXT NOT NULL,"
+                + Contract.FAMILY_NAME	+ " TEXT NOT NULL,"
+                + Contract.GENDER 		+ " TEXT NOT NULL,"
+                + Contract.IMAGE 		+ " TEXT,"
+                + Contract.STATE 		+ " INTEGER DEFAULT '-1',"
+                + Contract.DOB 			+ " DATE, "
+                + Contract.LOCATION		+ " TEXT,"
+                + Contract.ADDRESS_ONE + " TEXT,"
+                + Contract.ADDRESS_TWO + " TEXT,"
+                + Contract.ADDRESS_THREE + " TEXT,"
+                + Contract.ADDRESS_FOUR + " TEXT,"
+                + Contract.CONTACT_ONE + " TEXT,"
+                + Contract.CONTACT_TWO + " TEXT,"
+                + Contract.CONTACT_THREE + " TEXT,"
+                + Contract.CONTACT_FOUR + " TEXT"
+                //TODO update db, replace line above, and uncomment
+                //+ Contract.CONTACT_FOUR + " TEXT,"
+                //+ Contract.CONFIRMED + " BOOLEAN,"
+                //+ Contract.DOB_ESTIMATED + " BOOLEAN,"
         + ");";
 		
 	}
@@ -113,10 +118,15 @@ public class SubjectsHelper extends TableHelper<Subject>{
 	public String onUpgrade(int oldVersion, int newVersion) {
 		Log.i(TAG, "onUpgrade()");
 		String sql = null;
-		if(newVersion > oldVersion && oldVersion <= 3){
-			sql = "DROP TABLE " + getTable() +";";
-			sql += onCreate();
-		}
+		if (newVersion > oldVersion){
+			if (oldVersion <= 3) {
+				sql = "DROP TABLE " + getTable() + ";";
+				sql += onCreate();
+			} else {
+                sql += "ALTER TABLE " + getTable() + " ADD COLUMN " + Contract.CONFIRMED + " BOOLEAN";
+                sql += "ALTER TABLE " + getTable() + " ADD COLUMN " + Contract.DOB_ESTIMATED + " BOOLEAN";
+            }
+	    }
 		return sql;
 	}
 	
