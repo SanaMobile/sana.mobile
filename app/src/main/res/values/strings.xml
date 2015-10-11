@@ -75,6 +75,7 @@
     <string name="general_exit">Exit</string>
     <string name="general_network_active">Network active</string>
     <string name="general_network_inactive">Network inactive</string>
+    <string name="general_unknown">Unknown</string>
 
     <!--  Dialog Strings -->
     <string name="dialog_already_uploaded">This procedure has already been uploaded.</string>
@@ -248,4 +249,6 @@
     <string name="button_main_unregistered_patient_encounter">New patient visit</string>
     <string name="title_basic_settings">Basic Settings</string>
     <string name="setting_upload_foreground">Notify upload</string>
+    <string name="prompt_default">Use default value</string>
+
 </resources>

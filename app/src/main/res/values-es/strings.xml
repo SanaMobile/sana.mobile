@@ -41,4 +41,5 @@
 	<string name="question_standard_male">Male</string>
 	<string name="question_standard_female">Female</string>
     <string name="msg_no_encounters">No encounters</string>
+	<string name="prompt_default">Use default value</string>
 </resources>
