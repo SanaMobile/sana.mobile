@@ -6,6 +6,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.sana.R;
+import org.sana.android.Constants;
+import org.sana.android.app.Locales;
+import org.sana.android.app.Preferences;
+import org.sana.android.widget.CustomDatePicker;
 import org.sana.util.DateUtil;
 import org.w3c.dom.Node;
 
@@ -27,10 +32,10 @@ import android.widget.DatePicker;
  */
 public class DateElement extends ProcedureElement {
 
-    class DateValueSetter implements DatePicker.OnDateChangedListener{
+    class DateValueSetter implements CustomDatePicker.OnDateChangedListener{
         final String TAG = DateValueSetter.class.getSimpleName();
         @Override
-        public void onDateChanged(DatePicker view, int year, int monthOfYear,
+        public void onDateChanged(CustomDatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
             Log.i(TAG, "onDateChanged()");
             Log.d(TAG, "current value: " + answer);
@@ -42,15 +47,18 @@ public class DateElement extends ProcedureElement {
         }
 
     }
-	DatePicker dp = null;
+	CustomDatePicker dp = null;
 	Date dateAnswer = new Date();
     Calendar dateValue = Calendar.getInstance(TimeZone.getDefault());
 
     /** {@inheritDoc} */
 	@Override
 	protected View createView(Context c) {
-		dp = new DatePicker(c);
-
+		dp = new CustomDatePicker(c);
+        String locale = Preferences.getString(c, Constants.PREFERENCE_LOCALE, "en");
+        Locales.updateLocale(c, locale);
+        String[] months = c.getResources().getStringArray(R.array.months_long_format);
+        dp.setMonthValues(months);
         dp.init(dateValue.get(Calendar.YEAR),
                 dateValue.get(Calendar.MONTH),
                 dateValue.get(Calendar.DAY_OF_MONTH),
