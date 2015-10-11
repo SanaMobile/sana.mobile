@@ -370,7 +370,10 @@ public class SanaUtil {
         insertProcedure(ctx, R.raw.api_test_select);
         */
         /* Haiti procedures */
-        insertProcedure(ctx, R.raw.ssi);
+        insertProcedure(ctx, R.raw.ssi_initial);
+        insertProcedure(ctx, R.raw.ssi_regular);
+        insertProcedure(ctx, R.raw.ssi_symptoms);
+        insertProcedure(ctx, R.raw.ssi_thirty_day);
         //insertProcedure(ctx, R.raw.ssi_en);
     }
 

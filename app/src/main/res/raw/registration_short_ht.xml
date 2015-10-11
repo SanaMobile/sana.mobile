@@ -4,121 +4,108 @@
     uuid="18785afb-6160-45a0-ac8c-1f5cbfaa6d92"
     version="1.0"
     locale="ht"
-    object_class="org.sana.core.Subject"
-	on_complete="intent://org.sana.provider/core/procedure/5299055a-c5e6-47e7-b649-dc17dac6019b#Intent;scheme=content;action=org.sana.android.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
+    object_class="org.sana.core.Subject">
+
     <Page>
+        <Element id="i1"
+                 type="TEXT"
+                 concept="INSTRUCTION"
+                 question="Si w pa ka jwenn non pasyan an nan lis, sivouple mete enfomasyon pa li isit:"/>
         <Element id="1"
-                 type="RADIO"
-                 concept="ID EXACT"
-                 question="Ou konnen HAS nimewo a pasyan"
-                 choices="wi;non"
-                 required="true"
-                 />
-    </Page>
-    <Page>
-        <ShowIf>
-            <Criteria type="EQUALS"
-                      id="1"
-                      value="wi"
-                />
-        </ShowIf>
-        <Element id="1a"
                  type="ENTRY"
                  concept="SYSTEM ID"
-                 question="Antre HAS Nimewo"
-                 required="true"/>
-    </Page>
-    <Page>
-        <ShowIf>
-            <Criteria type="EQUALS"
-                      id="1"
-                      value="wi"
-                />
-        </ShowIf>
-        <Element id="h2a"
+                 question="1. Nimewo HAS"
+                 default ="U:@DEVICE:@NOW:"/>
+        <Element type="TRUTH"
+                 id="u1"
+                 concept="UNKNOWN"
+                 question="pa konnen"
+                 answer="false"
+                 default="false"/>
+        <Element id="h1"
                  type="HIDDEN"
                  concept="LOCATION"
                  question="Kote"
-                 default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca"/>
-        <Element type="ENTRY" id="2a"
-                 concept="FAMILY NAME"
-                 required="true"
-                 question="Nòm" answer=""/>
-        <Element type="ENTRY" id="3a"
-                 concept="GIVEN NAME"
-                 required="true"
-                 question="Prenom"
-                 answer=""/>
+                 default="d4b7efb4-7ade-4700-936c-7bf34b0feef1"/>
+        <Element id="h2"
+                 type="HIDDEN"
+                 concept="CONFIRMED"
+                 question="Confirmed"
+                 default="false"/>
     </Page>
     <Page>
         <ShowIf>
-            <Criteria type="EQUALS"
-                      id="1"
-                      value="non"
-                      />
+            <Criteria type="EQUALS" value="true" id="u1"/>
         </ShowIf>
-        <Element id="h1b"
+        <Element id="1h"
                  type="HIDDEN"
                  concept="SYSTEM ID"
                  question="HAS #"
                  default="U:@DEVICE:@NOW:"/>
-        <Element id="h2b"
-                 type="HIDDEN"
-                 concept="LOCATION"
-                 question="Kote"
-                 default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca"/>
-        <Element type="ENTRY" id="2b"
-		   concept="FAMILY NAME"
-		   required="true"
-		   question="Nòm" answer=""/>
-        <Element type="ENTRY" id="3b"
+        <Element type="ENTRY" id="2a"
+                 concept="FAMILY NAME"
+                 required="true"
+                 question="2. Non"
+                 answer=""/>
+        <Element type="ENTRY" id="3a"
                  concept="GIVEN NAME"
                  required="true"
-                 question="Prenom"
+                 question="3. Prenon"
+                 answer=""
+            />
+    </Page>
+    <Page>
+        <ShowIf>
+            <Criteria type="EQUALS" value="false" id="u1"/>
+        </ShowIf>
+        <Element type="ENTRY" id="2"
+                 concept="FAMILY NAME"
+                 required="true"
+                 question="2. Non"
                  answer=""/>
-	</Page>
+        <Element type="ENTRY" id="3"
+                 concept="GIVEN NAME"
+                 required="true"
+                 question="3. Prenon"
+                 answer=""
+            />
+    </Page>
+    <Page>
+        <Element type="DATE"
+                 id="4"
+                 concept="DOB"
+                 question="4. Dat nesans"
+                 answer="2001-01-01"
+                />
+        <Element type="TRUTH"
+                 id="u3"
+                 concept="UNKNOWN"
+                 question="pa konnen"
+                 answer="false"
+                 default="false"/>
+    </Page>
+    <Page>
+        <ShowIf>
+            <Criteria type="EQUALS" value="true" id="u3"/>
+        </ShowIf>
+        <Element type="AGE"
+                 id="5"
+                 concept="DOB"
+                 required="true"
+                 question="4a. Chwazi antre laj pasyan an (estime)"
+                 answer="1990-06-15 00:00:00" />
+    </Page>
 	<Page>
 		<Element
-			type="RADIO" id="4"
+			type="RADIO" id="6"
 			concept="GENDER"
-			question="Sexe"
+			question="5. Sexe"
 			required="true"
             answer=""
             choices="M;F"
             values="M;F"
 			/>
 	</Page>
-    <Page>
-        <Element id="5"
-                 type="RADIO"
-                 concept="DOB EXACT"
-                 question="Ou konnen dat pasyan an nan naissance?"
-                 choices="wi;non"
-                 required="true"
-            />
-    </Page>
-    <Page>
-        <ShowIf>
-            <Criteria type="EQUALS" id="5" value="wi"/>
-        </ShowIf>
-        <Element type="DATE"
-             id="5a"
-             concept="DOB"
-             required="true"
-             question="Dat de Naissance"
-             answer="" />
-    </Page>
-    <Page>
-        <ShowIf>
-            <Criteria type="EQUALS" id="5" value="non"/>
-        </ShowIf>
-        <Element type="AGE"
-                 id="5b"
-                 concept="DOB"
-                 required="true"
-                 question="Antre nan laj pasyan an"
-                 answer="01-01-1990" />
-    </Page>
 	<!--
 	<Page>
 		<Element
