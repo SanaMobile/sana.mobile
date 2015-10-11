@@ -1,5 +1,5 @@
-<Procedure title="Procedure API Demo"
-    uuid="cef8b187-038e-4a24-a724-02ba8c81745e"
+<Procedure title="API Test"
+    uuid="2bae218f-9c07-40ac-88fb-c7c60aa1d89d"
     version="1"
     author="Sana"
     description="A demonstration of functional elements">
@@ -23,7 +23,7 @@
         type="SELECT"
         concept="TEXT"
         question="Select a single value."
-        choices="1,2,3,4"
+        choices="1;2;3;4"
         answer=""/>
     </Page>
     <Page>
@@ -31,7 +31,7 @@
         type="MULTI_SELECT"
         concept="MULTIVALUE TEXT"
         question="Select one or more values."
-        choices="1,2,3,4"
+        choices="1;2;3;4"
         answer=""/>
     </Page>
     <Page>
@@ -39,7 +39,7 @@
         type="RADIO"
         concept="TEXT"
         question="Select a single value."
-        choices="1,2,3,4"
+        choices="1;2;3;4"
         answer="1"/>
     </Page>
     <Page>
@@ -49,6 +49,7 @@
         question="Take a picture"
         answer=""/>
     </Page>
+    <!--
     <Page>
     <Element type="PLUGIN" id="7"
         concept="FILE"
@@ -63,6 +64,7 @@
         action="org.sana.plugin.CAPTURE_CHARS"
         mimeType="text/plain"/>
     </Page>
+    -->
     <Page>
     <ShowIf>
         <Criteria type="EQUALS" id="4" value="1"/>
