@@ -107,9 +107,13 @@ public abstract class ProcedureElement {
          */
         ENTRY_PLUGIN(""),
         HIDDEN(""),
-        AGE("");
+        AGE(""),
+        TRUTH;
     	
         private String filename;
+
+        private ElementType(){ this(""); }
+
         private ElementType(String filename) {
         	this.filename = filename;
         }
@@ -137,8 +141,8 @@ public abstract class ProcedureElement {
     private boolean bRequired = false;
 
     // Optional attributes - specific element types must implement as necessary
-    private String defaultValue = null;
-
+    protected String defaultValue = null;
+    protected String defaultPrompt = null;
     private Procedure procedure;
     private Context cachedContext;
     private View cachedView;
@@ -379,70 +383,74 @@ public abstract class ProcedureElement {
         
         ProcedureElement el = null;
         switch(etype) {
-        case TEXT:
-            el = TextElement.fromXML(idStr, questionStr, answerStr, conceptStr, 
-            		figureStr, audioStr, node);
-            break;
-        case ENTRY:
-            el = TextEntryElement.fromXML(idStr, questionStr, answerStr, 
-            		conceptStr, figureStr, audioStr, node);
-            break;
-        case SELECT:
-            el = SelectElement.fromXML(idStr, questionStr, answerStr, 
-            		conceptStr, figureStr, audioStr, node);
-            break;
-        case MULTI_SELECT:
-            el = MultiSelectElement.fromXML(idStr, questionStr, answerStr, 
-            		conceptStr, figureStr, audioStr, node);
-            break;
-        case RADIO:
-            el = RadioElement.fromXML(idStr, questionStr, answerStr, 
-            		conceptStr, figureStr, audioStr, node);
-            break;
-        case PICTURE:
-            el = PictureElement.fromXML(idStr, questionStr, answerStr, 
-            		conceptStr, figureStr, audioStr, node);
-            break;
-        case SOUND:
-            el = SoundElement.fromXML(idStr, questionStr, answerStr, 
-            		conceptStr, figureStr, audioStr, node);
-            break;
-        case GPS:
-        	el = GpsElement.fromXML(idStr, questionStr, answerStr, 
-        			conceptStr, figureStr, audioStr, node);
-        	break;
-        case BINARYFILE:
-            el = BinaryUploadElement.fromXML(idStr, questionStr, answerStr, 
-            		conceptStr, figureStr, audioStr, node);
-            break;
-        case PATIENT_ID:
-        	el = PatientIdElement.fromXML(idStr, questionStr, answerStr, 
-        			conceptStr, figureStr, audioStr, node);
-        	break;
-        case DATE:
-        	el = DateElement.fromXML(idStr, questionStr, answerStr, conceptStr, 
-        			figureStr, audioStr, node);
-        	break;
-        case EDUCATION_RESOURCE:
-        	el = EducationResourceElement.fromXML(idStr, questionStr, answerStr,
-        			conceptStr, figureStr, audioStr, node);
-        	break;
-        case PLUGIN:
-        	el = PluginElement.fromXML(idStr, questionStr, answerStr, 
-        			conceptStr, figureStr, audioStr, node);
-        	break;
-        case ENTRY_PLUGIN:
-        	el = PluginEntryElement.fromXML(idStr, questionStr, answerStr, 
-        			conceptStr, figureStr, audioStr, node);
-        	break;
+            case TEXT:
+                el = TextElement.fromXML(idStr, questionStr, answerStr, conceptStr,
+                        figureStr, audioStr, node);
+                break;
+            case ENTRY:
+                el = TextEntryElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case SELECT:
+                el = SelectElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case MULTI_SELECT:
+                el = MultiSelectElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case RADIO:
+                el = RadioElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case PICTURE:
+                el = PictureElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case SOUND:
+                el = SoundElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case GPS:
+                el = GpsElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case BINARYFILE:
+                el = BinaryUploadElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case PATIENT_ID:
+                el = PatientIdElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case DATE:
+                el = DateElement.fromXML(idStr, questionStr, answerStr, conceptStr,
+                        figureStr, audioStr, node);
+                break;
+            case EDUCATION_RESOURCE:
+                el = EducationResourceElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case PLUGIN:
+                el = PluginElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
+            case ENTRY_PLUGIN:
+                el = PluginEntryElement.fromXML(idStr, questionStr, answerStr,
+                        conceptStr, figureStr, audioStr, node);
+                break;
 
-        case HIDDEN:
-            el = HiddenElement.fromXML(idStr, questionStr, answerStr, conceptStr, 
-            		figureStr, audioStr, node);
-            break;
+            case HIDDEN:
+                el = HiddenElement.fromXML(idStr, questionStr, answerStr, conceptStr,
+                        figureStr, audioStr, node);
+                break;
 
             case AGE:
                 el = AgeElement.fromXML(idStr, questionStr, answerStr, conceptStr,
+                        figureStr, audioStr, node);
+                break;
+            case TRUTH:
+                el = TruthElement.fromXML(idStr, questionStr, answerStr, conceptStr,
                         figureStr, audioStr, node);
                 break;
         case INVALID:
@@ -583,9 +591,8 @@ public abstract class ProcedureElement {
     	textView.setSingleLine(false);
         textView.setGravity(Gravity.LEFT);
 		String q = question.replace("\\n", "\n");
-        boolean useId = c.getResources().getBoolean(
-                R.bool.display_input_element_id);
-    	if(useId && !getType().equals(ElementType.TEXT)){
+        Log.d(TAG, "...show question id = " + getProcedure().idsShown());
+    	if(getProcedure().idsShown() && !getType().equals(ElementType.TEXT)){
     		textView.setText(String.format("%s: %s",  getId(), q));
     	}else{
         	textView.setText(q);
