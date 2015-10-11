@@ -73,6 +73,7 @@
     <string name="general_exit">Sòti</string>
     <string name="general_network_active">Rezo aktif....</string>
     <string name="general_network_inactive">Rezo ki inaktif.</string>
+    <string name="general_unknown">pa konnen</string>
 
     <!--  Dialog Strings -->
     <string name="dialog_already_uploaded">Sa a te pwosedi deja te Uploaded.</string>
@@ -247,5 +248,6 @@
     <string name="button_main_view_prior_encounters">View Rankont Anvan</string>
     <string name="setting_mds_port_summary">Pa chanje sof si lè l sèvi avèk ki pa estanda pò</string>
     <string name="setting_mds_root_summary">Rasin chemen prefiks - default mds/</string>
+    <string name="prompt_default">Use default value</string>
 </resources>
 
