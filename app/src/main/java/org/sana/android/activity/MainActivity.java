@@ -590,7 +590,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                 intent = new Intent(Intent.ACTION_INSERT);
                 intent.setDataAndType(Patients.CONTENT_URI, Subjects.CONTENT_TYPE)
                         .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
-                                getString(R.string.procs_subject_default)))
+                                getString(R.string.procs_subject_short_form)))
                         .putExtra(Intents.EXTRA_OBSERVER, mObserver);
                 startActivityForResult(intent, Intents.RUN_PROCEDURE);
                 break;
