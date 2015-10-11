@@ -41,6 +41,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 /** Class for creating a new patient.
@@ -51,6 +52,12 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
     public static final String TAG = PatientRunnerFragment.class.getSimpleName();
 
     protected PatientParcel mPatient = null;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        showCompleteConfirmation = false;
+    }
 
     @Override
     protected boolean handlePostProcessedElements() {
@@ -117,6 +124,8 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
         }
         // Update the patient object from the elements
         ProcedurePage page = mProcedure.current();
+        Log.d(TAG, "...current page: " + mProcedure.getCurrentIndex());
+        Log.d(TAG, "...current page should display: " + page.shouldDisplay());
         Log.d(TAG, "...Patient: " + String.valueOf(mPatient));
 
         // Set any patient fields from current page elements
@@ -127,16 +136,19 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
             Log.d(TAG,"\tsetting field'" + field + "' for concept '" +
                     concept + "'");
             if(field.compareToIgnoreCase(Patients.Contract.PATIENT_ID) == 0) {
-                Log.d(TAG, "\tsetting '" + Patients.Contract.PATIENT_ID +"'=" +val);
-                mPatient.setSystemId(val);
+                Log.d(TAG, "\tsetting '" + Patients.Contract.PATIENT_ID + "'=" + val);
+                if(!TextUtils.isEmpty(val))
+                    mPatient.setSystemId(val);
             }
             if(field.compareToIgnoreCase(Patients.Contract.GIVEN_NAME) == 0) {
-                Log.d(TAG, "\tsetting '" + Patients.Contract.GIVEN_NAME +"'=" +val);
-                mPatient.setGiven_name(val);
+                Log.d(TAG, "\tsetting '" + Patients.Contract.GIVEN_NAME + "'=" + val);
+                if(!TextUtils.isEmpty(val))
+                    mPatient.setGiven_name(val);
             }
             if(field.compareToIgnoreCase(Patients.Contract.FAMILY_NAME) == 0) {
-                Log.d(TAG, "\tsetting '" + Patients.Contract.FAMILY_NAME +"'=" +val);
-                mPatient.setFamily_name(val);
+                Log.d(TAG, "\tsetting '" + Patients.Contract.FAMILY_NAME + "'=" + val);
+                if(!TextUtils.isEmpty(val))
+                    mPatient.setFamily_name(val);
             }
             if(field.compareToIgnoreCase(Patients.Contract.DOB) == 0) {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.DOB + "'=" + val);
@@ -165,6 +177,14 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                     location.setName(val);
                 }
                 mPatient.setLocation(location);
+            }
+            if(field.compareToIgnoreCase(Patients.Contract.CONFIRMED) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.CONFIRMED + "'=" + val);
+                mPatient.setConfirmed(Boolean.valueOf(val));
+            }
+            if(field.compareToIgnoreCase(Patients.Contract.DOB_ESTIMATED) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.DOB_ESTIMATED + "'=" + val);
+                mPatient.setConfirmed(Boolean.valueOf(val));
             }
         }
         Log.d(TAG, "...Updated Patient: " + String.valueOf(mPatient));
@@ -223,6 +243,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
             String uuid = procedure.getLastPathSegment();
             String procedureXml = null;
             if(!UUIDUtil.isValid(uuid)){
+                Log.d(TAG, "...long format for uuid? = " + uuid);
                 uuid = ModelWrapper.getUuid(procedure,getActivity().getContentResolver());
                 procedure = Uris.withAppendedUuid(Procedures.CONTENT_URI, uuid);
             }
@@ -254,10 +275,8 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
             return result;
         }
 
-        /** {@inheritDoc} */
         @Override
-        protected void onPostExecute(ProcedureLoadResult result) {
-            super.onPostExecute(result);
+        protected void handleResult(ProcedureLoadResult result){
             requested--;
             hideProgressDialogFragment();
             if (result != null && result.success) {
@@ -266,6 +285,10 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                 logEvent(EventType.ENCOUNTER_LOAD_FINISHED, "");
                 if (mProcedure != null){
                     mProcedure.setInstanceUri(uEncounter);
+                    boolean useId = getActivity().getResources().getBoolean(
+                            R.bool.display_registration_input_element_id);
+                    Log.d(TAG, "...Setting page display id=" + useId);
+                    mProcedure.setShowQuestionIds(useId);
                     createView();
                 }
                 else
@@ -276,6 +299,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                 logEvent(EventType.ENCOUNTER_LOAD_FAILED, "");
                 getActivity().finish();
             }
+
         }
     }
     @Override
@@ -432,6 +456,9 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
         values.put(Patients.Contract.DOB, DateUtil.format(patient.getDob()));
         values.put(Patients.Contract.GENDER, patient.getGender());
         values.put(Patients.Contract.STATE, state);
+        //TODO update db and uncomment
+        //values.put(Patients.Contract.CONFIRMED, patient.getConfirmed());
+        //values.put(Patients.Contract.DOB_ESTIMATED, patient.isDobEstimated());
         values.put(Patients.Contract.LOCATION, ((patient.getLocation() != null)
                 ? patient.getLocation().getUuid() :
                 getString(R.string.cfg_default_location)));
