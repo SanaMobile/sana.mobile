@@ -1,5 +1,6 @@
 package org.sana.android.procedure;
 
+import org.sana.R;
 import org.sana.android.util.SanaUtil;
 import org.w3c.dom.Node;
 
@@ -77,6 +78,9 @@ public class TextEntryElement extends ProcedureElement {
     @Override
     protected View createView(Context c) {
         et = new EditText(c);
+        et.setBackgroundResource(R.drawable.oval);
+        et.setTextColor(c.getResources()
+                .getColorStateList(R.color.primary_text_holo_light));
         et.setText(answer);
         et.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
         		LayoutParams.WRAP_CONTENT));
