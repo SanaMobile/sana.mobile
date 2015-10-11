@@ -64,6 +64,8 @@ public class PatientParcel extends Patient implements Parcelable {
 		setGender(in.readString());
 		setImage(URI.create(in.readString()));
         setSystemId(in.readString());
+		setConfirmed((in.readInt() == 1));
+		setDobEstimated((in.readInt() == 1));
 	}
 
     /**
@@ -82,6 +84,8 @@ public class PatientParcel extends Patient implements Parcelable {
         setGender(patient.getGender());
         setImage(patient.getImage());
         setSystemId(patient.getSystemId());
+		setConfirmed(patient.getConfirmed());
+		setDobEstimated(patient.isDobEstimated());
     }
 
     public PatientParcel(){}
@@ -108,6 +112,8 @@ public class PatientParcel extends Patient implements Parcelable {
 		dest.writeString(getGender());
 		dest.writeString(getImage().toString());
         dest.writeString(getSystemId());
+		dest.writeInt((getConfirmed())? 1: 0);
+		dest.writeInt((isDobEstimated())? 1: 0);
 	}
 	
 	public static final Parcelable.Creator<PatientParcel> CREATOR = 
