@@ -146,6 +146,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     protected int objectFlag = FLAG_OBJECT_TEMPORARY;
     private PatientLookupTask patientLookupTask = null;
 
+    protected boolean showCompleteConfirmation = true;
     // Activity Methods ///////////////////////////////////////////////////////
     /** {@inheritDoc} */
     @Override
@@ -157,7 +158,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     /** {@inheritDoc} */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.i(TAG,"onCreateView(LayoutInflater,ViewGroup,Bundle");
+        Log.i(TAG, "onCreateView(LayoutInflater,ViewGroup,Bundle");
         return inflater.inflate(R.layout.base_runner_fragment, container, false);
     }
     
@@ -257,16 +258,37 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         // Save answers
         storeCurrentProcedure(false);
         if (!mProcedure.hasNextShowable()) {
+            Log.w(TAG, "...!has next showable");
             if (!onDonePage) {
+                Log.w(TAG, "...!on done page");
                 baseViews.setInAnimation(getActivity(), R.anim.slide_from_right);
                 baseViews.setOutAnimation(getActivity(), R.anim.slide_to_left);
-                baseViews.showNext();
+
                 onDonePage = true;
+                if (!isShowCompleteConfirmation()){
+                    getActivity().setProgress(10000);
+                    // finished so we do a final call to persist data
+                    storeCurrentProcedure(true);
+                    uploadProcedureInBackground2();
+                } else {
+                    baseViews.showNext();
+                }
                 getActivity().setProgress(10000);
+                updateNextPrev();
             } else {
+                Log.d(TAG, "...on done page");
                 succeed = false;
+                if (!isShowCompleteConfirmation()){
+                    getActivity().setProgress(10000);
+                    // finished so we do a final call to persist data
+                    storeCurrentProcedure(true);
+                    uploadProcedureInBackground2();
+                    // short circuits any call to update UI
+                    return succeed;
+                }
             }
         } else {
+            Log.d(TAG, "...has next showable");
             //mProcedure.advance();
             ProcedurePage cp = mProcedure.advanceNext();
             while (cp != null){
@@ -292,9 +314,8 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
 
             // Tell the current page to play its first audio prompt
             mProcedure.current().playFirstPrompt();
+            updateNextPrev();
         }
-
-        updateNextPrev();
         return succeed;
     }
 
@@ -555,13 +576,14 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         baseViews.addView(procedureView);
 
         // This should add it to baseViews, so don't add it manually.
-        View procedureDonePage = getActivity().getLayoutInflater().inflate(
-                R.layout.procedure_runner_done, baseViews);
-        ((TextView)procedureDonePage.findViewById(R.id.procedure_done_text)).setTextAppearance(
-                getActivity(), android.R.style.TextAppearance_Large);
-        procedureDonePage.findViewById(R.id.procedure_done_back).setOnClickListener(this);
-        procedureDonePage.findViewById(R.id.procedure_done_upload).setOnClickListener(this);
-
+        if(isShowCompleteConfirmation()) {
+            View procedureDonePage = getActivity().getLayoutInflater().inflate(
+                    R.layout.procedure_runner_done, baseViews);
+            ((TextView) procedureDonePage.findViewById(R.id.procedure_done_text)).setTextAppearance(
+                    getActivity(), android.R.style.TextAppearance_Large);
+            procedureDonePage.findViewById(R.id.procedure_done_back).setOnClickListener(this);
+            procedureDonePage.findViewById(R.id.procedure_done_upload).setOnClickListener(this);
+        }
         if (onDonePage) {
             baseViews.setInAnimation(null);
             baseViews.setOutAnimation(null);
@@ -878,7 +900,6 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
                 result.savedProcedureUri = uEncounter;
                 result.procedureUri = procedureUri;
             }
-
             return result;
         }
 
@@ -886,6 +907,10 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         @Override
         protected void onPostExecute(ProcedureLoadResult result) {
             super.onPostExecute(result);
+            handleResult(result);
+        }
+
+        protected void handleResult(ProcedureLoadResult result){
             requested--;
             hideProgressDialogFragment();
             if (result != null && result.success) {
@@ -893,7 +918,11 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
                 uEncounter = result.savedProcedureUri;
                 logEvent(EventType.ENCOUNTER_LOAD_FINISHED, "");
                 if (mProcedure != null){
-                	mProcedure.setInstanceUri(uEncounter);
+                    mProcedure.setInstanceUri(uEncounter);
+                    boolean useId = getActivity().getResources().getBoolean(
+                            R.bool.display_input_element_id);
+                    Log.d(TAG, "...Setting page display id=" + useId);
+                    mProcedure.setShowQuestionIds(useId);
                     createView();
                 }
                 else
@@ -904,6 +933,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
                 logEvent(EventType.ENCOUNTER_LOAD_FAILED, "");
                 getActivity().finish();
             }
+
         }
     }
 
@@ -1105,9 +1135,9 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     	}
 
 		if(inState.hasExtra("currentPage"))
-			startPage = inState.getIntExtra("currentPage",0);
+			startPage = inState.getIntExtra("currentPage", 0);
 		if(inState.hasExtra("onDonePage"))
-			onDonePage = inState.getBooleanExtra("onDonePage",false);
+			onDonePage = inState.getBooleanExtra("onDonePage", false);
 		
     	dump();
     	Log.w(TAG, "onUpdateAppState(Intent): EXIT");
@@ -1194,7 +1224,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     	outState.putExtra(Intents.EXTRA_PROCEDURE, uProcedure);
     	outState.putExtra(Intents.EXTRA_OBSERVER, uObserver);
     	outState.putExtra(Intents.EXTRA_TASK, uTask);
-    	outState.putExtra("currentPage", ((mProcedure != null)? mProcedure.getCurrentIndex():0));
+    	outState.putExtra("currentPage", ((mProcedure != null) ? mProcedure.getCurrentIndex() : 0));
     	outState.putExtra("onDonePage", onDonePage);
     }
     
@@ -1263,5 +1293,9 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         Intent result = new Intent(action,uri);
         onSaveAppState(result);
         return result;
+    }
+
+    public boolean isShowCompleteConfirmation() {
+        return showCompleteConfirmation;
     }
 }
