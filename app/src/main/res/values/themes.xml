@@ -8,10 +8,18 @@
            parent="@style/Theme.AppCompat.NoActionBar">
         <item name="android:radioButtonStyle">@style/Widget.CompoundButton.RadioButton.Large</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:checkboxStyle">@style/Widget.CheckBox.Large</item>
+     </style>
+
+    <style name="Theme.Large.NoActionBarAlt"
+           parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="android:radioButtonStyle">@style/Widget.CompoundButton.RadioButton.Large</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:editTextStyle">@style/Widget.EditText.Light</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        
         <!-- For the resting Spinner style -->
         <item name="android:spinnerItemStyle">
             @style/spinnerItemStyle
@@ -21,5 +29,12 @@
         <item name="android:spinnerDropDownItemStyle">
             @style/spinnerDropDownItemStyle
         </item>
+
+        <item name="android:datePickerStyle">
+            @style/Widget.DatePicker.Alt
+        </item>
+
+        <item name="android:checkboxStyle">@style/Widget.CheckBox.Large.Light</item>
     </style>
+
 </resources>
