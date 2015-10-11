@@ -130,8 +130,8 @@ public class ImageProcessingTask extends
 		Uri imageUri = c.getContentResolver().insert(ImageSQLFormat.CONTENT_URI, values);
 		Uri thumbUri = ImageProvider.getThumbUri(imageUri);
 
-		Log.i(TAG, "Old URI: " + imageUri);
-		Log.i(TAG, "Thumb URI: " + thumbUri);
+		Log.d(TAG, "...Old URI: " + imageUri);
+		Log.d(TAG, "...Thumb URI: " + thumbUri);
 
 		try {
 			InputStream is = getImageInputStreamWithWorkaround(request);
@@ -141,10 +141,10 @@ public class ImageProcessingTask extends
 			// Only decode the size, not the image itself. If we
 			// decode the full image then we sometimes get Out
 			// of Memory errors.
-			BitmapFactory.decodeStream(is, null, options);
+			Bitmap bmp = BitmapFactory.decodeStream(is, null, options);
 			//BitmapFactory.decodeFile(tempImageFile.getAbsolutePath(), options); //Works for Android 1.5
 			is.close();
-
+			//bmp.recycle();
 			int iWidth = options.outWidth;
 			int iHeight = options.outHeight;
 
@@ -153,12 +153,12 @@ public class ImageProcessingTask extends
 
 			OutputStream os = c.getContentResolver().openOutputStream(imageUri);
             is = getImageInputStreamWithWorkaround(request);
-            BitmapFactory.decodeStream(is);
+            //Bitmap bmp = BitmapFactory.decodeStream(is);
 
 			final int bufSize = 4096;
 			byte[] buffer = new byte[bufSize];
 			int bytesRead = 0;
-                        int bytesWritten = 0;
+			int bytesWritten = 0;
 			while (bytesRead != -1) {
                                 bytesWritten += bytesRead;
 				os.write(buffer, 0, bytesRead);
@@ -167,16 +167,19 @@ public class ImageProcessingTask extends
 			is.close();
 			os.flush();
 			os.close();
+			Log.d(TAG, "...copy: read="+bytesRead + ", written="+bytesWritten);
+
+
             // Correct orientation of original file
             try {
-                ImageProvider.correctOrientation(request.c, imageUri);
+				Log.d(TAG, "...correcting orientation");
+				ImageProvider.correctOrientation(request.c, imageUri);
+				Log.d(TAG, "...correcting orientation success");
             } catch (OutOfMemoryError e){
-                e.printStackTrace();
+				Log.e(TAG, "OutOfMemoryError! Orientation correction");
             } catch (Exception e){
                 e.printStackTrace();
             }
-
-			Log.d(TAG, "Wrote n bytes = " + bytesWritten);
 			int thumbCompression = 50;
 			int thumbMaxSize = 100;
 			int largestDimension = (iWidth > iHeight) ? iWidth : iHeight;
@@ -198,13 +201,24 @@ public class ImageProcessingTask extends
 			os.close();
 			is.close();
 			thumbBitmap.recycle();
-
+            // Correct thumb orientation of original file
+            try {
+                Log.d(TAG, "...correcting thumb orientation");
+                ImageProvider.correctOrientation(request.c, thumbUri);
+                Log.d(TAG, "...correcting thumb orientation success");
+            } catch (OutOfMemoryError e){
+                Log.e(TAG, "OutOfMemoryError! Orientation correction");
+            } catch (Exception e){
+                e.printStackTrace();
+            }
 			// Flag the file as saved - does not record image size
 			values = new ContentValues();
 			values.put(ImageSQLFormat.FILE_VALID, true);
 			c.getContentResolver().update(imageUri, values, null, null);
 
 			if (tempImageFile.exists()) {
+				Log.d(TAG, "...temp image file exists");
+				Log.d(TAG, "...path=" + tempImageFile.getAbsolutePath());
 				//tempImageFile.delete();
 			}
 

@@ -73,46 +73,51 @@ public class ImageProvider extends ContentProvider {
         Log.i(TAG, "correctOrientation()");
         List<String> segments = uri.getPathSegments();
 
-        // Invalid URI
-        if (segments.size() != 2)
-            return;
 
-        String imageId = segments.get(1);
-        String imagePath = "/data/data/org.sana.android/files/" + imageId;
+        String imagePath = buildFilenameFromUri(uri);
+
+        // Invalid URI
+        if (TextUtils.isEmpty(imagePath)){
+            Log.w(TAG, "Invalid image uri");
+            return;
+        }
+
         File src = new File(imagePath);
         if(src.exists()){
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             try {
                 OutputStream os =context.getContentResolver().openOutputStream
                         (uri);
-                Bitmap oriented = ExifUtil.rotateBitmap(src, bitmap);
-                boolean saved = oriented.compress(Bitmap.CompressFormat.JPEG,
+                bitmap = ExifUtil.rotateBitmap(src, bitmap);
+                boolean saved = bitmap.compress(Bitmap.CompressFormat.JPEG,
                         100, os);
                 Log.d(TAG, "Compressed rotated bitmap: saved=" + saved);
                 os.close();
+                bitmap.recycle();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         } else {
             Log.e(TAG, "File not found: " + src);
         }
     }
 
-    private String basePath() {
+    private static String basePath() {
     	return "/data/data/org.sana.android/files/";
     }
 
-    private String buildImageFilenameFromId(String imageId) {
-    	return basePath() + imageId;
+    private static String buildImageFilenameFromId(String imageId) {
+    	return basePath() + imageId +".jpg";
     }
 
-    private String buildThumbnailFilenameFromId(String imageId) {
-    	return basePath() + "thumb_" + imageId;
+    private static String buildThumbnailFilenameFromId(String imageId) {
+    	return basePath() + "thumb_" + imageId + ".jpg";
     }
 
-    private String buildFilenameFromUri(Uri uri) {
+    private static String buildFilenameFromUri(Uri uri) {
     	List<String> segments = uri.getPathSegments();
 
     	// Invalid URI
@@ -123,7 +128,7 @@ public class ImageProvider extends ContentProvider {
     	String viewName = uri.getQueryParameter(VIEW_PARAMETER);
 
     	if (THUMBNAIL_VIEW.equals(viewName)) {
-    		return buildThumbnailFilenameFromId(imageId);
+    		return ImageProvider.buildThumbnailFilenameFromId(imageId);
     	} else { // default to image view
     		return buildImageFilenameFromId(imageId);
     	}
@@ -159,8 +164,9 @@ public class ImageProvider extends ContentProvider {
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws
     	FileNotFoundException
     {
+        Log.i(TAG, "openFile()");
     	String filename = buildFilenameFromUri(uri);
-        Log.i(TAG, "openFile() for filename: " + filename + " mode: " + mode);
+        Log.d(TAG, "...filename='" + filename + "', mode: " + mode);
         File f = new File(filename);
 
         //Hack to get image to write to database
