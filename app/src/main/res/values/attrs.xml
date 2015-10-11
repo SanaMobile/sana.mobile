@@ -3,4 +3,8 @@
     
     <!-- Default RadioButton style. -->
     <attr name="complexRadioButtonStyle" format="reference" />
+
+    <declare-styleable name="DateOfBirthWidget">
+
+    </declare-styleable>
 </resources>
