@@ -40,6 +40,8 @@
     <string name="display_date_format">MMM dd, yyyy</string>
     <string name="display_date_time_format">MMM dd, yyyy HH:mm</string>
     <bool name="display_input_element_id">true</bool>
+    <bool name="display_registration_input_element_id">false</bool>
+    <bool name="display_registration_confirmation_page">false</bool>
 
     <integer name="sync_delta_subjects">60000</integer>
     <integer name="sync_delta_encountertasks">1000</integer>
