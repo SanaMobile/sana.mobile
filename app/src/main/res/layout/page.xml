@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/elements"
+        android:layout_above="@+id/navbar" android:weightSum="1">
+
+        <ViewSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/viewSwitcher2"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/navbar"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentLeft="false"
+        android:padding="5dp" android:weightSum="1">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/procedurerunner_previous"
+            android:id="@+id/previous"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight=".333"
+            android:layout_gravity="center_vertical"
+            android:padding="5dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/procedurerunner_info"
+            android:id="@+id/help"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_weight=".333"
+            android:layout_gravity="center_vertical"
+            android:padding="5dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/procedurerunner_next"
+            android:id="@+id/next"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentRight="true"
+            android:layout_weight=".333"
+            android:layout_gravity="center_vertical"
+            android:padding="5dp"/>
+    </LinearLayout>
+</RelativeLayout>
