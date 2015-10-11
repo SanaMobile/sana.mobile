@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="procs_subject_default" translatable="false">18785afb-6160-45a0-ac8c-1f5cbfaa6d91</string>
+    <string name="procs_subject_default" translatable="false">18785afb-6160-45a0-ac8c-1f5cbfaa6d92</string>
     <string name="procs_subject_short_form" translatable="false">18785afb-6160-45a0-ac8c-1f5cbfaa6d92</string>
     <string-array name="procs_encounter_defaults">
-        <item>cef8b187-038e-4a24-a724-02ba8c81745e</item>
+        <item>4c51c964-a020-477c-a170-08ee8ec550c3</item>
     </string-array>
-    <string name="procs_encounter_training" translatable="false">cef8b187-038e-4a24-a724-02ba8c81745e</string>
-
+    <string name="procs_encounter_training" translatable="false">4c51c964-a020-477c-a170-08ee8ec550c3</string>
 </resources>
