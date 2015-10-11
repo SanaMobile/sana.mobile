@@ -55,6 +55,8 @@ public class Procedure {
     private String title;
     private String author;
     private String guid;
+    private String concept = null;
+
     private List<ProcedurePage> pages;
     public ListIterator<ProcedurePage> pagesIterator;
     private ProcedurePage currentPage;
@@ -62,6 +64,8 @@ public class Procedure {
     private PatientInfo patientInfo = null;
 
     private String version = "1.0";
+    private boolean showQuestionIds = false;
+
     /**
      * Constructs a new Procedure.
      * 
@@ -458,9 +462,14 @@ public class Procedure {
     public String getGuid() {
     	return guid;
     }
-    
+
     public String getVersion(){
-    	return version;
+        return version;
+    }
+
+
+    public void setVersion(String version){
+        this.version = version;
     }
 
     public String getOnComplete() {
@@ -470,6 +479,19 @@ public class Procedure {
     public void setOnComplete(String onComplete) {
         this.onComplete = onComplete;
     }
+
+    public String getConcept(){ return concept; }
+
+    public void setConcept(String concept){ this.concept=concept; }
+
+    public boolean idsShown(){
+        return showQuestionIds;
+    }
+
+    public void setShowQuestionIds(boolean value){
+        this.showQuestionIds = value;
+    }
+
     /**
      * Writes the procedure, including all of its child elements, to an XML 
      * String. 
@@ -510,7 +532,9 @@ public class Procedure {
     			+ "\" author =\"" + author 
     			+ "\" guid =\"" + guid 
     			+ "\" version=\"" + version
-    			+ "\" uuid=\"" + guid
+                + "\" uuid=\"" + guid
+                + "\" concept=\"" + guid
+                + "\" onComplete=\"" + guid
     			+ "\">\n");
         
         for (ProcedurePage p : pages) {
@@ -621,8 +645,15 @@ public class Procedure {
             Log.i(TAG, "Version: " + version);
         }
 
+        String concept = "";
+        n = node.getAttributes().getNamedItem("concept");
+        if(n != null) {
+            concept = n.getNodeValue();
+            Log.i(TAG, "Concept: " + version);
+        }
         Procedure procedure = new Procedure(title, author, uuid, pages, elts);
-        procedure.version = version;
+        procedure.setVersion(version);
+        procedure.setConcept(concept);
         procedure.setOnComplete(onComplete);
         return procedure;
     }
