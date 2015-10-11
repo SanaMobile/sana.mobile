@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
 import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.app.Locales;
@@ -23,6 +24,7 @@ import org.sana.android.provider.EncounterTasks.Contract;
 import org.sana.android.provider.Subjects;
 import org.sana.android.service.impl.DispatchService;
 import org.sana.android.util.Bitmaps;
+import org.sana.android.util.Dates;
 import org.sana.android.util.Logf;
 import org.sana.api.IModel;
 import org.sana.api.task.EncounterTask;
@@ -105,6 +107,7 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
     protected OnModelItemSelectedListener mListener;
     protected Handler mHandler;
     protected boolean doSync = false;
+    String[] months;
 
     protected LongSparseArray<Bundle> mData = new LongSparseArray<Bundle>();
 
@@ -126,10 +129,13 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         Log.d(TAG, "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
         Locale locale = new Locale(Preferences.getString(getActivity(),
-                Constants.PREFERENCE_LOCALE, "EN"));
+                Constants.PREFERENCE_LOCALE, "en"));
         df = new SimpleDateFormat(
                 getActivity().getString(R.string.display_date_time_format),
                 locale);
+        Locales.updateLocale(getActivity(), locale);
+        months = getActivity().getResources().getStringArray(R.array.months_long_format);
+
         // signal the dispatcher to sync
         mUri = getActivity().getIntent().getData();
         if (mUri == null) {
@@ -275,7 +281,7 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         protected int completedIndex = -1;
         protected int uuidIndex = -1;
         protected int encounterIndex = -1;
-
+        protected String[] months;
         public EncounterTaskCursorAdapter(Context context, Cursor c) {
             super(context.getApplicationContext(),c,false);
             mInflater = LayoutInflater.from(context);
@@ -478,7 +484,14 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        due_on = df.format(date);
+
+        DateTime dt = new DateTime(date);
+        int month = dt.getMonthOfYear();
+        int dayOfMonth = dt.getDayOfMonth();
+        int year = dt.getYear();
+        String localizedMonth = months[month - 1];
+        due_on = String.format("%02d %s %04d", dayOfMonth, localizedMonth, year);
+
         Log.i(TAG, "due_on(formatted):" + due_on);
         dueOn.setText(due_on);
         if(completed){
