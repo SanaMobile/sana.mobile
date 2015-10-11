@@ -8,8 +8,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
 import org.sana.R;
+import org.sana.android.Constants;
 import org.sana.android.app.Locales;
+import org.sana.android.app.Preferences;
 import org.sana.android.content.Intents;
 import org.sana.android.content.core.PatientWrapper;
 import org.sana.android.provider.Patients;
@@ -19,6 +22,7 @@ import org.sana.android.util.Bitmaps;
 import org.sana.android.util.Dates;
 import org.sana.android.util.Logf;
 
+import org.sana.android.widget.ScrollCompleteListener;
 import org.sana.core.Patient;
 import org.sana.util.DateUtil;
 import org.sana.util.StringUtil;
@@ -54,7 +58,7 @@ import android.widget.TextView;
  * 
  * @author Sana Development Team
  */
-public class PatientListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
+public class PatientListFragment extends ListFragment implements LoaderCallbacks<Cursor>, ScrollCompleteListener {
     public static final String TAG = PatientListFragment.class.getSimpleName();
 
     private static final int PATIENTS_LOADER = 0;
@@ -74,6 +78,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     Handler mHandler; 
     private boolean doSync = false;
     private int delta =1000*60;
+    private ScrollCompleteListener mScrollListener = null;
+
     //
     // Activity Methods
     //
@@ -101,6 +107,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     	Log.d(TAG, "onActivityCreated(): sync?");
         mAdapter = new PatientCursorAdapter(getActivity(), null, 0);
         setListAdapter(mAdapter);
+        mAdapter.setOnScrollCompleteListener(this);
         // Do we sync with server
         delta = getActivity().getResources().getInteger(R.integer.sync_delta_subjects);
         //sync(getActivity(), Subjects.CONTENT_URI);
@@ -208,6 +215,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         private final String mAlphabet;
         private String dateFormat = null;
         private SimpleDateFormat sdf;
+        private ScrollCompleteListener mScrollListener = null;
+        private String[] months;
 
         public PatientCursorAdapter(Context context, Cursor c) {
         	super(context.getApplicationContext(),c,false);
@@ -215,6 +224,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
             dateFormat = context.getString(R.string.display_date_format);
             sdf = new SimpleDateFormat(dateFormat);
             mAlphabet = " " + mContext.getString(R.string.cfg_alphabet);
+            String locale = Preferences.getString(context, Constants.PREFERENCE_LOCALE, "en");
+            months = context.getResources().getStringArray(R.array.months_long_format);
     		init(c);
         }
         
@@ -224,17 +235,13 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         
         public PatientCursorAdapter(Context context, Cursor c, int flags) {
         	super(context,c, flags);
-        	/*
-            super(context, R.layout.patient_list_item, c, 
-            		Patients.Projection.DISPLAY_NAME,
-            		new int[]{R.id.name, R.id.system_id, R.id.location, R.id.image},
-            		CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-            */
-            //this.context = context;
             mInflater = LayoutInflater.from(context);
             dateFormat = context.getString(R.string.display_date_format);
             sdf = new SimpleDateFormat(dateFormat);
             mAlphabet = " " + mContext.getString(R.string.cfg_alphabet);
+            String locale = Preferences.getString(context, Constants.PREFERENCE_LOCALE, "en");
+            Locales.updateLocale(context, locale);
+            months = context.getResources().getStringArray(R.array.months_long_format);
     		init(c);
         }
         
@@ -382,6 +389,13 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
                 Log.d(TAG, "...hiding separator");
                 view.findViewById(R.id.header).setVisibility(View.GONE);
             }
+            // Handle scroll complete when we bind last item in cursor
+            Log.d(TAG, "...cursor count=" + cursor.getCount());
+            Log.d(TAG, "...cursor position=" + cursor.getPosition());
+            if(cursor.isLast() || cursor.getPosition() >= (cursor.getCount()*0.8)){
+                if(mScrollListener != null)
+                    mScrollListener.onScrollComplete();
+            }
         }
         
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -443,12 +457,20 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
 
         public String getDateStringFromSQL(String date) throws ParseException {
             Date d = Dates.fromSQL(date);
-            return sdf.format(d);
+            DateTime dt = new DateTime(d);
+            int month = dt.getMonthOfYear();
+            int dayOfMonth = dt.getDayOfMonth();
+            int year = dt.getYear();
+            String localizedMonth = months[month - 1];
+            return String.format("%02d %s %04d", dayOfMonth, localizedMonth, year);
         }
         public String getDateString(Date date) {
             return sdf.format(date);
         }
 
+        public void setOnScrollCompleteListener(ScrollCompleteListener listener){
+            mScrollListener = listener;
+        }
     }
     
     public final boolean sync(Context context, Uri uri){
@@ -481,5 +503,15 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         context.startService(intent);
         result = true;
         return result;
+    }
+
+    public void setOnScrollCompleteListener(ScrollCompleteListener listener){
+        mScrollListener = listener;
+    }
+
+    public final void onScrollComplete(){
+        Log.i(TAG, "onScrollComplete()");
+        if(mScrollListener != null)
+            mScrollListener.onScrollComplete();
     }
 }

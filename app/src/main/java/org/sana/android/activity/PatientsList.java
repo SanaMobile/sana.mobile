@@ -5,13 +5,18 @@ import org.sana.R;
 import org.sana.android.app.Locales;
 import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
+import org.sana.android.content.Uris;
+import org.sana.android.content.core.PatientWrapper;
+import org.sana.android.db.ModelWrapper;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Patients;
+import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
 import org.sana.android.service.impl.DispatchService;
 import org.sana.android.util.SanaUtil;
+import org.sana.android.widget.ScrollCompleteListener;
 import org.sana.net.Response;
 
 import android.app.ProgressDialog;
@@ -34,6 +39,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 /** Activity for creating new and display existing patients. The resulting
@@ -41,7 +47,7 @@ import android.widget.Toast;
  * 
  * @author Sana Development Team */
 public class PatientsList extends FragmentActivity implements
-        OnPatientSelectedListener {
+        OnPatientSelectedListener, ScrollCompleteListener {
 
     public static final String TAG = PatientsList.class.getSimpleName();
 
@@ -75,6 +81,8 @@ public class PatientsList extends FragmentActivity implements
         super.onCreate(savedInstanceState);
     	Locales.updateLocale(this, getString(R.string.force_locale));
         setContentView(R.layout.patient_list_activity);
+        // Set the registration disabled by default
+        findViewById(R.id.register).setEnabled(false);
     }
 
     /** {@inheritDoc} */
@@ -86,6 +94,7 @@ public class PatientsList extends FragmentActivity implements
         if (fragment.getClass() == PatientListFragment.class) {
             mFragmentPatientList = (PatientListFragment) fragment;
             mFragmentPatientList.setOnPatientSelectedListener(this);
+            mFragmentPatientList.setOnScrollCompleteListener(this);
             if(mFragmentPatientList.sync(this, Subjects.CONTENT_URI)) {
                 showProgressDialog(getString(R.string.general_synchronizing),
                         getString(R.string.general_fetching_patients));
@@ -100,9 +109,10 @@ public class PatientsList extends FragmentActivity implements
         SanaUtil.logActivityResult(TAG, requestCode, resultCode);
         switch (requestCode) {
             case CREATE_PATIENT:
-                // TODO
                 if (resultCode == RESULT_OK) {
+                    onPatientSelected(data.getData());
                 } else {
+
                 }
                 break;
         }
@@ -111,10 +121,12 @@ public class PatientsList extends FragmentActivity implements
     /** {@inheritDoc} */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /*
     	if(mAdmin)
     		getMenuInflater().inflate(R.menu.patients_list_menu_admin, menu);
     	else
     		getMenuInflater().inflate(R.menu.patients_list_menu, menu);
+    		*/
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -160,7 +172,19 @@ public class PatientsList extends FragmentActivity implements
         setResult(RESULT_OK, data);
         finish();
     }
- 
+
+    public void onPatientSelected(Uri uri) {
+        Log.i(TAG, "onPatientSelected(long)");
+        // A patient was selected so return to caller activity.
+        //Intent data = getIntent();
+        Log.d(TAG,"...patient selected: " + uri);
+        Intent data = new Intent();
+        data.setDataAndType(uri,Patients.CONTENT_ITEM_TYPE);
+        //data.putExtra(EXTRA_PATIENT_ID, patientId);
+        data.putExtra(Intents.EXTRA_SUBJECT, uri);
+        setResult(RESULT_OK, data);
+        finish();
+    }
     @Override
     public void onStart(){
     	super.onStart();
@@ -230,7 +254,7 @@ public class PatientsList extends FragmentActivity implements
     }
 
     public void hideProgressDialog(){
-        Log.i(TAG,"hideProgressDialog()");
+        Log.i(TAG, "hideProgressDialog()");
         if(mProgressDialog != null){
             mProgressDialog.dismiss();
             mProgressDialog = null;
@@ -260,6 +284,32 @@ public class PatientsList extends FragmentActivity implements
     protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver){
         Log.i(TAG, "registerLocalBroadcastReceiver(BroadcastReceiver)");
         IntentFilter filter = buildFilter();
-        registerLocalBroadcastReceiver(receiver,filter);
+        registerLocalBroadcastReceiver(receiver, filter);
+    }
+
+    public void submit(View view){
+        Intent intent = null;
+        switch(view.getId()){
+            case R.id.register:
+                intent = new Intent(Intents.ACTION_RUN_PROCEDURE);
+                intent.setDataAndType(Patients.CONTENT_URI, Subjects.CONTENT_TYPE)
+                        .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
+                                getString(R.string.procs_subject_short_form)))
+                        .putExtra(Intents.EXTRA_PROCEDURE_ID,R.raw
+                                .registration_short_ht);
+                startActivityForResult(intent, CREATE_PATIENT);
+                break;
+            case R.id.sync:
+                getContentResolver().delete(Subjects.CONTENT_URI, null,null);
+                mFragmentPatientList.syncForced(this, Subjects.CONTENT_URI);
+                break;
+            default:
+        }
+    }
+
+    public void onScrollComplete(){
+        Log.i(TAG, "onScrollComplete");
+        View v = findViewById(R.id.register);
+        v.setEnabled(true);
     }
 }
