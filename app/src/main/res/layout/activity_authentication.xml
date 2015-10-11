@@ -50,7 +50,7 @@
             android:inputType="text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_margin="10dp"
-            android:textStyle="normal"/>
+            android:textStyle="normal" style="@style/Widget.EditText.Light"/>
 
         <EditText
             android:id="@+id/input_password"
@@ -61,7 +61,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_margin="10dp"
             android:layout_marginBottom="16dp"
-            />
+            style="@style/Widget.EditText.Light"/>
 
         <Button
             android:id="@+id/btn_login"
