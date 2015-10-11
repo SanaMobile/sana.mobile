@@ -109,6 +109,14 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
 		return null;
 	}
 
+    public boolean getConfirmed(){
+        return getBooleanField(Patients.Contract.CONFIRMED);
+    }
+
+    public boolean getDobEstimated(){
+        return getBooleanField(Patients.Contract.DOB_ESTIMATED);
+    }
+
 	/* (non-Javadoc)
 	 * @see org.sana.android.db.ModelWrapper#getObject()
 	 */
@@ -125,6 +133,8 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
         obj.setImage(getImage());
         obj.setLocation((Location) getLocation());
         obj.setSystemId(getSystemId());
+        //obj.setDobEstimated(getDobEstimated());
+        //obj.setConfirmed(getConfirmed());
 		return obj;
 	}
 
@@ -254,6 +264,9 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
         cv.put(Patients.Contract.DOB, Dates.toSQL(mPatient.getDob()));
         cv.put(Patients.Contract.GENDER, mPatient.getGender());
         cv.put(Patients.Contract.IMAGE, String.valueOf(mPatient.getImage()));
+        //TODO update db and uncomment
+        //cv.put(Patients.Contract.CONFIRMED, mPatient.getConfirmed());
+        //cv.put(Patients.Contract.DOB_ESTIMATED, mPatient.isDobEstimated());
         if(mPatient.getLocation() != null)
             cv.put(Patients.Contract.LOCATION, mPatient.getLocation().getUuid());
         if(exists){

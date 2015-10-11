@@ -35,9 +35,9 @@ public class Patient extends Subject implements IPatient{
     @Expose
     public String system_id;
 	@Expose
-	boolean confirmed;
+	boolean confirmed = true;
     @Expose
-    boolean dobEstimated;
+    boolean dobEstimated = false;
 
 	/* (non-Javadoc)
 	 * @see org.sana.core.IPatient#getGiven_name()
