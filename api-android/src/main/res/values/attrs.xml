@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CustomDatePicker">
+        <attr name="startYear" format="integer"/>
+        <attr name="endYear" format="integer"/>
+        <attr name="monthNames" format="reference" />
+    </declare-styleable>
+</resources>
