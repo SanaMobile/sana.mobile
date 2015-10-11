@@ -177,7 +177,7 @@ public class AuthenticationActivity extends BaseActivity {
         TextView tv = (TextView) findViewById(id);
         // TODO Fix the getBuildString to read from the manifest correctly
         tv.setText(getBuildString());
-        tv.setText(getString(R.string.display_version));
+        //tv.setText(getString(R.string.display_version));
     }
 
     private void disableInput(){
