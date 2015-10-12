@@ -364,11 +364,12 @@ public class SanaUtil {
         insertProcedure(ctx, R.raw.audio_upload_test);
         */
         insertProcedure(ctx, R.raw.demonstration);
+        /*
         insertProcedure(ctx, R.raw.chain_test1);
         insertProcedure(ctx, R.raw.chain_test2);
         insertProcedure(ctx, R.raw.api_test_entry);
         insertProcedure(ctx, R.raw.api_test_select);
-
+        */
         /* Haiti procedures */
         //insertProcedure(ctx, R.raw.ssi);
     }
