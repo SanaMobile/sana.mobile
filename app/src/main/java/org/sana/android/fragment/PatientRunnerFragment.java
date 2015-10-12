@@ -530,4 +530,17 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
             uSubject = uri;
         }
     }
+
+    /**
+     * Flushes any temporary subject registration in the database and
+     * then calls super method.
+     */
+    protected void onExitNoSave(){
+        Log.i(TAG, "onExitNoSave()");
+        if(objectFlag == FLAG_OBJECT_TEMPORARY) {
+            int deleted = getActivity().getContentResolver().delete(uSubject, null, null);
+            Log.d(TAG, "\tdeleted n=" + deleted);
+        }
+        super.onExitNoSave();
+    }
 }

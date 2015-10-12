@@ -353,9 +353,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         // Back button will return a CANCELED message
         else if (!mProcedure.hasPrevShowable()) {
             // This quits when you hit back and have nowhere else to go back to.
-            getActivity().setResult(Activity.RESULT_CANCELED, null);
-            logEvent(EventType.ENCOUNTER_EXIT_NO_SAVE, "");
-            getActivity().finish();
+            onExitNoSave();
             return succeed;
         } else if (mProcedure.hasPrevShowable()) {
         	
@@ -1297,5 +1295,15 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
 
     public boolean isShowCompleteConfirmation() {
         return showCompleteConfirmation;
+    }
+
+    /**
+     * Handles exit and clean up with no save.
+     */
+    protected void onExitNoSave(){
+        // This quits when you hit back and have nowhere else to go back to.
+        getActivity().setResult(Activity.RESULT_CANCELED, null);
+        logEvent(EventType.ENCOUNTER_EXIT_NO_SAVE, "");
+        getActivity().finish();
     }
 }
