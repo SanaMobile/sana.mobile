@@ -586,7 +586,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
     public boolean isItemFinished(long id){
         Log.i(TAG,"isItemFinished() " + id);
         Bundle data = mData.get(id);
-        boolean finished = data.getBoolean(Encounters.Contract.FINISHED,false);
+        boolean finished = data.getBoolean(Encounters.Contract.FINISHED, false);
         return finished;
     }
 
@@ -628,9 +628,18 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         Log.d(TAG, "........images=" + imageCount);
         Log.d(TAG, "........observations" + obsCount);
         try{
-            String idList = SanaUtil.formatPrimaryKeyList(ids);
-            count = getActivity().getContentResolver().delete(Encounters.CONTENT_URI,
-                Encounters.Contract._ID + " IN " + idList, null);
+            if(ids.size() > 1) {
+                String idList = SanaUtil.formatPrimaryKeyList(ids);
+                count = getActivity().getContentResolver().delete(Encounters.CONTENT_URI,
+                        Encounters.Contract._ID + " IN " + idList, null);
+            } else if(ids.size() == 1){
+                count = getActivity().getContentResolver().delete(
+                        Encounters.CONTENT_URI,
+                        Encounters.Contract._ID + " = ?",
+                        new String[]{ String.valueOf(ids.get(0)) });
+            } else {
+                Log.d(TAG, "Delete with None selected");
+            }
         } catch(Exception e){
             e.printStackTrace();
         }

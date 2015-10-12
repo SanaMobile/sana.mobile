@@ -564,7 +564,7 @@ public class EncounterList extends BaseActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, SELECT_ALL, 0, getString(R.string.menu_select_all));
-		//menu.add(0, DELETE, 1, getString(R.string.menu_delete));
+		menu.add(0, DELETE, 1, getString(R.string.menu_delete));
 		menu.add(0, RESEND, 2, getString(R.string.menu_resend));
 		//menu.add(0, CANCEL_UPLOAD, 2, "Cancel Upload");
 		return true;
@@ -583,9 +583,9 @@ public class EncounterList extends BaseActivity implements
                 mListFragment.unselectAllProcedures();
             selectAllToggle = !selectAllToggle;
             return true;
-        //case DELETE:
-        //    mListFragment.deleteSelected();
-        //    return true;
+        case DELETE:
+			mListFragment.deleteSelected();
+            return true;
         case RESEND:
             resendSelected();
             return true;
