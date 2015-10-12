@@ -7,6 +7,7 @@ import org.sana.R;
 import org.sana.android.util.SanaUtil;
 import org.w3c.dom.Node;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,7 +42,10 @@ public class SelectElement extends SelectionElement {
     /** {@inheritDoc} */
     @Override
     protected View createView(Context c) {
-        spin = new Spinner(c);
+
+        View v = ((Activity)c).getLayoutInflater().inflate(R.layout.widget_element_select, null);
+        spin = (Spinner)v.findViewById(R.id.answer);
+        //new Spinner(c);
         adapter = new ArrayAdapter<String>(c,
                 R.layout.simple_spinner_item,
                 labels);
@@ -50,7 +54,7 @@ public class SelectElement extends SelectionElement {
         int selected =  adapter.getPosition(getLabelFromValue(answer));
         if(selected != -1)
             spin.setSelection(selected);
-        return encapsulateQuestion(c, spin);
+        return encapsulateQuestion(c, v);
     }
 
     @Override

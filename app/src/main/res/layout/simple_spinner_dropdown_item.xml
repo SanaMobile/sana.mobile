@@ -19,12 +19,12 @@
 -->
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
                  android:id="@android:id/text1"
-                 style="@style/spinnerDropDownItemStyle"
                  android:singleLine="false"
-                 android:layout_width="match_parent"
+                 android:layout_width="fill_parent"
                  android:layout_height="48dp"
                  android:ellipsize="marquee"
                  android:autoText="false"
-                 android:text="DDDD"
-                 android:textColor="#000000"
-    />
+
+                 android:textAppearance="@android:style/TextAppearance.Large"
+                 android:text="Value"
+                 android:gravity="center_vertical|center_horizontal" />
