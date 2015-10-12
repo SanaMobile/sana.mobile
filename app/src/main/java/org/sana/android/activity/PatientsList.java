@@ -2,7 +2,9 @@
 package org.sana.android.activity;
 
 import org.sana.R;
+import org.sana.android.Constants;
 import org.sana.android.app.Locales;
+import org.sana.android.app.Preferences;
 import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
@@ -291,12 +293,16 @@ public class PatientsList extends FragmentActivity implements
         Intent intent = null;
         switch(view.getId()){
             case R.id.register:
+                // TODO Should really use an asset file
+                int resId = getProcedureResourceId("registration_short");
+                // Default to english version
+                resId  = (resId != 0)? resId: R.raw.registration_short_en;
+                // build launch intent
                 intent = new Intent(Intents.ACTION_RUN_PROCEDURE);
                 intent.setDataAndType(Patients.CONTENT_URI, Subjects.CONTENT_TYPE)
                         .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
                                 getString(R.string.procs_subject_short_form)))
-                        .putExtra(Intents.EXTRA_PROCEDURE_ID,R.raw
-                                .registration_short_ht);
+                        .putExtra(Intents.EXTRA_PROCEDURE_ID, resId);
                 startActivityForResult(intent, CREATE_PATIENT);
                 break;
             case R.id.sync:
@@ -312,4 +318,11 @@ public class PatientsList extends FragmentActivity implements
         View v = findViewById(R.id.register);
         v.setEnabled(true);
     }
+
+   public int getProcedureResourceId(String name){
+       String localeStr = Preferences.getString(this, Constants.PREFERENCE_LOCALE);
+       String localizedName = String.format("%s_%s", name, localeStr);
+       int resId = getResources().getIdentifier(localizedName, "raw", getPackageName());
+       return resId;
+   }
 }
