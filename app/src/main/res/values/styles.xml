@@ -40,10 +40,11 @@
     </style>
 
     <style name="spinnerItemStyle"
-           parent="Widget.AppCompat.Spinner">
+           parent="Base.Widget.AppCompat.Spinner">
         <item name="android:padding">10dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
 
     <style name="spinnerDropDownItemStyle"
@@ -51,8 +52,9 @@
         <item name="android:padding">20dp</item>
         <item name="android:textSize">30sp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-        <item name="android:textColor">#eb020202</item>
+        <item name="android:textColor">#eb020200</item>
         <item name="android:background">#FFFFFF</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
     
     
