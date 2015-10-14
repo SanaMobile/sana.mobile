@@ -289,7 +289,7 @@ public class SMSReceive extends BroadcastReceiver {
 				System.currentTimeMillis());
 
 		// Set the info for the views that show in the notification panel
-		notif.setLatestEventInfo(c, title, textMessage, contentIntent);
+		//notif.setLatestEventInfo(c, title, textMessage, contentIntent);
 
 		// After a 100ms delay, vibrate for 200ms, pause for 100 ms and
 		// then vibrate for 300ms.
