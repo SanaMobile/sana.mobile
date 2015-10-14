@@ -25,7 +25,9 @@ public class CustomDatePicker extends FrameLayout {
 
     private static final int DEFAULT_START_YEAR = 1900;
     private static final int DEFAULT_END_YEAR = 2100;
-
+    private static final char DATE = 'd';
+    private static final char MONTH = 'M';
+    private static final char YEAR = 'y';
 
 
     public static class TwoDigitFormatter implements NumberPicker.Formatter {
@@ -221,13 +223,13 @@ public class CustomDatePicker extends FrameLayout {
             }
 
             if (!quoted) {
-                if (c == DateFormat.DATE && !didDay) {
+                if (c == DATE && !didDay) {
                     parent.addView(mDayPicker);
                     didDay = true;
-                } else if ((c == DateFormat.MONTH || c == 'L') && !didMonth) {
+                } else if ((c == MONTH || c == 'L') && !didMonth) {
                     parent.addView(mMonthPicker);
                     didMonth = true;
-                } else if (c == DateFormat.YEAR && !didYear) {
+                } else if (c == YEAR && !didYear) {
                     parent.addView (mYearPicker);
                     didYear = true;
                 }
