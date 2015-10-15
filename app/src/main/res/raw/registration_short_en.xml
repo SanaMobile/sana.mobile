@@ -10,12 +10,12 @@
         <Element id="h1"
                  type="HIDDEN"
                  concept="SYSTEM ID"
-                 question="HAS Number"
-                 default="U:@DEVICE:@NOW:"/>
+                 question="Patient ID"
+                 default="@DEVICE:@NOW:"/>
         <Element id="h2"
                  type="HIDDEN"
                  concept="LOCATION"
-                 question="Kote"
+                 question="Location"
                  default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca:"/>
         <Element id="1"
                  type="ENTRY"
