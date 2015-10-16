@@ -521,7 +521,9 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
 
     // Sets the view of this fragment
     private void setContentView(View view) {
-        ViewGroup root = (ViewGroup)getView().findViewById(R.id.base_runner_root);
+        // Root view here is a FrameLayout so we know it is a ViewGroup
+        // TODO should really replace this with a set of fragments
+        ViewGroup root = (ViewGroup)getView();
         root.removeAllViews();
         root.addView(view);
     }
