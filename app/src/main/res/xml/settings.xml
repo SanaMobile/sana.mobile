@@ -2,6 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/settings_title" >
+        <Preference
+            android:icon="@drawable/ic_get_app_white_48dp"
+            android:key="_app"
+            android:title="@string/general_update"
+            android:summary="@string/setting_update_summary"
+            />
         <ListPreference
             android:key="@string/setting_locale"
             android:summary=""

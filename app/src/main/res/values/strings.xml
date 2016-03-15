@@ -250,5 +250,7 @@
     <string name="title_basic_settings">Basic Settings</string>
     <string name="setting_upload_foreground">Notify upload</string>
     <string name="prompt_default">Use default value</string>
+    <string name="general_update">Update</string>
+    <string name="setting_update_summary">Click to check for updates</string>
 
 </resources>

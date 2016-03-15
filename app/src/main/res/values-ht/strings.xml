@@ -249,5 +249,7 @@
     <string name="setting_mds_port_summary">Pa chanje sof si lè l sèvi avèk ki pa estanda pò</string>
     <string name="setting_mds_root_summary">Rasin chemen prefiks - default mds/</string>
     <string name="prompt_default">Use default value</string>
+    <string name="general_update">Mizajou</string>
+    <string name="setting_update_summary">Klike sou yo tcheke pou dènye</string>
 </resources>
 

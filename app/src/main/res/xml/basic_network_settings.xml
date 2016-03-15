@@ -2,6 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/settings_basic_network_title" >
+        <Preference
+            android:icon="@drawable/ic_get_app_white_48dp"
+            android:key="_app"
+            android:title="@string/general_update"
+            android:summary="@string/setting_update_summary"
+            />
         <ListPreference
             android:key="@string/setting_locale"
             android:summary="@string/setting_summary_locale"
@@ -16,7 +22,8 @@
         <EditTextPreference
             android:key="s_mds_url"
             android:title="@string/setting_mds_url"
-            android:summary="@string/setting_mds_url_summary" android:defaultValue="@string/host_mds"/>
+            android:summary="@string/setting_mds_url_summary"
+            android:defaultValue="@string/host_mds"/>
         <CheckBoxPreference
             android:key="s_secure"
             android:title="@string/setting_secure"
