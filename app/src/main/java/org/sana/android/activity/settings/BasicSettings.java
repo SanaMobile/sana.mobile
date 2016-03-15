@@ -1,9 +1,11 @@
 package org.sana.android.activity.settings;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,6 +50,13 @@ public class BasicSettings extends PreferenceActivity {
         EditTextPreference prefMdsUrl = (EditTextPreference) findPreference(Constants.PREFERENCE_MDS_URL);
         if (TextUtils.isEmpty(prefMdsUrl.getText())) {
             prefMdsUrl.setText(Constants.DEFAULT_DISPATCH_SERVER);
+        }
+
+
+        PreferenceScreen pref = (PreferenceScreen) findPreference(Constants.PREFERENCE_UPDATE);
+        if(pref != null){
+            Intent intent = new Intent();
+            pref.setIntent(intent);
         }
     }
 }
