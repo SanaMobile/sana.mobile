@@ -182,6 +182,9 @@ public class Constants {
     /** Key for in-app locale setting */
     public static final String PREFERENCE_LOCALE = "s_locale";
 
+    /** Key for in-app locale setting */
+    public static final String PREFERENCE_UPDATE = "_app";
+
     /** The root authority */
     public static final String AUTHORITY = "org.sana.provider";
 
