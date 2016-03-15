@@ -31,21 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.sana.android.provider.Concepts;
-import org.sana.android.provider.Encounters;
-import org.sana.android.provider.Events;
-import org.sana.android.provider.Instructions;
-import org.sana.android.provider.Notifications;
-import org.sana.android.provider.Observations;
-import org.sana.android.provider.Observers;
-import org.sana.android.provider.Procedures;
-import org.sana.android.provider.Subjects;
-import org.sana.android.util.SessionUtil;
-import org.sana.util.UUIDUtil;
-
 import android.net.Uri;
 import android.os.Parcel;
-import android.os.ParcelUuid;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
@@ -59,27 +46,27 @@ import android.text.TextUtils;
  */
 public class Session implements Parcelable {
 
-	/** A key representing an empty session. */
-	public static final String NULL = "00000000-0000-0000-0000-000000000000";
-	
-	/** A key representing an invalid session. */
-	public static final String INVALID = "zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz";
-	
-	/** A key representing an invalid session. */
-	public static final String UNAUTHENTICATED = "00000000-0000-0000-0000-000000000001";
-	
-	public static Session EMPTY = new Session(NULL, NULL);
-	
+    /** A key representing an empty session. */
+    public static final String NULL = "00000000-0000-0000-0000-000000000000";
+
+    /** A key representing an invalid session. */
+    public static final String INVALID = "zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz";
+
+    /** A key representing an invalid session. */
+    public static final String UNAUTHENTICATED = "00000000-0000-0000-0000-000000000001";
+
+    public static Session EMPTY = new Session(NULL, NULL);
+
     // instanceKey initialized to some random value for the instance;
-	private final String mInstanceKey;
-	
-	// Authenticated session key default is null;
-	private String mAuthKey = null;
-	
-	private int mode = -1;
-	private List<Uri> data = new ArrayList<Uri>();
-	
-	private Uri concept = Uri.EMPTY;
+    private final String mInstanceKey;
+
+    // Authenticated session key default is null;
+    private String mAuthKey = null;
+
+    private int mode = -1;
+    private List<Uri> data = new ArrayList<Uri>();
+
+    private Uri concept = Uri.EMPTY;
     private Uri encounter = Uri.EMPTY;
     private Uri event = Uri.EMPTY;
     private Uri instruction = Uri.EMPTY;
@@ -88,270 +75,270 @@ public class Session implements Parcelable {
     private Uri notification = Uri.EMPTY;
     private Uri procedure = Uri.EMPTY;
     private Uri subject = Uri.EMPTY;
-	
-	
-	/**
-	 * Creates a new instance with the instance key randomly generated. 
-	 */
-	public Session(){
-		this(UUID.randomUUID().toString());
-	}
-	
-	/**
-	 * Creates a new instance with a specified instance key. 
-	 *
-	 * @param instanceKey
-	 * @throws IllegalArgumentException if instanceKey is not formatted
-	 */
-	public Session(String instanceKey){
-		this(instanceKey, NULL);
-	}
-	
-	/**
-	 * Creates a new instance with the specified instance and auth keys. 
-	 * 
-	 * @param instanceKey
-	 * @param authKey
-	 * @throws IllegalArgumentException if instanceKey is not formatted
-	 */
-	public Session(String instanceKey, String authKey){
-		mInstanceKey = UUID.fromString(NULL).toString();
-		mAuthKey = UUID.fromString(authKey).toString();
-	}
-	
-	public Session(Parcel in){
-		mInstanceKey = in.readString();
-		mAuthKey = in.readString();
-		
-		concept = in.readParcelable(Uri.class.getClassLoader());
-	    encounter = in.readParcelable(Uri.class.getClassLoader());
-	    event = in.readParcelable(Uri.class.getClassLoader());
-	    instruction = in.readParcelable(Uri.class.getClassLoader());
-	    observer = in.readParcelable(Uri.class.getClassLoader());
-	    observation = in.readParcelable(Uri.class.getClassLoader());
-	    notification = in.readParcelable(Uri.class.getClassLoader());
-	    procedure = in.readParcelable(Uri.class.getClassLoader());
-	    subject = in.readParcelable(Uri.class.getClassLoader());
-	}
-	
-	/* (non-Javadoc)
-	 * @see android.os.Parcelable#describeContents()
-	 */
-	@Override
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	/* (non-Javadoc)
-	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
-	 */
-	@Override
-	public void writeToParcel(Parcel arg0, int arg1) {
-		arg0.writeString(mInstanceKey);
-		arg0.writeString(mAuthKey);
-		Uri[] result = new Uri[data.size()];
-		arg0.writeParcelableArray(data.toArray(result), Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
-		arg0.writeParcelable(concept,0);
-		arg0.writeParcelable(encounter,0);
-		arg0.writeParcelable(event,0);
-		arg0.writeParcelable(instruction,0);
-		arg0.writeParcelable(notification,0);
-		arg0.writeParcelable(observer,0);
-		arg0.writeParcelable(observation,0);
-		arg0.writeParcelable(procedure,0);
-		arg0.writeParcelable(subject,0);
-	}
-	
-	/**
-	 * @return the mConcept
-	 */
-	public Uri getConcept() {
-		return concept;
-	}
 
-	/**
-	 * @param  uri the Uri of the Concept to set
-	 */
-	public void setConcept(Uri uri) {
-		this.concept = uri;
-	}
+    /**
+     * Creates a new instance with the instance key randomly generated.
+     */
+    public Session(){
+        this(UUID.randomUUID().toString());
+    }
 
-	/**
-	 * @return the Encounter Uri
-	 */
-	public Uri getEncounter() {
-		return encounter;
-	}
+    /**
+     * Creates a new instance with a specified instance key.
+     *
+     * @param instanceKey
+     * @throws IllegalArgumentException if instanceKey is not formatted
+     */
+    public Session(String instanceKey){
+        this(instanceKey, NULL);
+    }
 
-	/**
-	 * @param  uri the Uri of the Encounter to set
-	 */
-	public void setEncounter(Uri uri) {
-		this.encounter = uri;
-	}
+    /**
+     * Creates a new instance with the specified instance and auth keys.
+     *
+     * @param instanceKey
+     * @param authKey
+     * @throws IllegalArgumentException if instanceKey is not formatted
+     */
+    public Session(String instanceKey, String authKey){
+        mInstanceKey = UUID.fromString(NULL).toString();
+        mAuthKey = UUID.fromString(authKey).toString();
+    }
 
-	/**
-	 * @return the Event
-	 */
-	public Uri getEvent() {
-		return event;
-	}
+    public Session(Parcel in){
+        mInstanceKey = in.readString();
+        mAuthKey = in.readString();
 
-	/**
-	 * @param event the mEvent to set
-	 */
-	public void setEvent(Uri uri) {
-		this.event = uri;
-	}
+        concept = in.readParcelable(Uri.class.getClassLoader());
+        encounter = in.readParcelable(Uri.class.getClassLoader());
+        event = in.readParcelable(Uri.class.getClassLoader());
+        instruction = in.readParcelable(Uri.class.getClassLoader());
+        observer = in.readParcelable(Uri.class.getClassLoader());
+        observation = in.readParcelable(Uri.class.getClassLoader());
+        notification = in.readParcelable(Uri.class.getClassLoader());
+        procedure = in.readParcelable(Uri.class.getClassLoader());
+        subject = in.readParcelable(Uri.class.getClassLoader());
+    }
 
-	/**
-	 * @return the Instruction
-	 */
-	public Uri getInstruction() {
-		return instruction;
-	}
+    /* (non-Javadoc)
+     * @see android.os.Parcelable#describeContents()
+     */
+    @Override
+    public int describeContents() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	/**
-	 * @param  uri the Uri of the Instruction to set
-	 */
-	public void setInstruction(Uri uri) {
-		this.instruction = uri;
-	}
+    /* (non-Javadoc)
+     * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+     */
+    @Override
+    public void writeToParcel(Parcel arg0, int arg1) {
+        arg0.writeString(mInstanceKey);
+        arg0.writeString(mAuthKey);
+        Uri[] result = new Uri[data.size()];
+        arg0.writeParcelableArray(data.toArray(result), Parcelable.PARCELABLE_WRITE_RETURN_VALUE);
+        arg0.writeParcelable(concept,0);
+        arg0.writeParcelable(encounter,0);
+        arg0.writeParcelable(event,0);
+        arg0.writeParcelable(instruction,0);
+        arg0.writeParcelable(notification,0);
+        arg0.writeParcelable(observer,0);
+        arg0.writeParcelable(observation,0);
+        arg0.writeParcelable(procedure,0);
+        arg0.writeParcelable(subject,0);
+    }
 
-	/**
-	 * @return the mObserver
-	 */
-	public Uri getObserver() {
-		return observer;
-	}
+    /**
+     * @return the mConcept
+     */
+    public Uri getConcept() {
+        return concept;
+    }
 
-	/**
-	 * @param observer the mObserver to set
-	 */
-	public void setObserver(Uri uri) {
-		this.observer = uri;
-	}
+    /**
+     * @param  uri the Uri of the Concept to set
+     */
+    public void setConcept(Uri uri) {
+        this.concept = uri;
+    }
 
-	/**
-	 * @return the mObservation
-	 */
-	public Uri getmObservation() {
-		return observation;
-	}
+    /**
+     * @return the Encounter Uri
+     */
+    public Uri getEncounter() {
+        return encounter;
+    }
 
-	/**
-	 * @param mObservation the mObservation to set
-	 */
-	public void setmObservation(Uri mObservation) {
-		this.observation = mObservation;
-	}
+    /**
+     * @param  uri the Uri of the Encounter to set
+     */
+    public void setEncounter(Uri uri) {
+        this.encounter = uri;
+    }
 
-	/**
-	 * @return the mNotification
-	 */
-	public Uri getmNotification() {
-		return notification;
-	}
+    /**
+     * @return the Event
+     */
+    public Uri getEvent() {
+        return event;
+    }
 
-	/**
-	 * @param uri the Uri of the Notification to set
-	 */
-	public void setNotification(Uri uri) {
-		this.notification = uri;
-	}
+    /**
+     * @param uri the Event to set
+     */
+    public void setEvent(Uri uri) {
+        this.event = uri;
+    }
 
-	/**
-	 * @return the Procedure Uri
-	 */
-	public Uri getProcedure() {
-		return procedure;
-	}
+    /**
+     * @return the Instruction
+     */
+    public Uri getInstruction() {
+        return instruction;
+    }
 
-	/**
-	 * @param  uri the Uri of the Procedure to set
-	 */
-	public void setProcedure(Uri uri) {
-		this.procedure = uri;
-	}
+    /**
+     * @param  uri the Uri of the Instruction to set
+     */
+    public void setInstruction(Uri uri) {
+        this.instruction = uri;
+    }
 
-	/**
-	 * @return the subject Uri
-	 */
-	public Uri getSubject() {
-		return subject;
-	}
+    /**
+     * @return the mObserver
+     */
+    public Uri getObserver() {
+        return observer;
+    }
 
-	/**
-	 * @param  uri the Uri of the subject(s) to set
-	 */
-	public void setSubject(Uri uri) {
-		this.subject = uri;
-	}
+    /**
+     * @param uri the mObserver to set
+     */
+    public void setObserver(Uri uri) {
+        this.observer = uri;
+    }
 
-	/**
-	 * @return the instance key
-	 */
-	public String getInstanceKey() {
-		return mInstanceKey;
-	}
-	
-	public static Parcelable.Creator<Session> CREATOR = new Parcelable.Creator<Session>() {
+    /**
+     * @return the mObservation
+     */
+    public Uri getmObservation() {
+        return observation;
+    }
 
-		@Override
-		public Session createFromParcel(Parcel source) {
-			return new Session(source);
-		}
+    /**
+     * @param mObservation the mObservation to set
+     */
+    public void setmObservation(Uri mObservation) {
+        this.observation = mObservation;
+    }
 
-		@Override
-		public Session[] newArray(final int size) {
-			return new Session[size];
-		}
-	};
-	
-	/**
-	 * Returns whether the session instance key or authenticated session key are
-	 * empty. The object is considered empty if any of the following are 
-	 * <code>true</code>:
-	 * 
-	 * <ol>
-	 * <li>The object is <code>null</code></li>
-	 * <li>The object instance key is <code>null</code> or an empty String.</li>
-	 * <li>The object instance key is equal to {@link #NULL_KEY}</li>
-	 * <li>The object auth key is <code>null</code> or an empty String.</li>
-	 * <li>The object auth key is equal to {@link #NULL_KEY}</li>
-	 * </ol>
-	 * 
-	 * <b>Warning.</b> This ,ethod makes no determination of whether the auth
-	 * key is, in fact, valid in some domain. Rather, it merely returns whether
-	 * the session holds some values that may refer to a valid session, which
-	 * may, or may not, be authenticated.
-	 * 
-	 * @param session The session to check.
-	 * @return true if session
-	 */
-	public static boolean isEmpty(Session session){
-		if(session == null)
-			return true;
-		
-		// null check on instance key
-		if(TextUtils.isEmpty(session.mInstanceKey))
-			return true;
-		
-		// check against universally invalid key
-		if(session.mInstanceKey.equals(Session.NULL))
-			return true;
+    /**
+     * @return the mNotification
+     */
+    public Uri getmNotification() {
+        return notification;
+    }
 
-		// null check on auth key
-		if(TextUtils.isEmpty(session.mAuthKey))
-			return true;
+    /**
+     * @param uri the Uri of the Notification to set
+     */
+    public void setNotification(Uri uri) {
+        this.notification = uri;
+    }
 
-		// check against universally invalid key
-		if(session.mAuthKey.equals(Session.NULL))
-			return true;
-		
-		// The session refers to something so not empty. 
-		return false;
-	}
-	
+    /**
+     * @return the Procedure Uri
+     */
+    public Uri getProcedure() {
+        return procedure;
+    }
+
+    /**
+     * @param  uri the Uri of the Procedure to set
+     */
+    public void setProcedure(Uri uri) {
+        this.procedure = uri;
+    }
+
+    /**
+     * @return the subject Uri
+     */
+    public Uri getSubject() {
+        return subject;
+    }
+
+    /**
+     * @param  uri the Uri of the subject(s) to set
+     */
+    public void setSubject(Uri uri) {
+        this.subject = uri;
+    }
+
+    /**
+     * @return the instance key
+     */
+    public String getInstanceKey() {
+        return mInstanceKey;
+    }
+
+    public static Parcelable.Creator<Session> CREATOR = new Parcelable.Creator<Session>() {
+
+        @Override
+        public Session createFromParcel(Parcel source) {
+            return new Session(source);
+        }
+
+        @Override
+        public Session[] newArray(final int size) {
+            return new Session[size];
+        }
+    };
+
+    /**
+     * Returns whether the session instance key or authenticated session key are
+     * empty. The object is considered empty if any of the following are
+     * <code>true</code>:
+     *
+     * <ol>
+     * <li>The object is <code>null</code></li>
+     * <li>The object instance key is <code>null</code> or an empty String.</li>
+     * <li>The object instance key is equal to {@link #NULL}</li>
+     * <li>The object auth key is <code>null</code> or an empty String.</li>
+     * <li>The object auth key is equal to {@link #NULL}</li>
+     * </ol>
+     *
+     * <b>Warning.</b> This ,ethod makes no determination of whether the auth
+     * key is, in fact, valid in some domain. Rather, it merely returns whether
+     * the session holds some values that may refer to a valid session, which
+     * may, or may not, be authenticated.
+     *
+     * @param session The session to check.
+     * @return true if session
+     */
+    public static boolean isEmpty(Session session){
+        if(session == null)
+            return true;
+
+        // null check on instance key
+        if(TextUtils.isEmpty(session.mInstanceKey))
+            return true;
+
+        // check against universally invalid key
+        if(session.mInstanceKey.equals(Session.NULL))
+            return true;
+
+        // null check on auth key
+        if(TextUtils.isEmpty(session.mAuthKey))
+            return true;
+
+        // check against universally invalid key
+        if(session.mAuthKey.equals(Session.NULL))
+            return true;
+
+        // The session refers to something so not empty.
+        return false;
+    }
+
 }
