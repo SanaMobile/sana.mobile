@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -40,7 +39,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -65,9 +63,9 @@ import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Observations;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
+import org.sana.android.provider.Sessions;
 import org.sana.android.provider.Subjects;
 import org.sana.android.service.QueueManager;
-import org.sana.android.service.impl.DispatchService;
 import org.sana.android.util.Dates;
 import org.sana.core.Patient;
 import org.sana.net.MDSResult;
@@ -76,7 +74,6 @@ import org.sana.net.http.HttpTaskFactory;
 import org.sana.util.UUIDUtil;
 import org.xml.sax.SAXException;
 
-import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -84,7 +81,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
@@ -115,7 +111,7 @@ public class MDSInterface2 {
 		String root = context.getString(R.string.path_root);
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		host = preferences.getString(Constants.PREFERENCE_MDS_URL, host);
-		// Realistacally should never use http
+		// Realistically should never use http
 		boolean useSecure = preferences.getBoolean(
 				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
 		String scheme = (useSecure)? "https": "http";
@@ -894,9 +890,8 @@ public class MDSInterface2 {
 	public static HttpPost createSessionRequest(Context context, String username,
 			String password) throws URISyntaxException
 	{
-		String url = getMDSUrl(context, context.getString(R.string.path_session));
-		Log.d(TAG, "createSessionRequest() "+url);
-		URI uri = getURI(context,context.getString(R.string.path_session));
+		Log.d(TAG, "createSessionRequest() ");
+		URI uri = getURI(context, Sessions.CONTENT_URI.getPath());
 		List<NameValuePair> postData = new ArrayList<NameValuePair>();
 		postData.add(new BasicNameValuePair("username", username));
 		postData.add(new BasicNameValuePair("password", password));
