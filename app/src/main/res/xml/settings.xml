@@ -12,15 +12,8 @@
         <EditTextPreference
             android:key="s_phone_name"
             android:summary="@string/setting_phone_name_summary"
-            android:title="@string/setting_phone_name" android:defaultValue="@string/default_phone_name"/>
-        <EditTextPreference
-            android:key="s_username"
-            android:summary="@string/setting_emr_username_summary"
-            android:title="@string/setting_emr_username" android:defaultValue="@string/debug_user"/>
-        <EditTextPreference
-            android:key="s_password"
-            android:summary="@string/setting_emr_password_summary"
-            android:title="@string/setting_emr_password" android:defaultValue="@string/debug_password"/>
+            android:title="@string/setting_phone_name"
+            android:defaultValue="@string/default_phone_name"/>
         <PreferenceScreen
             android:key="s_network_settings"
             android:summary="@string/setting_network_summary"
