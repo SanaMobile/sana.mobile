@@ -85,7 +85,7 @@ public final class Uris {
 	public static final int CONTENT_SHIFT = TYPE_WIDTH;
 	private static final int CONTENT_MASK = ((1 << CONTENT_WIDTH) - 1) << CONTENT_SHIFT; 
 
-        public static final int PACKAGE_WIDTH = 4;
+	public static final int PACKAGE_WIDTH = 4;
 	public static final int PACKAGE_SHIFT = CONTENT_WIDTH + CONTENT_SHIFT;
 	private static final int PACKAGE_MASK = ((1 << PACKAGE_WIDTH) - 1) << PACKAGE_SHIFT; 
     
@@ -320,7 +320,7 @@ public final class Uris {
 	 * @return
 	 */
 	public static Uri buildContentUri(String authority, String path){
-		return buildUri(SCHEME_CONTENT,authority, path );
+		return buildUri(SCHEME_CONTENT, authority, path);
 	}
 	
 	/**
@@ -546,5 +546,41 @@ public final class Uris {
 		URI u  = url.toURI();
 		return u;
 	}
+    /**
+     * Converts Android "content" style resource identifiers to Uris which
+     * can be used with the MDS REST API
+     * @param uri The internal resource identifier to convert.
+     * @param scheme The scheme to use for the conversion
+     * @param authority The mds host and port
+     * @return
+     */
+	public static Uri iriToUri(String scheme, String authority, String rootPath, Uri uri)
+	{
+		String query = uri.getEncodedQuery();
+        Uri.Builder builder = new Uri.Builder();
+        builder.encodedAuthority(authority)
+				.scheme(scheme);
 
+        if(!TextUtils.isEmpty(rootPath)){
+            builder.encodedPath(rootPath);
+        }
+        builder.appendEncodedPath(normalizePath(uri).getEncodedPath());
+		if(!TextUtils.isEmpty(query)){
+            builder.encodedQuery(query);
+		}
+		return builder.build();
+	}
+
+    public static Uri iriToUri(String scheme, String authority, Uri uri){
+        return iriToUri(scheme,authority,null,uri);
+    }
+
+    public static Uri normalizePath(Uri uri){
+        if(!uri.getPath().endsWith("/")){
+            return uri.buildUpon().appendPath("").build();
+        } else {
+            return uri;
+        }
+
+    }
 }
