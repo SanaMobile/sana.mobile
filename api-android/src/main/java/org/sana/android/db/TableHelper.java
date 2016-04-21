@@ -27,13 +27,13 @@
  */
 package org.sana.android.db;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import org.sana.android.provider.BaseContract;
 import org.sana.api.IModel;
@@ -43,6 +43,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.text.TextUtils;
 
 /**
  * @author Sana Development
@@ -53,6 +54,7 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper,
 	UpgradeHelper
 {
 	public static final String TAG = TableHelper.class.getSimpleName();
+    protected static String root = "/";
 
 	private final String table;
 	private final String fColumn;
@@ -78,19 +80,40 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper,
 	}
 	
 	/**
-	 * Returns the name of the table for based on the {@link android.netUri Uri}.
-	 * 
-	 * @param uri The uri to match against.
+	 * Returns the name of the table.
+	 *
 	 * @return A table name.
 	 */
 	public String getTable(){
 		return table;
 	}
-	
+
+    /**
+     * Returns a File object representing the base directory for any files
+     * stored by the table.
+     *
+     * @return The global table directory path appended with the table name.
+     */
+    public File getDir(File base){
+        return new File(base,getTable());
+    }
+
+    /**
+     * Minimalist representation of the columns needed to create a unique
+     * filename for an item in the table. Subclasses should override if they
+     * require additional columns.
+     *
+     * @return A String array containing the "_id", "uuid", and helper defined
+     *  file column.
+     */
+    public String[] getFileProjection(){
+        return new String[]{ BaseContract._ID, BaseContract.UUID, getFileColumn() };
+    }
+
 	/**
 	 * Returns the name of the column in this table where a file path is stored.
 	 * @return The name of the file column
-	 * @throws UnsupportedOperationExeception if no file column is defined.
+	 * @throws UnsupportedOperationException if no file column is defined.
 	 */
 	public String getFileColumn(){
 		if(fColumn == null)
@@ -102,7 +125,7 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper,
 	/**
 	 * Returns a default extension if this table has a column for storing files.
 	 * @return The default extension.
-	 * @throws UnsupportedOperationExeception if no file column is defined.
+	 * @throws UnsupportedOperationException if no file column is defined.
 	 */
 	public String getFileExtension(){
 		if(fColumn == null)
@@ -110,6 +133,18 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper,
 		else
 			return defaultExtension;
 	}
+
+    /**
+     * Returns a row based extension if this table has a column for storing
+     * file paths. Default implementation calls {@link #getFileExtension()}.
+     * Subclasses should override when handling more than one file type.
+     *
+     * @return The file extension for an item in the row.
+     * @throws UnsupportedOperationException if no file column is defined.
+     */
+    public String getFileExtension(Cursor cursor){
+        return getFileExtension();
+    }
 
 	/**
 	 * Returns the IModel class this table represents.
@@ -142,7 +177,6 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper,
 				Locale.US).format(new Date());
 		if(!values.containsKey(BaseContract.UUID))
 			throw new IllegalArgumentException("Can not insert without uuid");
-		//validValues.put(BaseContract.UUID, UUID.randomUUID().toString());
 		validValues.put(BaseContract.CREATED, value);
 		validValues.put(BaseContract.MODIFIED, value);
 		validValues.putAll(values);
@@ -198,4 +232,19 @@ public abstract class TableHelper<T extends IModel> implements  CreateHelper,
 		qb.setTables(getTable());
 		return qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 	}
+
+    protected File onOpenFileForRow(File base, Cursor cursor){
+        if(TextUtils.isEmpty(getFileColumn())){
+            throw new IllegalArgumentException("No file column for this table");
+        }
+        File file = null;
+		long id = cursor.getLong(cursor.getColumnIndex(BaseContract._ID));
+		String extension = getFileExtension(cursor);
+		file = new File(getDir(base), String.format("%s.%s", String.valueOf(id), extension));
+        return file;
+    }
+
+    public File onOpenFile(File base, Cursor cursor){
+        throw new UnsupportedOperationException("Not Implemented");
+    }
 }
