@@ -519,7 +519,7 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
 
     public String getBuildString() {
         String version = "";
-        String versionFormat = "%s-%s";
+        String versionFormat = "%s-%d-%s";
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(
                     getPackageName(), 0);
@@ -530,7 +530,7 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
             Log.i(TAG, "Version info: name=" + pi.versionName +", code=" +
                     pi.versionCode);
             version = (!TextUtils.isEmpty(local))?
-                    String.format(versionFormat, pi.versionName, local): pi.versionName;
+                    String.format(versionFormat, pi.versionName, pi.versionCode, local): pi.versionName;
         } catch (Exception e) {
 
         }
