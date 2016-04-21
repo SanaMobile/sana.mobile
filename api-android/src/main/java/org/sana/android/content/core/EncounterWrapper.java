@@ -16,7 +16,9 @@ import org.sana.core.Procedure;
 import org.sana.core.Subject;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 /**
  * @author ewinkler
@@ -48,6 +50,7 @@ public class EncounterWrapper extends ModelWrapper<IEncounter> implements IEncou
 	@Override
 	public IEncounter getObject() {
 		Encounter e = new Encounter();
+        e.uuid = getUuid();
 		e.created = getCreated();
 		e.modified = getModified();
 		e.subject = (Subject) getSubject();
@@ -68,5 +71,20 @@ public class EncounterWrapper extends ModelWrapper<IEncounter> implements IEncou
 		}
 		return object;
 	}
-	
+
+
+	public static synchronized IEncounter get(Context context, Uri uri)
+	{
+		Cursor cursor = ModelWrapper.getOne(context, uri);
+		EncounterWrapper wrapper = new EncounterWrapper(cursor);
+		IEncounter object = null;
+		if(wrapper != null && wrapper.moveToFirst())
+			try{
+				object = wrapper.getObject();
+			} finally {
+				wrapper.close();
+			}
+		return object;
+	}
+
 }
