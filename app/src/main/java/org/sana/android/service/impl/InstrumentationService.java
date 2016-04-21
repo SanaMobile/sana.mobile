@@ -71,11 +71,18 @@ public class InstrumentationService extends Service {
 	public static final String TAG = InstrumentationService.class.getSimpleName();
 	
 	public static final String ACTION_RECORD_GPS = "org.sana.android.intent.ACTION_RECORD_GPS";
-	public static final int MSG_GET_LOCATION = 0;
-	
+	public static final int MSG_GET_LOCATION = 1;
+	public static final int MSG_GET_LOCATION_HALT = 1;
+    public static final int CAPTURE_BEGIN = 0;
+    public static final int CAPTURE_STOP = 1;
+    public static final int CAPTURE_SINGLE_SHOT = 2;
+
+
 	public static final int MSG_STATUS_SEND = -1;
 	public static final int MSG_STATUS_REPLY = 0;
 	public static final int MSG_STATUS_UNAVAILABLE = 1;
+
+	public static final String EXTRA_DATA = "extra_data";
 	
     
 	/* Handler for the incoming messages */
@@ -93,7 +100,7 @@ public class InstrumentationService extends Service {
 				Uri uri = Uri.parse(msg.obj.toString());
 				if(msg.getData() != null){
 					//Intent reply = msg.getData().getParcelable(Intent.EXTRA_INTENT);
-					PendingIntent replyTo = msg.getData().getParcelable(Intent.EXTRA_INTENT);
+					//PendingIntent replyTo = msg.getData().getParcelable(Intent.EXTRA_INTENT);
 					//Log.d(TAG, "replyTo: " + String.valueOf(replyTo));
 					LocationListener listener = getListener(null,uri,msg.arg1, msg.getData());
 					try{
@@ -179,19 +186,8 @@ public class InstrumentationService extends Service {
 	 */
 	@Override
 	public void onDestroy(){
-		int key = 0;
-		for(int index =0; index < listeners.size(); index++){
-			try{
-				locationManager.removeUpdates(listeners.get(key));
-			} catch(Exception e){}
-		}
-		listeners.clear();
-		for(int index =0; index < replies.size(); index++){
-			try{
-				locationManager.removeUpdates(replies.get(index));
-			} catch(Exception e){}
-		}
-		replies.clear();
+		Log.i(TAG,"onDestroy()");
+        removeAllListeners();
 		super.onDestroy();
 	}
 	
@@ -205,13 +201,13 @@ public class InstrumentationService extends Service {
 			String action = intent.getAction();
 			Uri uri = intent.getData();
 			Message msg = mHandler.obtainMessage();
-			msg.obj = uri.toString();
+			msg.obj = (uri == null)? null: uri.toString();
 			msg.arg1 = startId;
-			//Bundle data = new Bundle();
-			//data.putAll(intent.getExtras());
 			msg.setData(intent.getExtras());
-			if(action.equals(ACTION_RECORD_GPS)){
-				msg.what = MSG_GET_LOCATION;
+			if(action != null){
+				if(action.equals(ACTION_RECORD_GPS)) {
+                    msg.what = MSG_GET_LOCATION;
+                }
 			}
 			mHandler.sendMessage(msg);
 		}
@@ -236,7 +232,7 @@ public class InstrumentationService extends Service {
 	private final void addListener(int key, PendingIntent replyTo, String provider){
 		LocationListener listener = new LocationInstrumentationListener(replyTo, key);
 		listeners.put(key, listener);
-		locationManager.requestLocationUpdates(provider, 0,0, listener);
+		locationManager.requestLocationUpdates(provider, 0, 0, listener);
 	}
 	
 	private final void removeListener(int key){
@@ -264,10 +260,26 @@ public class InstrumentationService extends Service {
 			
 		}
 		if(listeners.size() == 0){
-			stopSelf();
+			stopSelf(key);
 		}
 	}
-	
+
+	protected final void removeAllListeners(){
+		int key = 0;
+		for(int index =0; index < listeners.size(); index++){
+			try{
+				locationManager.removeUpdates(listeners.get(key));
+			} catch(Exception e){}
+		}
+		listeners.clear();
+		for(int index =0; index < replies.size(); index++){
+			try{
+				locationManager.removeUpdates(replies.get(index));
+			} catch(Exception e){}
+		}
+		replies.clear();
+	}
+
 	final void updateObservation(Uri uri, Object value){
 		Log.i(TAG, "Updating: " + uri + ", value: " + value);
 		ContentValues vals = new ContentValues();
@@ -372,7 +384,7 @@ public class InstrumentationService extends Service {
         			status == LocationProvider.TEMPORARILY_UNAVAILABLE) 
         	{
     			removeListener(id);
-        		stopSelf(id);
+        		//stopSelf(id);
         	}
 		}
 	}
