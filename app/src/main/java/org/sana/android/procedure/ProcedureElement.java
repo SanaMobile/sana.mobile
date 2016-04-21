@@ -1,21 +1,27 @@
 package org.sana.android.procedure;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 import org.sana.R;
-import org.sana.android.activity.BaseRunner;
-import org.sana.android.activity.ProcedureRunner;
+import org.sana.android.content.Uris;
+import org.sana.android.content.core.EncounterWrapper;
+import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.media.AudioPlayer;
 import org.sana.android.media.EducationResource;
+import org.sana.android.provider.Observations;
 import org.sana.android.util.SanaUtil;
+import org.sana.core.Encounter;
 import org.w3c.dom.Node;
 
-import com.google.gson.Gson;
-
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.text.InputType;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -148,7 +154,6 @@ public abstract class ProcedureElement {
     private View cachedView;
     private AudioPlayer mAudioPlayer;
     private String helpText;
-
     /**
      * Constructs the view of this ProcedureElement
      * 
@@ -773,6 +778,102 @@ public abstract class ProcedureElement {
     public boolean hasDefault(){
         Log.i(TAG, "hasDefault()");
         return !TextUtils.isEmpty(defaultValue);
+    }
+
+    public Encounter getEncounter(){
+
+        if(getProcedure() == null){
+            throw new NullPointerException("Procedure not set");
+        }
+        Uri encounterUri = getProcedure().getInstanceUri();
+        if(Uris.isEmpty(encounterUri)){
+            throw new NullPointerException("Procedure instance uri not set");
+        }
+        Encounter encounter = (Encounter) EncounterWrapper.get(getContext(), encounterUri);
+        return encounter;
+    }
+
+    /**
+     * Returns the Uri where the state of this object can been saved or
+     * Uri.EMPTY if the Uri does not exist.
+     * @return
+     */
+    public Uri getUri(){
+
+        if(getProcedure() == null){
+            throw new NullPointerException("Procedure not set");
+        }
+        Uri encounterUri = getProcedure().getInstanceUri();
+        if(Uris.isEmpty(encounterUri)){
+            throw new NullPointerException("Procedure instance uri not set");
+        }
+        String encounter = EncounterWrapper.getUuid(encounterUri,
+                getContext().getContentResolver());
+        Uri uri = ObservationWrapper.getReferenceByEncounterAndId(
+                getContext().getContentResolver(), encounter,
+                getId());
+        if (uri.equals(Observations.CONTENT_URI)) {
+            uri = Uri.EMPTY;
+        }
+        return uri;
+    }
+
+
+    public Uri save(Context context){
+        return save(context,getEncounter());
+    }
+
+    public Uri save(Context context, Encounter encounter){
+        return save(context,encounter.getUuid(), encounter.getSubject().getUuid());
+    }
+
+    /**
+     * Persists the elements data
+     * @param context
+     * @param encounter
+     * @param subject
+     * @return
+     */
+    public Uri save(Context context, String encounter, String subject){
+        boolean saved = false;
+        // Map values to an Observation
+        ContentValues vals = new ContentValues();
+        vals.put(Observations.Contract.ENCOUNTER, encounter);
+        vals.put(Observations.Contract.SUBJECT, subject);
+        vals.put(Observations.Contract.CONCEPT, getConcept());
+        vals.put(Observations.Contract.ID, getId());
+        vals.put(Observations.Contract.VALUE, getAnswer());
+
+        Uri uri = getUri();
+        if(Uris.isEmpty(uri) || uri.equals(Observations.CONTENT_URI)){
+            vals.put(Observations.Contract.UUID, UUID.randomUUID()
+                    .toString());
+            uri = context.getContentResolver().insert(
+                    Observations.CONTENT_URI, vals);
+            saved = true;
+        } else {
+            int updated = context.getContentResolver().update(uri, vals,
+                null, null);
+            saved = (updated == 1)?true:false;
+        }
+        return (saved)? uri: Uri.EMPTY;
+    }
+
+    protected InputStream openInputStream(Context context) throws FileNotFoundException {
+        Uri uri = getUri();
+        if(Uris.isEmpty(uri) || uri.equals(Observations.CONTENT_URI)){
+            throw new FileNotFoundException("Obs does not exist. Call save first");
+        }
+        return context.getContentResolver().openInputStream(uri);
+
+    }
+
+    protected OutputStream openOutputStream(Context context) throws FileNotFoundException {
+        Uri uri = getUri();
+        if(Uris.isEmpty(uri) || uri.equals(Observations.CONTENT_URI)){
+            throw new FileNotFoundException("Obs does not exist. Call save first");
+        }
+        return context.getContentResolver().openOutputStream(uri);
     }
 
     /** 
