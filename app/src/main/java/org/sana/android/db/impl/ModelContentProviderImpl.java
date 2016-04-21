@@ -34,7 +34,7 @@ import org.sana.android.db.DatabaseManager;
 import android.util.Log;
 
 /**
- * Concrete implementation of the {@link org.sana.android.db.ModelContentProvider 
+ * Concrete implementation of the {@link org.sana.android.content.ModelContentProvider
  * ModelContentProvider} class.
  * 
  * @author Sana Development
