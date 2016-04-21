@@ -3,6 +3,7 @@ package org.sana.android.procedure;
 import org.w3c.dom.Node;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 
 /**
@@ -37,7 +38,11 @@ public class TextElement extends ProcedureElement {
             return answer;
         return "";
     }
-    
+
+    @Override
+    public Uri save(Context context, String encounter, String subject){
+        return Uri.EMPTY;
+    }
     /** Default constructor */
     private TextElement(String id, String question, String answer, 
     		String concept, String figure, String audio) 

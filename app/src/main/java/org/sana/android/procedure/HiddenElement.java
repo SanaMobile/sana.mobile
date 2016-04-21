@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -102,6 +103,26 @@ public class HiddenElement extends ProcedureElement {
             sb.append(str);
         }
         return sb.toString();
+    }
+
+    @Override
+    public Uri save(Context context, String encounter, String subject){
+        Uri uri = super.save(context, encounter, subject);
+        if(!TextUtils.isEmpty(getAction())) {
+            try {
+                Bundle extras = new Bundle();
+                extras.putString(Observations.Contract.ID, getId());
+                Intent intent = Intent.parseUri(getAction(),
+                        Intent.URI_INTENT_SCHEME);
+                intent.setData(uri);
+                intent.putExtra("extra_data", extras);
+                getActivity().startService(intent);
+            } catch (URISyntaxException e) {
+                Log.e(TAG, "Element["+getId()+"] Error parsing action");
+                e.printStackTrace();
+            }
+        }
+        return uri;
     }
 
     /** Default constructor */
