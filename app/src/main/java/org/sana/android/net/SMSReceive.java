@@ -69,10 +69,14 @@ public class SMSReceive extends BroadcastReceiver {
 			return;
 		
 		for (int i = 0; i < pdus.length; ++i) {
-			SmsMessage m = SmsMessage.createFromPdu((byte[]) pdus[i]); 
-			Log.i(TAG, "Got message from" + m.getOriginatingAddress());
-			Log.i(TAG, m.toString());
-			processMessage(context, m);
+			try {
+				SmsMessage m = SmsMessage.createFromPdu((byte[]) pdus[i]);
+				Log.i(TAG, "Got message from" + m.getOriginatingAddress());
+				Log.i(TAG, m.toString());
+				processMessage(context, m);
+			} catch(Exception e){
+				Log.e(TAG, e.toString());
+			}
 		}
 	}
 	
