@@ -143,31 +143,24 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
      */
     @Override
 	public void storeCurrentProcedure(boolean finished, boolean skipHidden) {
-		dump();
-		java.util.Map<String, ProcedureElement> map = mProcedure.current()
-				.getElementMap();
+		Log.i(TAG, "storeCurrentProcedure(boolean,boolean");
+		//java.util.Map<String, ProcedureElement> map = mProcedure.current()
+		//		.getElementMap();
+
+		// Get the current encounter and subject uuid vals
 		String encounter = ModelWrapper.getUuid(uEncounter, getActivity()
 				.getContentResolver());
 		String subject = ModelWrapper.getUuid(uSubject, getActivity()
 				.getContentResolver());
-		for (ProcedureElement el : map.values()) {
+
+		// Iterate over the elements calling any save handlers
+		for (ProcedureElement el : mProcedure.current().getElementMap().values()) {
 			ProcedureElement.ElementType type = el.getType();
-			// skip TEXT types
-			if (type.equals(ProcedureElement.ElementType.TEXT))
-				continue;
-			else {
-				// for non TEXT types we want to be certain we have an entry in
-				// the
-				// Observation table
+			switch (el.getType()) {
+				/*
 				mData = ObservationWrapper.getReferenceByEncounterAndId(
 						getActivity().getContentResolver(), encounter,
 						el.getId());
-				// Map values to an Observation
-				ContentValues vals = new ContentValues();
-				vals.put(Observations.Contract.ENCOUNTER, encounter);
-				vals.put(Observations.Contract.SUBJECT, subject);
-				vals.put(Observations.Contract.CONCEPT, el.getConcept());
-				vals.put(Observations.Contract.ID, el.getId());
 
 				// if(!TextUtils.isEmpty(el.getAnswer())){
 				Log.d(TAG, "...observation uri="+ mData);
@@ -177,16 +170,16 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 					mData = getActivity().getContentResolver().insert(
 							Observations.CONTENT_URI, vals);
 				}
-				Log.d(TAG, "uri ::" + mData);
-				boolean updated = false;
-				switch (type) {
-				case TEXT:
-					break;
+				*/
+				/*
+				// Hidden elements fire any actions on save
 				case HIDDEN:
-					vals.put(Observations.Contract.VALUE, el.getAnswer());
+					mData = el.save(getActivity(), encounter, subject);
+					//vals.put(Observations.Contract.VALUE, el.getAnswer());
 					if (!skipHidden && !TextUtils.isEmpty(el.getAction())) {
 						Intent intent;
 						try {
+
 							Intent reply = new Intent();
 							reply.setClass(getActivity(),
 									ProcedureRunner.class);
@@ -197,6 +190,11 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 							// the getCurrentIndex() returns a 1 based index
 							reply.putExtra("page",
 									this.mProcedure.getCurrentIndex() - 1);
+
+							Bundle extras = new Bundle();
+							extras.putString(Observations.Contract.ID, el.getId());
+							//extras.putInt("page", mProcedure.getCurrentIndex() - 1);
+
 							PendingIntent replyTo = PendingIntent.getActivity(
 									getActivity(),
 									ProcedureRunner.OBSERVATION_RESULT_CODE,
@@ -204,8 +202,9 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 							intent = Intent.parseUri(el.getAction(),
 									Intent.URI_INTENT_SCHEME);
 							intent.setData(mData);
-							intent.putExtra(Intent.EXTRA_INTENT, replyTo);
-							intent.putExtra("extra_data", reply.getExtras());
+							//intent.putExtra(Intent.EXTRA_INTENT, replyTo);
+							//intent.putExtra("extra_data", reply.getExtras());
+							intent.putExtra("extra_data", extras);
 							getActivity().startService(intent);
 						} catch (URISyntaxException e) {
 							// TODO Auto-generated catch block
@@ -213,21 +212,23 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 						}
 					}
 					break;
+				*/
 				case PICTURE:
+					mData = el.save(getActivity(), encounter, subject);
 					saveOrUpdateListAnswers(encounter, subject, el);
 					break;
 				default:
-					vals.put(Observations.Contract.VALUE, el.getAnswer());
-					getActivity().getContentResolver().update(mData, vals,
-							null, null);
+					mData = el.save(getActivity(), encounter, subject);
+					//vals.put(Observations.Contract.VALUE, el.getAnswer());
+					//getActivity().getContentResolver().update(mData, vals,
+					//		null, null);
 					break;
 				}
 
-				Log.d(TAG, "updated: " + updated + "::" + mData);
-				Log.d(TAG, String.format(
-						"{ 'id': %s, 'concept': %s, 'value': %s", el.getId(),
-						el.getConcept(), el.getAnswer()));
-			}
+			Log.d(TAG, "saved --> " + mData);
+			Log.d(TAG, String.format(
+					"{ 'id': %s, 'concept': %s, 'value': %s", el.getId(),
+					el.getConcept(), el.getAnswer()));
 		}
 		saveEncounterStateJSON(finished);
 	}
