@@ -1,17 +1,17 @@
 package org.sana.android.activity.settings;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceScreen;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import org.sana.R;
 import org.sana.android.Constants;
+import org.sana.android.app.UpdateManager;
 
 /**
  * Simplified version of the network settings. Provides minimal set of
@@ -52,11 +52,13 @@ public class BasicSettings extends PreferenceActivity {
             prefMdsUrl.setText(Constants.DEFAULT_DISPATCH_SERVER);
         }
 
-
-        PreferenceScreen pref = (PreferenceScreen) findPreference(Constants.PREFERENCE_UPDATE);
-        if(pref != null){
-            Intent intent = new Intent();
-            pref.setIntent(intent);
-        }
+        Preference pref = findPreference(Constants.PREFERENCE_UPDATE);
+        pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                UpdateManager.checkUpdate(getApplicationContext(), getString(R.string.key_update_secret));
+                return true;
+            }
+        });
     }
 }
