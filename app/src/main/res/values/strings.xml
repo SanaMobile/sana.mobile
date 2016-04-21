@@ -252,5 +252,12 @@
     <string name="prompt_default">Use default value</string>
     <string name="general_update">Update</string>
     <string name="setting_update_summary">Click to check for updates</string>
+    <string name="label_stop_recording">Stop Recording</string>
+    <string name="label_start_recording">Start Recording</string>
+    <string name="label_record_audio">Record audio:</string>
+    <string name="label_record_error">Recording Error</string>
+    <string name="label_play_recording">Play Back Recording</string>
+    <string name="label_recording_complete">Recording Complete!</string>
+    <string name="label_record_again">Rerecord</string>
 
 </resources>

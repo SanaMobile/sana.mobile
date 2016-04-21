@@ -251,5 +251,12 @@
     <string name="prompt_default">Use default value</string>
     <string name="general_update">Mizajou</string>
     <string name="setting_update_summary">Klike sou yo tcheke pou dènye</string>
+    <string name="label_stop_recording">Sispann anrejistreman</string>
+    <string name="label_start_recording">Kòmanse anrejistreman</string>
+    <string name="label_record_audio">Dosye odyo:</string>
+    <string name="label_record_error">Erè</string>
+    <string name="label_play_recording">Jwe odyo</string>
+    <string name="label_recording_complete">Anrejistreman konplè</string>
+    <string name="label_record_again">Rerecord</string>
 </resources>
 
