@@ -223,7 +223,7 @@ public class SanaUtil {
      * 
      * @param ctx the Context where the data is stored
      * @param id the raw resource id */
-    private static void insertProcedure(Context ctx, int id) {
+    private static boolean insertProcedure(Context ctx, int id) {
 
         String title = SanaUtil.randomString("Procedure ", 10);
         String author = "";
@@ -254,13 +254,16 @@ public class SanaUtil {
                 ctx.getContentResolver().update(Procedures.CONTENT_URI,
                     cv, 
                     "(title LIKE\"" + title + "\")", null);
-            }else
+            }else {
                 ctx.getContentResolver().insert(Procedures.CONTENT_URI, cv);
+                return true;
+            }
         } catch (Exception e) {
             Log.e(TAG, "Couldn't add procedure id=" + id + ", title = " + title
                     + ", to db. Exception : " + e.toString());
             e.printStackTrace();
         }
+        return false;
     }
 
     /** Code to insert procedure into database is a duplicate with
@@ -343,38 +346,21 @@ public class SanaUtil {
     
     /** Loading Sana with XML-described procedures is currently hard-coded. New
      * files can be added or removed here. */
-    public static void loadDefaultDatabase(Context ctx) {
-        /*
-         * insertProcedure(ctx, R.raw.bronchitis); insertProcedure(ctx,
-         * R.raw.cervicalcancer); insertProcedure(ctx, R.raw.surgery_demo);
-         * insertProcedure(ctx, R.raw.tbcontact); insertProcedure(ctx,
-         * R.raw.multiupload_test);
-         * insertProcedure(ctx, R.raw.upload_test); insertProcedure(ctx,
-         * R.raw.hiv); insertProcedure(ctx, R.raw.cervicalcancer);
-         * insertProcedure(ctx, R.raw.prenatal); insertProcedure(ctx,
-         * R.raw.surgery); insertProcedure(ctx, R.raw.derma);
-         * insertProcedure(ctx, R.raw.teleradiology); insertProcedure(ctx,
-         * R.raw.ophthalmology); insertProcedure(ctx, R.raw.tbcontact2);
-         * insertProcedure(ctx, R.raw.tbpatient); insertProcedure(ctx,
-         * R.raw.oral_cancer);
-
-        insertProcedure(ctx, R.raw.cvd_protocol);
-        insertProcedure(ctx, R.raw.api_test);
-        insertProcedure(ctx, R.raw.ssi_two_site);
-        insertProcedure(ctx, R.raw.audio_upload_test);
-
-        insertProcedure(ctx, R.raw.chain_test1);
-        insertProcedure(ctx, R.raw.chain_test2);
-        insertProcedure(ctx, R.raw.demonstration);
-        insertProcedure(ctx, R.raw.api_test_entry);
-        insertProcedure(ctx, R.raw.api_test_select);
-        */
-        /* Haiti procedures */
-        insertProcedure(ctx, R.raw.ssi_initial);
-        insertProcedure(ctx, R.raw.ssi_regular);
-        insertProcedure(ctx, R.raw.ssi_symptoms);
-        insertProcedure(ctx, R.raw.ssi_thirty_day);
-        //insertProcedure(ctx, R.raw.ssi_en);
+    public static int loadDefaultDatabase(Context ctx) {
+        int inserted = 0;
+        /* Specify default procedures here */
+        int[] defaults = {
+                R.raw.ssi_initial,
+                R.raw.ssi_regular,
+                R.raw.ssi_thirty_day,
+                R.raw.ssi_symptoms
+        };
+        for(int id:defaults) {
+            if(insertProcedure(ctx, id)) {
+                inserted += 1;
+            }
+        }
+        return inserted;
     }
 
     /** Returns true if the phone has telphony or wifi service
