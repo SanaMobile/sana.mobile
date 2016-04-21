@@ -98,6 +98,24 @@ public class MDSInterface2 {
 
 	public static final String TAG = MDSInterface2.class.getSimpleName();
 
+	public static String getAuthority(Context context){
+        String host = getHost(context);
+        int port = getPort(context);
+        return (port != 0)? host + ":" + port:host;
+    }
+
+    public static String getHost(Context context){
+        String host = null;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if(preferences.contains(Constants.PREFERENCE_MDS_URL)){
+            host = preferences.getString(Constants.PREFERENCE_MDS_URL, null);
+        }
+        if(TextUtils.isEmpty(host)){
+            host = context.getString(R.string.host_mds);
+        }
+        return host;
+    }
+
 	/**
 	 * Gets the value in the MDS url setting and add the correct scheme, i.e.
 	 * http or https, depending on the value of the use secure transmission
@@ -588,7 +606,7 @@ public class MDSInterface2 {
 			int tries = 0;
 			while(tries < MAX_TRIES) {
 				if (MDSInterface2.postResponses(context,
-						savedProcedureGUID, procedureTitle, subjectUUID,json,
+						savedProcedureGUID, procedureUUID, subjectUUID,json,
 						user, password,device)) {
 					// Mark the procedure text as uploaded in the database
 					ContentValues cv = new ContentValues();
@@ -652,7 +670,7 @@ public class MDSInterface2 {
 								Long.parseLong(binaryId));
 				} else if (type == ElementType.SOUND) {
 					binUri = ContentUris.withAppendedId(
-								SoundSQLFormat.CONTENT_URI,
+								Observations.CONTENT_URI,
 								Long.parseLong(binaryId));
 				} else if (type == ElementType.PLUGIN) {
 					binUri = ContentUris.withAppendedId(
@@ -900,7 +918,7 @@ public class MDSInterface2 {
 
 	public static boolean getFile(Context context, Uri file) throws IOException {
 		String path = "media/" + file.getLastPathSegment();
-		return getFile(context,path, new File(file.getPath()));
+		return getFile(context, path, new File(file.getPath()));
 	}
 
 	public static boolean getFile(Context context, String path, File outfile) throws IOException{
@@ -1097,7 +1115,7 @@ public class MDSInterface2 {
                     request.setEntity(entity);
 		    Log.d(TAG,"apiPut() executing" + request.getMethod());
 		    httpResponse = client.execute(request);
-		    Log.d(TAG,"apiPut() reading response");
+		    Log.d(TAG, "apiPut() reading response");
 		    response = handler.handleResponse(httpResponse);
 		    Log.d(TAG,"apiPut() --> " + response.status + ": " + response.code);
 		} catch (ClientProtocolException e) {
@@ -1156,7 +1174,7 @@ public class MDSInterface2 {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		host = preferences.getString(Constants.PREFERENCE_MDS_URL, host);
 		boolean useSecure = preferences.getBoolean(
-				Constants.PREFERENCE_SECURE_TRANSMISSION, true);
+                Constants.PREFERENCE_SECURE_TRANSMISSION, true);
 		String scheme = (useSecure)? "https": "http";
 		String path = "/mds" + uri.getPath();
                 if(!path.endsWith("/"))
@@ -1170,6 +1188,15 @@ public class MDSInterface2 {
 		return Uris.iriToURI(uri, scheme, host, port, root);
 	}
 
+    public static String getScheme(Context context){
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
+            return "https";
+        else
+            return "http";
+    }
+
 	static String getScheme(SharedPreferences preferences){
 		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))
 			return "https";
@@ -1177,7 +1204,7 @@ public class MDSInterface2 {
 			return "http";
 	}
 
-	static int getPort(Context c){
+	public static int getPort(Context c){
 		SharedPreferences preferences = PreferenceManager
 											.getDefaultSharedPreferences(c);
 		if(preferences.getBoolean(Constants.PREFERENCE_SECURE_TRANSMISSION, true))

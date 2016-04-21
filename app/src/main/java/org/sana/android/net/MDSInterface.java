@@ -959,7 +959,7 @@ public class MDSInterface {
 								Long.parseLong(binaryId));
 				} else if (type == ElementType.SOUND) {
 					binUri = ContentUris.withAppendedId(
-								SoundSQLFormat.CONTENT_URI,
+								Observations.CONTENT_URI,
 								Long.parseLong(binaryId));
 				} else if (type == ElementType.PLUGIN) {
 					binUri = ContentUris.withAppendedId(
