@@ -27,10 +27,16 @@
  */
 package org.sana.android.db.impl;
 
+import java.io.File;
 import java.util.HashMap;
 
 import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.text.TextUtilsCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.sana.android.db.TableHelper;
@@ -79,7 +85,33 @@ public class ObservationsHelper extends TableHelper<Observation>{
 	protected ObservationsHelper(){
 		super(Observation.class, Observations.Contract.VALUE, "bin");
 	}
-	
+
+    @Override
+    public String[] getFileProjection(){
+        return new String[]{
+                BaseContract._ID,
+                BaseContract.UUID,
+                getFileColumn(),
+                Contract.CONCEPT
+        };
+    }
+
+    @Override
+    public String getFileExtension(Cursor cursor){
+        String concept = cursor.getString(cursor.getColumnIndex(Contract.CONCEPT));
+        if(concept.contains("AUDIO")){
+            return (Build.VERSION.SDK_INT >= 10)? "m4a":"3gp";
+        } else if(concept.contains("PICTURE") || concept.contains("IMAGE"))  {
+            return "png";
+        }
+        return getFileExtension();
+    }
+
+    @Override
+    public File onOpenFile(File base, Cursor cursor){
+        return onOpenFileForRow(base, cursor);
+    }
+
 	/* (non-Javadoc)
 	 * @see org.sana.android.db.InsertHelper#onInsert(android.net.Uri, android.content.ContentValues)
 	 */
@@ -126,5 +158,4 @@ public class ObservationsHelper extends TableHelper<Observation>{
 	public String onUpgrade(int oldVersion, int newVersion) {
 		return null;
 	}
-	
 }

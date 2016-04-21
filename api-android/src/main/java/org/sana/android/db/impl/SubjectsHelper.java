@@ -28,13 +28,17 @@
 package org.sana.android.db.impl;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
 import org.sana.android.db.TableHelper;
+import org.sana.android.provider.BaseContract;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Patients.Contract;
 import org.sana.core.Subject;
+
+import java.io.File;
 
 /**
  * A database table helper for a table of subjects.
@@ -57,7 +61,7 @@ public class SubjectsHelper extends TableHelper<Subject>{
 	}
 	
 	protected SubjectsHelper(){
-		super(Subject.class);
+		super(Subject.class, Patients.Contract.IMAGE, "png");
 	}
 	
 	/* (non-Javadoc)
@@ -129,5 +133,11 @@ public class SubjectsHelper extends TableHelper<Subject>{
 	    }
 		return sql;
 	}
+
+	@Override
+	public File onOpenFile(File base, Cursor cursor){
+		return onOpenFileForRow(base, cursor);
+	}
+
 	
 }
