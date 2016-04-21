@@ -10,5 +10,5 @@ public final class Updates {
 
     /** The content:// style URI for this content provider. */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + Models.AUTHORITY + "/mds/core/session/");
+            + Models.AUTHORITY + "/mds/clients/");
 }
