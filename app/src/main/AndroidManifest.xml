@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.sana"
-    android:versionCode="8"
-    android:versionName="2.1.0"
-    android:installLocation="auto">
+<manifest package="org.sana"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:installLocation="auto"
+          android:versionCode="8"
+          android:versionName="2.1.0">
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="17"/>
 
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_PHONE_SUB_INFO" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.ACCESS_PHONE_SUB_INFO"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
-        tools:replace="android:icon, android:theme"
         android:icon="@drawable/ic_app_logo"
-        android:label="@string/app_name" android:theme="@style/Theme.Large.NoActionBar">
-        <meta-data android:name="local_build" android:value="@string/cfg_build_variant">
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Large.NoActionBar"
+        tools:replace="android:icon, android:theme">
+        <meta-data
+            android:name="local_build"
+            android:value="@string/cfg_build_variant">
         </meta-data>
+
         <service
-            android:name="org.sana.android.service.BackgroundUploader"
+            android:name=".android.service.BackgroundUploader"
             android:enabled="true"
             android:icon="@drawable/ic_app_logo"
-            android:label="@string/title_upload_service" />
+            android:label="@string/title_upload_service"/>
         <!-- Content Providers -->
         <provider
             android:name=".android.db.impl.ModelContentProviderImpl"
@@ -44,268 +50,333 @@
         </provider>
         <!-- Providers below here are deprecated -->
         <provider
-            android:name="org.sana.android.db.ImageProvider"
-            android:authorities="org.sana.provider.Image" />
+            android:name=".android.db.ImageProvider"
+            android:authorities="org.sana.provider.Image"/>
         <provider
-            android:name="org.sana.android.db.SoundProvider"
-            android:authorities="org.sana.provider.Sound" />
+            android:name=".android.db.SoundProvider"
+            android:authorities="org.sana.provider.Sound"/>
         <provider
-            android:name="org.sana.android.db.EducationResourceProvider"
-            android:authorities="org.sana.provider.EducationResource" />
+            android:name=".android.db.EducationResourceProvider"
+            android:authorities="org.sana.provider.EducationResource"/>
         <provider
-            android:name="org.sana.android.db.BinaryProvider"
-            android:authorities="org.sana.provider.Binary" />
+            android:name=".android.db.BinaryProvider"
+            android:authorities="org.sana.provider.Binary"/>
         <provider
             android:name=".android.content.MessageQueueProvider"
-            android:authorities="org.sana.provider.dispatch"
-            />
+            android:authorities="org.sana.provider.dispatch"/>
         <!-- Activity section -->
         <activity
-            android:name="org.sana.android.activity.PatientRunner"
-            android:screenOrientation="portrait"
-            android:label="@string/title_register_new_patient" >
+            android:name=".android.activity.PatientRunner"
+            android:label="@string/title_register_new_patient"
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
-                <action android:name="android.intent.action.INSERT" />
-                <action android:name="android.intent.action.INSERT_OR_EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.patient" />
+                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE"/>
+                <action android:name="android.intent.action.INSERT"/>
+                <action android:name="android.intent.action.INSERT_OR_EDIT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.patient"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
-                <action android:name="android.intent.action.INSERT" />
-                <action android:name="android.intent.action.INSERT_OR_EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.subject" />
+                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE"/>
+                <action android:name="android.intent.action.INSERT"/>
+                <action android:name="android.intent.action.INSERT_OR_EDIT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.subject"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.PatientsList"
+            android:name=".android.activity.PatientsList"
             android:label="@string/title_patient_list"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.patient" />
+                <action android:name="android.intent.action.PICK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.patient"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.subject" />
+                <action android:name="android.intent.action.PICK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.subject"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.patient" />
+                <action android:name="android.intent.action.GET_CONTENT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.patient"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.subject" />
+                <action android:name="android.intent.action.GET_CONTENT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.subject"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.ProceduresList"
-            android:screenOrientation="portrait"
-            android:label="@string/title_procedures_list" >
+            android:name=".android.activity.ProceduresList"
+            android:label="@string/title_procedures_list"
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.procedure" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.procedure"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.procedure" />
+                <action android:name="android.intent.action.PICK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.procedure"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
+                <action android:name="android.intent.action.GET_CONTENT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.EncounterList"
+            android:name=".android.activity.EncounterList"
             android:label="@string/title_savedprocedure_list"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter" />
-            </intent-filter>
-            <intent-filter>
-                6E3L;<action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
-            </intent-filter>
-        </activity>
+                <action android:name="android.intent.action.VIEW"/>
 
-        <activity
-            android:name="org.sana.android.activity.EncounterTaskList"
-            android:label="@string/title_savedprocedure_list"
-            android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.task.encounterTask" />
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.task.encounterTask" />
+                6E3L;
+                <action android:name="android.intent.action.PICK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.task.encounterTask" />
+                <action android:name="android.intent.action.GET_CONTENT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.NotificationList"
+            android:name=".android.activity.EncounterTaskList"
+            android:label="@string/title_savedprocedure_list"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.task.encounterTask"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PICK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.task.encounterTask"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.GET_CONTENT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.task.encounterTask"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".android.activity.NotificationList"
             android:label="@string/title_notifications_list"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.notification" />
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.PICK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.notification"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.notification" />
+                <action android:name="android.intent.action.GET_CONTENT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.notification"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.EducationResourceList"
+            android:name=".android.activity.EducationResourceList"
             android:label="@string/title_help_list"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.info" />
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.PICK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.info"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.GET_CONTENT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.info" />
-            </intent-filter>
-        </activity>
-        <activity android:name="org.sana.android.activity.ProcedureSdImporter"
-                  android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="org.sana.android.activity.IMPORT_PROCEDURE" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.GET_CONTENT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.info"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.ProcedureRunner"
-            android:label="@string/title_procedure_runner"
+            android:name=".android.activity.ProcedureSdImporter"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="org.sana.android.activity.IMPORT_PROCEDURE"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".android.activity.ProcedureRunner"
             android:configChanges="orientation"
+            android:label="@string/title_procedure_runner"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
+                <action android:name="org.sana.android.intent.action.RUN_PROCEDURE"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
+                <action android:name="android.intent.action.EDIT"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.RUN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
+                <action android:name="android.intent.action.RUN"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.RUN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.encounterTask" />
+                <action android:name="android.intent.action.RUN"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounterTask"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="org.sana.intent.action.EXECUTE_TASK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure" />
+                <action android:name="org.sana.intent.action.EXECUTE_TASK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.procedure"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.NotificationViewer"
-            android:label="@string/title_notification_viewer" >
+            android:name=".android.activity.NotificationViewer"
+            android:label="@string/title_notification_viewer">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.notification" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.notification"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.settings.Settings"
-            android:label="@string/title_settings" >
+            android:name=".android.activity.settings.Settings"
+            android:label="@string/title_settings">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.settings" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.settings"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.settings.NetworkSettings"
-            android:label="@string/title_network_settings" >
+            android:name=".android.activity.settings.NetworkSettings"
+            android:label="@string/title_network_settings">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.settings" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.settings"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.settings.ResourceSettings"
-            android:label="@string/title_resource_settings" >
+            android:name=".android.activity.settings.ResourceSettings"
+            android:label="@string/title_resource_settings">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.settings" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.settings"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.settings.BasicSettings"
-            android:label="@string/title_basic_settings" >
+            android:name=".android.activity.settings.BasicSettings"
+            android:label="@string/title_basic_settings">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.settings" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.settings"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.AuthenticationActivity"
+            android:name=".android.activity.AuthenticationActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.PICK" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/org.sana.observer" />
+                <action android:name="android.intent.action.PICK"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.dir/org.sana.observer"/>
             </intent-filter>
         </activity>
         <activity
-            android:name="org.sana.android.activity.MainActivity"
+            android:name=".android.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.HOME" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.HOME"/>
             </intent-filter>
         </activity>
 
@@ -324,34 +395,44 @@
                 <action android:name="org.sana.intent.action.READ"/>
                 <action android:name="org.sana.intent.action.UPDATE"/>
                 <action android:name="org.sana.intent.action.DELETE"/>
-                <data android:scheme="content"
+
+                <data
                     android:host="org.sana.provider"
-                    android:mimeType="vnd.android.cursor.item/*"/>
+                    android:mimeType="vnd.android.cursor.item/*"
+                    android:scheme="content"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="org.sana.intent.action.READ"/>
-                <data android:scheme="content"
+
+                <data
                     android:host="org.sana.provider"
-                    android:mimeType="vnd.android.cursor.dir/*"/>
+                    android:mimeType="vnd.android.cursor.dir/*"
+                    android:scheme="content"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="org.sana.intent.action.READ"/>
                 <action android:name="org.sana.intent.action.UPDATE"/>
-                <data android:scheme="package" android:host="org.sana.provider"/>
+
+                <data
+                    android:host="org.sana.provider"
+                    android:scheme="package"/>
             </intent-filter>
         </service>
-        <service android:name=".android.service.impl.ApplicationService"></service>
+        <service android:name=".android.service.impl.ApplicationService"/>
         <service android:name=".android.service.impl.InstrumentationService">
             <intent-filter>
                 <action android:name="org.sana.android.intent.ACTION_RECORD_GPS"/>
                 <data android:mimeType="vnd.android.cursor.item/org.sana.observation"/>
             </intent-filter>
         </service>
-        <activity android:name=".android.activity.ObservationList" >
+
+        <activity android:name=".android.activity.ObservationList">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter" />
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:mimeType="vnd.android.cursor.item/org.sana.encounter"/>
             </intent-filter>
         </activity>
         <!-- Receiver section -->
@@ -370,7 +451,34 @@
             </intent-filter>
         </receiver>
         -->
+        <receiver
+            android:name=".android.app.UpdateReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.sana.android.action.UPDATE_IN_PROGRESS"/>
+                <action android:name="org.sana.android.action.UPDATE_CHECK_COMPLETE"/>
+                <action android:name="org.sana.android.action.UPDATE_DOWNLOAD_FAILED"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.sana.android.action.UPDATE_DOWNLOAD_SUCCESS"/>
+                <action android:name="org.sana.android.action.UPDATE_DOWNLOAD_FAILED"/>
+                <data android:mimeType="application/vnd.android.package-archive"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
+                <data android:mimeType="application/vnd.android.package-archive"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".android.service.impl.UpdateService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.sana.android.action.ACTION_UPDATE_CHECK"/>
+                <action android:name="org.sana.android.action.ACTION_UPDATE_GET"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
-
