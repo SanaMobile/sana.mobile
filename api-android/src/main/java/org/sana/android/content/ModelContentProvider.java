@@ -29,10 +29,12 @@ package org.sana.android.content;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.sana.android.db.DBUtils;
 import org.sana.android.db.DatabaseManager;
 import org.sana.android.db.DatabaseOpenHelper;
+import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.TableHelper;
 import org.sana.android.db.impl.ConceptsHelper;
 import org.sana.android.db.impl.EncounterTasksHelper;
@@ -44,6 +46,7 @@ import org.sana.android.db.impl.ObservationsHelper;
 import org.sana.android.db.impl.ObserversHelper;
 import org.sana.android.db.impl.ProceduresHelper;
 import org.sana.android.db.impl.SubjectsHelper;
+import org.sana.android.provider.BaseContract;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -52,6 +55,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
@@ -160,7 +164,7 @@ public abstract class ModelContentProvider extends ContentProvider {
 	@Override
 	public synchronized Uri insert(Uri uri, ContentValues values) {
 		Log.d(TAG, "insert(" + uri.toString() +", N = " 
-	        	+ String.valueOf((values == null)?0:values.size()) + " values.)");
+	        	+ String.valueOf((values == null) ? 0 : values.size()) + " values.)");
         TableHelper<?> helper = getTableHelper(uri);
         
         // set default insert values and execute
@@ -168,6 +172,7 @@ public abstract class ModelContentProvider extends ContentProvider {
 		String table = helper.getTable();
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();//mOpener.getWritableDatabase();
 		long id = db.insert(table, null, values);
+
 		DatabaseManager.getInstance().closeDatabase();
 		
 		Uri result = ContentUris.withAppendedId(uri, id);
@@ -209,7 +214,7 @@ public abstract class ModelContentProvider extends ContentProvider {
         //Cursor cursor = helper.onQuery(db, projection, selection, selectionArgs, sortOrder);
         Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
-        Log.d(TAG, ".query(" + uri.toString() +") count = " + ((cursor!=null)?cursor.getCount():0));
+        Log.d(TAG, ".query(" + uri.toString() + ") count = " + ((cursor != null) ? cursor.getCount() : 0));
         return cursor;
 	}
 
@@ -219,7 +224,7 @@ public abstract class ModelContentProvider extends ContentProvider {
 	@Override
 	public synchronized int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-        Log.d(TAG, ".update(" + uri.toString() +");");//mOpener.getWritableDatabase();
+        Log.d(TAG, ".update(" + uri.toString() + ");");//mOpener.getWritableDatabase();
 		
         // set any default update values
 		TableHelper<?> helper = getTableHelper(uri);
@@ -250,69 +255,65 @@ public abstract class ModelContentProvider extends ContentProvider {
 	public ParcelFileDescriptor openFile(Uri uri, String mode)
 			throws FileNotFoundException 
 	{
-		Log.i(TAG, "openFile()" + uri);
+		Log.i(TAG, "openFile()");
     	Log.d(TAG,"...uri: " + uri);
     	Log.d(TAG,"...mode: " + mode);
-    	
-    	String ext = getTableHelper(uri).getFileExtension();
-		int match = Uris.getContentDescriptor(uri);
-		switch(match){
-		case(Uris.OBSERVATION):
-		case(Uris.SUBJECT):
-			break;
-		default:
-			throw new FileNotFoundException("Unsupported content type. No files.");
-		}
-		TableHelper<?> helper = getTableHelper(uri);
-		String column = helper.getFileColumn();
-		Cursor c = query(uri, new String[]{ column }, null, null, null);
-		
-		String path = null;
-        if (c != null) {
-        	try{
-        		if(c.moveToFirst()){
-        			// Should never get more than one back
-        			if(c.getCount() > 1)
-        				throw new IllegalArgumentException(
-        						"Vaild for single row only");
-        			// get file and open
-        	        path = c.getString(0);
-        	        Log.d(TAG, "...opening file path: " + path);
-        		} else {
-                    throw new IllegalArgumentException("Invalid Uri: " + uri);
-        		}
-        	} finally {
-        		c.close();
-        	}
+
+        TableHelper<?> helper = getTableHelper(uri);
+        String fileColumn = helper.getFileColumn();
+		String[] projection = helper.getFileProjection();
+		Cursor cursor = null;
+
+        File fopen = null;
+        try{
+            cursor = query(uri, projection, null, null, null);
+            int fileColumnIndex = cursor.getColumnIndex(fileColumn);
+            // Load the file path and row id from the cursor
+            if(cursor != null && cursor.moveToFirst()) {
+                // Should never get more than one back
+                if (cursor.getCount() > 1) {
+                    throw new IllegalArgumentException(
+                            "Uri returned more than one result. Directory uri? " + uri);
+                }
+                // get the file
+                fopen = helper.onOpenFile(getContext().getFilesDir(), cursor);
+            } else {
+                throw new FileNotFoundException("No record for uri="+uri);
+            }
+        } finally {
+            if(cursor != null) cursor.close();
         }
-        
-        File fopen;
-    	int modeBits = modeToMode(mode);
-    	// Create file
-        if (TextUtils.isEmpty(path)){
-        	Log.d(TAG,"...path was empty.");
-        	if(modeBits == ParcelFileDescriptor.MODE_READ_ONLY)
-        		throw new IllegalArgumentException("Read only open on empty File path "
-            		+"in column '" + column + "' for uri: " + uri);
-            // Open in read write with no file name
-        	long id = ContentUris.parseId(uri);
-        	File dir = getContext().getExternalFilesDir(helper.getTable());
-        	boolean created = dir.mkdirs();
-        	Log.d(TAG,"...created parent dirs: " + created);
-        	//File dir = new File(fDir,helper.getTable());
-        	dir.mkdirs();
-        	fopen = new File(dir,String.format("%s.%s", id,ext));
-        	// Update file column with absolute path
-        	ContentValues values = new ContentValues();
-        	values.put(column, fopen.getAbsolutePath());
-        	int updated = getContext().getContentResolver().update(uri, values, null,null);
-        	Log.d(TAG, "updated: " + updated + ", file: " + fopen.getAbsolutePath());
+        boolean exists = fopen.exists();
+        Log.d(TAG, "...opening file: " + fopen.getPath());
+        Log.d(TAG, "...file exists: " + exists);
+        Log.d(TAG, "...opening in mode: " + mode);
+        Log.d(TAG, "...directory: " + fopen.isDirectory());
+
+        final int modeBits = modeToMode(mode);
+        ParcelFileDescriptor pfd = ParcelFileDescriptor.open(fopen, modeBits);
+        // Check open mode and handle
+
+        if(modeBits == ParcelFileDescriptor.MODE_READ_ONLY){
+            if(!exists) throw new FileNotFoundException("File not found! " + fopen.getPath());
         } else {
-        	fopen = new File(path);
+            if (!exists) {
+                /*
+                try {
+                    boolean created = fopen.createNewFile();
+                    Log.d(TAG, "File created result:");
+                    Log.d(TAG, "...exists="+fopen.exists());
+                    Log.d(TAG, "...isFile="+fopen.isFile());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                */
+                ContentValues values = new ContentValues();
+                values.put(fileColumn, fopen.getPath());
+                int updated = update(uri, values, null, null);
+                Log.d(TAG, "updated: " + updated + ", file: " + fopen.getPath());
+            }
         }
-    	Log.d(TAG,"...opening file: " + fopen.getAbsolutePath());
-    	Log.d(TAG,"...opening in mode: " + mode);
-        return ParcelFileDescriptor.open(fopen, modeBits);
+        return pfd;
 	}
 	
 	protected final int modeToMode(String mode){
@@ -321,8 +322,7 @@ public abstract class ModelContentProvider extends ContentProvider {
 			modeBits = ParcelFileDescriptor.MODE_READ_ONLY;
 		} else if ("w".equals(mode) || "wt".equals(mode)) {
 			modeBits = ParcelFileDescriptor.MODE_WRITE_ONLY
-					| ParcelFileDescriptor.MODE_CREATE
-					| ParcelFileDescriptor.MODE_TRUNCATE;
+					| ParcelFileDescriptor.MODE_CREATE;
 		} else if ("wa".equals(mode)) {
 			modeBits = ParcelFileDescriptor.MODE_WRITE_ONLY
 					| ParcelFileDescriptor.MODE_CREATE
@@ -339,4 +339,14 @@ public abstract class ModelContentProvider extends ContentProvider {
 		}
 		return modeBits;
 	}
+
+    public File getCacheFile(Uri uri){
+        TableHelper<?> helper = getTableHelper(uri);
+        File base = helper.getDir(getContext().getCacheDir());
+        if(!base.exists()){
+            boolean created = base.mkdirs();
+        }
+        File cache = new File(base, "temp.bin");
+        return cache;
+    }
 }
