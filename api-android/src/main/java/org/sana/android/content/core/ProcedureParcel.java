@@ -44,6 +44,8 @@ import android.os.Parcelable;
 public class ProcedureParcel extends Procedure implements Parcelable {
 	public static final String TAG = ProcedureParcel.class.getSimpleName();
 
+	public ProcedureParcel(){}
+
 	/**
 	 * Constructs a new instance from a {@link android.os.Parcel Parcel}.
 	 * @param in The {@link android.os.Parcel} to read from.
