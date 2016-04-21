@@ -35,6 +35,7 @@ import java.util.UUID;
 
 import org.sana.android.content.Uris;
 import org.sana.android.provider.BaseContract;
+import org.sana.android.provider.Models;
 import org.sana.api.IModel;
 import org.sana.util.DateUtil;
 
@@ -214,6 +215,22 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
     }
 
     /**
+     *
+     * @param context
+     * @param contentUri
+     * @return
+     */
+    public static synchronized Cursor getOne(Context context, Uri contentUri)
+    {
+        Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
+        if(cursor != null && cursor.getCount() > 1){
+            cursor.close();
+            throw new IllegalArgumentException("Multiple entries found! Expecting one.");
+        }
+        return cursor;
+    }
+
+    /**
      * Convenience wrapper which returns a cursor representing a single row
      * selected a single column value.
      *
@@ -227,8 +244,8 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
             String field, Object object)
     {
         String selection = field + " = ?";
-        Cursor cursor = resolver.query(contentUri,null, selection,
-                new String[]{ object.toString() }, null);
+        Cursor cursor = resolver.query(contentUri, null, selection,
+                new String[]{object.toString()}, null);
         if(cursor != null && cursor.getCount() > 1){
             cursor.close();
             throw new IllegalArgumentException("Multiple entries found! Expecting one.");
@@ -336,7 +353,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
             selection = field + " = ?";
             selectionArgs = new String[]{ object.toString() } ;
         }
-        return resolver.query(contentUri,null, selection, selectionArgs, order);
+        return resolver.query(contentUri, null, selection, selectionArgs, order);
     }
 
     /**
@@ -357,9 +374,13 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
         StringBuilder selection = new StringBuilder();
         int index = 0;
         for(String field:fields){
-            if(index > 0)
-                selection.append(" AND ");
-            selection.append(field + " = ?");
+            if(index > 0) selection.append(" AND ");
+            // Need to handle the uuid fields explicitly using single quotes
+            if(field.equals(BaseContract.UUID)) {
+                selection.append(field + " = '?'");
+            } else {
+                selection.append(field + " = ?");
+            }
             index++;
         }
         return resolver.query(contentUri, null, selection.toString(), vals, order);
@@ -376,7 +397,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      */
     public static synchronized Cursor getAllByCreatedAsc(Uri contentUri, ContentResolver resolver)
     {
-        return ModelWrapper.getAllByFieldOrdered(contentUri, resolver, null, null, BaseContract.CREATED +" ASC");
+        return ModelWrapper.getAllByFieldOrdered(contentUri, resolver, null, null, BaseContract.CREATED + " ASC");
     }
     /**
      * Convenience wrapper to return a cursor which returns all of the entries
@@ -501,7 +522,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
         if(selection == null && selectionArgs == null
                     && !TextUtils.isEmpty(uri.getQuery())){
             String uuid = uri.getQueryParameter(BaseContract.UUID);
-            selection = BaseContract.UUID + "=?";
+            selection = BaseContract.UUID + " = '?'";
             selectionArgs = new String[]{ uuid };
         }
         try{
@@ -620,7 +641,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
         case Uris.ITEMS:
             if(uri.getQuery() != null){
                 String uuid = uri.getQueryParameter(BaseContract.UUID);
-                String selection = BaseContract.UUID + "=?";
+                String selection = BaseContract.UUID + "='?'";
                 String[] selectionArgs = new String[]{ uuid };
                 result = exists(resolver, uri, selection, selectionArgs);
                 if(!Uris.isEmpty(result)){
