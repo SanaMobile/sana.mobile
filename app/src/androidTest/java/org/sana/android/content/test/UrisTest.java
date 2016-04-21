@@ -39,6 +39,7 @@ import org.sana.android.provider.Observations;
 import org.sana.android.provider.Observers;
 import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
+import org.sana.android.provider.Updates;
 
 import android.content.ContentUris;
 import android.net.Uri;
@@ -171,4 +172,14 @@ public class UrisTest extends AndroidTestCase {
 		Log.i("UrisTest", "uri " + uri.toString());
 		assertTrue(uri.compareTo(Uri.parse(uriString)) == 0);
 	}
+
+	public void testNormalizePath(){
+        Uri uri = Uri.parse("http://localhost/mds/clients/");
+        Uri testUri = Uris.normalizePath(uri);
+        assertEquals(uri,testUri);
+        uri = Uri.parse("http://localhost/mds/clients/1");
+        testUri = Uris.normalizePath(uri);
+        assertNotSame(uri,testUri);
+        assertEquals(uri.getPath()+"/",testUri.getPath());
+    }
 }
