@@ -7,7 +7,7 @@ android {
         applicationId "org.sana.android"
         minSdkVersion 11
         targetSdkVersion 17
-        versionCode 9
+        versionCode 12
         versionName '2.1.0'
     }
     buildTypes {
