@@ -235,7 +235,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 
         mDebug = this.getResources().getBoolean(R.bool.debug);
         Locales.updateLocale(this, getString(R.string.force_locale));
-        setContentView(R.layout.main_ht);
+        setContentView(R.layout.main);
         /*
         if(mDebug)
             setContentView(R.layout.main);
@@ -613,16 +613,6 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                         .putExtra(Intents.EXTRA_SUBJECT, Uris.withAppendedUuid(Subjects.CONTENT_URI, subj))
                         .putExtra(Intents.EXTRA_OBSERVER, mObserver);
                 startActivityForResult(intent, RUN_PROCEDURE);
-                break;
-            case R.id.btn_main_unregistered_subject:
-                intent = new Intent(Intents.ACTION_RUN_PROCEDURE);
-                intent.setDataAndType(Patients.CONTENT_URI, Subjects.CONTENT_TYPE)
-                        .putExtra(Intents.EXTRA_PROCEDURE, Uris.withAppendedUuid(Procedures.CONTENT_URI,
-                                getString(R.string.procs_subject_short_form)))
-                        .putExtra(Intents.EXTRA_PROCEDURE_ID,R.raw
-                                .registration_short_ht)
-                        .putExtra(Intents.EXTRA_OBSERVER, mObserver);
-                startActivityForResult(intent, Intents.RUN_PROCEDURE);
                 break;
             case R.id.btn_exit:
                 clearCredentials();
