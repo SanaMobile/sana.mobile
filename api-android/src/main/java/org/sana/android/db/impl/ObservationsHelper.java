@@ -102,7 +102,7 @@ public class ObservationsHelper extends TableHelper<Observation>{
         if(concept.contains("AUDIO")){
             return (Build.VERSION.SDK_INT >= 10)? "m4a":"3gp";
         } else if(concept.contains("PICTURE") || concept.contains("IMAGE"))  {
-            return "png";
+            return "jpg";
         }
         return getFileExtension();
     }
