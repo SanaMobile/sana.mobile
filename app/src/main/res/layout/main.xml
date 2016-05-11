@@ -3,33 +3,94 @@
     android:id="@+id/main_root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/main_background"
+    android:background="@color/background_floating_material_dark"
     android:gravity="fill_vertical"
     android:orientation="vertical" >
+
 
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/logo"
-        android:layout_margin="12dp" />
+        android:cropToPadding="false"
+        android:adjustViewBounds="true"
+        android:maxHeight="32dip"
+        android:layout_gravity="center|left"
+        android:layout_margin="10dp"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" android:id="@+id/actions" android:layout_marginTop="5dip" android:layout_gravity="bottom">
+
+        <Button
+            android:id="@+id/btn_main_tasks"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+            android:text="@string/button_main_view_scheduled_tasks"
+            style="@style/Widget.Button.Large.Dark" />
+        <!--
+        <Button
+
+            android:id="@+id/btn_main_register_patient"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+            android:text="@string/button_main_register_patients"
+            style="@style/Widget.Button.Large.Dark" />
+        -->
+        <Button
+            android:id="@+id/btn_main_select_patient"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:drawableLeft="@drawable/ic_menu_allfriends"
+            android:text="@string/button_main_select_patient"
+            style="@style/Widget.Button.Large.Dark" />
+
+        <Button
+            android:id="@+id/btn_main_transfers"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:drawableLeft="@drawable/ic_menu_archive"
+            android:text="@string/button_main_view_prior_encounters"
+            style="@style/Widget.Button.Large.Dark"/>
 
     <Button
-        android:id="@+id/btn_main_register_patient"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="submit"
-        android:text="@string/button_main_register_patients"
-        style="@style/Widget.Button.Large.Dark" />
+            android:id="@+id/btn_training_mode"
+            style="@style/Widget.Button.Large.Dark"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:drawableLeft="@drawable/ic_menu_edit"
+            android:text="@string/button_main_training_mode"/>
+    <!--
+        <Button
+            android:id="@+id/button_main_notifications"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:drawableLeft="@drawable/ic_menu_notifications"
+            android:text="@string/button_main_view_notifications"
+            style="@style/Widget.Button.Large.Dark" />
+      -->
+        <Button
+            android:id="@+id/btn_exit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:text="@string/general_exit"
+            android:drawableLeft="@android:drawable/ic_menu_close_clear_cancel"
+            style="@style/Widget.Button.Large.Dark"/>
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_main_select_patient"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="submit"
-        android:text="@string/button_main_select_patient"
-        style="@style/Widget.Button.Large.Dark" />
 
+    <!--
     <Button
         android:id="@+id/btn_main_procedures"
         android:layout_width="fill_parent"
@@ -39,71 +100,10 @@
         style="@style/Widget.Button.Large.Dark" />
 
     <Button
-        android:id="@+id/btn_main_transfers"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="submit"
-        android:text="@string/button_main_view_prior_encounters"
-        style="@style/Widget.Button.Large.Dark" />
-
-    <!--
-    <fragment
-        android:id="@+id/fragment1"
-        android:name="org.sana.android.fragment.AuthenticationDialogFragment"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
-
-    <fragment
-        android:id="@+id/fragment2"
-        android:name="org.sana.android.activity.NavigationActivity"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/fragment1" />
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/sana_logo" />
-
-    <Button
         android:id="@+id/btn_main_tasks"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_main_view_scheduled_tasks" />
-
-    <Button
-        android:id="@+id/btn_view_patients"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_main_view_patients" />
-
-    <Button
-        android:id="@+id/btn_main_procedure"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_main_new_encounter" />
-
-    <Button
-        android:id="@+id/btn_main_transfers"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_main_view_prior_encounters" />
-
-    <Button
-        android:id="@+id/btn_main_notifications"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_main_view_notifications" />
     -->
-
-    <Button
-        android:id="@+id/button_main_notifications"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="submit"
-        android:text="@string/button_main_view_notifications"
-        style="@style/Widget.Button.Large.Dark" />
 
 </LinearLayout>
