@@ -29,6 +29,7 @@ package org.sana.android.fragment;
 
 import org.sana.R;
 import org.sana.android.content.Intents;
+import org.sana.android.db.ImageProvider;
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.provider.Observations;
@@ -74,10 +75,7 @@ LoaderManager.LoaderCallbacks<Cursor>
 
 		/**
 		 * @param context
-		 * @param layout
 		 * @param c
-		 * @param from
-		 * @param to
 		 * @param flags
 		 */
 		public ObservationCursorAdapter(Activity context, Cursor c,
@@ -113,8 +111,13 @@ LoaderManager.LoaderCallbacks<Cursor>
 				// Only show the first one here
 				if(images.length >= 1){
 					Uri image = ContentUris.withAppendedId(ImageSQLFormat.CONTENT_URI, Long.valueOf(images[0]));
-					img.setImageURI(image);
-					img.setTag(image);
+					Uri uri = ImageProvider.getThumbUri(image);
+                    try {
+						img.setImageURI(uri);
+						img.setTag(image);
+					} catch (OutOfMemoryError e){
+						e.printStackTrace();
+					}
 				}
 			} else {
 				img.setVisibility(View.GONE);
