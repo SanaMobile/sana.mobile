@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- set to false to prevent default user on login screen -->
-    <bool name="debug_credentials">true</bool>
-    <bool name="debug">true</bool>
+    <bool name="debug_credentials">false</bool>
+    <bool name="debug">false</bool>
     <bool name="training_mode">false</bool>
 </resources>
