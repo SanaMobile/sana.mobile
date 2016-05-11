@@ -214,7 +214,7 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 					break;
 				*/
 				case PICTURE:
-					mData = el.save(getActivity(), encounter, subject);
+					//mData = el.save(getActivity(), encounter, subject);
 					saveOrUpdateListAnswers(encounter, subject, el);
 					break;
 				default:
@@ -225,7 +225,7 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 					break;
 				}
 
-			Log.d(TAG, "saved --> " + mData);
+			//Log.d(TAG, "saved --> " + mData);
 			Log.d(TAG, String.format(
 					"{ 'id': %s, 'concept': %s, 'value': %s", el.getId(),
 					el.getConcept(), el.getAnswer()));
@@ -280,7 +280,7 @@ public class ProcedureRunnerFragment extends BaseRunnerFragment {
 						new String[] { Observations.Contract._ID },
 						Observations.Contract.ID + "= ? AND "
 								+ Observations.Contract.ENCOUNTER
-								+ "= ? ",
+								+ "= '?' ",
 						new String[] { subId, encounter }, null);
 				if (c != null && c.moveToFirst()) {
 					exists = true;
