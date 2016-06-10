@@ -32,6 +32,7 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.0'
     compile 'commons-codec:commons-codec:1.5'
     compile 'org.apache.httpcomponents:httpmime:4.2.3'
+    compile 'me.dm7.barcodescanner:zxing:1.8.4'
     compile project(':api')
     compile project(':api-android')
 }
