@@ -221,13 +221,13 @@ public class CustomDatePicker extends FrameLayout {
             }
 
             if (!quoted) {
-                if (c == DateFormat.DATE && !didDay) {
+                if (c == java.text.DateFormat.DATE_FIELD && !didDay) {
                     parent.addView(mDayPicker);
                     didDay = true;
-                } else if ((c == DateFormat.MONTH || c == 'L') && !didMonth) {
+                } else if ((c == java.text.DateFormat.MONTH_FIELD || c == 'L') && !didMonth) {
                     parent.addView(mMonthPicker);
                     didMonth = true;
-                } else if (c == DateFormat.YEAR && !didYear) {
+                } else if (c == java.text.DateFormat.YEAR_FIELD && !didYear) {
                     parent.addView (mYearPicker);
                     didYear = true;
                 }
