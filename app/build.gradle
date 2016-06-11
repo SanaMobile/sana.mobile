@@ -1,14 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "org.sana.android"
         minSdkVersion 11
         targetSdkVersion 17
         versionCode 12
         versionName '2.1.0'
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -25,14 +27,19 @@ android {
 }
 
 dependencies {
+    compile project(':api')
+    compile project(':api-android')
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    androidTestCompile 'com.android.support:support-annotations:23.4.0'
+    androidTestCompile 'com.android.support.test:runner:0.4.1'
+    androidTestCompile 'com.android.support.test:rules:0.4.1'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.google.code.gson:gson:2.2.+'
-    compile 'com.android.support:support-v4:21.0.+'
     compile 'org.apache.commons:commons-lang3:3.0'
     compile 'commons-codec:commons-codec:1.5'
     compile 'org.apache.httpcomponents:httpmime:4.2.3'
     compile 'me.dm7.barcodescanner:zxing:1.8.4'
-    compile project(':api')
-    compile project(':api-android')
 }
