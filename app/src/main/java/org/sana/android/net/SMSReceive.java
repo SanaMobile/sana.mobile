@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
@@ -277,8 +279,7 @@ public class SMSReceive extends BroadcastReceiver {
 	private void showNotification(Context c, String title, String textMessage, 
 			Intent viewIntent) {
 		// Look up the notification manager service
-		NotificationManager nm = (NotificationManager) c
-				.getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManagerCompat nm = NotificationManagerCompat.from(c);
 
 		// The PendingIntent launches the Notification Viewer for the particular
 		// alert
@@ -287,23 +288,19 @@ public class SMSReceive extends BroadcastReceiver {
 
 		// The ticker text
 		String tickerText = "PATIENT DIAGNOSIS RECEIVED";
+		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(c);
+		notificationBuilder.setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setTicker(tickerText)
+                .setWhen(System.currentTimeMillis())
+                .setVibrate(new long[] { 100, 200, 100, 300 });
 
-		// Construct the Notification object.
-		Notification notif = new Notification(R.drawable.ic_notification, tickerText,
-				System.currentTimeMillis());
-
-		// Set the info for the views that show in the notification panel
-		notif.setLatestEventInfo(c, title, textMessage, contentIntent);
-
-		// After a 100ms delay, vibrate for 200ms, pause for 100 ms and
-		// then vibrate for 300ms.
-		notif.vibrate = new long[] { 100, 200, 100, 300 };
 
 		// Use this line if you want a new persistent notification each time:
 		// nm.notify((int)Math.round((Math.random() * 32000)), notif);
 
 		// Or use this to overwrite the last notification each time:
 		nm.cancelAll();
-		nm.notify(1, notif);
+		nm.notify(1, notificationBuilder.build());
 	}
 }
