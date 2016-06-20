@@ -26,5 +26,4 @@ dependencies {
     compile project(':api')
     compile 'com.android.support:support-v4:23.4.0'
     compile 'org.apache.httpcomponents:httpcore:4.3.3'
-    //compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
 }
