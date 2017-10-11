@@ -4,26 +4,26 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.3.3'
     }
 }
 apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '25.0.0'
     compileOptions{
         encoding "UTF-8"
     }
     useLibrary 'org.apache.http.legacy'
     defaultConfig{
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 17
     }
 }
 
 dependencies {
     compile project(':api')
-    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.android.support:support-v4:25.2.0'
     compile 'org.apache.httpcomponents:httpcore:4.3.3'
 }
