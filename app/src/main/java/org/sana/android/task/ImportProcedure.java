@@ -45,7 +45,8 @@ public class ImportProcedure extends AsyncTask<Context, Void, Integer> {
 		try{
 			String[] f = location.split("//");
 			fname = f[f.length - 1];
-			result = SanaUtil.insertProcedureFromSd(c, location);
+			SanaUtil.insertProcedureFromSd(c, location);
+			result = 0;
 		} catch (IOException e){
 			// FIle open errors
             err = "Error opening file: " + fname;

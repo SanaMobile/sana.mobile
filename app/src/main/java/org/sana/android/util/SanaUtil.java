@@ -271,28 +271,22 @@ public class SanaUtil {
      * @throws ProcedureParseException
      * @throws SAXException
      * @throws ParserConfigurationException */
-    public static Integer insertProcedureFromSd(final Context ctx, String location)
-            throws IOException, ParserConfigurationException, SAXException,
-            ProcedureParseException
+    public static Procedure insertProcedureFromSd(final Context ctx, String location)
+            throws IOException, ParserConfigurationException, SAXException, ProcedureParseException
     {
-        String title = SanaUtil.randomString("Procedure ", 10);
-        String author = "";
-        String guid = "";
-        String version = "1.0";
-        String xmlFullProcedure;
         Log.v(TAG, location);
 
         FileInputStream rs = new FileInputStream(location);
         byte[] data = new byte[rs.available()];
         rs.read(data);
 
-        xmlFullProcedure = new String(data);
+        String xmlFullProcedure = new String(data);
 
         Procedure p = Procedure.fromXMLString(xmlFullProcedure);
-        title = p.getTitle();
-        author = p.getAuthor();
-        guid = p.getGuid();
-        version = p.getVersion();
+        String title = p.getTitle();
+        String author = p.getAuthor();
+        String guid = p.getGuid();
+        String version = p.getVersion();
 
         final ContentValues cv = new ContentValues();
         cv.put(Procedures.Contract.TITLE, title);
@@ -304,19 +298,17 @@ public class SanaUtil {
         if (searchDuplicateTitleAuthor(ctx, title, author)) {
             Log.i(TAG, "Duplicate found! Updating...");
             // TODO Versioning
-            ctx.getContentResolver().update(p.getInstanceUri(),
-                    cv, 
-                    "(title LIKE\"" + title + "\")", 
-                    null);
+            ctx.getContentResolver().update(
+                Procedures.CONTENT_URI, cv,
+                "(title LIKE ?)", new String[]{ title }
+            );
             Log.i(TAG, "Updated");
-            return 0;
         } else {
             Log.i(TAG, "Inserting record.");
-            ctx.getContentResolver().insert(
-                    Procedures.CONTENT_URI, cv);
+            ctx.getContentResolver().insert(Procedures.CONTENT_URI, cv);
+            Log.i(TAG, "Acquired procedure record from local cache.");
         }
-        Log.i(TAG, "Acquired procedure record from local cache.");
-        return 0;
+        return p;
     }
 
     private static boolean searchDuplicateTitleAuthor(Context ctx, String title,

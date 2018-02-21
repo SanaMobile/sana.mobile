@@ -53,7 +53,8 @@ public class ImportProcedureAll extends AsyncTask<Context, Void, Integer> {
 		Context c = params[0];
 		try {
 			for (String location:locations){
-				switch(SanaUtil.insertProcedureFromSd(c, path + location)){
+				SanaUtil.insertProcedureFromSd(c, path + location);
+				switch(0){
 				case 0:
 					completed +=1;
 					break;
