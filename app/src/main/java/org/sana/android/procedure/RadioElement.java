@@ -141,8 +141,7 @@ public class RadioElement extends SelectionElement {
         String valuesStr = SanaUtil.getNodeAttributeOrDefault(node, "values",
                 choicesStr);
         return new RadioElement(id, question, answer, concept, figure, audio, 
-        		choicesStr.split(SelectionElement.TOKEN_DELIMITER),
-                valuesStr.split(SelectionElement.TOKEN_DELIMITER));
+        		splitChoices(choicesStr), splitChoices(valuesStr));
     }
     
     

@@ -105,8 +105,7 @@ public class SelectElement extends SelectionElement {
         String valuesStr = SanaUtil.getNodeAttributeOrDefault(node, "values",
                 choicesStr);
         return new SelectElement(id, question, answer, concept, figure, audio, 
-        		choicesStr.split(SelectionElement.TOKEN_DELIMITER),
-                valuesStr.split(SelectionElement.TOKEN_DELIMITER)
+        		splitChoices(choicesStr), splitChoices(valuesStr)
         );
     }
 }
