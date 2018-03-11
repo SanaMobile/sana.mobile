@@ -5,6 +5,8 @@ android {
     buildToolsVersion "25.0.0"
     compileOptions {
         encoding "UTF-8"
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
     useLibrary 'org.apache.http.legacy'
     defaultConfig {

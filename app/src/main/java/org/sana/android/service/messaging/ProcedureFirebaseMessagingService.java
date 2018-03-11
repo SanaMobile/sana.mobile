@@ -147,17 +147,16 @@ public class ProcedureFirebaseMessagingService extends FirebaseMessagingService 
 
         @Override
         protected void onPostExecute(final Procedure procedure) {
-            new Handler(Looper.getMainLooper())
-                .post(new Runnable() {
-                    @Override
-                    public void run() {
+            if (procedure != null) {
+                new Handler(Looper.getMainLooper())
+                    .post(() ->
                         Toast.makeText(
                             applicationContext.get(),
                             String.format("Procedure updated: %s", procedure.getTitle()),
                             Toast.LENGTH_LONG
-                        ).show();
-                    }
-                });
+                        ).show()
+                    );
+            }
         }
     }
 }

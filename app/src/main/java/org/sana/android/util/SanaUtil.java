@@ -285,22 +285,21 @@ public class SanaUtil {
         Procedure p = Procedure.fromXMLString(xmlFullProcedure);
         String title = p.getTitle();
         String author = p.getAuthor();
-        String guid = p.getGuid();
+        String uuid = p.getGuid();
         String version = p.getVersion();
 
         final ContentValues cv = new ContentValues();
         cv.put(Procedures.Contract.TITLE, title);
         cv.put(Procedures.Contract.AUTHOR, author);
-        cv.put(Procedures.Contract.UUID, guid);
+        cv.put(Procedures.Contract.UUID, uuid);
         cv.put(Procedures.Contract.VERSION, version);
         cv.put(Procedures.Contract.PROCEDURE, xmlFullProcedure);
 
-        if (searchDuplicateTitleAuthor(ctx, title, author)) {
+        if (existsDuplicateUuid(ctx, uuid)) {
             Log.i(TAG, "Duplicate found! Updating...");
-            // TODO Versioning
             ctx.getContentResolver().update(
                 Procedures.CONTENT_URI, cv,
-                "(title LIKE ?)", new String[]{ title }
+                "uuid = ?", new String[]{uuid}
             );
             Log.i(TAG, "Updated");
         } else {
@@ -309,6 +308,21 @@ public class SanaUtil {
             Log.i(TAG, "Acquired procedure record from local cache.");
         }
         return p;
+    }
+
+    private static boolean existsDuplicateUuid(Context ctx, String uuid) {
+        Cursor cursor = null;
+        try {
+            cursor = ctx.getContentResolver().query(
+                Procedures.CONTENT_URI, new String[] {Procedures.Contract._ID},
+                "uuid = ?", new String[] {uuid}, null
+            );
+            return cursor != null && cursor.getCount() > 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     private static boolean searchDuplicateTitleAuthor(Context ctx, String title,
