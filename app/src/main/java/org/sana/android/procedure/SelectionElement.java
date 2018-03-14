@@ -1,5 +1,6 @@
 package org.sana.android.procedure;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import android.text.TextUtils;
@@ -17,7 +18,8 @@ import android.widget.Adapter;
  */
 public abstract class SelectionElement extends ProcedureElement {
     protected static final String TAG = SelectionElement.class.getSimpleName();
-    public static final String TOKEN_DELIMITER = ";";
+    private static final String TOKEN_DELIMITER = ";";
+    private static final String ESCAPED_DELIMITER = "&semi&";
 
     protected String[] labels;
     protected String[] values;
@@ -56,8 +58,8 @@ public abstract class SelectionElement extends ProcedureElement {
      */
     @Override
     protected void appendOptionalAttributes(StringBuilder sb){
-        sb.append("\" choices=\"" + TextUtils.join(TOKEN_DELIMITER, labels));
-        sb.append("\" values=\"" + TextUtils.join(TOKEN_DELIMITER, values));
+        sb.append("\" choices=\"").append(joinChoices(labels));
+        sb.append("\" values=\"").append(joinChoices(values));
     }
 
     /**
@@ -141,5 +143,21 @@ public abstract class SelectionElement extends ProcedureElement {
         valueToLabelMap = new LinkedHashMap<String,String>(values.length);
         labelToValueMap = new LinkedHashMap<String,String>(values.length);
         mapValues(values,labels);
+    }
+
+    public static String[] splitChoices(String str) {
+        ArrayList<String> a = new ArrayList<>();
+        for (String s : str.split(TOKEN_DELIMITER)) {
+            a.add(s.replace(ESCAPED_DELIMITER, TOKEN_DELIMITER));
+        }
+        return a.toArray(new String[0]);
+    }
+
+    public static String joinChoices(String[] choices) {
+        ArrayList<String> a = new ArrayList<>();
+        for (String c : choices) {
+            a.add(c.replace(TOKEN_DELIMITER, ESCAPED_DELIMITER));
+        }
+        return TextUtils.join(TOKEN_DELIMITER, a);
     }
 }

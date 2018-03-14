@@ -5,6 +5,7 @@ import org.sana.android.procedure.MultiSelectElement;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.sana.android.procedure.ProcedureElement.ElementType;
+import org.sana.android.procedure.SelectionElement;
 
 import android.util.Log;
 
@@ -74,7 +75,7 @@ public class Criterion {
             return false;
         }           
         // check if it is empty
-        if ((userVal == "") || (userVal== null)) {
+        if (userVal == null || userVal.length() == 0) {
             // empty user response, lets play it safe and show the page
             return false;
         }
@@ -83,7 +84,7 @@ public class Criterion {
             // We (arbitrarily) handle MultiSelect by seeing if 
             // ANY selection in the "answer" matches "val" 
             // if so, then it evaluates as true
-            String[] vals = userVal.split(MultiSelectElement.TOKEN_DELIMITER);
+            String[] vals = SelectionElement.splitChoices(userVal);
             for (String s : vals) {
                 if (criterionMetHelper(s))
                     return true;

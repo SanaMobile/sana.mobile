@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "155261378226",
+    "firebase_url": "https://sanamobile-1f7b1.firebaseio.com",
+    "project_id": "sanamobile-1f7b1",
+    "storage_bucket": "sanamobile-1f7b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155261378226:android:42450ee181c14d6f",
+        "android_client_info": {
+          "package_name": "org.sana.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155261378226-uirj6nbe81jalvg2a6r997p4kk760hq2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSsI8HyGjdw8Y5I7t0p5_mZQsVWO9qIko"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

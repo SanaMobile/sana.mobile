@@ -469,7 +469,8 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             // RELOAD Database
             //preferences.edit().clear().commit();
             //PreferenceManager.setDefaultValues(this, R.xml.network_settings,true);
-            doClearDatabase(new Uri[]{ Procedures.CONTENT_URI });
+            // TODO disabled clearing database on app restart (why was this here in the first place?)
+//            doClearDatabase(new Uri[]{ Procedures.CONTENT_URI });
             preferences.edit().putBoolean(Constants.DB_INIT, true).commit();
 
         }

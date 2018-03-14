@@ -2,6 +2,7 @@ package org.sana.android.procedure;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -50,10 +51,7 @@ public class MultiSelectElement extends SelectionElement {
         	answer = "";
         // we've got a problem if there are TOKEN_DELIMITERs in the value!
         // since getAnswer separates responses using TOKEN_DELIMITER
-        String[] values = answer.split(TOKEN_DELIMITER);
-        for(String val : values) {
-            selectedSet.add(val);
-        }
+        Collections.addAll(selectedSet, splitChoices(answer));
         
         ll.setOrientation(LinearLayout.VERTICAL);
         cblist = new ArrayList<CheckBox>();
@@ -92,21 +90,17 @@ public class MultiSelectElement extends SelectionElement {
     @Override
     public String getAnswer() {
         Log.i(TAG,"["  + id +"]getAnswer()");
-        String val = "";
-        if(!isViewActive())
-            val = (answer == null)?"":answer;
-        else {
-            boolean any = false;
-            // loop over list and add to answer if checked
+        String val;
+        if (!isViewActive()) {
+            val = answer == null ? "" : answer;
+        } else {
+            ArrayList<String> checked = new ArrayList<>();
             for (CheckBox c : cblist) {
                 if (c.isChecked()) {
-                    val += c.getTag() + TOKEN_DELIMITER;
-                    any = true;
+                    checked.add(c.getTag().toString());
                 }
             }
-            //Remove trailing
-            if(any)
-                val = val.substring(0, val.length()-1);
+            val = joinChoices(checked.toArray(new String[0]));
         }
         Log.d(TAG, "...returning " + val);
         return val;
@@ -137,8 +131,8 @@ public class MultiSelectElement extends SelectionElement {
         		"");
         String valuesStr = SanaUtil.getNodeAttributeOrDefault(node, "values",
                 choicesStr);
-        return new MultiSelectElement(id, question, answer, concept, figure, 
-        		audio, choicesStr.split(SelectionElement.TOKEN_DELIMITER),
-                valuesStr.split(SelectionElement.TOKEN_DELIMITER));
+
+        return new MultiSelectElement(id, question, answer, concept, figure,
+        		audio, splitChoices(choicesStr),splitChoices(valuesStr));
     }
 }
