@@ -71,8 +71,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-
 /**
  * Main Activity which handles user authentication and initializes services that
  * Sana uses.
@@ -112,7 +110,6 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        //Log.i(TAG, "THe firebase instance token maybe: " + FirebaseInstanceId.getInstance().getToken());
         Logf.I(TAG, "onActivityResult()", ((resultCode == RESULT_OK)? "OK":"CANCELED" ));
         Uri uri = Uri.EMPTY;
         switch(resultCode){
