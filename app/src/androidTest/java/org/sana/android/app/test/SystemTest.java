@@ -30,11 +30,8 @@ package org.sana.android.app.test;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.sana.android.content.Intents;
 import org.sana.android.provider.Concepts;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Events;

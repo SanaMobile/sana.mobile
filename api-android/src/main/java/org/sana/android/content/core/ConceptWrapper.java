@@ -27,14 +27,11 @@
  */
 package org.sana.android.content.core;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.Iterator;
 
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.provider.Concepts;
 import org.sana.api.IConcept;
-import org.sana.util.DateUtil;
 
 import android.content.ContentResolver;
 import android.database.Cursor;

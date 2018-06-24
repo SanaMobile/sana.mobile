@@ -31,18 +31,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.Encounters;
-import org.sana.android.provider.Patients;
 import org.sana.core.Encounter;
-import org.sana.util.UUIDUtil;
+
 /**
  * A database table helper for a table of encounters.
  * 

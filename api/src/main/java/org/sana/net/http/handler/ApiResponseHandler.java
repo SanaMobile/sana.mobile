@@ -13,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-import org.sana.net.Response;
 import org.sana.net.ResponseException;
 
 public abstract class ApiResponseHandler<T> implements ResponseHandler<T>{

@@ -28,7 +28,6 @@
 package org.sana.net.http;
 
 import java.io.InputStream;
-import java.security.KeyStore;
 
 import org.apache.http.client.HttpClient;
 

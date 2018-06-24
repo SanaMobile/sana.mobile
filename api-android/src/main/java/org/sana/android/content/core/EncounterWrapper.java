@@ -6,7 +6,6 @@ package org.sana.android.content.core;
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.provider.Concepts;
 import org.sana.android.provider.Encounters;
-import org.sana.api.IConcept;
 import org.sana.api.IEncounter;
 import org.sana.api.IProcedure;
 import org.sana.api.ISubject;

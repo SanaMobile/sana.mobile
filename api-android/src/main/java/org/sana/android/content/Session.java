@@ -31,21 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.sana.android.provider.Concepts;
-import org.sana.android.provider.Encounters;
-import org.sana.android.provider.Events;
-import org.sana.android.provider.Instructions;
-import org.sana.android.provider.Notifications;
-import org.sana.android.provider.Observations;
-import org.sana.android.provider.Observers;
-import org.sana.android.provider.Procedures;
-import org.sana.android.provider.Subjects;
-import org.sana.android.util.SessionUtil;
-import org.sana.util.UUIDUtil;
-
 import android.net.Uri;
 import android.os.Parcel;
-import android.os.ParcelUuid;
 import android.os.Parcelable;
 import android.text.TextUtils;
 

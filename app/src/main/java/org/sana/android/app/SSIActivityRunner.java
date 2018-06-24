@@ -39,7 +39,6 @@ import org.sana.android.util.Logf;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.text.TextUtils;
 
 /**
  * This is the default workflow which mimics the behavior of the version 1.x 

@@ -30,7 +30,6 @@ package org.sana.android.task;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -42,7 +41,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-import org.sana.R;
 import org.sana.net.Response;
 
 import com.google.gson.Gson;
@@ -50,10 +48,8 @@ import com.google.gson.reflect.TypeToken;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Messenger;
 import android.util.Log;
 
 /**

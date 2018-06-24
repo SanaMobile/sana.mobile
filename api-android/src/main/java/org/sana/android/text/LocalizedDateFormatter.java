@@ -3,9 +3,6 @@ package org.sana.android.text;
 import android.content.Context;
 
 import org.joda.time.DateTime;
-import org.sana.android.app.Locales;
-import org.sana.android.util.Dates;
-import org.sana.api.R;
 
 import java.util.Date;
 

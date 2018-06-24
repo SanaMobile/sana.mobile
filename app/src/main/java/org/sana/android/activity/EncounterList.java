@@ -1,66 +1,24 @@
 package org.sana.android.activity;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.LinkedList;
 import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import org.sana.R;
 import org.sana.android.app.Locales;
 import org.sana.android.content.Intents;
-import org.sana.android.content.Uris;
-import org.sana.android.db.EventDAO;
-import org.sana.android.db.ModelWrapper;
-import org.sana.android.db.SanaDB.ImageSQLFormat;
 import org.sana.android.fragment.EncounterListFragment;
-import org.sana.android.net.MDSInterface;
 import org.sana.android.provider.Encounters;
-import org.sana.android.provider.Observations;
-import org.sana.android.provider.Patients;
-import org.sana.android.provider.Subjects;
-import org.sana.android.provider.Procedures;
-import org.sana.android.provider.Events.EventType;
-import org.sana.android.service.BackgroundUploader;
-import org.sana.android.service.QueueManager;
-import org.sana.android.service.ServiceConnector;
-import org.sana.android.service.ServiceListener;
-import org.sana.android.util.SanaUtil;
-import org.sana.api.IModel;
-import org.sana.api.task.Status;
 import org.sana.net.Response;
-import org.sana.util.UUIDUtil;
 
-import android.app.ListActivity;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 

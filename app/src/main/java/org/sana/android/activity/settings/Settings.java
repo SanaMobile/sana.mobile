@@ -4,16 +4,13 @@ package org.sana.android.activity.settings;
 import org.sana.R;
 import org.sana.android.Constants;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 
 /**
  * Creates the settings window for specifying the Sana application. If a user

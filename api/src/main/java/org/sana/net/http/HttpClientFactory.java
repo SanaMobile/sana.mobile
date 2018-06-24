@@ -28,7 +28,6 @@
 package org.sana.net.http;
 
 import java.io.File;
-import java.io.InputStream;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -38,7 +37,6 @@ import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;

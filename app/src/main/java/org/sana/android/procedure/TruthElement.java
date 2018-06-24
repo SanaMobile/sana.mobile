@@ -1,16 +1,12 @@
 package org.sana.android.procedure;
 
 
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.util.Log;
 import android.widget.LinearLayout;import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import org.sana.R;
 import org.w3c.dom.Node;

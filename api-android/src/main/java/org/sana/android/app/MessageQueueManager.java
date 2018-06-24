@@ -3,11 +3,6 @@ package org.sana.android.app;
 import java.util.Collection;
 import java.util.PriorityQueue;
 
-import org.sana.android.provider.Encounters;
-import org.sana.net.Response;
-import org.sana.net.Response.Code;
-
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;

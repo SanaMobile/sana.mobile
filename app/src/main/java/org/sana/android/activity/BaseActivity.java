@@ -7,7 +7,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;import android.content.SharedPreferences;
+import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.ApplicationInfo;
@@ -33,7 +33,6 @@ import org.sana.android.content.Uris;
 import org.sana.android.fragment.AuthenticationDialogFragment.AuthenticationDialogListener;
 import org.sana.android.util.Logf;
 import org.sana.android.util.UriUtil;
-import org.sana.net.Response;
 
 /**
  * Base class that contains basic functionalities and behaviors that all

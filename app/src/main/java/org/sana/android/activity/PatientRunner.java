@@ -2,37 +2,20 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.Constants;
 import org.sana.android.app.Locales;
-import org.sana.android.content.DispatchResponseReceiver;
-import org.sana.android.content.Uris;
-import org.sana.android.content.core.PatientWrapper;
-import org.sana.android.db.PatientInfo;
 import org.sana.android.fragment.PatientRunnerFragment;
-import org.sana.android.media.EducationResource;
-import org.sana.android.net.MDSInterface;
-import org.sana.android.provider.Encounters;
-import org.sana.android.provider.Events;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Subjects;
-import org.sana.android.service.impl.DispatchService;
-import org.sana.android.util.UserDatabase;
-import org.sana.core.Patient;
 import org.sana.net.Response;
 
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PatternMatcher;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-
-import java.io.UnsupportedEncodingException;
 
 /** Activity for creating a new patient. Each question is wrapped in a container
  * which presents buttons for paging.

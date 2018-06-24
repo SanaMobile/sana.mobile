@@ -35,7 +35,6 @@ import org.sana.android.util.Logf;
 
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 /**
  * 

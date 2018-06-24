@@ -5,7 +5,6 @@ import java.util.PriorityQueue;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
-import org.sana.android.net.MDSInterface;
 import org.sana.android.net.MDSInterface2;
 import org.sana.android.util.SanaUtil;
 

@@ -28,10 +28,8 @@
 package org.sana.android.net;
 
 import org.apache.http.Header;
-import org.apache.http.HttpRequest;
 import org.apache.http.RequestLine;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.w3c.dom.Entity;
 
 import android.os.Bundle;
 import android.os.Parcel;

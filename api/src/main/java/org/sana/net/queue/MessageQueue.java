@@ -30,14 +30,8 @@
  */
 package org.sana.net.queue;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static java.lang.Long.SIZE;

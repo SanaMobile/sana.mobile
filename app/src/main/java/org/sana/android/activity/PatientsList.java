@@ -5,18 +5,13 @@ import org.sana.R;
 import org.sana.android.Constants;
 import org.sana.android.app.Locales;
 import org.sana.android.app.Preferences;
-import org.sana.android.content.DispatchResponseReceiver;
 import org.sana.android.content.Intents;
 import org.sana.android.content.Uris;
-import org.sana.android.content.core.PatientWrapper;
-import org.sana.android.db.ModelWrapper;
 import org.sana.android.fragment.PatientListFragment;
 import org.sana.android.fragment.PatientListFragment.OnPatientSelectedListener;
-import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
-import org.sana.android.service.impl.DispatchService;
 import org.sana.android.util.SanaUtil;
 import org.sana.android.widget.ScrollCompleteListener;
 import org.sana.net.Response;
@@ -32,9 +27,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
@@ -42,7 +35,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 /** Activity for creating new and display existing patients. The resulting
  * patient selected or created, will be returned to the calling Activity.

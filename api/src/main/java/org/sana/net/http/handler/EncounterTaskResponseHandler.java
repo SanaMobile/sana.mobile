@@ -1,6 +1,5 @@
 package org.sana.net.http.handler;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 import java.util.Collection;

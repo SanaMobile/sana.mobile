@@ -1,23 +1,15 @@
 package org.sana.android.procedure;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.sana.R;
 import org.sana.android.util.SanaUtil;
 import org.w3c.dom.Node;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Xml;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;

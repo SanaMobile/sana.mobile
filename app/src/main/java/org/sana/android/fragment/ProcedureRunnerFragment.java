@@ -13,12 +13,10 @@ import org.sana.android.db.EventDAO;
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.SanaDB;
 import org.sana.android.procedure.ProcedureElement;
-import org.sana.android.provider.BaseContract;
 import org.sana.android.provider.Encounters;
 import org.sana.android.provider.Events.EventType;
 import org.sana.android.provider.Observations;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -26,7 +24,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 

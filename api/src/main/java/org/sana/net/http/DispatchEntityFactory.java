@@ -28,7 +28,6 @@
 package org.sana.net.http;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
