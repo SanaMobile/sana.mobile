@@ -56,9 +56,9 @@ public class EncounterTasks {
 	
 	private EncounterTasks(){}
 	
-	public static interface Contract extends Tasks.Contract<EncounterTask>{
-		public static final String ENCOUNTER = "encounter";
-		public static final String PROCEDURE = "procedure";
-		public static final String SUBJECT = "subject";
+	public interface Contract extends Tasks.Contract<EncounterTask>{
+		String ENCOUNTER = "encounter";
+		String PROCEDURE = "procedure";
+		String SUBJECT = "subject";
 	}
 }

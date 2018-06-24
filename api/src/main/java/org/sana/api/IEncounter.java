@@ -38,16 +38,16 @@ public interface IEncounter extends IModel {
 	/**
 	 * @return the subject
 	 */
-	public abstract ISubject getSubject();
+	ISubject getSubject();
 
 	/**
 	 * @return the procedure
 	 */
-	public abstract IProcedure getProcedure();
+	IProcedure getProcedure();
 
 	/**
 	 * @return the observer
 	 */
-	public abstract Observer getObserver();
+	Observer getObserver();
 
 }

@@ -62,20 +62,20 @@ public class Observers{
 	 * 
 	 * @author Sana Development
 	 */
-	public static interface Contract extends BaseContract<Observer>{
+	public interface Contract extends BaseContract<Observer>{
 		/** The author of the procedure. */
-		public static final String USERNAME = "username";
+		String USERNAME = "username";
 
 		/** The unique ID of the procedure. */
-		public static final String PASSWORD = "password";
+		String PASSWORD = "password";
 
 		/** The raw procedure text. */
-		public static final String ROLE = "role";
+		String ROLE = "role";
 		
 		/** Primary contact information for this person */
-		public static final String CONTACT1 = "contact1";
+		String CONTACT1 = "contact1";
 
 		/** Secondary contact information for this person */
-		public static final String CONTACT2 = "contact2";
+		String CONTACT2 = "contact2";
 	}
 }

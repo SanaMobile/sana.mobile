@@ -36,22 +36,22 @@ public interface IProcedure extends IModel{
 	/**
 	 * @return the author
 	 */
-	public abstract String getAuthor();
+	String getAuthor();
 
 	/**
 	 * @return the version
 	 */
-	public abstract String getVersion();
+	String getVersion();
 
 	/**
 	 * @return the description
 	 */
-	public abstract String getDescription();
+	String getDescription();
 
 	/**
 	 * Gets the source uri or file path String. 
 	 * @return the src
 	 */
-	public abstract String getSrc();
+	String getSrc();
 
 }

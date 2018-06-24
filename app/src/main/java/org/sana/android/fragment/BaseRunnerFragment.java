@@ -115,7 +115,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
     public static final int FLAG_OBJECT_PERSISTED = 2;
 
 
-    public static interface ProcedureListener{
+    public interface ProcedureListener{
         void onProcedureComplete(Intent data);
         
         void onProcedureCancelled(String message);
@@ -171,7 +171,7 @@ public abstract class BaseRunnerFragment extends BaseFragment implements View.On
         Log.i(getClassTag(), "onActivityCreated()");
         super.onActivityCreated(instance);
         
-        try {;
+        try {
             //mConnector.setServiceListener(this);
             //mConnector.connect(getActivity());
         } catch (Exception e) {

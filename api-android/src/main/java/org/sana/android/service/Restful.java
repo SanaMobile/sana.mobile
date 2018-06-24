@@ -46,7 +46,7 @@ public interface Restful<T extends Parcelable> {
 	 * @return The uuid if successful
 	 * @throws IllegalArgumentException if t is not valid for creation. 
 	 */
-	public ParcelUuid create(T t);
+	ParcelUuid create(T t);
 	
 	/**
 	 * Fetches a unique object by uuid.
@@ -54,7 +54,7 @@ public interface Restful<T extends Parcelable> {
 	 * @param uuid The uuid of the object to fetch.
 	 * @return The Parcelable representation of the object.
 	 */
-	public T read(ParcelUuid uuid);
+	T read(ParcelUuid uuid);
 	
 	/**
 	 * Updates the an object whose uuid matches that of the parameter t.
@@ -63,7 +63,7 @@ public interface Restful<T extends Parcelable> {
 	 * @return true if successful
 	 * @throws IllegalArgumentException if t is not valid for updating. 
 	 */
-	public boolean update(T t);
+	boolean update(T t);
 	
 	/**
 	 * Deletes an object by uuid
@@ -71,5 +71,5 @@ public interface Restful<T extends Parcelable> {
 	 * 
 	 * @return true if successful
 	 */
-	public boolean delete(ParcelUuid uuid);
+	boolean delete(ParcelUuid uuid);
 }

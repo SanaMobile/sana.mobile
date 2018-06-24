@@ -189,7 +189,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
          *
          * @param id The selected patient's ID.
          */
-        public void onModelItemSelected(long id);
+        void onModelItemSelected(long id);
     }
 
     /**

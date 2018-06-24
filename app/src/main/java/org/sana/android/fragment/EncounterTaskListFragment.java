@@ -229,7 +229,7 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
          *
          * @param id The selected patient's ID.
          */
-        public void onModelItemSelected(long id);
+        void onModelItemSelected(long id);
     }
 
     /**

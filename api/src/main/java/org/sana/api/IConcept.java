@@ -35,7 +35,7 @@ package org.sana.api;
  */
 public interface IConcept extends IModel{
 
-	public static String NAME_REGEX = "([A-Z])+(([A-Z_])*([A-Z])+)*";
+	String NAME_REGEX = "([A-Z])+(([A-Z_])*([A-Z])+)*";
 	
 	/**
 	 * Provides a String representation of any constraints placed upon data this
@@ -43,14 +43,14 @@ public interface IConcept extends IModel{
 	 *  
 	 * @return A data constraint string.
 	 */
-	public String getConstraints();
+	String getConstraints();
 
 	/**
 	 * Provides the class of data that this Concept represents.
 	 * 
 	 * @return The data class.
 	 */
-	public String getDatatype();
+	String getDatatype();
 	
 	/**
 	 * Provides the machine friendly, unique name of the Concept formatted 
@@ -58,21 +58,21 @@ public interface IConcept extends IModel{
 	 * 
 	 * @return The machine friendly name.
 	 */
-	public String getName();
+	String getName();
 	
 	/**
 	 * Provides a human readable display name.
 	 * 
 	 * @return The display name.
 	 */
-	public String getDisplayName();
+	String getDisplayName();
 	
 	/**
 	 * Provides a longer narrative description String
 	 * 
 	 * @return The description String.
 	 */
-	public String getDescription(); 
+	String getDescription();
 	
 	
 	/**
@@ -80,5 +80,5 @@ public interface IConcept extends IModel{
 	 * 
 	 * @return A mime type String.
 	 */
-	public String getMediatype();
+	String getMediatype();
 }

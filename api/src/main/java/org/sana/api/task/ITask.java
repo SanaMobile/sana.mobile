@@ -42,18 +42,18 @@ public interface ITask extends IModel{
 	 * The date by which the task should be completed.
 	 * @return
 	 */
-	public Date getDueDate();
+	Date getDueDate();
 
 	/**
 	 * The entity responsible for executing the instruction
 	 * @return
 	 */
-	public IObserver getObserver();
+	IObserver getObserver();
 	
 	/**
 	 * The current status of the task.
 	 *  
 	 * @return
 	 */
-	public String getStatus();
+	String getStatus();
 }

@@ -1272,7 +1272,7 @@ public class MDSInterface2 {
         return response;
     }
 
-    public static List<NameValuePair> mapToPost(Map<String, ? extends Object> map){
+    public static List<NameValuePair> mapToPost(Map<String, ?> map){
         List<NameValuePair> postData = new ArrayList<NameValuePair>();
         map = (map != null)?map: new HashMap<String,Object>();
         for(String key: map.keySet()){
@@ -1282,7 +1282,7 @@ public class MDSInterface2 {
         return postData;
     }
 
-    public static HttpEntity buildEntity(Map<String, ? extends Object> form, Map<String,File> files)
+    public static HttpEntity buildEntity(Map<String, ?> form, Map<String,File> files)
         throws UnsupportedEncodingException
     {
         if(files  == null){

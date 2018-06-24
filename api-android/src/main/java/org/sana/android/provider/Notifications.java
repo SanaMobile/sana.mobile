@@ -75,47 +75,47 @@ public final class Notifications{
      * @author Sana Development
      *
      */
-    public static interface Contract extends BaseContract<Notification>{
+    public interface Contract extends BaseContract<Notification>{
     	/**
     	 * The unique id of the notification.
     	 */
-    	public static final String UUID = "uuid";
+        String UUID = "uuid";
 
     	/**
     	 * The procedure the notification is referring to.
     	 */
-    	public static final String PROCEDURE_ID = "procedure_id";
+        String PROCEDURE_ID = "procedure_id";
 
     	/**
     	 * The id of the patient the notification is for.
     	 */
-    	public static final String PATIENT_ID = "patient_id";
+        String PATIENT_ID = "patient_id";
 
     	/**
     	 * The message body, containing part of the transmitted message. 
     	 * Messages may take more than one notification to transmit.
     	 */
-    	public static final String MESSAGE = "message";
+        String MESSAGE = "message";
 
     	/**
     	 * The entire message, including header information specifying the 
     	 * patient and encounter the notification is associated with.
     	 */
-    	public static final String FULL_MESSAGE = "full_message";
+        String FULL_MESSAGE = "full_message";
 
     	/**
     	 * Indicates whether the entire message is downloaded.
     	 */
-    	public static final String DOWNLOADED = "downloaded";
+        String DOWNLOADED = "downloaded";
 
     	/**
     	 * The date the notification was created.
     	 */
-    	public static final String CREATED = "created";
+        String CREATED = "created";
 
     	/**
     	 * The date the notification was last modified.
     	 */
-    	public static final String MODIFIED = "modified";
+        String MODIFIED = "modified";
     }
 }

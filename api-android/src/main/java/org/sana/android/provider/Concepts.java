@@ -39,27 +39,27 @@ public final class Concepts {
 	 * @author Sana Development
 	 *
 	 */
-	public static interface Contract extends BaseContract<Concept>{
+	public interface Contract extends BaseContract<Concept>{
 
         /** A universally unique identifier */
-        public static final String UUID = "uuid";
+        String UUID = "uuid";
 
         /** A machine friendly short name or identifier */
-        public static final String NAME = "name";
+        String NAME = "name";
 
         /** A human readable short name or identifier */
-        public static final String DISPLAY_NAME = "displayname";
+        String DISPLAY_NAME = "displayname";
 
         /** Longer narrative description. */
-        public static final String DESCRIPTION = "description";
+        String DESCRIPTION = "description";
 
         /** Primitive data type. i.e. Date, String */
-        public static final String DATA_TYPE = "datatype";
+        String DATA_TYPE = "datatype";
 
         /** mime type */
-        public static final String MEDIA_TYPE = "mediatype";
+        String MEDIA_TYPE = "mediatype";
 
         /** Some limitation on acceptable values */
-    	public static final String CONSTRAINT = "constraints";
+        String CONSTRAINT = "constraints";
     }
 }

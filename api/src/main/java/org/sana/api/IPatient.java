@@ -38,30 +38,30 @@ public interface IPatient extends ISubject{
 	/**
 	 * @return the given_name
 	 */
-	public abstract String getGiven_name();
+	String getGiven_name();
 
 	/**
 	 * @return the family_name
 	 */
-	public abstract String getFamily_name();
+	String getFamily_name();
 
 	/**
 	 * @return the dob
 	 */
-	public abstract Date getDob();
+	Date getDob();
 
 	/**
 	 * @return the gender
 	 */
-	public abstract String getGender();
+	String getGender();
 
 	/**
 	 * @return the image
 	 */
-	public abstract java.net.URI getImage();
+	java.net.URI getImage();
 	
-	public abstract ILocation getLocation();
+	ILocation getLocation();
 
-    public abstract String getSystemId();
+    String getSystemId();
 
 }

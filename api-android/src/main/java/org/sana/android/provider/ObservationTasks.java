@@ -55,9 +55,9 @@ public class ObservationTasks {
 	
 	private ObservationTasks(){}
 	
-	public static interface Contract extends Tasks.Contract<ObservationTask>{
-		public static final String ENCOUNTER = "encounter";
-		public static final String INSTRUCTION = "instruction";
-		public static final String PARENT = "parent";
+	public interface Contract extends Tasks.Contract<ObservationTask>{
+		String ENCOUNTER = "encounter";
+		String INSTRUCTION = "instruction";
+		String PARENT = "parent";
 	}
 }

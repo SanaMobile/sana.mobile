@@ -39,14 +39,14 @@ public interface IObserver extends IModel{
 	 * 
 	 * @return An authentication identifier'
 	 */
-	public String getUsername();
+	String getUsername();
 
 	/**
 	 * Provides the password for an Observer.
 	 * 
 	 * @return An authentication token.
 	 */
-	public String getPassword();
+	String getPassword();
 
 	//TODO use a list?
 	/**
@@ -54,5 +54,5 @@ public interface IObserver extends IModel{
 	 * 
 	 * @return the role
 	 */
-	public String getRole();
+	String getRole();
 }

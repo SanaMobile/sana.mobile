@@ -38,41 +38,41 @@ public interface IEvent extends IModel{
 	 * 
 	 * @return the event_type
 	 */
-	public abstract String getEvent_type();
+	String getEvent_type();
 
 	/**
 	 * Returns the event_value for an instance of this class.
 	 * 
 	 * @return the event_value
 	 */
-	public abstract String getEvent_value();
+	String getEvent_value();
 
 	/**
 	 * Returns the event_time for an instance of this class.
 	 * 
 	 * @return the event_time
 	 */
-	public abstract long getEvent_time();
+	long getEvent_time();
 
 	/**
 	 * Returns the encounter for an instance of this class.
 	 * 
 	 * @return the encounter
 	 */
-	public abstract String getEncounter();
+	String getEncounter();
 
 	/**
 	 * Returns the subject for an instance of this class.
 	 * 
 	 * @return the subject
 	 */
-	public abstract String getSubject();
+	String getSubject();
 
 	/**
 	 * Returns the observer for an instance of this class.
 	 * 
 	 * @return the observer
 	 */
-	public abstract String getObserver();
+	String getObserver();
 
 }

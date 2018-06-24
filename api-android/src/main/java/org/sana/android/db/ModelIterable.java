@@ -34,18 +34,18 @@ public interface ModelIterable<T extends IModel> extends Iterable<T>{
 	/* (non-Javadoc)
 	 * @see java.util.Iterator#hasNext()
 	 */
-	public boolean hasNext();
+	boolean hasNext();
 
 
 	/* (non-Javadoc)
 	 * @see java.util.Iterator#next()
 	 */
-	public T next();
+	T next();
 
 
 	/* (non-Javadoc)
 	 * @see java.util.Iterator#remove()
 	 */
-	public void remove();
+	void remove();
 	
 }

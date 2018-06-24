@@ -47,10 +47,10 @@ public final class Patients{
      * Projections for the Patient table.
      * @author Sana Development
      */
-    public static interface Projection extends BaseProjection<Patient> {
+    public interface Projection extends BaseProjection<Patient> {
     	
     	/** Projection to obtain ID and name of the patient. */
-    	public static final String[] DISPLAY_NAME = new String[] {
+        String[] DISPLAY_NAME = new String[] {
     		Contract._ID, Contract.GIVEN_NAME, Contract.FAMILY_NAME, Contract.IMAGE,
     		Contract.PATIENT_ID
     	};
@@ -62,38 +62,38 @@ public final class Patients{
 	 * @author Sana Development
 	 *
 	 */
-    public static interface Contract extends BaseContract<Patient>{
+    public interface Contract extends BaseContract<Patient>{
     	
     	//COLUMNS
-		/** Unique id attribute within the encounter */
-		public static final String UUID = "uuid";
+        /** Unique id attribute within the encounter */
+        String UUID = "uuid";
 		
     	/** The unique ID for a patient. */
-    	public static final String PATIENT_ID = "system_id";
+        String PATIENT_ID = "system_id";
     	
     	/**
     	 * The patient's date of birth.
     	 */
-    	public static final String DOB = "dob";
+        String DOB = "dob";
     	
     	/**
     	 * The patient's first name.
     	 */
-    	public static final String GIVEN_NAME = "given_name";
+        String GIVEN_NAME = "given_name";
     	
     	/**
     	 * The patient's last name.
     	 */
-    	public static final String FAMILY_NAME = "family_name";
+        String FAMILY_NAME = "family_name";
     	
     	/**
     	 * The patient's gender.
     	 */
-    	public static final String GENDER = "gender";
+        String GENDER = "gender";
     	
 
     	/** An image of the patient */
-    	public static final String IMAGE = "image";
+        String IMAGE = "image";
     	
     	/** The current registration state. */
         // Status of the patient
@@ -105,24 +105,24 @@ public final class Patients{
         // 4 - In the queue but waiting for connectivity to upload
         // 5 - Upload failed
         // 6 - Upload stalled - username/password incorrect
-    	public static final String STATE = "_state";
+        String STATE = "_state";
     	
     	/** A location code for the patient */
-    	public static final String LOCATION = "location";
+        String LOCATION = "location";
 
-        public static final String CONFIRMED = "confirmed";
+        String CONFIRMED = "confirmed";
 
-        public static final String DOB_ESTIMATED = "dob_estimated";
+        String DOB_ESTIMATED = "dob_estimated";
 
-    	public static final String ADDRESS_ONE = "address_one";
-    	public static final String ADDRESS_TWO = "address_two";
-    	public static final String ADDRESS_THREE = "address_three";
-    	public static final String ADDRESS_FOUR = "address_four";
+    	String ADDRESS_ONE = "address_one";
+    	String ADDRESS_TWO = "address_two";
+    	String ADDRESS_THREE = "address_three";
+    	String ADDRESS_FOUR = "address_four";
     	
-    	public static final String CONTACT_ONE = "contact_one";
-    	public static final String CONTACT_TWO = "contact_two";
-    	public static final String CONTACT_THREE = "contact_three";
-    	public static final String CONTACT_FOUR = "contact_four";
+    	String CONTACT_ONE = "contact_one";
+    	String CONTACT_TWO = "contact_two";
+    	String CONTACT_THREE = "contact_three";
+    	String CONTACT_FOUR = "contact_four";
     	
 	}
 

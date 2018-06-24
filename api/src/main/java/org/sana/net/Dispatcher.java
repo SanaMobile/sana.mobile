@@ -47,7 +47,7 @@ public class Dispatcher {
 	
 	static final String CHAR_SET = "UTF-8";
 	
-	public static interface ContentHandler<T>{
+	public interface ContentHandler<T>{
 		
 	}
 	

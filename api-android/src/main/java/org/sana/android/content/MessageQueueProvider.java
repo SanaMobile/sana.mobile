@@ -20,23 +20,23 @@ import static java.lang.Long.SIZE;
  */
 public class MessageQueueProvider extends ContentProvider {
 
-    public static interface Contract{
-        public static final String AUTH = "_auth";
-        public static final String STATE = "_state";
-        public static final String PRIORITY = "_priority";
-        public static final String DATA = "_data";
-        public static final String SOURCE = "source";
-        public static final String TARGET = "target";
-        public static final String SENT = "sent";
-        public static final String SEND_COUNT = "send_count";
-        public static final String EVENT_START = "event_start";
-        public static final String EVENT_COMPLETE = "request_complete";
-        public static final String RECEIVED = "received";
-        public static final String REQUEST_COMPLETE = "request_complete";
+    public interface Contract{
+        String AUTH = "_auth";
+        String STATE = "_state";
+        String PRIORITY = "_priority";
+        String DATA = "_data";
+        String SOURCE = "source";
+        String TARGET = "target";
+        String SENT = "sent";
+        String SEND_COUNT = "send_count";
+        String EVENT_START = "event_start";
+        String EVENT_COMPLETE = "request_complete";
+        String RECEIVED = "received";
+        String REQUEST_COMPLETE = "request_complete";
 
     }
 
-    public static enum State{
+    public enum State{
         ERROR(-1),
         CANCELLED(0),
         COMPLETE(1),
@@ -51,7 +51,7 @@ public class MessageQueueProvider extends ContentProvider {
             return code;
         }
     }
-    public static enum Priority{
+    public enum Priority{
         LOW(8),
         HIGH(1),
         FIRST(0);

@@ -16,6 +16,6 @@ import android.provider.BaseColumns;
 public interface BaseProjection<T> {
 	
 	/** Projection that retrieves values for the _ID column. */
-	public static final String[] IDS = new String[] { BaseColumns._ID };
+	String[] IDS = new String[] { BaseColumns._ID };
 	
 }

@@ -38,16 +38,16 @@ public interface IRelationship extends IModel{
 	/**
 	 * @return the fromConcept
 	 */
-	public abstract Concept getFromConcept();
+	Concept getFromConcept();
 
 	/**
 	 * @return the toConcept
 	 */
-	public abstract Concept getToConcept();
+	Concept getToConcept();
 
 	/**
 	 * @return the category
 	 */
-	public abstract RelationshipCategory getCategory();
+	RelationshipCategory getCategory();
 
 }
