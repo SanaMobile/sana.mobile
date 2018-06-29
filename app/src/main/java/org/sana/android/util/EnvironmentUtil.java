@@ -1,6 +1,5 @@
 package org.sana.android.util;
 
-import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;

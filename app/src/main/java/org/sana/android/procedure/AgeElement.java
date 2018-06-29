@@ -2,14 +2,9 @@ package org.sana.android.procedure;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
-import android.text.TextUtils;
-import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 
@@ -20,7 +15,6 @@ import org.sana.util.Functions;
 import org.w3c.dom.Node;
 
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 
 /**

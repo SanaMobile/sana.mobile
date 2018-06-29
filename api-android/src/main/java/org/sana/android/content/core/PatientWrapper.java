@@ -29,7 +29,6 @@ package org.sana.android.content.core;
 
 import java.net.URI;
 import java.util.Date;
-import java.util.UUID;
 
 import org.sana.android.content.Uris;
 import org.sana.android.db.ModelWrapper;
@@ -39,12 +38,10 @@ import org.sana.android.util.Dates;
 import org.sana.api.ILocation;
 import org.sana.api.IPatient;
 import org.sana.core.Location;
-import org.sana.core.Model;
 import org.sana.core.Patient;
 import org.sana.util.UUIDUtil;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

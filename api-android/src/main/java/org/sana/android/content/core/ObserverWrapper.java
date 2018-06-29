@@ -30,7 +30,6 @@ package org.sana.android.content.core;
 import org.sana.android.db.ModelWrapper;
 import org.sana.android.provider.Observers;
 import org.sana.api.IObserver;
-import org.sana.core.Observer;
 
 import android.content.ContentResolver;
 import android.database.Cursor;

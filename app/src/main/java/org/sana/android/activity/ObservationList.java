@@ -28,31 +28,10 @@
 package org.sana.android.activity;
 
 import org.sana.R;
-import org.sana.android.content.Intents;
-import org.sana.android.db.SanaDB.ImageSQLFormat;
-import org.sana.android.provider.Observations;
 
-import android.app.Activity;
-import android.app.ListActivity;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * @author Sana Development

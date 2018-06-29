@@ -9,7 +9,6 @@ import org.sana.android.util.SanaUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;

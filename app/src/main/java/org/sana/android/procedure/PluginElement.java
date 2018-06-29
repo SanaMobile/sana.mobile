@@ -5,15 +5,11 @@ import java.net.URISyntaxException;
 import org.sana.R;
 import org.sana.android.activity.ProcedureRunner;
 import org.sana.android.content.core.ObservationWrapper;
-import org.sana.android.db.BinaryDAO;
 import org.sana.android.db.ModelWrapper;
-import org.sana.android.db.SanaDB.BinarySQLFormat;
 import org.sana.android.provider.Observations;
-import org.sana.android.service.PluginService;
 import org.w3c.dom.Node;
 
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;

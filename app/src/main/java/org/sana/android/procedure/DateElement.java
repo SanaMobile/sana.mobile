@@ -1,7 +1,6 @@
 package org.sana.android.procedure;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -18,7 +17,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.DatePicker;
 
 /**
  * A ProcedureElement for collecting a date value.

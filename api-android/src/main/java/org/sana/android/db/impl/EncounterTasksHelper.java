@@ -31,13 +31,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 
 import org.sana.android.db.TableHelper;
 import org.sana.android.provider.EncounterTasks.Contract;
 import org.sana.api.IModel;
 import org.sana.api.task.EncounterTask;
-import org.sana.api.task.Status;
 
 import android.content.ContentValues;
 import android.net.Uri;

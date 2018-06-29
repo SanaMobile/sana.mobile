@@ -5,13 +5,11 @@ import java.text.SimpleDateFormat;
 
 import org.sana.android.Constants;
 import org.sana.android.app.Preferences;
-import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.provider.Observations;
 import org.w3c.dom.Node;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;

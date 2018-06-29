@@ -1,6 +1,5 @@
 package org.sana.android.procedure;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.Map;
 
 
 import org.sana.android.activity.EducationResourceList;
-import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.db.PatientValidator;
 import org.sana.android.media.EducationResource;
 import org.sana.android.media.EducationResource.Audience;
@@ -19,7 +17,6 @@ import org.w3c.dom.NodeList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;

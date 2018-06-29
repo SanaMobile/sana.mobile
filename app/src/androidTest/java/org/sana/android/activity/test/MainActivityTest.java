@@ -27,11 +27,8 @@
  */
 package org.sana.android.activity.test;
 
-import org.sana.android.activity.MainActivity;
-
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.test.ActivityInstrumentationTestCase;
 
 /**
  * @author Sana Development

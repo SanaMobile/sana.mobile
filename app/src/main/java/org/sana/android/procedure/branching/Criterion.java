@@ -1,12 +1,9 @@
 package org.sana.android.procedure.branching;
 
-import org.sana.BuildConfig;
 import org.sana.android.procedure.MultiSelectElement;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.sana.android.procedure.ProcedureElement.ElementType;
-
-import android.util.Log;
 
 /**
  * The Criterion class is a data representation of the XML 

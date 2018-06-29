@@ -3,7 +3,6 @@ package org.sana.android.task;
 import java.util.List;
 
 import org.sana.R;
-import org.sana.android.Constants;
 import org.sana.android.util.EnvironmentUtil;
 import org.sana.android.util.SanaUtil;
 

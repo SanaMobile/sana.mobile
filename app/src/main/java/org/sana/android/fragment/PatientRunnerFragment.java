@@ -7,7 +7,6 @@ import java.net.URI;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,7 +19,6 @@ import org.sana.android.db.ModelWrapper;
 import org.sana.android.db.PatientInfo;
 import org.sana.android.procedure.PatientIdElement;
 import org.sana.android.procedure.Procedure;
-import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedurePage;
 import org.sana.android.provider.Events.EventType;
 import org.sana.android.provider.Patients;

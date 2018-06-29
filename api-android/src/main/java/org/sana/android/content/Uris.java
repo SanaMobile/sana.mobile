@@ -46,13 +46,10 @@ import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
 import org.sana.util.UUIDUtil;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
+
 /**
  * a container of Uri descriptor values and related constants. The static 
  * methods of this class are primarily intended for consistent, application-wide

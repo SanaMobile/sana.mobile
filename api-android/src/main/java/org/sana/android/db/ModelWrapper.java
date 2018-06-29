@@ -31,7 +31,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 import org.sana.android.content.Uris;
 import org.sana.android.provider.BaseContract;
@@ -44,7 +43,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;

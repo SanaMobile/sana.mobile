@@ -28,18 +28,13 @@
 package org.sana.android.service.impl;
 
 import java.util.List;
-import java.util.Locale;
 
-import org.sana.BuildConfig;
-import org.sana.android.activity.ProcedureRunner;
 import org.sana.android.content.Uris;
-import org.sana.android.content.core.ObservationWrapper;
 import org.sana.android.provider.Observations;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.app.PendingIntent.CanceledException;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -59,7 +54,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.Process;
 import android.support.v4.util.SparseArrayCompat;
-import android.text.TextUtils;
 import android.util.Log;
 
 /**

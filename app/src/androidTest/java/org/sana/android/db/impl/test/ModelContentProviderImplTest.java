@@ -60,7 +60,6 @@ import android.net.Uri;
 import android.test.ProviderTestCase2;
 import android.test.mock.MockContentResolver;
 import android.test.mock.MockContext;
-import android.util.Log;
 
 /**
  * Handles the test for the ModelContentProvdierImpl class.

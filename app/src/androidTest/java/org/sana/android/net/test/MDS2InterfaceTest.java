@@ -26,7 +26,6 @@ import org.sana.core.Patient;
 import org.sana.core.Procedure;
 import org.sana.net.Response;
 import org.sana.net.http.handler.ConceptResponseHandler;
-import org.sana.net.http.handler.EncounterResponseHandler;
 import org.sana.net.http.handler.EncounterTaskResponseHandler;
 import org.sana.net.http.handler.LocationResponseHandler;
 import org.sana.net.http.handler.PatientResponseHandler;

@@ -31,9 +31,6 @@ import org.sana.android.content.ModelContentProvider;
 import org.sana.android.content.Uris;
 import org.sana.android.db.TableHelper;
 
-import android.content.ContentProvider;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.net.Uri;
 
 /**

@@ -31,22 +31,17 @@ import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.sana.android.activity.BaseActivity;
-import org.sana.android.service.IRemoteService;
 import org.sana.android.service.ISessionCallback;
 import org.sana.android.service.ISessionService;
-import org.sana.android.service.IStringCallback;
 import org.sana.android.service.impl.SessionService;
-import org.sana.android.util.SessionUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
-import android.service.textservice.SpellCheckerService.Session;
 import android.test.ServiceTestCase;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * @author Sana Development

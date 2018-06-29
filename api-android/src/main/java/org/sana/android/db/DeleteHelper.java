@@ -28,7 +28,6 @@
 package org.sana.android.db;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 
 /**

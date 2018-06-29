@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.sana.core.Location;
-import org.sana.core.Patient;
 import org.sana.net.Response;
 
 import com.google.gson.FieldNamingPolicy;

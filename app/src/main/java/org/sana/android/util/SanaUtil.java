@@ -17,15 +17,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.sana.R;
 import org.sana.android.app.Locales;
-import org.sana.android.db.SanaDB;
-import org.sana.android.db.SanaDB.BinarySQLFormat;
-import org.sana.android.db.SanaDB.ImageSQLFormat;
-import org.sana.android.db.SanaDB.SoundSQLFormat;
 import org.sana.android.procedure.Procedure;
 import org.sana.android.procedure.ProcedureParseException;
-import org.sana.android.provider.Encounters;
-import org.sana.android.provider.Notifications;
-import org.sana.android.provider.Observations;
 import org.sana.android.provider.Patients;
 import org.sana.android.provider.Procedures;
 

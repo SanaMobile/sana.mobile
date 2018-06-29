@@ -27,14 +27,9 @@
  */
 package org.sana.api.task;
 
-import org.sana.api.IEncounter;
-import org.sana.api.IProcedure;
-import org.sana.api.ISubject;
 import org.sana.core.Encounter;
 import org.sana.core.Procedure;
 import org.sana.core.Subject;
-
-import com.google.gson.annotations.Expose;
 
 /**
  * @author Sana Development

@@ -27,23 +27,7 @@
  */
 package org.sana.net.http;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Authenticator;
-import java.net.ContentHandler;
-import java.net.HttpURLConnection;
-import java.net.PasswordAuthentication;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
-import java.util.List;
-import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;

@@ -2,7 +2,6 @@ package org.sana.android.procedure.branching;
 
 import java.util.HashMap;
 
-import org.sana.BuildConfig;
 import org.sana.android.procedure.ProcedureElement;
 import org.sana.android.procedure.ProcedureParseException;
 import org.w3c.dom.Node;

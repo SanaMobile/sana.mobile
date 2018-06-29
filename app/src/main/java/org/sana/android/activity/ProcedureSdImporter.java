@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sana.R;
-import org.sana.android.Constants;
 import org.sana.android.task.ClearDatabaseTask;
 import org.sana.android.task.ImportProcedure;
 import org.sana.android.task.ImportProcedureAll;

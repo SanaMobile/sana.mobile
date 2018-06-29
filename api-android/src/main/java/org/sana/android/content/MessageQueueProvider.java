@@ -13,8 +13,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import static java.lang.Long.SIZE;
-
 /**
  *
  */

@@ -33,7 +33,6 @@ import java.net.URI;
 import java.util.Map;
 
 import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestFactory;
 import org.apache.http.MethodNotSupportedException;
 import org.apache.http.RequestLine;
 import org.apache.http.client.methods.HttpDelete;
