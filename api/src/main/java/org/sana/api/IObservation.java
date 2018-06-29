@@ -40,31 +40,31 @@ public interface IObservation extends IModel{
 	 * Gets the unique id within the Encounter.
 	 * @return the id
 	 */
-	public String getId();
+	String getId();
 
 	/**
 	 * Provides the uuid of the encounter.
 	 * 
 	 * @return the encounter
 	 */
-	public String getEncounter();
+	String getEncounter();
 
 	/**
 	 * Provides the uuid of the concept.
 	 * @return the concept
 	 */
-	public String getConcept();
+	String getConcept();
 
 	/**
 	 * Returns the complex value as a file path or uri.
 	 * 
 	 * @return the value_complex
 	 */
-	public String getValue_complex();
+	String getValue_complex();
 
 	/**
 	 * @return the valueText
 	 */
-	public String getValue_text();
+	String getValue_text();
 
 }

@@ -82,34 +82,34 @@ public final class Encounters {
 	 * @author Sana Development
 	 *
 	 */
-    public static interface Contract extends BaseContract<Encounter>{
+    public interface Contract extends BaseContract<Encounter>{
     	/**
     	 * The guid of this procedure (randomly generated on insert).
     	 */
-    	public static final String UUID = "uuid";
+        String UUID = "uuid";
 
     	/**
     	 * A foreign key to the procedure used to create this saved procedure.
     	 */
-    	public static final String PROCEDURE = "procedure";
+        String PROCEDURE = "procedure";
 
     	/** The JSON data representing the state of this procedure. */
     	@Deprecated
-    	public static final String STATE = "_state";
+        String STATE = "_state";
 
 
     	/** The subject who data was collected about; i.e. the patient */
-    	public static final String SUBJECT = "subject";
+        String SUBJECT = "subject";
 
     	/**
     	 * The entity which collected the data
     	 */
-    	public static final String OBSERVER = "observer";
+        String OBSERVER = "observer";
     	
     	/**
     	 * Status of data inputting. When finished, upload data to MDS.
     	 */
-    	public static final String FINISHED = "_finished";
+        String FINISHED = "_finished";
 
     	// This procedure's text/state has been uploaded to the MDS
     	// successfully. This doesn't mean its binaries have been -- only the
@@ -118,7 +118,7 @@ public final class Encounters {
     	 * Status of procedure upload to MDS. Does not indicate status of 
     	 * binary upload -- only the text
     	 */
-    	public static final String UPLOADED = "_uploaded";
+        String UPLOADED = "_uploaded";
 
     	// Status of the procedure in the upload queue
     	// For use in SavedProcedureList to show each procedure's status
@@ -141,7 +141,7 @@ public final class Encounters {
     	 * 6 - Upload stalled - username/password incorrect
     	 * </blockquote></pre>
     	 */
-    	public static final String UPLOAD_STATUS = "_queue_status";
+        String UPLOAD_STATUS = "_queue_status";
 
     	/**
     	 * Keeps track of the background upload queue.
@@ -150,6 +150,6 @@ public final class Encounters {
     	 * -1 - Not in queue (either never added or upload finished)
     	 * </blockquote></pre>
     	 */
-    	public static final String UPLOAD_QUEUE = "_upload_queue";
+        String UPLOAD_QUEUE = "_upload_queue";
     }
 }

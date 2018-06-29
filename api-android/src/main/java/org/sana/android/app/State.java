@@ -38,29 +38,29 @@ public final class State {
 
 	private State(){}
 	
-	public static interface Keys{
+	public interface Keys{
 		/** Key for use if the state is to be saved under a single key */
-		public static final String APP_STATE = "applicationState";
+		String APP_STATE = "applicationState";
 		
 		/** The app instance unauthorized key. */
-		public static final String INSTANCE_KEY = "instanceKey";
+		String INSTANCE_KEY = "instanceKey";
 		
 		/** The app instance authorization key */
-		public static final String SESSION_KEY = "sessionKey";
+		String SESSION_KEY = "sessionKey";
 
 		/** The current subject. */
-		public static final String SUBJECT = "subject";
+		String SUBJECT = "subject";
 		
 		/** The current encounter */
-		public static final String ENCOUNTER = "encounter";
+		String ENCOUNTER = "encounter";
 		
 		/** The current procedure */
-		public static final String PROCEDURE = "procedure";
+		String PROCEDURE = "procedure";
 		
 		/** The current observation */
-		public static final String OBSERVATION = "observation";
+		String OBSERVATION = "observation";
 		
 		/** The current observer */
-		public static final String OBSERVER = "observer";
+		String OBSERVER = "observer";
 	}
 }

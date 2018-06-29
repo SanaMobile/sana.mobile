@@ -44,8 +44,8 @@ import android.view.LayoutInflater;
 public class AuthenticationDialogFragment extends DialogFragment {
 	
 	public interface AuthenticationDialogListener{
-		public void onDialogPositiveClick(DialogFragment dialog);
-		public void onDialogNegativeClick(DialogFragment dialog);
+		void onDialogPositiveClick(DialogFragment dialog);
+		void onDialogNegativeClick(DialogFragment dialog);
 	}
 	
 	AuthenticationDialogListener mListener;

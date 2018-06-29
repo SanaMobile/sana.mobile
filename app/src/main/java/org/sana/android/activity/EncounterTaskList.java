@@ -74,7 +74,7 @@ public class EncounterTaskList extends FragmentActivity implements
         else if (fragment.getClass() == EncounterTaskListCompleteFragment.class) {
             mCompleteListFragment = (EncounterTaskListCompleteFragment) fragment;
             mCompleteListFragment.setOnModelItemSelectedListener(this);
-            showProgressDialogFragment(getString(R.string.network_synchronizing));;
+            showProgressDialogFragment(getString(R.string.network_synchronizing));
         }
     }
 

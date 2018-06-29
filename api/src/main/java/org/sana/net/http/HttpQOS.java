@@ -19,16 +19,16 @@ public class HttpQOS {
      * QOS field names in camel case converted to lowercase with underscores
      * with subsequent capitalization.
      */
-    public static interface Params {
-        public static final String PREFIX = "HTTP_";
-        public static final String SOURCE = PREFIX + "SOURCE";
-        public static final String TARGET = PREFIX + "TARGET";
-        public static final String SENT = PREFIX + "SENT";
-        public static final String SEND_COUNT = PREFIX + "SEND_COUNT";
-        public static final String EVENT_START = PREFIX + "EVENT_START";
-        public static final String EVENT_COMPLETE = PREFIX + "EVENT_COMPLETE";
-        public static final String RECEIVED = PREFIX + "RECEIVED";
-        public static final String REQUEST_COMPLETE = PREFIX +
+    public interface Params {
+        String PREFIX = "HTTP_";
+        String SOURCE = PREFIX + "SOURCE";
+        String TARGET = PREFIX + "TARGET";
+        String SENT = PREFIX + "SENT";
+        String SEND_COUNT = PREFIX + "SEND_COUNT";
+        String EVENT_START = PREFIX + "EVENT_START";
+        String EVENT_COMPLETE = PREFIX + "EVENT_COMPLETE";
+        String RECEIVED = PREFIX + "RECEIVED";
+        String REQUEST_COMPLETE = PREFIX +
                 "REQUEST_COMPLETE";
     }
 

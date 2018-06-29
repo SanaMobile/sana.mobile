@@ -38,10 +38,10 @@ import java.util.Date;
 public interface IModel {
 
 	/** The format which will be used for persisting Date objects */
-	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-	/** The regular expression for validating uuid Strings */ 
-	public static final String UUID_REGEX = 
+	/** The regular expression for validating uuid Strings */
+	String UUID_REGEX =
 		"[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}";
 	
 	/** Returns a universally unique identifier */
@@ -57,7 +57,7 @@ public interface IModel {
 	 * Returns a {@link java.util.Date Date} when this object was last modified.
 	 * @return a Date object.
 	 */
-	public Date getModified();
+	Date getModified();
 
 	
 }

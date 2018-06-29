@@ -64,24 +64,24 @@ public final class Procedures {
 	 * @author Sana Development
 	 *
 	 */
-	public static interface Contract extends BaseContract<Procedure>{
+	public interface Contract extends BaseContract<Procedure>{
 		/** The title of the procedure. */
-		public static final String TITLE = "title";
+		String TITLE = "title";
 
 		/** The author of the procedure. */
-		public static final String AUTHOR = "author";
+		String AUTHOR = "author";
 
 		/** The unique ID of the procedure. */
-		public static final String UUID = "uuid";
+		String UUID = "uuid";
 
 		/** The raw procedure text. */
-		public static final String PROCEDURE = "procedure";
+		String PROCEDURE = "procedure";
 		
 		/** The version code */
-		public static final String VERSION = "version";
+		String VERSION = "version";
 		
 		/** A list of supported locales. */
-		public static final String LOCALE = "locale";
+		String LOCALE = "locale";
     
 	}
 }

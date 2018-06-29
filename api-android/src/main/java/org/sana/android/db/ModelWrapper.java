@@ -54,9 +54,9 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
 
     public static final String TAG = ModelWrapper.class.getSimpleName();
 
-    public static interface BaseProjection{
-        public static String[] ID_PROJECTION = new String[] { BaseContract._ID };
-        public static String[] UUID_PROJECTION = new String[] { BaseContract._ID };
+    public interface BaseProjection{
+        String[] ID_PROJECTION = new String[] { BaseContract._ID };
+        String[] UUID_PROJECTION = new String[] { BaseContract._ID };
     }
     public ModelWrapper(Cursor cursor){
         super(cursor);

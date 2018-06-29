@@ -52,7 +52,7 @@ public abstract class ProcedureElement {
      * 
      * @author Sana Development Team
      */
-    public static enum ElementType {
+    public enum ElementType {
     	/** Provides text display */
     	TEXT(""),
     	
@@ -107,9 +107,9 @@ public abstract class ProcedureElement {
     	
         private String filename;
 
-        private ElementType(){ this(""); }
+        ElementType(){ this(""); }
 
-        private ElementType(String filename) {
+        ElementType(String filename) {
         	this.filename = filename;
         }
         

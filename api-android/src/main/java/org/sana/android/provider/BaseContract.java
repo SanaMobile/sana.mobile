@@ -14,13 +14,13 @@ import android.provider.BaseColumns;
  */
 public interface BaseContract<T> extends BaseColumns {
 
-	/** A universally unique identifier */
-	public static final String UUID = "uuid";
+    /** A universally unique identifier */
+    String UUID = "uuid";
 	
     /** The date the record was created. */
-    public static final String CREATED = "created";
+    String CREATED = "created";
 
     /** The date the record was last modified. */
-    public static final String MODIFIED = "modified";
+    String MODIFIED = "modified";
 	
 }

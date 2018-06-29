@@ -325,7 +325,7 @@ public class BackgroundUploader extends Service {
 			cursor.close();
 
 			Uri procedureUri = ContentUris.withAppendedId(
-					Procedures.CONTENT_URI, procedureId);;
+					Procedures.CONTENT_URI, procedureId);
 			cursor = getContentResolver().query(procedureUri, new String[] { 
 					Procedures.Contract.TITLE }, null, null, null);
 			cursor.moveToFirst();

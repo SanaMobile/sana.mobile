@@ -40,34 +40,34 @@ public interface IInstruction extends IModel{
 	 * 
 	 * @return the concept
 	 */
-	public abstract Concept getConcept();
+	Concept getConcept();
 
 	/**
 	 * Returns the help for an instance of this class.
 	 * 
 	 * @return the help
 	 */
-	public abstract String getHelp();
+	String getHelp();
 
 	/**
 	 * Returns the hint for an instance of this class.
 	 * 
 	 * @return the hint
 	 */
-	public abstract String getHint();
+	String getHint();
 
 	/**
 	 * Returns the alert for an instance of this class.
 	 * 
 	 * @return the alert
 	 */
-	public abstract String getAlert();
+	String getAlert();
 
 	/**
 	 * Returns the required for an instance of this class.
 	 * 
 	 * @return the required
 	 */
-	public abstract boolean isRequired();
+	boolean isRequired();
 
 }

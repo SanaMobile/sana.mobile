@@ -309,20 +309,20 @@ public final class Events{
 	 * @author Sana Development
 	 *
 	 */
-	public static interface Contract extends BaseContract<Event>{
+	public interface Contract extends BaseContract<Event>{
 
 		/** The type of the event. {@link org.sana..android.provider.Events.EventType EventType}*/
-		public static final String EVENT_TYPE = "event_type";
+		String EVENT_TYPE = "event_type";
 		/** The value of the event. */
-		public static final String EVENT_VALUE = "event_value";
+		String EVENT_VALUE = "event_value";
 		/** Reference to the subject of the event. */
-		public static final String SUBJECT = "subject";
+		String SUBJECT = "subject";
 		/** Reference to an encounter associated with the event. */
-		public static final String ENCOUNTER = "encounter";
+		String ENCOUNTER = "encounter";
 		/** Reference to the user ID associated with the event. */
-		public static final String OBSERVER = "observer";
+		String OBSERVER = "observer";
 		/** Indicates if the event is uploaded. */
-		public static final String UPLOADED = "uploaded";
+		String UPLOADED = "uploaded";
 		
 	}
 

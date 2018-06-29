@@ -36,6 +36,6 @@ public interface IDevice extends IModel{
 	/**
 	 * @return the name
 	 */
-	public abstract String getName();
+	String getName();
 
 }

@@ -46,14 +46,14 @@ public interface IObservationTask extends ITask {
 	 * 
 	 * @return
 	 */
-	public IEncounter getEncounter();
+	IEncounter getEncounter();
 	
 	/**
 	 * A simple or compound instruction that will be executed to collect one or 
 	 * more observations.
 	 * @return
 	 */
-	public IInstruction getInstruction();
+	IInstruction getInstruction();
 
 	/**
 	 * A single observation with which any additional observations created
@@ -62,6 +62,6 @@ public interface IObservationTask extends ITask {
 	 * 
 	 * @return
 	 */
-	public IObservation getParent();
+	IObservation getParent();
 	
 }

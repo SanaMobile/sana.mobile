@@ -63,17 +63,17 @@ public class Instructions{
 	 * 
 	 * @author Sana Development
 	 */
-	public static interface Contract extends BaseContract<Instruction>{
+	public interface Contract extends BaseContract<Instruction>{
 		/** */
-		public static final String CONCEPT = "concept";
+		String CONCEPT = "concept";
 
 		/** Additional information for the instruction */
-		public static final String HELP = "help";
+		String HELP = "help";
 		/** User prompt */
-		public static final String HINT = "hint";
+		String HINT = "hint";
 		/** Conditional notification message */
-		public static final String ALERT = "alert";
+		String ALERT = "alert";
 		/** Boolean value for whether null values are allowed */
-		public static final String REQUIRED = "required";
+		String REQUIRED = "required";
 	}
 }

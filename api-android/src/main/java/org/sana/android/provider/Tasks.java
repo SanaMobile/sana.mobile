@@ -35,17 +35,17 @@ import android.net.Uri;
  */
 public interface Tasks {
 
-	public static final String AUTHORITY = "org.sana.provider";
+	String AUTHORITY = "org.sana.provider";
 
-	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
+	Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 
-	public static interface Contract<T> extends BaseContract<T>{
+	interface Contract<T> extends BaseContract<T>{
 		
-		public static final String DUE_DATE = "due_date";
-		public static final String OBSERVER = "observer";
-                public static final String STARTED = "started";
-                public static final String COMPLETED = "completed";
-		public static final String STATUS = "status";
+		String DUE_DATE = "due_date";
+		String OBSERVER = "observer";
+		String STARTED = "started";
+		String COMPLETED = "completed";
+		String STATUS = "status";
 		
 	}
 

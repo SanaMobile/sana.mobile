@@ -16,7 +16,7 @@ import org.sana.android.procedure.ProcedureElement.ElementType;
  * Criteria object, which can perform arbitrary boolean logic on it.
  */
 public class Criterion {
-    public static enum CriterionType {
+    public enum CriterionType {
         EQUALS, GREATER, LESS
     }
     private static final String TAG = "Criterion";

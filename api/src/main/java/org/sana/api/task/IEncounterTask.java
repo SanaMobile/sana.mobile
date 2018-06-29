@@ -45,19 +45,19 @@ public interface IEncounterTask extends ITask {
 	 * 
 	 * @return
 	 */
-	public IEncounter getEncounter();
+	IEncounter getEncounter();
 	
 	/**
 	 * The Procedure that will be executed.
 	 * 
 	 * @return
 	 */
-	public IProcedure getProcedure();
+	IProcedure getProcedure();
 	
 	/**
 	 * The subject on who this will be executed.
 	 * @return
 	 */
-	public ISubject getSubject();
+	ISubject getSubject();
 
 }

@@ -168,7 +168,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
          * 
          * @param patientId The selected patient's ID.
          */
-        public void onPatientSelected(long patientId);
+        void onPatientSelected(long patientId);
     }
 
     /**

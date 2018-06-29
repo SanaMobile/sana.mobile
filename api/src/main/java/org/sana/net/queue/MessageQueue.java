@@ -43,7 +43,7 @@ import static java.lang.Long.SIZE;
  */
 public class MessageQueue<E>{
 
-    public static enum Priority{
+    public enum Priority{
         LOW(SIZE),
         HIGH(1),
         FIRST(0);

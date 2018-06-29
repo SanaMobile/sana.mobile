@@ -33,5 +33,5 @@ package org.sana.api;
  */
 public interface ILocation extends IModel {
 
-	public abstract String getName();
+	String getName();
 }
