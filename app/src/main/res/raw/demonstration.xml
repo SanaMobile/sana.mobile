@@ -1,53 +1,60 @@
-<Procedure title="API Test"
+<Procedure
+    title="API Test"
     uuid="2bae218f-9c07-40ac-88fb-c7c60aa1d89d"
     version="1"
     author="Sana"
     description="A demonstration of functional elements">
     <Page>
 
-    <Element id="1"
-        type="DATE"
-        concept="DATE"
-        question="Entry a date value."
-        answer=""/>
+        <Element
+            id="1"
+            type="DATE"
+            concept="DATE"
+            question="Entry a date value."
+            answer="" />
     </Page>
     <Page>
-    <Element id="2"
-        type="ENTRY"
-        concept="TEXT"
-        question="Enter text"
-        answer=""/>
+        <Element
+            id="2"
+            type="ENTRY"
+            concept="TEXT"
+            question="Enter text"
+            answer="" />
     </Page>
     <Page>
-    <Element id="3"
-        type="SELECT"
-        concept="TEXT"
-        question="Select a single value."
-        choices="1;2;3;4"
-        answer=""/>
+        <Element
+            id="3"
+            type="SELECT"
+            concept="TEXT"
+            question="Select a single value."
+            choices="1;2;3;4"
+            answer="" />
     </Page>
     <Page>
-    <Element id="4"
-        type="MULTI_SELECT"
-        concept="MULTIVALUE TEXT"
-        question="Select one or more values."
-        choices="1;2;3;4"
-        answer=""/>
+        <Element
+            id="4"
+            type="MULTI_SELECT"
+            concept="MULTIVALUE TEXT"
+            question="Select one or more values."
+            choices="1;2;3;4"
+            answer="" />
     </Page>
     <Page>
-    <Element id="5"
-        type="RADIO"
-        concept="TEXT"
-        question="Select a single value."
-        choices="1;2;3;4"
-        answer="1"/>
+        <Element
+            id="5"
+            type="RADIO"
+            concept="TEXT"
+            question="Select a single value."
+            choices="1;2;3;4"
+            answer="1" />
     </Page>
     <Page>
-    <Element id="6"
-        type="PICTURE"
-        concept="IMAGE"
-        question="Take a picture"
-        answer=""/>
+        <Element
+            id="6"
+            type="PICTURE"
+            concept="IMAGE"
+            question="Take a picture"
+            answer="" />
     </Page>
     <!--
     <Page>
@@ -66,13 +73,17 @@
     </Page>
     -->
     <Page>
-    <ShowIf>
-        <Criteria type="EQUALS" id="4" value="1"/>
-    </ShowIf>
-    <Element id="9"
-        type="TEXT"
-        concept="OUTPUT"
-        question="EQUALS criteria. This will display if '1' was selected for question with id=4"
-        answer=""/>
+        <ShowIf>
+            <Criteria
+                type="EQUALS"
+                id="4"
+                value="1" />
+        </ShowIf>
+        <Element
+            id="9"
+            type="TEXT"
+            concept="OUTPUT"
+            question="EQUALS criteria. This will display if '1' was selected for question with id=4"
+            answer="" />
     </Page>
 </Procedure>

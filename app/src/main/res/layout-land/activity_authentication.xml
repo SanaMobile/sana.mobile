@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-              android:background="@drawable/bg_hdpi">
+    android:background="@drawable/bg_hdpi">
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="org.sana.android.activity.AuthenticationActivity" >
@@ -13,12 +13,12 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/authentication_sana"
         android:src="@drawable/logo"
-        android:maxHeight="64px"/>
+        android:maxHeight="64px" />
 
     <LinearLayout
         android:layout_width="@dimen/auth_input_width"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/input_username"
@@ -42,27 +42,30 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/authentication_login" />
+
         <Button
             android:id="@+id/btn_exit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/general_exit"
             android:onClick="submit"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp" />
+
         <Button
             android:id="@+id/btn_configure"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/button_configure"
             android:onClick="submit"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp" />
     </LinearLayout>
+
     <TextView
-            android:id="@+id/text_local_version"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textAppearance="?android:attr/textAppearanceInverse"
-            android:text="@string/display_version" />
+        android:id="@+id/text_local_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceInverse"
+        android:text="@string/display_version" />
 
 </LinearLayout>

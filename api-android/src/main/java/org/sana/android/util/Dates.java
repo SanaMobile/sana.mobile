@@ -15,17 +15,18 @@ public class Dates {
             .DATE_FORMAT,
             Locale.US);
 
-    private Dates(){}
+    private Dates() {
+    }
 
-    public static String toSQL(Date date){
-       return sdf.format(date);
+    public static String toSQL(Date date) {
+        return sdf.format(date);
     }
 
     public static Date fromSQL(String date) throws ParseException {
         return sdf.parse(date);
     }
 
-    public static String formatForDisplay(Date date, String format){
+    public static String formatForDisplay(Date date, String format) {
         SimpleDateFormat formatter = new SimpleDateFormat(format,
                 Locale.getDefault());
         return formatter.format(date);

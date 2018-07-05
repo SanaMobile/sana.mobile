@@ -29,18 +29,18 @@ import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
 /**
- * SoundElement is a ProcedureElement that asks a question and allows a user to 
- * record a response. This sound is saved to a temp file on the phone's SD card 
- * and then sent to a database on the phone. Once a recording is made, the user 
+ * SoundElement is a ProcedureElement that asks a question and allows a user to
+ * record a response. This sound is saved to a temp file on the phone's SD card
+ * and then sent to a database on the phone. Once a recording is made, the user
  * has the option of re-recording.
  * <p/>
  * <ul type="none">
- * <li><b>Clinical Use</b> This element is useful in several clinical scenarios 
+ * <li><b>Clinical Use</b> This element is useful in several clinical scenarios
  * such as recording extra notes or recording the patient cough, etc.</li>
  * <li><b>Collects</b></li>An audio recording to a file represented as a string
  * file name.</li>
  * </ul>
- * 
+ *
  * @author Sana Development Team
  */
 public class SoundElement extends ProcedureElement implements OnClickListener {
@@ -53,21 +53,25 @@ public class SoundElement extends ProcedureElement implements OnClickListener {
     private String path;
     private File tempSoundFile;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ElementType getType() {
         return ElementType.SOUND;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected View createView(Context c) {
         LinearLayout soundContainer = new LinearLayout(c);
         soundContainer.setOrientation(LinearLayout.VERTICAL);
-        path = Environment.getExternalStorageDirectory().getAbsolutePath() 
-        	+ "/testRecording.3gp";
-        
-        if(question == null) {
+        path = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + "/testRecording.3gp";
+
+        if (question == null) {
             question = "Record audio:";
         }
 
@@ -75,160 +79,160 @@ public class SoundElement extends ProcedureElement implements OnClickListener {
         textViewSound = new TextView(c);
         textViewSound.setText(question);
         textViewSound.setGravity(Gravity.CENTER);
-        textViewSound.setTextAppearance(c, 
-        		android.R.style.TextAppearance_Medium);
-        
+        textViewSound.setTextAppearance(c,
+                android.R.style.TextAppearance_Medium);
+
         //Set accompanying figure
         imageViewSound = new ImageView(c);
-        if(!figure.equals("")){    
-	        try{
-	        	String imagePath = c.getPackageName() + ":" + figure;
-	        	int resID = c.getResources().getIdentifier(imagePath, null, 
-	        			null);
-	        	imageViewSound.setImageResource(resID);
-	        	imageViewSound.setAdjustViewBounds(true); // set the ImageView bounds to match the Drawable's dimensions
-	        	imageViewSound.setLayoutParams(new Gallery.LayoutParams(
-	        			LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-	        	imageViewSound.setPadding(10,10,10,10);
-	        }
-	        catch(Exception e){
-	        	Log.e(TAG, "Couldn't find resource figure " + e.toString());
-	        }
+        if (!figure.equals("")) {
+            try {
+                String imagePath = c.getPackageName() + ":" + figure;
+                int resID = c.getResources().getIdentifier(imagePath, null,
+                        null);
+                imageViewSound.setImageResource(resID);
+                imageViewSound.setAdjustViewBounds(true); // set the ImageView bounds to match the Drawable's dimensions
+                imageViewSound.setLayoutParams(new Gallery.LayoutParams(
+                        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                imageViewSound.setPadding(10, 10, 10, 10);
+            } catch (Exception e) {
+                Log.e(TAG, "Couldn't find resource figure " + e.toString());
+            }
         }
-        
+
         //Add to page
-        soundContainer.addView(textViewSound, 
-        		new LinearLayout.LayoutParams(-1, -1, 0.1f));
-        soundContainer.addView(imageViewSound, 
-        		new LinearLayout.LayoutParams(-1, -1, 0.1f));
-        
+        soundContainer.addView(textViewSound,
+                new LinearLayout.LayoutParams(-1, -1, 0.1f));
+        soundContainer.addView(imageViewSound,
+                new LinearLayout.LayoutParams(-1, -1, 0.1f));
+
         //Initialize audio control buttons
         //Start Record Button
         startRecButt = new Button(c);
         startRecButt.setText("Start Recording");
         startRecButt.setOnClickListener(this);
-        
+
         //End Record Button (disabled initially)
         endRecButt = new Button(c);
         endRecButt.setText("Stop Recording");
         endRecButt.setEnabled(false);
         endRecButt.setOnClickListener(this);
-        
+
         //Add to page
-        soundContainer.addView(startRecButt, 
-        		new LinearLayout.LayoutParams(-1, -1, 0.1f));
-        soundContainer.addView(endRecButt, 
-        		new LinearLayout.LayoutParams(-1, -1, 0.1f));
-        
+        soundContainer.addView(startRecButt,
+                new LinearLayout.LayoutParams(-1, -1, 0.1f));
+        soundContainer.addView(endRecButt,
+                new LinearLayout.LayoutParams(-1, -1, 0.1f));
+
         return soundContainer;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onClick(View v) {
-    	//Start Record button clicked
+        //Start Record button clicked
         if (v == startRecButt) {
-        	
-        	textViewSound.setText(question);
-        	
+
+            textViewSound.setText(question);
+
             //toggle record buttons
             startRecButt.setEnabled(false);
             endRecButt.setEnabled(true);
-            
+
             String state = android.os.Environment.getExternalStorageState();
-            if(!state.equals(android.os.Environment.MEDIA_MOUNTED))  {
-            	Log.e(TAG, "SD Card is not mounted.  It is " + state + "build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/res");
+            if (!state.equals(android.os.Environment.MEDIA_MOUNTED)) {
+                Log.e(TAG, "SD Card is not mounted.  It is " + state + "build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/res");
             }
 
             // make sure the directory we plan to store the recording in exists
             File directory = new File(path).getParentFile();
             if (!directory.exists() && !directory.mkdirs()) {
-            	Log.e(TAG, "Path to file could not be created.");
+                Log.e(TAG, "Path to file could not be created.");
             }
-	            
+
             //create new recorder
             recorder = new MediaRecorder();
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             recorder.setOutputFile(path);
-            
+
             //start recording
             try {
-				recorder.prepare();
-				recorder.start();
-				endRecButt.setText("Stop Recording");
-			} 
-            catch (Exception e) {
-				endRecButt.setText("Recording Error");
-				Log.e(TAG, "Couldn't setup audio recorder: " + e);
-			}
-        } 
+                recorder.prepare();
+                recorder.start();
+                endRecButt.setText("Stop Recording");
+            } catch (Exception e) {
+                endRecButt.setText("Recording Error");
+                Log.e(TAG, "Couldn't setup audio recorder: " + e);
+            }
+        }
         //End Record button clicked
         else if (v == endRecButt) {
-        	
-        	startRecButt.setEnabled(true);
-        	
-        	// if we are still in the recording state
-        	// then allow the user to stop recording
-        	if (!(endRecButt.getText().equals("Play Back Recording"))) {
-        		
-        		// stop recording
-        		textViewSound.setText("Recording Complete!");
+
+            startRecButt.setEnabled(true);
+
+            // if we are still in the recording state
+            // then allow the user to stop recording
+            if (!(endRecButt.getText().equals("Play Back Recording"))) {
+
+                // stop recording
+                textViewSound.setText("Recording Complete!");
                 recorder.stop();
                 recorder.release();
                 endRecButt.setText("Play Back Recording");
-                
-                
+
+
                 Thread t = new Thread() {
-					public void run() {
-						  // now write the file to the database
-		                ContentValues values = new ContentValues();
-		                String procedureId = getProcedure().getInstanceUri()
-		                						.getPathSegments().get(1);
-		                values.put(SoundSQLFormat.ENCOUNTER_ID, 
-		                		procedureId);
-		                values.put(SoundSQLFormat.ELEMENT_ID, getId());
-		                Uri recording = 
-		                	getContext().getContentResolver().insert(
-		                			SoundSQLFormat.CONTENT_URI, values);
-		       
-		                // Make this the answer we return 
-		                setAnswer(recording.getPathSegments().get(1));
-		                
-						try {
-							byte[] buffer = new byte[1024];
-							OutputStream os =  getContext().getContentResolver()
-												.openOutputStream(recording);
-							InputStream is = new FileInputStream(path);
-		                	os = getContext().getContentResolver()
-		                						.openOutputStream(recording);
-		                    int bytesRemaining = is.available();
-		                    while(bytesRemaining > 0) {
-		                    	int read = is.read(buffer);
-		                    	os.write(buffer, 0, read);
-		                    	bytesRemaining -= read;
-		                    }
-		
-		                    is.close();
-							os.flush();
-							os.close();
-							Log.i(TAG, "Successfully saved audio");
-							
-						} catch (FileNotFoundException e) {
-							Log.e(TAG, "While storing the audio, got an " +
-									"exception: " + e.toString());
-						} catch (IOException e) {
-							Log.e(TAG, "While storing the audio, got an "
-									+"exception: " + e.toString());
-							Log.i(TAG, e.getStackTrace().toString());
-						} 
-					}
-					    
-				};
-				t.start();
-                
-                
+                    public void run() {
+                        // now write the file to the database
+                        ContentValues values = new ContentValues();
+                        String procedureId = getProcedure().getInstanceUri()
+                                .getPathSegments().get(1);
+                        values.put(SoundSQLFormat.ENCOUNTER_ID,
+                                procedureId);
+                        values.put(SoundSQLFormat.ELEMENT_ID, getId());
+                        Uri recording =
+                                getContext().getContentResolver().insert(
+                                        SoundSQLFormat.CONTENT_URI, values);
+
+                        // Make this the answer we return
+                        setAnswer(recording.getPathSegments().get(1));
+
+                        try {
+                            byte[] buffer = new byte[1024];
+                            OutputStream os = getContext().getContentResolver()
+                                    .openOutputStream(recording);
+                            InputStream is = new FileInputStream(path);
+                            os = getContext().getContentResolver()
+                                    .openOutputStream(recording);
+                            int bytesRemaining = is.available();
+                            while (bytesRemaining > 0) {
+                                int read = is.read(buffer);
+                                os.write(buffer, 0, read);
+                                bytesRemaining -= read;
+                            }
+
+                            is.close();
+                            os.flush();
+                            os.close();
+                            Log.i(TAG, "Successfully saved audio");
+
+                        } catch (FileNotFoundException e) {
+                            Log.e(TAG, "While storing the audio, got an " +
+                                    "exception: " + e.toString());
+                        } catch (IOException e) {
+                            Log.e(TAG, "While storing the audio, got an "
+                                    + "exception: " + e.toString());
+                            Log.i(TAG, e.getStackTrace().toString());
+                        }
+                    }
+
+                };
+                t.start();
+
+
 //                
 //                InputStream is = null;
 //                OutputStream os = null;
@@ -271,57 +275,65 @@ public class SoundElement extends ProcedureElement implements OnClickListener {
 //
 //				}
 
-            // if we are in a completed state
-            // then allow audio playback
-        	} else {
-        		MediaPlayer mp = new MediaPlayer();
-        	    try {
-					mp.setDataSource(path);
-					mp.prepare();
-	        	    mp.start();
-				} catch (Exception e) {
-					return;
-				}
-				startRecButt.setText("Rerecord");
-        	}  
-        }    
+                // if we are in a completed state
+                // then allow audio playback
+            } else {
+                MediaPlayer mp = new MediaPlayer();
+                try {
+                    mp.setDataSource(path);
+                    mp.prepare();
+                    mp.start();
+                } catch (Exception e) {
+                    return;
+                }
+                startRecButt.setText("Rerecord");
+            }
+        }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAnswer(String answer) {
-    	this.answer = answer;
+        this.answer = answer;
     }
-    
 
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getAnswer() {
         return answer;
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void buildXML(StringBuilder sb) {
-    	sb.append("<Element type=\"" + getType().name() + "\" id=\"" + id);
+        sb.append("<Element type=\"" + getType().name() + "\" id=\"" + id);
         sb.append("\" answer=\"" + getAnswer());
         sb.append("\" concept=\"" + getConcept());
         sb.append("\"/>\n");
     }
-    
-    /** Default constructor */
-    private SoundElement(String id, String question, String answer, 
-    		String concept, String figure, String audio) 
-    {
-        super(id,question,answer, concept, figure, audio);
-    }
-    
 
-    /** @see ProcedureElement#fromXML(String, String, String, String, String, String, Node) */
-   public static SoundElement fromXML(String id, String question, 
-    		String answer, String concept, String figure, String audio, 
-    		Node node)  throws ProcedureParseException 
-    {
+    /**
+     * Default constructor
+     */
+    private SoundElement(String id, String question, String answer,
+                         String concept, String figure, String audio) {
+        super(id, question, answer, concept, figure, audio);
+    }
+
+
+    /**
+     * @see ProcedureElement#fromXML(String, String, String, String, String, String, Node)
+     */
+    public static SoundElement fromXML(String id, String question,
+                                       String answer, String concept, String figure, String audio,
+                                       Node node) throws ProcedureParseException {
         return new SoundElement(id, question, answer, concept, figure, audio);
     }
 

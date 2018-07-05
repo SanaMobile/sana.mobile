@@ -1,20 +1,21 @@
-/**Copyright (c) 2015, Sana
+/**
+ * Copyright (c) 2015, Sana
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * <p>
  * Redistributions of source code must retain the above copyright notice, this
  * list of conditions and the following disclaimer.
- *
+ * <p>
  * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- *
+ * <p>
  * Neither the name of the Sana nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
- *
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -212,7 +213,7 @@ public class Functions {
      *      is null.
      */
     public static long difference(Calendar arg1, Calendar arg2) {
-        return difference(arg1,arg2,MILLISECONDS);
+        return difference(arg1, arg2, MILLISECONDS);
     }
 
     /**
@@ -251,21 +252,21 @@ public class Functions {
         double mod = 1.0;
 
         // Compute difference using units as Calendar field
-        switch(units) {
+        switch (units) {
             // First several we chain together the multiplier
             case WEEKS:
-                mod = mod*7;
+                mod = mod * 7;
             case DAYS:
-                mod = mod*24;
+                mod = mod * 24;
             case HOURS:
-                mod = mod*60;
+                mod = mod * 60;
             case MINUTES:
-                mod = mod*60;
+                mod = mod * 60;
             case SECONDS:
-                mod = mod*1000;
+                mod = mod * 1000;
             case MILLISECONDS:
                 delta = arg1.getTimeInMillis() - arg2.getTimeInMillis();
-                delta = (long) Math.floor(delta/mod);
+                delta = (long) Math.floor(delta / mod);
                 break;
 
             case MONTHS:
@@ -273,7 +274,7 @@ public class Functions {
                 minuend = arg1.get(Calendar.YEAR);
                 subtrahend = arg2.get(Calendar.YEAR);
                 delta = minuend - subtrahend;
-                if(isBefore(arg1,arg2,Calendar.DAY_OF_YEAR)) delta--;
+                if (isBefore(arg1, arg2, Calendar.DAY_OF_YEAR)) delta--;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Calendar units: "
@@ -433,7 +434,7 @@ public class Functions {
         DateTime start = new DateTime(arg1);
         DateTime end = new DateTime(arg2);
         // Compute delta into appropriate units
-        switch(units) {
+        switch (units) {
             case YEARS:
                 delta = Years.yearsBetween(start, end).getYears();
                 break;
@@ -453,7 +454,7 @@ public class Functions {
                 delta = Minutes.minutesBetween(start, end).getMinutes();
                 break;
             case SECONDS:
-                delta = Double.valueOf(Math.floor(delta/1000.0)).longValue();
+                delta = Double.valueOf(Math.floor(delta / 1000.0)).longValue();
                 break;
             case MILLISECONDS:
                 // Here for completeness but already calculated
@@ -493,7 +494,7 @@ public class Functions {
         // Argument validation
         if (arg1 == null) throw new NullPointerException("null minuend");
         if (arg2 == null) throw new NullPointerException("null subtrahend");
-        return period(arg1.getTimeInMillis(),arg2.getTimeInMillis(),units);
+        return period(arg1.getTimeInMillis(), arg2.getTimeInMillis(), units);
     }
 
 
@@ -524,7 +525,7 @@ public class Functions {
         // Argument validation
         if (arg1 == null) throw new NullPointerException("null minuend");
         if (arg2 == null) throw new NullPointerException("null subtrahend");
-        return period(arg1.getTime(),arg2.getTime(),units);
+        return period(arg1.getTime(), arg2.getTime(), units);
     }
 
     /**
@@ -534,7 +535,7 @@ public class Functions {
      *            prior.
      * @return A new date object as the first day of the first month n years from now.
      */
-    public static Date dateFromAge(int age){
+    public static Date dateFromAge(int age) {
         DateTime dateTime = new DateTime();
         Date date = dateTime.minusYears(age).withMonthOfYear(1).withDayOfMonth(1).toDate();
         return date;

@@ -4,9 +4,9 @@
     style="@style/Widget.Button.Large.Dark"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-              android:gravity="fill_vertical"
+    android:gravity="fill_vertical"
     android:orientation="vertical"
-              android:background="@drawable/main_background">
+    android:background="@drawable/main_background">
 
     <ImageView
         android:id="@+id/imageView1"
@@ -17,7 +17,7 @@
         android:adjustViewBounds="true"
         android:maxHeight="64dp"
         android:layout_gravity="center"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp" />
 
     <Button
         android:id="@+id/btn_main_tasks"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:onClick="submit"
         android:text="@string/button_main_view_prior_encounters" />
-    
+
     <!--
     <fragment
         android:id="@+id/fragment1"
@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:onClick="submit"
         android:text="@string/button_main_training_mode" />
-        
+
     <Button
         android:id="@+id/btn_exit"
         style="@style/Widget.Button.Large.Dark"

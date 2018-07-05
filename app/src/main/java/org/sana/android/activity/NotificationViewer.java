@@ -16,38 +16,40 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * NotificationViewer builds the interface for viewing a single received 
+ * NotificationViewer builds the interface for viewing a single received
  * notification. This displays the diagnosis, pertaining patient, and allows the
  * user to dismiss the notification if desired.
- * 
+ *
  * @author Sana Dev Team
  */
 public class NotificationViewer extends FragmentActivity implements OnClickListener {
-	
-	private static String TAG = NotificationViewer.class.getSimpleName();
 
-	private static final String[] PROJECTION = new String[] { 
-		Notifications.Contract._ID, Notifications.Contract.PROCEDURE_ID, 
-		Notifications.Contract.PATIENT_ID, Notifications.Contract.FULL_MESSAGE};
-	private Button dismiss, save;
-	private Uri notification;
-	
-	/** {@inheritDoc} */
-	@Override
-	public void onCreate(Bundle instance) {
+    private static String TAG = NotificationViewer.class.getSimpleName();
+
+    private static final String[] PROJECTION = new String[]{
+            Notifications.Contract._ID, Notifications.Contract.PROCEDURE_ID,
+            Notifications.Contract.PATIENT_ID, Notifications.Contract.FULL_MESSAGE};
+    private Button dismiss, save;
+    private Uri notification;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onCreate(Bundle instance) {
         super.onCreate(instance);
         notification = getIntent().getData();
-        
+
         Cursor cursor = managedQuery(getIntent().getData(), PROJECTION, null,
                 null, Notifications.DEFAULT_SORT_ORDER);
-        
+
         cursor.moveToFirst();
         String procedureIdentifier = cursor.getString(cursor.getColumnIndex(
-        		Notifications.Contract.PROCEDURE_ID));
+                Notifications.Contract.PROCEDURE_ID));
         String patientId = cursor.getString(cursor.getColumnIndex(
-        		Notifications.Contract.PATIENT_ID));
+                Notifications.Contract.PATIENT_ID));
         String message = cursor.getString(cursor.getColumnIndex(
-        		Notifications.Contract.FULL_MESSAGE));
+                Notifications.Contract.FULL_MESSAGE));
         cursor.close();
         /*
         cursor = managedQuery(Encounters.CONTENT_URI, new String[] {Encounters._ID, Encounters.PROCEDURE, Encounters.STATE},
@@ -105,7 +107,7 @@ public class NotificationViewer extends FragmentActivity implements OnClickListe
         LinearLayout notifView = new LinearLayout(this);
         notifView.setOrientation(LinearLayout.VERTICAL);
         TextView tv1 = new TextView(this);
-        tv1.setText(getString(R.string.note_pt_diagnosis)+" " + patientId);
+        tv1.setText(getString(R.string.note_pt_diagnosis) + " " + patientId);
         tv1.setTextAppearance(this, android.R.style.TextAppearance_Large);
         tv1.setGravity(Gravity.CENTER_HORIZONTAL);
         TextView tv2 = new TextView(this);
@@ -124,9 +126,9 @@ public class NotificationViewer extends FragmentActivity implements OnClickListe
         save.setText(getString(R.string.general_save));
         save.setOnClickListener(this);
         LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.HORIZONTAL);      
-        ll.addView(dismiss,new LinearLayout.LayoutParams(-2,-1, 0.5f));
-        ll.addView(save,new LinearLayout.LayoutParams(-2,-1, 0.5f));
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.addView(dismiss, new LinearLayout.LayoutParams(-2, -1, 0.5f));
+        ll.addView(save, new LinearLayout.LayoutParams(-2, -1, 0.5f));
         notifView.setWeightSum(1.0f);
         ll.setGravity(Gravity.BOTTOM);
         notifView.addView(tv1);
@@ -135,24 +137,24 @@ public class NotificationViewer extends FragmentActivity implements OnClickListe
         notifView.addView(tv4);
         notifView.addView(ll);
         this.setContentView(notifView);
-	}
+    }
 
-	/**
-	 * If a user elects to dismiss the notification, the status bar will be 
-	 * cleared of ALL notification alerts. This employs a "only the latest 
-	 * notification in status bar" policy.
-	 */
-	@Override
-	public void onClick(View v) {
-		if (v == dismiss) {
-			this.getContentResolver().delete(notification, null, null);
-			((NotificationManager)this.getSystemService(NOTIFICATION_SERVICE))
-				.cancelAll();
-			this.finish();
-		} else if (v == save) {
-			((NotificationManager)this.getSystemService(NOTIFICATION_SERVICE))
-				.cancelAll();
-			this.finish();
-		}
-	}
+    /**
+     * If a user elects to dismiss the notification, the status bar will be
+     * cleared of ALL notification alerts. This employs a "only the latest
+     * notification in status bar" policy.
+     */
+    @Override
+    public void onClick(View v) {
+        if (v == dismiss) {
+            this.getContentResolver().delete(notification, null, null);
+            ((NotificationManager) this.getSystemService(NOTIFICATION_SERVICE))
+                    .cancelAll();
+            this.finish();
+        } else if (v == save) {
+            ((NotificationManager) this.getSystemService(NOTIFICATION_SERVICE))
+                    .cancelAll();
+            this.finish();
+        }
+    }
 }

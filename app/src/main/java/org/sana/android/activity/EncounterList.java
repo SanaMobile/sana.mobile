@@ -28,12 +28,13 @@ import android.widget.Toast;
  * @author Sana Development Team
  */
 public class EncounterList extends BaseActivity implements
-        EncounterListFragment.OnModelItemSelectedListener
-{
-	private static final String TAG = EncounterList.class.getSimpleName();
-	private EncounterListFragment mListFragment;
+        EncounterListFragment.OnModelItemSelectedListener {
+    private static final String TAG = EncounterList.class.getSimpleName();
+    private EncounterListFragment mListFragment;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onStart()");
@@ -49,15 +50,16 @@ public class EncounterList extends BaseActivity implements
         LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(mReceiver);
     }
 
-   @Override
+    @Override
     protected void onResume() {
         super.onResume();
-    	Log.i(TAG, "onResume()");
+        Log.i(TAG, "onResume()");
         IntentFilter filter = new IntentFilter(Response.RESPONSE);
-        try{
+        try {
             filter.addDataType(Encounters.CONTENT_ITEM_TYPE);
-        } catch (Exception e){}
-        
+        } catch (Exception e) {
+        }
+
         LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(mReceiver, filter);
     }
 
@@ -76,24 +78,25 @@ public class EncounterList extends BaseActivity implements
 
     @Override
     public void onModelItemSelected(long id) {
-		Log.i(TAG, "onModelItemSelected() " + id);
+        Log.i(TAG, "onModelItemSelected() " + id);
         Bundle data = mListFragment.getSelectedData(id);
         Uri encounter = mListFragment.getItemUri(id);
         Boolean finished = mListFragment.isItemFinished(id);
-		Log.d(TAG, "....finished=" + finished + ", uri=" + encounter);
+        Log.d(TAG, "....finished=" + finished + ", uri=" + encounter);
         Intent intent = null;
-        try{
-			if(finished || !finished){
-				intent = new Intent(Intent.ACTION_VIEW, encounter);
-				startActivity(intent);
-			} else {
-				intent = new Intent(Intent.ACTION_EDIT, encounter);
-				startActivity(intent);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        try {
+            if (finished || !finished) {
+                intent = new Intent(Intent.ACTION_VIEW, encounter);
+                startActivity(intent);
+            } else {
+                intent = new Intent(Intent.ACTION_EDIT, encounter);
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
     /*
 	private static final String[] PROJECTION = {
 		    Encounters.Contract._ID,
@@ -511,93 +514,99 @@ public class EncounterList extends BaseActivity implements
         return false;
 	}
 */
-	public static final int SELECT_ALL = 0;
-	public static final int SELECT_FAILED = 3;
-	public static final int DELETE = 1;
-	public static final int RESEND = 2;
-	//public static final int CANCEL_UPLOAD = 2;
+    public static final int SELECT_ALL = 0;
+    public static final int SELECT_FAILED = 3;
+    public static final int DELETE = 1;
+    public static final int RESEND = 2;
+    //public static final int CANCEL_UPLOAD = 2;
 
-	/** Available options are to select all, delete, or resend */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0, SELECT_ALL, 0, getString(R.string.menu_select_all));
-		menu.add(0, DELETE, 1, getString(R.string.menu_delete));
-		menu.add(0, RESEND, 2, getString(R.string.menu_resend));
-		//menu.add(0, CANCEL_UPLOAD, 2, "Cancel Upload");
-		return true;
-	}
+    /**
+     * Available options are to select all, delete, or resend
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, SELECT_ALL, 0, getString(R.string.menu_select_all));
+        menu.add(0, DELETE, 1, getString(R.string.menu_delete));
+        menu.add(0, RESEND, 2, getString(R.string.menu_resend));
+        //menu.add(0, CANCEL_UPLOAD, 2, "Cancel Upload");
+        return true;
+    }
 
     boolean selectAllToggle = false;
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-		Log.i(TAG, "onOptionItemsSelected() " + item.getItemId());
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, "onOptionItemsSelected() " + item.getItemId());
         switch (item.getItemId()) {
-        case SELECT_ALL:
-            if(!selectAllToggle)
-                mListFragment.selectAllProcedures();
-            else
-                mListFragment.unselectAllProcedures();
-            selectAllToggle = !selectAllToggle;
-            return true;
-        case DELETE:
-			mListFragment.deleteSelected();
-            return true;
-        case RESEND:
-            resendSelected();
-            return true;
-        //case CANCEL_UPLOAD:
-        //    cancelUploads();
-        //    return true;
+            case SELECT_ALL:
+                if (!selectAllToggle)
+                    mListFragment.selectAllProcedures();
+                else
+                    mListFragment.unselectAllProcedures();
+                selectAllToggle = !selectAllToggle;
+                return true;
+            case DELETE:
+                mListFragment.deleteSelected();
+                return true;
+            case RESEND:
+                resendSelected();
+                return true;
+            //case CANCEL_UPLOAD:
+            //    cancelUploads();
+            //    return true;
         }
         return false;
     }
-	// gets selec
+
+    // gets selec
     private void resendSelected() {
-		Log.i(TAG, "resendSelected()");
-		int index = 0;
+        Log.i(TAG, "resendSelected()");
+        int index = 0;
         List<Uri> uris = mListFragment.getSelected();
-        for(Uri uri:uris){
+        for (Uri uri : uris) {
             Intent intent = new Intent(Intents.ACTION_CREATE, uri);
             startService(intent);
             index++;
         }
-		Log.i(TAG,"....sent: " + index);
+        Log.i(TAG, "....sent: " + index);
     }
 
     private void resendSelectedFinished() {
-		Log.i(TAG, "resendSelectedFinished()");
-		int index = 0;
+        Log.i(TAG, "resendSelectedFinished()");
+        int index = 0;
         List<Uri> uris = mListFragment.getSelectedFinished();
-        for(Uri uri:uris){
+        for (Uri uri : uris) {
             Intent intent = new Intent(Intents.ACTION_CREATE, uri);
             startService(intent);
             index++;
         }
-		Log.i(TAG,"....sent: " + index);
+        Log.i(TAG, "....sent: " + index);
     }
 
-    private void cancelUploads(){
+    private void cancelUploads() {
 
     }
-    
+
 
     @Override
-    protected void handleBroadcast(Intent data){
-        Log.i(TAG,"handleBroadcast()");
+    protected void handleBroadcast(Intent data) {
+        Log.i(TAG, "handleBroadcast()");
         cancelProgressDialogFragment();
         String message = data.getStringExtra(Response.MESSAGE);
-        Response.Code code = Response.Code.get(data.getIntExtra(Response.CODE,-1));
-        switch(code){
+        Response.Code code = Response.Code.get(data.getIntExtra(Response.CODE, -1));
+        switch (code) {
             case CONTINUE:
-                if(showProgressForeground())
+                if (showProgressForeground())
                     showProgressDialogFragment(message);
                 break;
             default:
                 hideProgressDialogFragment();
-                if(!TextUtils.isEmpty(message)){
-                    Toast.makeText(this,message,Toast.LENGTH_LONG).show();
+                if (!TextUtils.isEmpty(message)) {
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                 }
         }
     }

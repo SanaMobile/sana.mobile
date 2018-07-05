@@ -25,13 +25,14 @@ import android.view.View;
  * <li><b>Clinical Use </b> Defined by subclasses.</li>
  * <li><b>Collects </b>Date value formatted as <code>yyyy/MM/dd</code></li>
  * </ul>
- * 
+ *
  * @author Sana Development Team
  */
 public class DateElement extends ProcedureElement {
 
-    class DateValueSetter implements CustomDatePicker.OnDateChangedListener{
+    class DateValueSetter implements CustomDatePicker.OnDateChangedListener {
         final String TAG = DateValueSetter.class.getSimpleName();
+
         @Override
         public void onDateChanged(CustomDatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
@@ -45,14 +46,17 @@ public class DateElement extends ProcedureElement {
         }
 
     }
-	CustomDatePicker dp = null;
-	Date dateAnswer = new Date();
+
+    CustomDatePicker dp = null;
+    Date dateAnswer = new Date();
     Calendar dateValue = Calendar.getInstance(TimeZone.getDefault());
 
-    /** {@inheritDoc} */
-	@Override
-	protected View createView(Context c) {
-		dp = new CustomDatePicker(c);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected View createView(Context c) {
+        dp = new CustomDatePicker(c);
         String locale = Preferences.getString(c, Constants.PREFERENCE_LOCALE, "en");
         Locales.updateLocale(c, locale);
         String[] months = c.getResources().getStringArray(R.array.months_long_format);
@@ -61,32 +65,38 @@ public class DateElement extends ProcedureElement {
                 dateValue.get(Calendar.MONTH),
                 dateValue.get(Calendar.DAY_OF_MONTH),
                 new DateValueSetter());
-		return encapsulateQuestion(c, dp);
-	}
+        return encapsulateQuestion(c, dp);
+    }
 
-    /** {@inheritDoc} */
-	@Override
-	public String getAnswer() {
-		 if(!isViewActive())
-			 return answer;
-		 else {
-             dateValue.set(Calendar.YEAR, dp.getYear());
-             dateValue.set(Calendar.MONTH, dp.getMonth());
-             dateValue.set(Calendar.DAY_OF_MONTH, dp.getDayOfMonth());
-			 return DateUtil.format(dateValue.getTime());
-		 }
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getAnswer() {
+        if (!isViewActive())
+            return answer;
+        else {
+            dateValue.set(Calendar.YEAR, dp.getYear());
+            dateValue.set(Calendar.MONTH, dp.getMonth());
+            dateValue.set(Calendar.DAY_OF_MONTH, dp.getDayOfMonth());
+            return DateUtil.format(dateValue.getTime());
+        }
+    }
 
-    /** {@inheritDoc} */
-	@Override
-	public ElementType getType() {
-		return ElementType.DATE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ElementType getType() {
+        return ElementType.DATE;
+    }
 
-    /** {@inheritDoc} */
-	@Override
-	public void setAnswer(String answer) {
-        if(!TextUtils.isEmpty(answer)){
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAnswer(String answer) {
+        if (!TextUtils.isEmpty(answer)) {
             try {
                 dateValue.setTime(DateUtil.parseDate(answer));
             } catch (ParseException e) {
@@ -101,33 +111,31 @@ public class DateElement extends ProcedureElement {
                     dateValue.get(Calendar.MONTH),
                     dateValue.get(Calendar.DAY_OF_MONTH));
         }
-	}
-	
-	private DateElement(String id, String question, String answer, 
-			String concept, String figure, String audio) 
-	{
+    }
+
+    private DateElement(String id, String question, String answer,
+                        String concept, String figure, String audio) {
         super(id, question, answer, concept, figure, audio);
     }
-    
-    /** 
+
+    /**
      * Creates the element from an XML procedure definition.
-     * 
-     * @param id The unique identifier of this element within its procedure.
+     *
+     * @param id       The unique identifier of this element within its procedure.
      * @param question The text that will be displayed to the user as a question
-     * @param answer The result of data capture.
-     * @param concept A required categorization of the type of data captured.
-     * @param figure An optional figure to display to the user.
-     * @param audio An optional audio prompt to play for the user. 
-     * @param node The source xml node. 
+     * @param answer   The result of data capture.
+     * @param concept  A required categorization of the type of data captured.
+     * @param figure   An optional figure to display to the user.
+     * @param audio    An optional audio prompt to play for the user.
+     * @param node     The source xml node.
      * @return A new element.
-     * @throws ProcedureParseException if an error occurred while parsing 
-     * 		additional information from the Node
+     * @throws ProcedureParseException if an error occurred while parsing
+     *                                 additional information from the Node
      */
-	public static DateElement fromXML(String id, String question, String answer,
-			String concept, String figure, String audio, Node node) throws
-			ProcedureParseException 
-	{
-		return new DateElement(id, question, answer, concept, figure, audio);
+    public static DateElement fromXML(String id, String question, String answer,
+                                      String concept, String figure, String audio, Node node) throws
+            ProcedureParseException {
+        return new DateElement(id, question, answer, concept, figure, audio);
     }
 
 }

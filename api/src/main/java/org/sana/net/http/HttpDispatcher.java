@@ -1,28 +1,28 @@
 /**
  * Copyright (c) 2013, Sana
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Sana nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the Sana nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * <p>
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL Sana BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.sana.net.http;
@@ -65,218 +65,222 @@ import com.google.gson.reflect.TypeToken;
  * @author Sana Development
  *
  */
-public class HttpDispatcher{
+public class HttpDispatcher {
 
-	public static class JSONHandler<T> extends ContentHandler implements ResponseHandler<T>{
+    public static class JSONHandler<T> extends ContentHandler implements ResponseHandler<T> {
 
-		/* (non-Javadoc)
-		 * @see java.net.ContentHandler#getContent(java.net.URLConnection)
-		 */
-		@Override
-		public T getContent(URLConnection connection) throws IOException {
-			
-			StringBuilder response  = new StringBuilder();
-			String contentType = connection.getHeaderField("Content-Type");
-			
-			String charset = null;
-			for (String param : contentType.replace(" ", "").split(";")) {
-			    if (param.startsWith("charset=")) {
-			        charset = param.split("=", 2)[1];
-			        break;
-			    }
-			}
+        /* (non-Javadoc)
+         * @see java.net.ContentHandler#getContent(java.net.URLConnection)
+         */
+        @Override
+        public T getContent(URLConnection connection) throws IOException {
 
-			if (charset != null) {
-			    BufferedReader reader = null;
-			    try {
-			        reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), charset));
-			        for (String line; (line = reader.readLine()) != null;) {
-			            response.append(line);
-			        }
-			    } finally {
-			        if (reader != null) try { reader.close(); } catch (IOException logOrIgnore) {}
-			    }
-			} else {
-			    // It's likely binary content, use InputStream/OutputStream.
-			}
-			return null;
-		}
+            StringBuilder response = new StringBuilder();
+            String contentType = connection.getHeaderField("Content-Type");
 
-		/* (non-Javadoc)
-		 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
-		 */
-		@Override
-		public T handleResponse(HttpResponse response)
-				throws ClientProtocolException, IOException {
-			
-			HttpEntity entity = response.getEntity();
-			String responseString = EntityUtils.toString(response.getEntity());
-			EntityUtils.consume(response.getEntity());
-			
-			Type type = new TypeToken<Response<T>>(){}.getType();
-			T t = new Gson().fromJson(responseString, type);
-			return t;
-		}
-		
-	}
-	
-	public static class FileHandler extends ContentHandler implements ResponseHandler<URI>{
-		
-		String uri;
-		
-		public FileHandler(String uri){
-			this.uri = uri;
-		}
-		
-		/* (non-Javadoc)
-		 * @see java.net.ContentHandler#getContent(java.net.URLConnection)
-		 */
-		@Override
-		public Object getContent(URLConnection connection) throws IOException {
-			String contentType = connection.getHeaderField("Content-Type");
-			
-			String charset = null;
-			for (String param : contentType.replace(" ", "").split(";")) {
-			    if (param.startsWith("charset=")) {
-			        charset = param.split("=", 2)[1];
-			        break;
-			    }
-			}
+            String charset = null;
+            for (String param : contentType.replace(" ", "").split(";")) {
+                if (param.startsWith("charset=")) {
+                    charset = param.split("=", 2)[1];
+                    break;
+                }
+            }
+
+            if (charset != null) {
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), charset));
+                    for (String line; (line = reader.readLine()) != null; ) {
+                        response.append(line);
+                    }
+                } finally {
+                    if (reader != null) try {
+                        reader.close();
+                    } catch (IOException logOrIgnore) {
+                    }
+                }
+            } else {
+                // It's likely binary content, use InputStream/OutputStream.
+            }
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
+         */
+        @Override
+        public T handleResponse(HttpResponse response)
+                throws ClientProtocolException, IOException {
+
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(response.getEntity());
+            EntityUtils.consume(response.getEntity());
+
+            Type type = new TypeToken<Response<T>>() {
+            }.getType();
+            T t = new Gson().fromJson(responseString, type);
+            return t;
+        }
+
+    }
+
+    public static class FileHandler extends ContentHandler implements ResponseHandler<URI> {
+
+        String uri;
+
+        public FileHandler(String uri) {
+            this.uri = uri;
+        }
+
+        /* (non-Javadoc)
+         * @see java.net.ContentHandler#getContent(java.net.URLConnection)
+         */
+        @Override
+        public Object getContent(URLConnection connection) throws IOException {
+            String contentType = connection.getHeaderField("Content-Type");
+
+            String charset = null;
+            for (String param : contentType.replace(" ", "").split(";")) {
+                if (param.startsWith("charset=")) {
+                    charset = param.split("=", 2)[1];
+                    break;
+                }
+            }
 
             int bytesRead = -1;
             byte[] buffer = new byte[1024];
-            
-			InputStream in = connection.getInputStream();
-			FileOutputStream out = new FileOutputStream(uri);
-			try{
-				while ((bytesRead = in.read(buffer)) != -1) {
-	                out.write(buffer, 0, bytesRead);
-	            }
-			} finally {
-				in.close();
-				out.close();
-			}
-			return URI.create(uri);
-		}
 
-		/* (non-Javadoc)
-		 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
-		 */
-		@Override
-		public URI handleResponse(HttpResponse response)
-				throws ClientProtocolException, IOException {
-			
-			return null;
-		}
-		
-	}
-	
-	public static class StringHandler implements ResponseHandler<String>{
+            InputStream in = connection.getInputStream();
+            FileOutputStream out = new FileOutputStream(uri);
+            try {
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            } finally {
+                in.close();
+                out.close();
+            }
+            return URI.create(uri);
+        }
 
-		/* (non-Javadoc)
-		 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
-		 */
-		@Override
-		public String handleResponse(HttpResponse response)
-				throws ClientProtocolException, IOException {
-			
-			HttpEntity entity = response.getEntity();
-			String responseString = EntityUtils.toString(response.getEntity());
-			EntityUtils.consume(response.getEntity());
-			return responseString;
-		}
-		
-	}
-	
-	private DefaultHttpClient client;
-	private HttpHost host;
-	private SyncBasicHttpContext context;
-	
-	public HttpDispatcher(String host){
-		this(new HttpHost(host));
-	}
-	
-	HttpDispatcher(HttpHost host){
-		this(host, new BasicHttpContext());
-	}
-	
-	HttpDispatcher(HttpHost host, HttpContext context){
-		this.context = new SyncBasicHttpContext(context);
-		this.host = new HttpHost(host);
-		
-	}
-	
-	public static HttpDispatcher getInstance(String uri, Credentials credentials){
-		
-		HttpDispatcher dispatcher = new HttpDispatcher(new HttpHost(uri), 
-				new BasicHttpContext());
-		
-		CredentialsProvider credsProvider = new BasicCredentialsProvider();
-		
-		AuthScope authScope = new AuthScope(
-				dispatcher.host.getHostName(), 
-				dispatcher.host.getPort());
-		
-		credsProvider.setCredentials(authScope,credentials);
-		
-		((DefaultHttpClient) dispatcher.client).getCredentialsProvider().setCredentials(
-		        authScope, credentials);
-		return dispatcher;
-	}
-	
-	public static HttpDispatcher getInstance(String host, int port, String scheme){
-		HttpDispatcher newInstance =  new HttpDispatcher(
-				new HttpHost(host,port,scheme));
-		return newInstance;
-	}
+        /* (non-Javadoc)
+         * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
+         */
+        @Override
+        public URI handleResponse(HttpResponse response)
+                throws ClientProtocolException, IOException {
 
-	public static <T> T read(String url, ResponseHandler<T> handler){
-		try {
-			URL uri = new URL(url);
-			HttpDispatcher dispatcher = getInstance(uri.getHost(), uri.getPort(), uri.getProtocol());
-			HttpRequestFactory factory = new DispatchRequestFactory();
-			HttpUriRequest request;
-			request = (HttpUriRequest) factory.newHttpRequest(HttpGet.METHOD_NAME, url);
-			return dispatcher.execute(request, handler);
-		} catch (MethodNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public static String read(String url){
-		return read(url, new StringHandler());
-	}
-	
-	/**
-	 * 
-	 * @param request
-	 * @param handler
-	 * @return
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 */
-	public <T> T execute(HttpUriRequest request, ResponseHandler<T> handler) throws ClientProtocolException, IOException{
-		return handler.handleResponse(client.execute(request));
-	}
-	
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 */
-	public String execute(HttpUriRequest request) throws ClientProtocolException, IOException{
-		String response = this.execute(request, new StringHandler());
-		return response;
-	}
-	
+            return null;
+        }
+
+    }
+
+    public static class StringHandler implements ResponseHandler<String> {
+
+        /* (non-Javadoc)
+         * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
+         */
+        @Override
+        public String handleResponse(HttpResponse response)
+                throws ClientProtocolException, IOException {
+
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(response.getEntity());
+            EntityUtils.consume(response.getEntity());
+            return responseString;
+        }
+
+    }
+
+    private DefaultHttpClient client;
+    private HttpHost host;
+    private SyncBasicHttpContext context;
+
+    public HttpDispatcher(String host) {
+        this(new HttpHost(host));
+    }
+
+    HttpDispatcher(HttpHost host) {
+        this(host, new BasicHttpContext());
+    }
+
+    HttpDispatcher(HttpHost host, HttpContext context) {
+        this.context = new SyncBasicHttpContext(context);
+        this.host = new HttpHost(host);
+
+    }
+
+    public static HttpDispatcher getInstance(String uri, Credentials credentials) {
+
+        HttpDispatcher dispatcher = new HttpDispatcher(new HttpHost(uri),
+                new BasicHttpContext());
+
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+
+        AuthScope authScope = new AuthScope(
+                dispatcher.host.getHostName(),
+                dispatcher.host.getPort());
+
+        credsProvider.setCredentials(authScope, credentials);
+
+        ((DefaultHttpClient) dispatcher.client).getCredentialsProvider().setCredentials(
+                authScope, credentials);
+        return dispatcher;
+    }
+
+    public static HttpDispatcher getInstance(String host, int port, String scheme) {
+        HttpDispatcher newInstance = new HttpDispatcher(
+                new HttpHost(host, port, scheme));
+        return newInstance;
+    }
+
+    public static <T> T read(String url, ResponseHandler<T> handler) {
+        try {
+            URL uri = new URL(url);
+            HttpDispatcher dispatcher = getInstance(uri.getHost(), uri.getPort(), uri.getProtocol());
+            HttpRequestFactory factory = new DispatchRequestFactory();
+            HttpUriRequest request;
+            request = (HttpUriRequest) factory.newHttpRequest(HttpGet.METHOD_NAME, url);
+            return dispatcher.execute(request, handler);
+        } catch (MethodNotSupportedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String read(String url) {
+        return read(url, new StringHandler());
+    }
+
+    /**
+     *
+     * @param request
+     * @param handler
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public <T> T execute(HttpUriRequest request, ResponseHandler<T> handler) throws ClientProtocolException, IOException {
+        return handler.handleResponse(client.execute(request));
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public String execute(HttpUriRequest request) throws ClientProtocolException, IOException {
+        String response = this.execute(request, new StringHandler());
+        return response;
+    }
+
 }

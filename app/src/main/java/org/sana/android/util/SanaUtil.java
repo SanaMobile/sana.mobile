@@ -40,15 +40,18 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 //TODO
-/** Application utilities
- * 
- * @author Sana Development Team */
+
+/**
+ * Application utilities
+ *
+ * @author Sana Development Team
+ */
 public class SanaUtil {
     public static final String TAG = SanaUtil.class.getSimpleName();
 
-    private static final String[] PROJECTION = new String[] {
+    private static final String[] PROJECTION = new String[]{
             Procedures.Contract._ID,
-            Procedures.Contract.TITLE, 
+            Procedures.Contract.TITLE,
             Procedures.Contract.AUTHOR,
             Procedures.Contract.VERSION
     };
@@ -56,23 +59,26 @@ public class SanaUtil {
     private static final String alphabet =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    /** Generates a random string.
-     * 
+    /**
+     * Generates a random string.
+     *
      * @param prefix a set string to prepend
      * @param length the total length of the
-     * @return a new randomized string. */
+     * @return a new randomized string.
+     */
     public static String randomString(String prefix, int length) {
         return randomString(prefix, length, alphabet);
     }
 
-    /** Generates a random string in a specified alphabet.
-     * 
-     * @param prefix a set string to prepend
-     * @param length the total length of the
+    /**
+     * Generates a random string in a specified alphabet.
+     *
+     * @param prefix   a set string to prepend
+     * @param length   the total length of the
      * @param alphabet the set of valid characters
-     * @return a new random string */
-    public static String randomString(String prefix, int length, String alphabet)
-    {
+     * @return a new random string
+     */
+    public static String randomString(String prefix, int length, String alphabet) {
         StringBuilder sb = new StringBuilder(prefix);
         Random r = new Random();
         int alphabetlength = alphabet.length();
@@ -84,10 +90,12 @@ public class SanaUtil {
         return sb.toString();
     }
 
-    /** Creates an error message as a dialog.
-     * 
+    /**
+     * Creates an error message as a dialog.
+     *
      * @param context the current Context
-     * @param message the error message */
+     * @param message the error message
+     */
     public static void errorAlert(Context context, String message) {
         if (context instanceof Activity) {
             if (!((Activity) context).isFinishing())
@@ -95,15 +103,16 @@ public class SanaUtil {
         }
     }
 
-    /** Creates a message dialog.
-     * 
+    /**
+     * Creates a message dialog.
+     *
      * @param context the current Context
-     * @param title the dialog title
+     * @param title   the dialog title
      * @param message the dialog message
-     * @return a new dialogf for alerting the user. */
+     * @return a new dialogf for alerting the user.
+     */
     public static AlertDialog createDialog(Context context, String title,
-            String message)
-    {
+                                           String message) {
         Builder dialogBuilder = new Builder(context);
         dialogBuilder.setPositiveButton(context.getResources().getString(
                 R.string.general_ok), null);
@@ -113,8 +122,7 @@ public class SanaUtil {
     }
 
     public static AlertDialog okCancelDialog(Context context, String title,
-            String message, DialogInterface.OnClickListener okCancel)
-    {
+                                             String message, DialogInterface.OnClickListener okCancel) {
         Builder dialogBuilder = new Builder(context);
         dialogBuilder.setPositiveButton(context.getResources().getString(
                 R.string.general_ok), okCancel);
@@ -126,15 +134,17 @@ public class SanaUtil {
     }
 
     // TODO
-    /** Retrieves the value for a xml Node attribute or a default if not found.
-     * 
-     * @param node The Node to fetch the value from.
-     * @param name The attribute name.
+
+    /**
+     * Retrieves the value for a xml Node attribute or a default if not found.
+     *
+     * @param node         The Node to fetch the value from.
+     * @param name         The attribute name.
      * @param defaultValue The default value to return if not found.
-     * @return and attribute value or a default if not found. */
+     * @return and attribute value or a default if not found.
+     */
     public static String getNodeAttributeOrDefault(Node node, String name,
-            String defaultValue)
-    {
+                                                   String defaultValue) {
         NamedNodeMap attributes = node.getAttributes();
         Node valueNode = attributes.getNamedItem(name);
         String value = defaultValue;
@@ -144,17 +154,19 @@ public class SanaUtil {
     }
 
     // TODO
-    /** Retrieves the value for a xml Node attribute or fails if not found.
-     * 
-     * @param <T> the exception type to throw
+
+    /**
+     * Retrieves the value for a xml Node attribute or fails if not found.
+     *
+     * @param <T>  the exception type to throw
      * @param node The Node to fetch the value from.
      * @param name The attribute name.
-     * @param e an Exception instance
+     * @param e    an Exception instance
      * @return the attribute value
-     * @throws T */
+     * @throws T
+     */
     public static <T extends Exception> String getNodeAttributeOrFail(Node node,
-            String name, T e) throws T
-    {
+                                                                      String name, T e) throws T {
         NamedNodeMap attributes = node.getAttributes();
         Node valueNode = attributes.getNamedItem(name);
         if (valueNode == null)
@@ -162,19 +174,21 @@ public class SanaUtil {
         return valueNode.getNodeValue();
     }
 
-    /** Utility method for deleting all the elements from a given content URI.
+    /**
+     * Utility method for deleting all the elements from a given content URI.
      * You have to provide the name of the primary key column.
-     * 
-     * @param ctx the context whose content resolver to use to lookup the URI
+     *
+     * @param ctx        the context whose content resolver to use to lookup the URI
      * @param contentUri the content URI to delete all the items from
-     * @param idColumn the column of the primary key for the URI */
+     * @param idColumn   the column of the primary key for the URI
+     */
     private static void deleteContentUri(Context ctx, Uri contentUri,
-            String idColumn)
-    {
+                                         String idColumn) {
         ctx.getContentResolver().delete(contentUri, null, null);
     }
 
-    /** Deletes all stored user content from the database including:
+    /**
+     * Deletes all stored user content from the database including:
      * <ul>
      * <li>Procedures</li>
      * <li>SavedProcedures</li>
@@ -182,8 +196,9 @@ public class SanaUtil {
      * <li>Sounds</li>
      * <li>Notifications</li>
      * </ul>
-     * 
-     * @param ctx the Context where the data is stored */
+     *
+     * @param ctx the Context where the data is stored
+     */
     public static void clearDatabase(Context ctx) {
         /*
         deleteContentUri(ctx, Procedures.CONTENT_URI,
@@ -204,18 +219,22 @@ public class SanaUtil {
         */
     }
 
-    /** Removes all stored patient information
-     * 
-     * @param ctx the Context where the data is stored */
+    /**
+     * Removes all stored patient information
+     *
+     * @param ctx the Context where the data is stored
+     */
     public static void clearPatientData(Context ctx) {
         deleteContentUri(ctx, Patients.CONTENT_URI,
                 Patients.Contract._ID);
     }
 
-    /** Inserts a new procedure into the data store
-     * 
+    /**
+     * Inserts a new procedure into the data store
+     *
      * @param ctx the Context where the data is stored
-     * @param id the raw resource id */
+     * @param id  the raw resource id
+     */
     private static void insertProcedure(Context ctx, int id) {
 
         String title = SanaUtil.randomString("Procedure ", 10);
@@ -234,7 +253,7 @@ public class SanaUtil {
             author = p.getAuthor();
             guid = p.getGuid();
             version = p.getVersion();
-            
+
             ContentValues cv = new ContentValues();
             cv.put(Procedures.Contract.TITLE, title);
             cv.put(Procedures.Contract.AUTHOR, author);
@@ -242,12 +261,12 @@ public class SanaUtil {
             cv.put(Procedures.Contract.VERSION, version);
             cv.put(Procedures.Contract.PROCEDURE, xmlFullProcedure);
 
-            if (searchDuplicateTitleAuthor(ctx, title, author)){
+            if (searchDuplicateTitleAuthor(ctx, title, author)) {
                 Log.d(TAG, "Duplicate found!");
                 ctx.getContentResolver().update(Procedures.CONTENT_URI,
-                    cv, 
-                    "(title LIKE\"" + title + "\")", null);
-            }else
+                        cv,
+                        "(title LIKE\"" + title + "\")", null);
+            } else
                 ctx.getContentResolver().insert(Procedures.CONTENT_URI, cv);
         } catch (Exception e) {
             Log.e(TAG, "Couldn't add procedure id=" + id + ", title = " + title
@@ -256,18 +275,19 @@ public class SanaUtil {
         }
     }
 
-    /** Code to insert procedure into database is a duplicate with
+    /**
+     * Code to insert procedure into database is a duplicate with
      * insertProcedure this just takes the location from the sd card instead of
      * an id from the resources.
-     * 
+     *
      * @throws IOException
      * @throws ProcedureParseException
      * @throws SAXException
-     * @throws ParserConfigurationException */
+     * @throws ParserConfigurationException
+     */
     public static Integer insertProcedureFromSd(final Context ctx, String location)
             throws IOException, ParserConfigurationException, SAXException,
-            ProcedureParseException
-    {
+            ProcedureParseException {
         String title = SanaUtil.randomString("Procedure ", 10);
         String author = "";
         String guid = "";
@@ -298,8 +318,8 @@ public class SanaUtil {
             Log.i(TAG, "Duplicate found! Updating...");
             // TODO Versioning
             ctx.getContentResolver().update(p.getInstanceUri(),
-                    cv, 
-                    "(title LIKE\"" + title + "\")", 
+                    cv,
+                    "(title LIKE\"" + title + "\")",
                     null);
             Log.i(TAG, "Updated");
             return 0;
@@ -313,8 +333,7 @@ public class SanaUtil {
     }
 
     private static boolean searchDuplicateTitleAuthor(Context ctx, String title,
-            String author)
-    {
+                                                      String author) {
         Cursor cursor = null;
         try {
             cursor = ctx.getContentResolver().query(
@@ -332,10 +351,11 @@ public class SanaUtil {
         return false;
     }
 
-    
-    
-    /** Loading Sana with XML-described procedures is currently hard-coded. New
-     * files can be added or removed here. */
+
+    /**
+     * Loading Sana with XML-described procedures is currently hard-coded. New
+     * files can be added or removed here.
+     */
     public static void loadDefaultDatabase(Context ctx) {
         /*
          * insertProcedure(ctx, R.raw.bronchitis); insertProcedure(ctx,
@@ -367,10 +387,12 @@ public class SanaUtil {
         //insertProcedure(ctx, R.raw.ssi);
     }
 
-    /** Returns true if the phone has telphony or wifi service
-     * 
+    /**
+     * Returns true if the phone has telphony or wifi service
+     *
      * @param c - The current context
-     * @return true if Android has either a wifi or cellular connection active */
+     * @return true if Android has either a wifi or cellular connection active
+     */
     public static boolean checkConnection(Context c) {
         try {
             TelephonyManager telMan = (TelephonyManager) c.getSystemService(
@@ -392,25 +414,28 @@ public class SanaUtil {
         }
     }
 
-    /** Utility for creating an returning a dialog with no click listener
-     * 
-     * @param c The Context the dialog will be created in
+    /**
+     * Utility for creating an returning a dialog with no click listener
+     *
+     * @param c            The Context the dialog will be created in
      * @param alertMessage The dialog text
-     * @return a new AlertDialog with no listener */
-    public static AlertDialog createAlertMessage(Context c, String alertMessage)
-    {
+     * @return a new AlertDialog with no listener
+     */
+    public static AlertDialog createAlertMessage(Context c, String alertMessage) {
         return createAlertMessage(c, alertMessage, null);
     }
 
-    /** Utility for creating an returning a dialog with a listener for receiving
+    /**
+     * Utility for creating an returning a dialog with a listener for receiving
      * click value.
-     * 
-     * @param c The Context the dialog will be created in
+     *
+     * @param c            The Context the dialog will be created in
      * @param alertMessage The dialog text
-     * @param listener A listener for receiving click events, may be <b>null</b>
-     * @return a new AlertDialog with a specified listener */
+     * @param listener     A listener for receiving click events, may be <b>null</b>
+     * @return a new AlertDialog with a specified listener
+     */
     public static AlertDialog createAlertMessage(Context c, String alertMessage,
-            DialogInterface.OnClickListener listener) {
+                                                 DialogInterface.OnClickListener listener) {
         Locales.updateLocale(c, c.getString(R.string.force_locale));
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setMessage(alertMessage).setCancelable(false)
@@ -421,8 +446,10 @@ public class SanaUtil {
         return alert;
     }
 
-    /** Format a list of primary keys into a SQLite-formatted list of ids. Ex
-     * 1,2,3 is formatted as (1,2,3) */
+    /**
+     * Format a list of primary keys into a SQLite-formatted list of ids. Ex
+     * 1,2,3 is formatted as (1,2,3)
+     */
     public static String formatPrimaryKeyList(List<?> idList) {
         StringBuilder sb = new StringBuilder("(");
         Iterator<?> it = idList.iterator();
@@ -436,41 +463,42 @@ public class SanaUtil {
         return sb.toString();
     }
 
-    /** Convenience wrapper around Log.d to print a debug string as:
+    /**
+     * Convenience wrapper around Log.d to print a debug string as:
      * <code>onActivityResult: requestCode = <b>value</b>, resultCode = <b>value</b></code>
-     * 
-     * @param tag THe calling classes tag
+     *
+     * @param tag         THe calling classes tag
      * @param requestCode the request code used when launching the Activity
-     * @param resultCode the result code returned by the Activity */
+     * @param resultCode  the result code returned by the Activity
+     */
     public static void logActivityResult(String tag, int requestCode,
-            int resultCode)
-    {
+                                         int resultCode) {
         Log.d(tag, "onActivityResult: requestCode = " + requestCode
                 + ", resultCode = " + resultCode);
     }
-    
-    public static final boolean exportDatabase(Context ctx, String dbName) throws IOException{
-        
+
+    public static final boolean exportDatabase(Context ctx, String dbName) throws IOException {
+
         boolean result = false;
         File db = ctx.getDatabasePath(dbName);
         File out = new File(Environment.getExternalStorageDirectory(), dbName);
         InputStream is = null;
         OutputStream os = null;
-        
+
         try {
             is = new BufferedInputStream(new FileInputStream(db));
             os = new BufferedOutputStream(new FileOutputStream(out));
             byte[] buffer = new byte[1024];
-            while(is.read(buffer) > 0){
-                    os.write(buffer);
+            while (is.read(buffer) > 0) {
+                os.write(buffer);
             }
             result = true;
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
-            if(is != null) is.close();
-            if(os != null) os.close();
+            if (is != null) is.close();
+            if (os != null) os.close();
         }
         return result;
     }

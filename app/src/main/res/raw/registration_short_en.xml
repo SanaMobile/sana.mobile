@@ -5,54 +5,60 @@
     version="1.0"
     locale="en"
     class="org.sana.core.Subject">
-	<Page>
-        <Element id="h1"
-                 type="HIDDEN"
-                 concept="SYSTEM ID"
-                 question="Patient ID"
-                 default="@DEVICE:@NOW:"/>
-        <Element id="h2"
-                 type="HIDDEN"
-                 concept="LOCATION"
-                 question="Location"
-                 default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca:"/>
-        <Element id="1"
-                 type="ENTRY"
-                 concept="FAMILY NAME"
-                 required="true"
-                 question="Family name"/>
-        <Element id="2"
+    <Page>
+        <Element
+            id="h1"
+            type="HIDDEN"
+            concept="SYSTEM ID"
+            question="Patient ID"
+            default="@DEVICE:@NOW:" />
+        <Element
+            id="h2"
+            type="HIDDEN"
+            concept="LOCATION"
+            question="Location"
+            default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca:" />
+        <Element
+            id="1"
             type="ENTRY"
-		    concept="GIVEN NAME"
-		    required="true"
-		    question="Given name"/>
+            concept="FAMILY NAME"
+            required="true"
+            question="Family name" />
+        <Element
+            id="2"
+            type="ENTRY"
+            concept="GIVEN NAME"
+            required="true"
+            question="Given name" />
 
-	</Page>
-	<Page>
-		<Element type="RADIO" id="3" concept="GENDER"
-				 question="Enter the patient gender:"
-				 required="true"
-				 helpText="Select the patient's gender."
-				 choices="M;F"
-				 values="M;F"
-			/>
-	</Page>
+    </Page>
+    <Page>
+        <Element
+            type="RADIO"
+            id="3"
+            concept="GENDER"
+            question="Enter the patient gender:"
+            required="true"
+            helpText="Select the patient's gender."
+            choices="M;F"
+            values="M;F" />
+    </Page>
     <Page>
         <Element
             id="4"
             type="DATE"
             concept="DOB"
             required="true"
-            question="Date of Birth"/>
+            question="Date of Birth" />
     </Page>
-	<!--
-	<Page>
-		<Element
-		type="PICTURE"
-		id="5"
-		concept="IMAGE"
-		question="Take a picture of the patient."
-		answer=""/>
-	</Page>
-	-->
+    <!--
+    <Page>
+        <Element
+        type="PICTURE"
+        id="5"
+        concept="IMAGE"
+        question="Take a picture of the patient."
+        answer=""/>
+    </Page>
+    -->
 </Procedure>

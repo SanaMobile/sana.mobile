@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+
     <style name="Theme.Large" parent="@style/AppTheme">
         <item name="android:radioButtonStyle">@style/Widget.CompoundButton.RadioButton.Large</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
-    <style name="Theme.Large.NoActionBar"
-           parent="@style/Theme.AppCompat.NoActionBar">
+
+    <style name="Theme.Large.NoActionBar" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="android:radioButtonStyle">@style/Widget.CompoundButton.RadioButton.Large</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:checkboxStyle">@style/Widget.CheckBox.Large</item>
-     </style>
+    </style>
 
-    <style name="Theme.Large.NoActionBarAlt"
-           parent="@style/Theme.AppCompat.NoActionBar">
+    <style name="Theme.Large.NoActionBarAlt" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="android:radioButtonStyle">@style/Widget.CompoundButton.RadioButton.Large</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:editTextStyle">@style/Widget.EditText.Light</item>

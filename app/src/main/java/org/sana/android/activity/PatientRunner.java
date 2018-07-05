@@ -17,24 +17,30 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 
-/** Activity for creating a new patient. Each question is wrapped in a container
+/**
+ * Activity for creating a new patient. Each question is wrapped in a container
  * which presents buttons for paging.
- * 
- * @author Sana Development Team */
+ *
+ * @author Sana Development Team
+ */
 public class PatientRunner extends BaseRunner {
 
     public static final String TAG = PatientRunner.class.getSimpleName();
-    
+
     private PatientRunnerFragment mFragmentPatientRunner;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_runner_activity);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
@@ -55,7 +61,7 @@ public class PatientRunner extends BaseRunner {
     }
 
     @Override
-    public IntentFilter buildFilter(){
+    public IntentFilter buildFilter() {
         Log.i(TAG, "buildFilter()");
         IntentFilter filter = new IntentFilter(Response.RESPONSE);
         filter.addDataScheme(Subjects.CONTENT_URI.getScheme());
@@ -69,7 +75,7 @@ public class PatientRunner extends BaseRunner {
     }
 
     @Override
-    protected void handleBroadcastResultSuccess(Intent intent){
+    protected void handleBroadcastResultSuccess(Intent intent) {
         Log.i(TAG, "handleBroadcastResultSuccess(Intent)");
         setUploading(false);
         hideUploadingDialog();
@@ -87,46 +93,45 @@ public class PatientRunner extends BaseRunner {
                 onUpdateSuccess(intent);
                 break;
             default:
-                Log.d(TAG,"...unhandled response code");
+                Log.d(TAG, "...unhandled response code");
         }
     }
 
     @Override
-    protected void handleBroadcastResultFailure(Intent intent){
+    protected void handleBroadcastResultFailure(Intent intent) {
         Log.i(TAG, "handleBroadcastResultFailure(Intent)");
         setUploading(false);
         hideUploadingDialog();
         onReadFailure(intent);
     }
 
-    public void onProcedureComplete(Intent data){
+    public void onProcedureComplete(Intent data) {
         Log.i(TAG, "onProcedureComplete(): " + data);
         startService(data);
-        setResult(RESULT_OK,data);
+        setResult(RESULT_OK, data);
         finish();
     }
 
     @Override
-    public void onProcedureCancelled(String message){
+    public void onProcedureCancelled(String message) {
         Log.i(TAG, "onProcedureComplete(): " + message);
-        setResult(RESULT_CANCELED,null);
+        setResult(RESULT_CANCELED, null);
         finish();
     }
 
 
-
-    protected void onCreateSuccess(Intent intent){
-        Log.i(TAG,"onCreateSuccess(Intent)");
+    protected void onCreateSuccess(Intent intent) {
+        Log.i(TAG, "onCreateSuccess(Intent)");
         ((PatientRunnerFragment) mRunnerFragment).onCreateSuccess(intent);
     }
 
-    protected void onCreateFailure(Intent intent){
-        Log.i(TAG,"onCreateFailure(Intent)");
+    protected void onCreateFailure(Intent intent) {
+        Log.i(TAG, "onCreateFailure(Intent)");
 
     }
 
-    protected void onReadSuccess(Intent intent){
-        Log.i(TAG,"onReadSuccess(Intent)");
+    protected void onReadSuccess(Intent intent) {
+        Log.i(TAG, "onReadSuccess(Intent)");
         try {
             Uri data = intent.getData();
             String systemId = data.getQueryParameter(Patients.Contract.PATIENT_ID);
@@ -144,13 +149,13 @@ public class PatientRunner extends BaseRunner {
 
     }
 
-    protected void onReadFailure(Intent intent){
-        Log.i(TAG,"onReadFailure(Intent)");
+    protected void onReadFailure(Intent intent) {
+        Log.i(TAG, "onReadFailure(Intent)");
         try {
             Uri data = intent.getData();
             String systemId = data.getQueryParameter(Patients.Contract.PATIENT_ID);
             Log.d(TAG, "...system_id=" + systemId);
-            if(!TextUtils.isEmpty(systemId)) {
+            if (!TextUtils.isEmpty(systemId)) {
                 ((PatientRunnerFragment) mRunnerFragment).onPatientLookupFailure(
                         systemId);
             }
@@ -159,13 +164,13 @@ public class PatientRunner extends BaseRunner {
         }
     }
 
-    protected void onUpdateSuccess(Intent intent){
-        Log.i(TAG,"onUpdateSuccess(Intent)");
+    protected void onUpdateSuccess(Intent intent) {
+        Log.i(TAG, "onUpdateSuccess(Intent)");
         ((PatientRunnerFragment) mRunnerFragment).onCreateSuccess(intent);
     }
 
-    protected void onUpdateFailure(Intent intent){
-        Log.i(TAG,"onUpdateFailure(Intent)");
+    protected void onUpdateFailure(Intent intent) {
+        Log.i(TAG, "onUpdateFailure(Intent)");
 
     }
 }

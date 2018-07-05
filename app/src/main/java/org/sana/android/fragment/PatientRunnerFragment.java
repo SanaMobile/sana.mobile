@@ -42,10 +42,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-/** Class for creating a new patient.
- * 
- * @author Sana Development Team */
-public class PatientRunnerFragment extends BaseRunnerFragment  {
+/**
+ * Class for creating a new patient.
+ *
+ * @author Sana Development Team
+ */
+public class PatientRunnerFragment extends BaseRunnerFragment {
 
     public static final String TAG = PatientRunnerFragment.class.getSimpleName();
 
@@ -82,7 +84,9 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
 
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void loadProcedure(Bundle instance) {
         // Load procedure
@@ -95,16 +99,16 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
             new CreatePatientTask().execute(request);
         }
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void logEvent(EventType type, String value) {
         // TODO: log patient specific events
     }
 
-    /** 
-     *
-     * 
+    /**
      * @param finished -- Whether to set the patient as finished creating.
      */
     @Override
@@ -116,7 +120,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
     public void storeCurrentProcedure(boolean finished, boolean skipHidden) {
         Log.i(TAG, "storeCurrentProcedure(boolean,boolean)");
         Log.d(TAG, "...Checking for null patient");
-        if(mPatient == null){
+        if (mPatient == null) {
             Log.w(TAG, "...Subject is null");
             return;
         }
@@ -127,28 +131,28 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
         Log.d(TAG, "...Patient: " + String.valueOf(mPatient));
 
         // Set any patient fields from current page elements
-        for(String concept: page.getConcepts()){
+        for (String concept : page.getConcepts()) {
             String id = page.elementWithConcept(concept);
             String val = page.getElementValue(id);
-            String field = concept.replace(" ","_");
-            Log.d(TAG,"\tsetting field'" + field + "' for concept '" +
+            String field = concept.replace(" ", "_");
+            Log.d(TAG, "\tsetting field'" + field + "' for concept '" +
                     concept + "'");
-            if(field.compareToIgnoreCase(Patients.Contract.PATIENT_ID) == 0) {
+            if (field.compareToIgnoreCase(Patients.Contract.PATIENT_ID) == 0) {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.PATIENT_ID + "'=" + val);
-                if(!TextUtils.isEmpty(val))
+                if (!TextUtils.isEmpty(val))
                     mPatient.setSystemId(val);
             }
-            if(field.compareToIgnoreCase(Patients.Contract.GIVEN_NAME) == 0) {
+            if (field.compareToIgnoreCase(Patients.Contract.GIVEN_NAME) == 0) {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.GIVEN_NAME + "'=" + val);
-                if(!TextUtils.isEmpty(val))
+                if (!TextUtils.isEmpty(val))
                     mPatient.setGiven_name(val);
             }
-            if(field.compareToIgnoreCase(Patients.Contract.FAMILY_NAME) == 0) {
+            if (field.compareToIgnoreCase(Patients.Contract.FAMILY_NAME) == 0) {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.FAMILY_NAME + "'=" + val);
-                if(!TextUtils.isEmpty(val))
+                if (!TextUtils.isEmpty(val))
                     mPatient.setFamily_name(val);
             }
-            if(field.compareToIgnoreCase(Patients.Contract.DOB) == 0) {
+            if (field.compareToIgnoreCase(Patients.Contract.DOB) == 0) {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.DOB + "'=" + val);
                 try {
                     mPatient.setDob(DateUtil.parseDate(val));
@@ -157,37 +161,37 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                     e.printStackTrace();
                 }
             }
-            if(field.compareToIgnoreCase(Patients.Contract.GENDER) == 0) {
-                Log.d(TAG, "\tsetting '" + Patients.Contract.GENDER +"'=" +val);
+            if (field.compareToIgnoreCase(Patients.Contract.GENDER) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.GENDER + "'=" + val);
                 mPatient.setGender(val);
             }
-            if(field.compareToIgnoreCase(Patients.Contract.IMAGE) == 0) {
-                Log.d(TAG, "\tsetting '" + Patients.Contract.IMAGE +"'=" +val);
+            if (field.compareToIgnoreCase(Patients.Contract.IMAGE) == 0) {
+                Log.d(TAG, "\tsetting '" + Patients.Contract.IMAGE + "'=" + val);
                 URI file = URI.create(val);
                 mPatient.setImage(file);
             }
-            if(field.compareToIgnoreCase(Patients.Contract.LOCATION) == 0) {
+            if (field.compareToIgnoreCase(Patients.Contract.LOCATION) == 0) {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.LOCATION + "'=" + val);
                 Location location = new Location();
-                if(UUIDUtil.isValid(val)) {
+                if (UUIDUtil.isValid(val)) {
                     location.setUuid(val);
                 } else {
                     location.setName(val);
                 }
                 mPatient.setLocation(location);
             }
-            if(field.compareToIgnoreCase(Patients.Contract.CONFIRMED) == 0) {
+            if (field.compareToIgnoreCase(Patients.Contract.CONFIRMED) == 0) {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.CONFIRMED + "'=" + val);
                 mPatient.setConfirmed(Boolean.valueOf(val));
             }
-            if(field.compareToIgnoreCase(Patients.Contract.DOB_ESTIMATED) == 0) {
+            if (field.compareToIgnoreCase(Patients.Contract.DOB_ESTIMATED) == 0) {
                 Log.d(TAG, "\tsetting '" + Patients.Contract.DOB_ESTIMATED + "'=" + val);
                 mPatient.setConfirmed(Boolean.valueOf(val));
             }
         }
         Log.d(TAG, "...Updated Patient: " + String.valueOf(mPatient));
         // Only save to database after we are finished
-        Log.d(TAG,"...finished=" + finished);
+        Log.d(TAG, "...finished=" + finished);
         if (finished) {
             uSubject = PatientWrapper.getOrCreate(getActivity(), mPatient);
         }
@@ -201,10 +205,12 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
     public void uploadProcedureInBackground() {
         storeCurrentProcedure(true);
     }
-    
-    /** A task for loading the patient registration procedure.
-     * 
-     * @author Sana Development Team */
+
+    /**
+     * A task for loading the patient registration procedure.
+     *
+     * @author Sana Development Team
+     */
     class CreatePatientTask extends ProcedureLoaderTask {
 
         @Override
@@ -240,9 +246,9 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
             Uri procedure = uProcedure;
             String uuid = procedure.getLastPathSegment();
             String procedureXml = null;
-            if(!UUIDUtil.isValid(uuid)){
+            if (!UUIDUtil.isValid(uuid)) {
                 Log.d(TAG, "...long format for uuid? = " + uuid);
-                uuid = ModelWrapper.getUuid(procedure,getActivity().getContentResolver());
+                uuid = ModelWrapper.getUuid(procedure, getActivity().getContentResolver());
                 procedure = Uris.withAppendedUuid(Procedures.CONTENT_URI, uuid);
             }
 
@@ -259,7 +265,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                 p = Procedure.fromXMLString(procedureXml);
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             if (p != null) {
@@ -274,22 +280,21 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
         }
 
         @Override
-        protected void handleResult(ProcedureLoadResult result){
+        protected void handleResult(ProcedureLoadResult result) {
             requested--;
             hideProgressDialogFragment();
             if (result != null && result.success) {
                 mProcedure = result.p;
                 uEncounter = result.savedProcedureUri;
                 logEvent(EventType.ENCOUNTER_LOAD_FINISHED, "");
-                if (mProcedure != null){
+                if (mProcedure != null) {
                     mProcedure.setInstanceUri(uEncounter);
                     boolean useId = getActivity().getResources().getBoolean(
                             R.bool.display_registration_input_element_id);
                     Log.d(TAG, "...Setting page display id=" + useId);
                     mProcedure.setShowQuestionIds(useId);
                     createView();
-                }
-                else
+                } else
                     logEvent(EventType.ENCOUNTER_LOAD_FAILED, "Null procedure");
 
             } else {
@@ -300,14 +305,15 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
 
         }
     }
+
     @Override
     public void deleteCurrentProcedure() {
         Log.i(TAG, "deleteCurrentProcedure()");
         try {
-            if(objectFlag == FLAG_OBJECT_TEMPORARY){
+            if (objectFlag == FLAG_OBJECT_TEMPORARY) {
                 Log.d(TAG, "...flushing temporary object: " + uSubject);
                 int deleted = getActivity().getContentResolver().delete
-                        (uSubject,null,null);
+                        (uSubject, null, null);
                 Log.d(TAG, "..." + deleted + " deleted");
             } else {
                 Log.w(TAG, "...Patient exists but not updating");
@@ -319,16 +325,17 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
 
     /**
      * Convenience wrapper around the older lookup listener method.
+     *
      * @param systemId
      */
-    public void onPatientLookupSuccess(String systemId){
-        Log.i(TAG,"onPatientLookupSuccess(String)");
+    public void onPatientLookupSuccess(String systemId) {
+        Log.i(TAG, "onPatientLookupSuccess(String)");
         Patient patient = null;
         try {
-                patient = PatientWrapper.getOneBySystemId(getActivity()
-                                .getContentResolver(), systemId
-                );
-        } catch(Exception e){
+            patient = PatientWrapper.getOneBySystemId(getActivity()
+                    .getContentResolver(), systemId
+            );
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Log.d(TAG, "...patient=" + patient);
@@ -336,7 +343,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
         onPatientLookupSuccess(patient);
     }
 
-    protected Uri getOrCreateStub(ContentValues values){
+    protected Uri getOrCreateStub(ContentValues values) {
         Uri stub = PatientWrapper.getOrCreate(getActivity(), values);
         return stub;
     }
@@ -349,7 +356,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
      */
 
     public void onPatientLookupSuccess(final Patient patient) {
-        Log.i(TAG,"onPatientLookupSuccess(Patient)");
+        Log.i(TAG, "onPatientLookupSuccess(Patient)");
         logEvent(EventType.ENCOUNTER_LOOKUP_PATIENT_SUCCESS, patient.getSystemId());
         hideProgressDialogFragment();
 
@@ -384,7 +391,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                                 //mProcedure.setPatientInfo(patientInfo);
                                 // Delete the stub
                                 getActivity().getContentResolver().delete
-                                        (uSubject,null,null);
+                                        (uSubject, null, null);
                                 // set the subject as the confirmed
                                 setObject(patient);
                                 setObjectFlag(FLAG_OBJECT_UPDATED);
@@ -400,7 +407,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                                 patient.setSystemId("");
                                 setObject(patient);
                                 setObjectFlag(FLAG_OBJECT_TEMPORARY);
-                                if(mProcedure.current().hasElementWithId
+                                if (mProcedure.current().hasElementWithId
                                         (Patients.Contract.PATIENT_ID)) {
 
                                     ((PatientIdElement) mProcedure.current()
@@ -415,12 +422,12 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
             alert.show();
     }
 
-    protected final void setObject(Patient patient){
+    protected final void setObject(Patient patient) {
         mPatient = new PatientParcel(patient);
-        uSubject = PatientWrapper.getOrCreate(getActivity(),mPatient);
+        uSubject = PatientWrapper.getOrCreate(getActivity(), mPatient);
 
         PatientInfo pi = null;
-        if(patient != null) {
+        if (patient != null) {
             pi = new PatientInfo();
             pi.setPatientBirthdate(patient.getDob());
             pi.setPatientFirstName(patient.getGiven_name());
@@ -431,21 +438,21 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
         mProcedure.setPatientInfo(pi);
     }
 
-    protected Map<String, String> getModelMap(Patient patient){
+    protected Map<String, String> getModelMap(Patient patient) {
         Map<String, String> map = new HashMap<String, String>();
         map.put(Patients.Contract.PATIENT_ID, patient.getSystemId());
         map.put(Patients.Contract.GIVEN_NAME, patient.getGiven_name());
         map.put(Patients.Contract.FAMILY_NAME, patient.getFamily_name());
         map.put(Patients.Contract.DOB, Dates.toSQL(patient.getDob()));
         map.put(Patients.Contract.GENDER, patient.getGender());
-        map.put(Patients.Contract.LOCATION,((patient.getLocation() != null)
-                ? patient.getLocation().getUuid():
+        map.put(Patients.Contract.LOCATION, ((patient.getLocation() != null)
+                ? patient.getLocation().getUuid() :
                 getString(R.string.cfg_default_location)));
         //map.put(Patients.Contract., patient.);
         return map;
     }
 
-    protected Uri writeObject(Patient patient, int state){
+    protected Uri writeObject(Patient patient, int state) {
         // Create Stub for patient
         ContentValues values = new ContentValues();
         values.put(Patients.Contract.PATIENT_ID, patient.getSystemId());
@@ -461,7 +468,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
                 ? patient.getLocation().getUuid() :
                 getString(R.string.cfg_default_location)));
         // Add the UUID if this is a temporary object-i.e we are creating
-        if(state == 0) {
+        if (state == 0) {
             values.put(Patients.Contract.UUID, patient.getUuid());
         }
         objectFlag = state;
@@ -469,18 +476,18 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
     }
 
     @Override
-    public Intent getResult(String action){
+    public Intent getResult(String action) {
         Log.d(TAG, "getResult(String)");
         Intent result = new Intent(action, uSubject);
         onSaveAppState(result);
         return result;
     }
 
-    public int getObjectFlag(){
+    public int getObjectFlag() {
         return objectFlag;
     }
 
-    public void setObjectFlag(int flag){
+    public void setObjectFlag(int flag) {
         objectFlag = flag;
     }
 
@@ -498,7 +505,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
 
         //
         Intent data = null;
-        if(mProcedureListener != null){
+        if (mProcedureListener != null) {
             switch (getObjectFlag()) {
                 case FLAG_OBJECT_UPDATED:
                     data = getResult(Intents.ACTION_UPDATE);
@@ -510,7 +517,7 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
             }
             data.putExtra(Intents.EXTRA_ON_COMPLETE, mProcedure.getOnComplete());
             mProcedureListener.onProcedureComplete(data);
-        } else{
+        } else {
             data = getResult();
             data.putExtra(Intents.EXTRA_ON_COMPLETE, mProcedure.getOnComplete());
             getActivity().setResult(Activity.RESULT_OK, data);
@@ -518,11 +525,11 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
         }
     }
 
-    public void onCreateSuccess(Intent intent){
+    public void onCreateSuccess(Intent intent) {
         Uri uri = Uri.parse(intent.getStringExtra(Response.MESSAGE));
         Patient subject = PatientWrapper.get(getActivity(), uri);
-        if(!subject.getUuid().equalsIgnoreCase(mPatient.getUuid())){
-            if(objectFlag == FLAG_OBJECT_TEMPORARY)
+        if (!subject.getUuid().equalsIgnoreCase(mPatient.getUuid())) {
+            if (objectFlag == FLAG_OBJECT_TEMPORARY)
                 getActivity().getContentResolver().delete(uSubject, null, null);
             mPatient = new PatientParcel(subject);
             uSubject = uri;
@@ -533,9 +540,9 @@ public class PatientRunnerFragment extends BaseRunnerFragment  {
      * Flushes any temporary subject registration in the database and
      * then calls super method.
      */
-    protected void onExitNoSave(){
+    protected void onExitNoSave() {
         Log.i(TAG, "onExitNoSave()");
-        if(objectFlag == FLAG_OBJECT_TEMPORARY) {
+        if (objectFlag == FLAG_OBJECT_TEMPORARY) {
             int deleted = getActivity().getContentResolver().delete(uSubject, null, null);
             Log.d(TAG, "\tdeleted n=" + deleted);
         }

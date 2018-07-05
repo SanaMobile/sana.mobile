@@ -1,55 +1,65 @@
-<Procedure title="Patient Registration"
-           author="Sana"
-           uuid="18785afb-6160-45a0-ac8c-1f5cbfaa6d91"
-           version="1.0"
-    >
-	<Page>
-
-		<Element type="PATIENT_ID" id="system_id"
-		    concept="SYSTEM ID"
-		    required="true" 
-		    helpText="Enter the patient ID or hit 'Scan ID' to scan their barcode." 
-			question="Enter Patient's Medical Record ID Number:" 
-			answer=""
-			default=""/>
-	</Page>
-	<Page>
-		<Element type="ENTRY" id="given_name"
-		    concept="GIVEN NAME"
-		    required="true" 
-		    helpText="Enter the patient's first name." 
-		    question="Enter Patient's First Name:" 
-		    answer=""/>
-	</Page>
-	<Page>
-        <Element type="ENTRY" id="family_name"
-		   concept="FAMILY NAME"
-		   required="true" 
-		   helpText="Enter the patient's last name." 
-		   question="Enter Patient's Last Name:" answer=""/>
-	</Page>
+<Procedure
+    title="Patient Registration"
+    author="Sana"
+    uuid="18785afb-6160-45a0-ac8c-1f5cbfaa6d91"
+    version="1.0">
     <Page>
-    <Element type="DATE"
-             id="dob"
-             concept="DATE OF BIRTH"
-             required="true"
-             helpText="Enter the patient's date of birth."
-             question="Date of Birth"
-             answer="" />
+
+        <Element
+            type="PATIENT_ID"
+            id="system_id"
+            concept="SYSTEM ID"
+            required="true"
+            helpText="Enter the patient ID or hit 'Scan ID' to scan their barcode."
+            question="Enter Patient's Medical Record ID Number:"
+            answer=""
+            default="" />
     </Page>
     <Page>
-		<Element type="RADIO" id="gender" concept="GENDER"
+        <Element
+            type="ENTRY"
+            id="given_name"
+            concept="GIVEN NAME"
+            required="true"
+            helpText="Enter the patient's first name."
+            question="Enter Patient's First Name:"
+            answer="" />
+    </Page>
+    <Page>
+        <Element
+            type="ENTRY"
+            id="family_name"
+            concept="FAMILY NAME"
+            required="true"
+            helpText="Enter the patient's last name."
+            question="Enter Patient's Last Name:"
+            answer="" />
+    </Page>
+    <Page>
+        <Element
+            type="DATE"
+            id="dob"
+            concept="DATE OF BIRTH"
+            required="true"
+            helpText="Enter the patient's date of birth."
+            question="Date of Birth"
+            answer="" />
+    </Page>
+    <Page>
+        <Element
+            type="RADIO"
+            id="gender"
+            concept="GENDER"
             question="Enter the patient gender:"
             required="true"
             helpText="Select the patient's gender."
             answer=""
             choices="Male;Female"
-            values="M;F"
-            />
-	</Page>
-	<!--
-	<Page>
-		<Element type="PICTURE" id="patientPhoto" concept="PATIENT PHOTO" question="Take a picture of the patient." answer=""/>
-	</Page>
-	-->
+            values="M;F" />
+    </Page>
+    <!--
+    <Page>
+        <Element type="PICTURE" id="patientPhoto" concept="PATIENT PHOTO" question="Take a picture of the patient." answer=""/>
+    </Page>
+    -->
 </Procedure>

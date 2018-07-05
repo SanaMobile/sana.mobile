@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/settings_title" >
+    <PreferenceCategory android:title="@string/settings_title">
         <ListPreference
             android:key="@string/setting_locale"
             android:summary=""
             android:title="@string/setting_title_locale"
             android:entries="@array/setting_entries_locale"
-            android:entryValues="@array/setting_entryValues_locale"
-            />
+            android:entryValues="@array/setting_entryValues_locale" />
         <EditTextPreference
             android:key="s_phone_name"
             android:summary="@string/setting_phone_name_summary"
-            android:title="@string/setting_phone_name" android:defaultValue="@string/default_phone_name"/>
+            android:title="@string/setting_phone_name"
+            android:defaultValue="@string/default_phone_name" />
         <EditTextPreference
             android:key="s_username"
             android:summary="@string/setting_emr_username_summary"
-            android:title="@string/setting_emr_username" android:defaultValue="@string/debug_user"/>
+            android:title="@string/setting_emr_username"
+            android:defaultValue="@string/debug_user" />
         <EditTextPreference
             android:key="s_password"
             android:summary="@string/setting_emr_password_summary"
-            android:title="@string/setting_emr_password" android:defaultValue="@string/debug_password"/>
+            android:title="@string/setting_emr_password"
+            android:defaultValue="@string/debug_password" />
         <PreferenceScreen
             android:key="s_network_settings"
             android:summary="@string/setting_network_summary"

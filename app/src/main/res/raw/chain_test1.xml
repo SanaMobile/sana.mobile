@@ -10,6 +10,6 @@
             id="1"
             type="TEXT"
             concept="OUTPUT"
-            question="Procedure sequence./nProcedure 1"/>
+            question="Procedure sequence./nProcedure 1" />
     </Page>
 </Procedure>

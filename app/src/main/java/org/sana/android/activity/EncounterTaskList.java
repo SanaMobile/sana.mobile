@@ -33,16 +33,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-/** Activity for creating new and display existing patients. The resulting
+/**
+ * Activity for creating new and display existing patients. The resulting
  * patient selected or created, will be returned to the calling Activity.
  *
- * @author Sana Development Team */
+ * @author Sana Development Team
+ */
 public class EncounterTaskList extends FragmentActivity implements
         OnModelItemSelectedListener {
 
     public static final String TAG = EncounterTaskList.class.getSimpleName();
 
-    /** Intent extra for a patient's ID. */
+    /**
+     * Intent extra for a patient's ID.
+     */
     public static final String EXTRA_PATIENT_ID = "extra_patient_id";
 
     public static final int INVALID_PATIENT_ID = -1;
@@ -51,7 +55,9 @@ public class EncounterTaskList extends FragmentActivity implements
     private EncounterTaskListFragment mListFragment;
     private EncounterTaskListCompleteFragment mCompleteListFragment;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onStart()");
@@ -60,7 +66,9 @@ public class EncounterTaskList extends FragmentActivity implements
         setContentView(R.layout.encountertask_list_activity);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAttachFragment(Fragment fragment) {
         Log.d(TAG, "onStart()");
@@ -70,8 +78,7 @@ public class EncounterTaskList extends FragmentActivity implements
             mListFragment = (EncounterTaskListFragment) fragment;
             mListFragment.setOnModelItemSelectedListener(this);
             showProgressDialogFragment(getString(R.string.network_synchronizing));
-        }
-        else if (fragment.getClass() == EncounterTaskListCompleteFragment.class) {
+        } else if (fragment.getClass() == EncounterTaskListCompleteFragment.class) {
             mCompleteListFragment = (EncounterTaskListCompleteFragment) fragment;
             mCompleteListFragment.setOnModelItemSelectedListener(this);
             showProgressDialogFragment(getString(R.string.network_synchronizing));
@@ -83,21 +90,21 @@ public class EncounterTaskList extends FragmentActivity implements
         // A patient was selected so return to caller activity.
         Log.i(TAG, ".onModelItemSelected(): selected item: " + id);
         Bundle selected = mListFragment.getSelectedData(id);
-        if(selected != null){
+        if (selected != null) {
             Uri subj = selected.getParcelable(Intents.EXTRA_SUBJECT);
             Uri procedure = selected.getParcelable(Intents.EXTRA_PROCEDURE);
             Uri task = selected.getParcelable(Intents.EXTRA_TASK_ENCOUNTER);
             Intent data = new Intent();
-            data.setDataAndType(task,EncounterTasks.CONTENT_ITEM_TYPE);
+            data.setDataAndType(task, EncounterTasks.CONTENT_ITEM_TYPE);
             data.putExtra(Intents.EXTRA_SUBJECT, subj);
             data.putExtra(Intents.EXTRA_PROCEDURE, procedure);
             data.putExtra(Intents.EXTRA_TASK, task);
             String status = selected.getString(EncounterTasks.Contract.STATUS);
 
-            boolean complete = (status.compareToIgnoreCase("Completed") == 0)? true: false;
-            if(complete)
+            boolean complete = (status.compareToIgnoreCase("Completed") == 0) ? true : false;
+            if (complete)
                 data.addCategory(Intents.CATEGORY_TASK_COMPLETE);
-                // set the notification flag
+            // set the notification flag
             setResult(RESULT_OK, data);
             finish();
         } else {
@@ -107,9 +114,9 @@ public class EncounterTaskList extends FragmentActivity implements
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
-        if(mWaitDialog != null){
+        if (mWaitDialog != null) {
             mWaitDialog.dismiss();
             mWaitDialog = null;
         }
@@ -117,10 +124,10 @@ public class EncounterTaskList extends FragmentActivity implements
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if(mWaiting.get()){
-            if(mWaitDialog != null){
+        if (mWaiting.get()) {
+            if (mWaitDialog != null) {
                 Logf.D(TAG, "mUploadingDialog != null && mUploading.get() = true");
                 mWaitDialog.show();
             } else {
@@ -135,9 +142,9 @@ public class EncounterTaskList extends FragmentActivity implements
 
     }
 
-    public IntentFilter buildFilter(){
+    public IntentFilter buildFilter() {
         IntentFilter filter = new IntentFilter(Response.RESPONSE);
-        try{
+        try {
             filter.addDataType(EncounterTasks.CONTENT_TYPE);
             filter.addDataType(EncounterTasks.CONTENT_ITEM_TYPE);
             filter.addDataType(Subjects.CONTENT_TYPE);
@@ -147,7 +154,7 @@ public class EncounterTaskList extends FragmentActivity implements
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart()");
         //bindService(new Intent(Intent.ACTION_SYNC, Subjects.CONTENT_URI), null, 0);
@@ -156,6 +163,7 @@ public class EncounterTaskList extends FragmentActivity implements
     private static final int OPTION_SYNC_PATIENT = 1;
     private static final int OPTION_SYNC_TASKS = 2;
     private static final int OPTION_CLEAR = 3;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -168,30 +176,30 @@ public class EncounterTaskList extends FragmentActivity implements
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         Uri observer = getIntent().getParcelableExtra(Intents.EXTRA_OBSERVER);
         switch (item.getItemId()) {
-        case OPTION_SYNC_PATIENT:
-            //getContentResolver().delete(EncounterTasks.CONTENT_URI, null,null);
-            Log.i(TAG, "observer: " + observer);
-            if(!Uris.isEmpty(observer)){
+            case OPTION_SYNC_PATIENT:
+                //getContentResolver().delete(EncounterTasks.CONTENT_URI, null,null);
                 Log.i(TAG, "observer: " + observer);
-                mListFragment.sync(this, Subjects.CONTENT_URI);
-            }
-            return true;
-        case OPTION_SYNC_TASKS:
-            Log.i(TAG, "observer: " + observer);
-            if(!Uris.isEmpty(observer)){
-                String observerUuid = ModelWrapper.getUuid(observer, getContentResolver());
+                if (!Uris.isEmpty(observer)) {
+                    Log.i(TAG, "observer: " + observer);
+                    mListFragment.sync(this, Subjects.CONTENT_URI);
+                }
+                return true;
+            case OPTION_SYNC_TASKS:
                 Log.i(TAG, "observer: " + observer);
-                Uri u = EncounterTasks.CONTENT_URI.buildUpon().appendQueryParameter("assigned_to__uuid",observerUuid).build();
-                mListFragment.sync(this, u);
-            }
-            return true;
+                if (!Uris.isEmpty(observer)) {
+                    String observerUuid = ModelWrapper.getUuid(observer, getContentResolver());
+                    Log.i(TAG, "observer: " + observer);
+                    Uri u = EncounterTasks.CONTENT_URI.buildUpon().appendQueryParameter("assigned_to__uuid", observerUuid).build();
+                    mListFragment.sync(this, u);
+                }
+                return true;
 
-        case OPTION_CLEAR:
-            getContentResolver().delete(EncounterTasks.CONTENT_URI, null,null);
-            return true;
+            case OPTION_CLEAR:
+                getContentResolver().delete(EncounterTasks.CONTENT_URI, null, null);
+                return true;
         }
         return false;
     }
@@ -204,7 +212,7 @@ public class EncounterTaskList extends FragmentActivity implements
             hideProgressDialogFragment();
         }
         // No need to create dialog if this is finishing
-        if(isFinishing())
+        if (isFinishing())
             return;
 
         mWaitDialog = new ProgressDialog(this);
@@ -220,62 +228,62 @@ public class EncounterTaskList extends FragmentActivity implements
             return;
         }
         // dismiss if finishing
-        try{
-            if(isFinishing())
+        try {
+            if (isFinishing())
                 mWaitDialog.dismiss();
             else
                 mWaitDialog.hide();
-            } catch (Exception e){
-                e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
-          @Override
-          public void onReceive(Context context, Intent intent) {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             // Extract data included in the Intent
             Log.d(TAG, "context: " + context.getClass().getSimpleName() + ", intent: " + intent.toUri(Intent.URI_INTENT_SCHEME));
             onDispatchResult(intent);
-          }
-        };
+        }
+    };
 
-    public final void onDispatchResult(Intent intent){
-        Log.i(TAG,"onDispatchResult()");
-        String text = intent.hasExtra(Response.MESSAGE)? intent.getStringExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE): "Upload Result Received: " + intent.getDataString();
+    public final void onDispatchResult(Intent intent) {
+        Log.i(TAG, "onDispatchResult()");
+        String text = intent.hasExtra(Response.MESSAGE) ? intent.getStringExtra(DispatchResponseReceiver.KEY_RESPONSE_MESSAGE) : "Upload Result Received: " + intent.getDataString();
         int result = intent.getIntExtra(Response.CODE, 400);
         Uri uri = intent.getData();
         Uri observer = getIntent().getParcelableExtra(Intents.EXTRA_OBSERVER);
 
         int descriptor = Uris.getContentDescriptor(uri);
-        Log.d(TAG, "....result: " + result );
-        Log.d(TAG, "....descriptor: " + descriptor );
-        if(result == 200){
+        Log.d(TAG, "....result: " + result);
+        Log.d(TAG, "....descriptor: " + descriptor);
+        if (result == 200) {
             Log.d(TAG, ".... got 200");
-            switch(descriptor){
-            case Uris.SUBJECT:
-                Log.d(TAG, ".... got subject 200");
-                String observerUuid = ModelWrapper.getUuid(observer, getContentResolver());
-                Uri u = EncounterTasks.CONTENT_URI.buildUpon().appendQueryParameter("assigned_to__uuid",observerUuid).build();
-                mListFragment.sync(this, u);
-            break;
-            case Uris.ENCOUNTER_TASK:
-                Log.d(TAG, ".... got EncounterTask 200");
-                hideProgressDialogFragment();
-            break;
+            switch (descriptor) {
+                case Uris.SUBJECT:
+                    Log.d(TAG, ".... got subject 200");
+                    String observerUuid = ModelWrapper.getUuid(observer, getContentResolver());
+                    Uri u = EncounterTasks.CONTENT_URI.buildUpon().appendQueryParameter("assigned_to__uuid", observerUuid).build();
+                    mListFragment.sync(this, u);
+                    break;
+                case Uris.ENCOUNTER_TASK:
+                    Log.d(TAG, ".... got EncounterTask 200");
+                    hideProgressDialogFragment();
+                    break;
             }
             return;
-        } else if(result == 100){
+        } else if (result == 100) {
             Log.d(TAG, ".... got 100");
-            switch(descriptor){
-            case Uris.SUBJECT:
-                Log.d(TAG, ".... got subject 100");
-            break;
-            case Uris.ENCOUNTER_TASK:
-                Log.d(TAG, ".... got EncounterTask 100");
-            break;
+            switch (descriptor) {
+                case Uris.SUBJECT:
+                    Log.d(TAG, ".... got subject 100");
+                    break;
+                case Uris.ENCOUNTER_TASK:
+                    Log.d(TAG, ".... got EncounterTask 100");
+                    break;
             }
             return;
-        } else if(result == 400){
+        } else if (result == 400) {
             Log.e(TAG, ".... got error");
             hideProgressDialogFragment();
             Toast.makeText(this, R.string.network_synch_error,

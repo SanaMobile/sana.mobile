@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.sana.android.content.core;
 
@@ -19,53 +19,52 @@ import android.database.Cursor;
 
 /**
  * @author ewinkler
- *
  */
 public class EncounterWrapper extends ModelWrapper<IEncounter> implements IEncounter {
 
-	public EncounterWrapper(Cursor cursor) {
-		super(cursor);
-	}
+    public EncounterWrapper(Cursor cursor) {
+        super(cursor);
+    }
 
-	@Override
-	public ISubject getSubject() {
-		Subject s = new Subject();
-		s.setUuid(getString(getColumnIndex(Encounters.Contract.SUBJECT)));
-		return s;
-	}
+    @Override
+    public ISubject getSubject() {
+        Subject s = new Subject();
+        s.setUuid(getString(getColumnIndex(Encounters.Contract.SUBJECT)));
+        return s;
+    }
 
-	@Override
-	public IProcedure getProcedure() {
-		return new Procedure(getString(getColumnIndex(Encounters.Contract.PROCEDURE)));
-	}
+    @Override
+    public IProcedure getProcedure() {
+        return new Procedure(getString(getColumnIndex(Encounters.Contract.PROCEDURE)));
+    }
 
-	@Override
-	public Observer getObserver() {
-		return new Observer(getString(getColumnIndex(Encounters.Contract.PROCEDURE)));
-	}
+    @Override
+    public Observer getObserver() {
+        return new Observer(getString(getColumnIndex(Encounters.Contract.PROCEDURE)));
+    }
 
-	@Override
-	public IEncounter getObject() {
-		Encounter e = new Encounter();
-		e.created = getCreated();
-		e.modified = getModified();
-		e.subject = (Subject) getSubject();
-		e.observer = getObserver();
-		e.procedure = (Procedure) getProcedure();
-		return e;
-	}
+    @Override
+    public IEncounter getObject() {
+        Encounter e = new Encounter();
+        e.created = getCreated();
+        e.modified = getModified();
+        e.subject = (Subject) getSubject();
+        e.observer = getObserver();
+        e.procedure = (Procedure) getProcedure();
+        return e;
+    }
 
-	public static IEncounter getOneByUuid(ContentResolver resolver, String uuid){
-		EncounterWrapper wrapper = new EncounterWrapper(ModelWrapper.getOneByUuid(
-				Concepts.CONTENT_URI,resolver, uuid));
-		IEncounter object = null;
-		if(wrapper != null)
-		try{ 
-			object = wrapper.next();
-		} finally {
-			wrapper.close();
-		}
-		return object;
-	}
-	
+    public static IEncounter getOneByUuid(ContentResolver resolver, String uuid) {
+        EncounterWrapper wrapper = new EncounterWrapper(ModelWrapper.getOneByUuid(
+                Concepts.CONTENT_URI, resolver, uuid));
+        IEncounter object = null;
+        if (wrapper != null)
+            try {
+                object = wrapper.next();
+            } finally {
+                wrapper.close();
+            }
+        return object;
+    }
+
 }

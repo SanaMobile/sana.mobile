@@ -18,9 +18,9 @@ public class EnvironmentUtil {
      * Environment.DIRECTORY_DOWNLOADS} location.
      *
      * @return An absolute file path to the directory which will be checked for
-     *  new procedures
+     * new procedures
      */
-    public static String getProcedureDirectory(){
+    public static String getProcedureDirectory() {
         File dir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS);
         return dir.getAbsolutePath();

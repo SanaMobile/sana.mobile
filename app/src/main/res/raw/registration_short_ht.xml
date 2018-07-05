@@ -5,127 +5,149 @@
     version="1.0"
     locale="ht"
     object_class="org.sana.core.Subject"
-	on_complete="intent://org.sana.provider/core/procedure/5299055a-c5e6-47e7-b649-dc17dac6019b#Intent;scheme=content;action=org.sana.android.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
+    on_complete="intent://org.sana.provider/core/procedure/5299055a-c5e6-47e7-b649-dc17dac6019b#Intent;scheme=content;action=org.sana.android.intent.action.RUN_PROCEDURE;type=vnd.android.cursor.item/org.sana.procedure;end">
     <Page>
-        <Element id="1"
-                 type="RADIO"
-                 concept="ID EXACT"
-                 question="Ou konnen HAS nimewo a pasyan"
-                 choices="wi;non"
-                 required="true"
-                 />
+        <Element
+            id="1"
+            type="RADIO"
+            concept="ID EXACT"
+            question="Ou konnen HAS nimewo a pasyan"
+            choices="wi;non"
+            required="true" />
     </Page>
     <Page>
         <ShowIf>
-            <Criteria type="EQUALS"
-                      id="1"
-                      value="wi"
-                />
+            <Criteria
+                type="EQUALS"
+                id="1"
+                value="wi" />
         </ShowIf>
-        <Element id="1a"
-                 type="ENTRY"
-                 concept="SYSTEM ID"
-                 question="Antre HAS Nimewo"
-                 required="true"/>
+        <Element
+            id="1a"
+            type="ENTRY"
+            concept="SYSTEM ID"
+            question="Antre HAS Nimewo"
+            required="true" />
     </Page>
     <Page>
         <ShowIf>
-            <Criteria type="EQUALS"
-                      id="1"
-                      value="wi"
-                />
+            <Criteria
+                type="EQUALS"
+                id="1"
+                value="wi" />
         </ShowIf>
-        <Element id="h2a"
-                 type="HIDDEN"
-                 concept="LOCATION"
-                 question="Kote"
-                 default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca"/>
-        <Element type="ENTRY" id="2a"
-                 concept="FAMILY NAME"
-                 required="true"
-                 question="Nòm" answer=""/>
-        <Element type="ENTRY" id="3a"
-                 concept="GIVEN NAME"
-                 required="true"
-                 question="Prenom"
-                 answer=""/>
+        <Element
+            id="h2a"
+            type="HIDDEN"
+            concept="LOCATION"
+            question="Kote"
+            default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca" />
+        <Element
+            type="ENTRY"
+            id="2a"
+            concept="FAMILY NAME"
+            required="true"
+            question="Nòm"
+            answer="" />
+        <Element
+            type="ENTRY"
+            id="3a"
+            concept="GIVEN NAME"
+            required="true"
+            question="Prenom"
+            answer="" />
     </Page>
     <Page>
         <ShowIf>
-            <Criteria type="EQUALS"
-                      id="1"
-                      value="non"
-                      />
+            <Criteria
+                type="EQUALS"
+                id="1"
+                value="non" />
         </ShowIf>
-        <Element id="h1b"
-                 type="HIDDEN"
-                 concept="SYSTEM ID"
-                 question="HAS #"
-                 default="U:@DEVICE:@NOW:"/>
-        <Element id="h2b"
-                 type="HIDDEN"
-                 concept="LOCATION"
-                 question="Kote"
-                 default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca"/>
-        <Element type="ENTRY" id="2b"
-		   concept="FAMILY NAME"
-		   required="true"
-		   question="Nòm" answer=""/>
-        <Element type="ENTRY" id="3b"
-                 concept="GIVEN NAME"
-                 required="true"
-                 question="Prenom"
-                 answer=""/>
-	</Page>
-	<Page>
-		<Element
-			type="RADIO" id="4"
-			concept="GENDER"
-			question="Sexe"
-			required="true"
+        <Element
+            id="h1b"
+            type="HIDDEN"
+            concept="SYSTEM ID"
+            question="HAS #"
+            default="U:@DEVICE:@NOW:" />
+        <Element
+            id="h2b"
+            type="HIDDEN"
+            concept="LOCATION"
+            question="Kote"
+            default="29da1cb1-a8da-486d-80c8-0fbd4ee3f9ca" />
+        <Element
+            type="ENTRY"
+            id="2b"
+            concept="FAMILY NAME"
+            required="true"
+            question="Nòm"
+            answer="" />
+        <Element
+            type="ENTRY"
+            id="3b"
+            concept="GIVEN NAME"
+            required="true"
+            question="Prenom"
+            answer="" />
+    </Page>
+    <Page>
+        <Element
+            type="RADIO"
+            id="4"
+            concept="GENDER"
+            question="Sexe"
+            required="true"
             answer=""
             choices="M;F"
-            values="M;F"
-			/>
-	</Page>
+            values="M;F" />
+    </Page>
     <Page>
-        <Element id="5"
-                 type="RADIO"
-                 concept="DOB EXACT"
-                 question="Ou konnen dat pasyan an nan naissance?"
-                 choices="wi;non"
-                 required="true"
-            />
+        <Element
+            id="5"
+            type="RADIO"
+            concept="DOB EXACT"
+            question="Ou konnen dat pasyan an nan naissance?"
+            choices="wi;non"
+            required="true" />
     </Page>
     <Page>
         <ShowIf>
-            <Criteria type="EQUALS" id="5" value="wi"/>
+            <Criteria
+                type="EQUALS"
+                id="5"
+                value="wi" />
         </ShowIf>
-        <Element type="DATE"
-             id="5a"
-             concept="DOB"
-             required="true"
-             question="Dat de Naissance"
-             answer="" />
+        <Element
+            type="DATE"
+            id="5a"
+            concept="DOB"
+            required="true"
+            question="Dat de Naissance"
+            answer="" />
     </Page>
     <Page>
         <ShowIf>
-            <Criteria type="EQUALS" id="5" value="non"/>
+            <Criteria
+                type="EQUALS"
+                id="5"
+                value="non" />
         </ShowIf>
-        <Element type="AGE"
-                 id="5b"
-                 concept="DOB"
-                 required="true"
-                 question="Antre nan laj pasyan an"
-                 answer="01-01-1990" />
+        <Element
+            type="AGE"
+            id="5b"
+            concept="DOB"
+            required="true"
+            question="Antre nan laj pasyan an"
+            answer="01-01-1990" />
     </Page>
-	<!--
-	<Page>
-		<Element
-		    id="5"
-		    type="PICTURE"
-		    concept="IMAGE"
-		    question="Foto"/>
-	</Page>
-	-->
+    <!--
+    <Page>
+        <Element
+            id="5"
+            type="PICTURE"
+            concept="IMAGE"
+            question="Foto"/>
+    </Page>
+    -->
 </Procedure>

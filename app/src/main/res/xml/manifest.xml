@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest>
-	<mediaList>
-		<educationResource>
+    <mediaList>
+        <educationResource>
             <id>worker:WELCOMETOSANAWelcometotheSanaAndroidClient</id>
             <majorMinorVersion>1.1</majorMinorVersion>
             <name>Welcome</name>
@@ -24,9 +24,8 @@
             <hash></hash>
             <audience></audience>
         </educationResource>
-	</mediaList>
-</manifest>
-<!--
+    </mediaList>
+</manifest><!--
 <forms>
     <form>
         <id></id>

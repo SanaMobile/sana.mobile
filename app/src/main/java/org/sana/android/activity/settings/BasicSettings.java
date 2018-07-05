@@ -19,6 +19,7 @@ import org.sana.android.Constants;
  */
 public class BasicSettings extends PreferenceActivity {
     public static final String TAG = BasicSettings.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +38,8 @@ public class BasicSettings extends PreferenceActivity {
                 Context.TELEPHONY_SERVICE)).getDeviceId();
         Log.d(TAG, "...line1 number: " + line1Number);
         Log.d(TAG, "...device id: " + deviceId);
-        String phoneNum = (!TextUtils.isEmpty(line1Number))? line1Number:
-                (!TextUtils.isEmpty(deviceId))? deviceId: Constants
+        String phoneNum = (!TextUtils.isEmpty(line1Number)) ? line1Number :
+                (!TextUtils.isEmpty(deviceId)) ? deviceId : Constants
                         .DEFAULT_PHONE_NUMBER;
         EditTextPreference prefPhoneName = (EditTextPreference) findPreference(Constants.PREFERENCE_PHONE_NAME);
         if (TextUtils.isEmpty(prefPhoneName.getText())) {

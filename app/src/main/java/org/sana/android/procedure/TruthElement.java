@@ -1,7 +1,8 @@
 package org.sana.android.procedure;
 
 
-import android.widget.LinearLayout;import android.app.Activity;
+import android.widget.LinearLayout;
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,7 +15,7 @@ import org.w3c.dom.Node;
 /**
  * Displays a single checkbox which returns "true" when checked as the answer.
  */
-public class TruthElement extends ProcedureElement{
+public class TruthElement extends ProcedureElement {
     public static final String TAG = TruthElement.class.getSimpleName();
 
     boolean value = false;
@@ -37,9 +38,9 @@ public class TruthElement extends ProcedureElement{
     @Override
     protected View createView(Context c) {
 
-        LayoutInflater inflater = ((Activity)c).getLayoutInflater();
-        LinearLayout v = (LinearLayout)inflater.inflate(R.layout.widget_element_truth, null);
-        mCheckbox = (CheckBox)v.findViewById(R.id.question);
+        LayoutInflater inflater = ((Activity) c).getLayoutInflater();
+        LinearLayout v = (LinearLayout) inflater.inflate(R.layout.widget_element_truth, null);
+        mCheckbox = (CheckBox) v.findViewById(R.id.question);
         //int id = Resources.getSystem().getIdentifier("btn_check_holo_dark", "drawable", "android");
         //mCheckbox.setButtonDrawable(id);
         //mCheckbox = new CheckBox(c);
@@ -75,8 +76,8 @@ public class TruthElement extends ProcedureElement{
     }
 
     @Override
-    public String getAnswer(){
-        if(isViewActive()){
+    public String getAnswer() {
+        if (isViewActive()) {
             value = mCheckbox.isChecked();
             answer = String.valueOf(value);
         }
@@ -85,41 +86,41 @@ public class TruthElement extends ProcedureElement{
 
 
     @Override
-    public void setAnswer(String answer){
-        value = (TextUtils.isEmpty(answer))?
-                Boolean.valueOf(answer): Boolean.valueOf(defaultValue);
-        if(isViewActive()){
+    public void setAnswer(String answer) {
+        value = (TextUtils.isEmpty(answer)) ?
+                Boolean.valueOf(answer) : Boolean.valueOf(defaultValue);
+        if (isViewActive()) {
             mCheckbox.setChecked(value);
         }
     }
 
     @Override
-    public String getDefault(){
+    public String getDefault() {
         return String.valueOf(defaultValue);
     }
 
 
     @Override
-    public void setDefault(String defaultValue){
+    public void setDefault(String defaultValue) {
         value = Boolean.valueOf(defaultValue);
-        if(isViewActive()){
+        if (isViewActive()) {
             mCheckbox.setChecked(value);
         }
     }
 
-    private final boolean getValue(){
+    private final boolean getValue() {
         return value;
     }
-    private final void setValue(boolean value){
+
+    private final void setValue(boolean value) {
         this.value = value;
         answer = String.valueOf(value);
     }
 
     public static TruthElement fromXML(String id, String question,
                                        String answer, String concept, String figure, String audio, Node node)
-            throws ProcedureParseException
-    {
-        TruthElement el = new TruthElement(id,question,answer,concept,figure,audio);
+            throws ProcedureParseException {
+        TruthElement el = new TruthElement(id, question, answer, concept, figure, audio);
         return el;
     }
 }

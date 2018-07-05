@@ -35,25 +35,29 @@ public class CustomDatePicker extends FrameLayout {
             return String.format("%02d", value);
         }
     }
+
     public static class FourDigitFormatter implements NumberPicker.Formatter {
         public String format(int value) {
             return String.format("%04d", value);
         }
     }
+
     public static class MonthFormatter implements NumberPicker.Formatter {
 
         String[] months = new String[12];
-        public MonthFormatter(){
+
+        public MonthFormatter() {
             DateFormatSymbols dfs = new DateFormatSymbols();
             months = dfs.getShortMonths();
         }
-        public void setMonthValues(String[] months){
+
+        public void setMonthValues(String[] months) {
             this.months = months;
         }
 
         public String format(int value) {
             String month = months[value];
-            return String.format("%s",month);
+            return String.format("%s", month);
         }
     }
 
@@ -81,11 +85,11 @@ public class CustomDatePicker extends FrameLayout {
     public interface OnDateChangedListener {
 
         /**
-         * @param view The view associated with this listener.
-         * @param year The year that was set.
+         * @param view        The view associated with this listener.
+         * @param year        The year that was set.
          * @param monthOfYear The month that was set (0-11) for compatibility
-         *  with {@link java.util.Calendar}.
-         * @param dayOfMonth The day of the month that was set.
+         *                    with {@link java.util.Calendar}.
+         * @param dayOfMonth  The day of the month that was set.
          */
         void onDateChanged(CustomDatePicker view, int year, int monthOfYear, int dayOfMonth);
     }
@@ -161,7 +165,7 @@ public class CustomDatePicker extends FrameLayout {
 
         // initialize to current date
         Calendar cal = Calendar.getInstance();
-        if(!isInEditMode()) {
+        if (!isInEditMode()) {
             init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), null);
         } else {
             init(mStartYear, 1, 1, null);
@@ -230,7 +234,7 @@ public class CustomDatePicker extends FrameLayout {
                     parent.addView(mMonthPicker);
                     didMonth = true;
                 } else if (c == YEAR && !didYear) {
-                    parent.addView (mYearPicker);
+                    parent.addView(mYearPicker);
                     didYear = true;
                 }
             }
@@ -342,9 +346,10 @@ public class CustomDatePicker extends FrameLayout {
 
     /**
      * Initialize the state.
-     * @param year The initial year.
-     * @param monthOfYear The initial month.
-     * @param dayOfMonth The initial day of the month.
+     *
+     * @param year                  The initial year.
+     * @param monthOfYear           The initial month.
+     * @param dayOfMonth            The initial day of the month.
      * @param onDateChangedListener How user is notified date is changed by user, can be null.
      */
     public void init(int year, int monthOfYear, int dayOfMonth,
@@ -387,7 +392,7 @@ public class CustomDatePicker extends FrameLayout {
         return mDay;
     }
 
-    private void adjustMaxDay(){
+    private void adjustMaxDay() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, mYear);
         cal.set(Calendar.MONTH, mMonth);
@@ -397,12 +402,12 @@ public class CustomDatePicker extends FrameLayout {
         }
     }
 
-    public void setMonthResource(int resId){
+    public void setMonthResource(int resId) {
         String[] months = getResources().getStringArray(resId);
         mMonthPicker.setDisplayedValues(months);
     }
 
-    public void setMonthValues(String[] values){
+    public void setMonthValues(String[] values) {
         mMonthPicker.setDisplayedValues(values);
     }
 }

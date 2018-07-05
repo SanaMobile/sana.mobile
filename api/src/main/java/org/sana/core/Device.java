@@ -4,42 +4,44 @@ import org.sana.api.IDevice;
 
 
 /**
- * Physical object which executes a Procedure for data collection and 
+ * Physical object which executes a Procedure for data collection and
  * transmission.
- * 
- * @author Sana Development
  *
+ * @author Sana Development
  */
-public class Device extends Model implements IDevice{
-	
-	public String name; 
-		
-	/** Default Constructor */
-	public Device(){}
+public class Device extends Model implements IDevice {
 
-	/**
-	 * Creates a new instance with a specified unique id.
-	 * 
-	 * @param uuid The UUID of the instance
-	 */
-	public Device(String uuid){
-		this.uuid = uuid;
-	}
+    public String name;
 
-	/* (non-Javadoc)
-	 * @see org.sana.core.IDevice#getName()
-	 */
-	@Override
-	public String getName() {
-		return name;
-	}
+    /**
+     * Default Constructor
+     */
+    public Device() {
+    }
 
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Creates a new instance with a specified unique id.
+     *
+     * @param uuid The UUID of the instance
+     */
+    public Device(String uuid) {
+        this.uuid = uuid;
+    }
+
+    /* (non-Javadoc)
+     * @see org.sana.core.IDevice#getName()
+     */
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
 
 }

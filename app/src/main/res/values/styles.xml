@@ -3,17 +3,17 @@
     <color name="alt_bg_color">#000000</color>
     <color name="alt_fg_color">#ffffff</color>
     <color name="alt_border_color">#00d700</color>
-    
+
     <style name="Widget.Button.Large" parent="@android:style/Widget.Button">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-	    <item name="android:padding">16dp</item>
+        <item name="android:padding">16dp</item>
     </style>
-    
+
     <style name="Widget.Button.Large.Dark" parent="@style/Widget.Button.Large">
         <item name="android:background">@drawable/btn_default_holo_dark</item>
         <item name="android:textColor">@color/primary_text_holo_dark</item>
     </style>
-    
+
     <style name="Widget.Button.Large.Light" parent="@style/Widget.Button.Large">
         <item name="android:background">@drawable/btn_default_holo_light</item>
         <item name="android:textColor">@color/primary_text_holo_light</item>
@@ -28,6 +28,7 @@
     <style name="Widget.SpinnerDropDown.Alt" parent="android:Widget.DropDownItem.Spinner">
         <item name="android:spinnerMode">dropdown</item>
     </style>
+
     <style name="Widget.Button.Alt" parent="@android:style/Widget.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -39,16 +40,14 @@
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
 
-    <style name="spinnerItemStyle"
-           parent="Base.Widget.AppCompat.Spinner">
+    <style name="spinnerItemStyle" parent="Base.Widget.AppCompat.Spinner">
         <item name="android:padding">10dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
 
-    <style name="spinnerDropDownItemStyle"
-           parent="Widget.AppCompat.DropDownItem.Spinner">
+    <style name="spinnerDropDownItemStyle" parent="Widget.AppCompat.DropDownItem.Spinner">
         <item name="android:padding">20dp</item>
         <item name="android:textSize">30sp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
@@ -56,13 +55,13 @@
         <item name="android:background">#FFFFFF</item>
         <item name="android:gravity">center_vertical|center_horizontal</item>
     </style>
-    
-    
+
+
     <style name="Widget.CompoundButton.RadioButton.Large" parent="@android:style/Widget.CompoundButton.RadioButton">
-    	<item name="android:layout_width">wrap_content</item>
-    	<item name="android:layout_height">wrap_content</item>
-    	<item name="android:layout_gravity">center_vertical</item>
-   	 	<item name="android:duplicateParentState">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:duplicateParentState">true</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
@@ -73,15 +72,14 @@
         <item name="android:paddingLeft">16dip</item>
         <item name="android:button">@drawable/btn_radio</item>
     </style>
-    
-    <style name="RadioGroup" >
-    	<item name="android:layout_width">match_parent</item>
-    	<item name="android:layout_height">wrap_content</item>
-    	<item name="android:layout_gravity">center_vertical</item>
+
+    <style name="RadioGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
     </style>
 
-    <style name="Widget.Button.Large.Custom"
-           parent="@android:style/Widget.Button">
+    <style name="Widget.Button.Large.Custom" parent="@android:style/Widget.Button">
         <item name="android:gravity">center_vertical|center_horizontal</item>
         <item name="android:textColor">#000000</item>
         <item name="android:shadowColor">#F0F0F0</item>
@@ -95,23 +93,21 @@
         <item name="android:clickable">true</item>
         <item name="android:padding">10dp</item>
     </style>
-    <style name="Widget.EditText.Light"
-                        parent="@android:style/Widget.EditText">
+
+    <style name="Widget.EditText.Light" parent="@android:style/Widget.EditText">
         <item name="android:textColor">@android:color/black</item>
         <item name="android:background">@drawable/oval</item>
         <item name="android:gravity">left|start|center_vertical</item>
         <item name="android:padding">10dp</item>
     </style>
 
-    <style name="Widget.DatePicker.Alt"
-           parent="@android:style/Widget.DatePicker">
+    <style name="Widget.DatePicker.Alt" parent="@android:style/Widget.DatePicker">
         <item name="android:startYear">@integer/ageStartYear</item>
         <item name="android:spinnersShown">true</item>
         <item name="android:calendarViewShown">false</item>
     </style>
 
-    <style name="Widget.CheckBox.Large"
-           parent="@android:style/Widget.CompoundButton.CheckBox">
+    <style name="Widget.CheckBox.Large" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
@@ -120,8 +116,7 @@
         <item name="android:button">@drawable/btn_check</item>
     </style>
 
-    <style name="Widget.CheckBox.Large.Light"
-           parent="@android:style/Widget.Holo.Light.CompoundButton.CheckBox">
+    <style name="Widget.CheckBox.Large.Light" parent="@android:style/Widget.Holo.Light.CompoundButton.CheckBox">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 </resources>

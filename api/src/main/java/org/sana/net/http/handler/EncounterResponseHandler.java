@@ -8,11 +8,12 @@ import org.sana.net.Response;
 
 import com.google.gson.reflect.TypeToken;
 
-public class EncounterResponseHandler extends ApiResponseHandler<Response<Collection<EncounterTask>>>{
+public class EncounterResponseHandler extends ApiResponseHandler<Response<Collection<EncounterTask>>> {
 
-	@Override
-	public Type getType() {
-		Type typeOf = new TypeToken<Response<Collection<EncounterTask>>>(){}.getType();
-		return typeOf;
-	}
+    @Override
+    public Type getType() {
+        Type typeOf = new TypeToken<Response<Collection<EncounterTask>>>() {
+        }.getType();
+        return typeOf;
+    }
 }

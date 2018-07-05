@@ -68,7 +68,7 @@ public class DateOfBirthWidget extends LinearLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.widget_date_of_birth, this, true);
 
-        mSpinner = (Spinner)findViewById(R.id.spinner);
+        mSpinner = (Spinner) findViewById(R.id.spinner);
         mSpinner.setAdapter((SpinnerAdapter) getYearsAdapter());
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -83,10 +83,10 @@ public class DateOfBirthWidget extends LinearLayout {
         });
 
         // Set the date
-        if(value != null){
+        if (value != null) {
             mDate = new LocalDate(value);
         }
-        mDatePicker = (DatePicker)findViewById(R.id.datePicker);
+        mDatePicker = (DatePicker) findViewById(R.id.datePicker);
         init(mDate, new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear,
@@ -95,8 +95,8 @@ public class DateOfBirthWidget extends LinearLayout {
             }
         });
 
-        mSwitcher = (ViewSwitcher)findViewById(R.id.viewSwitcher);
-        mCheckBox = (CheckBox)findViewById(R.id.checkbox);
+        mSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher);
+        mCheckBox = (CheckBox) findViewById(R.id.checkbox);
         mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -105,10 +105,10 @@ public class DateOfBirthWidget extends LinearLayout {
         });
     }
 
-    protected Adapter getYearsAdapter(){
+    protected Adapter getYearsAdapter() {
         List<Integer> years = new ArrayList<Integer>(MAX_AGE + 1);
-        for(int i = 0; i < years.size(); i++){
-                years.add(i,i);
+        for (int i = 0; i < years.size(); i++) {
+            years.add(i, i);
         }
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(getContext(),
                 android.R.layout.simple_spinner_item, years);
@@ -116,52 +116,52 @@ public class DateOfBirthWidget extends LinearLayout {
 
     }
 
-    protected final void onAgeSelected(int age){
+    protected final void onAgeSelected(int age) {
         mDate = LocalDate.now().withMonthOfYear(6).withDayOfMonth(15)
-            .minusYears(age);
+                .minusYears(age);
     }
 
-    protected final void onDateSelected(int year, int month, int day){
-        mDate = new LocalDate(year,month,day);
+    protected final void onDateSelected(int year, int month, int day) {
+        mDate = new LocalDate(year, month, day);
     }
 
-    protected final void onDefaultSelectorChecked(boolean isChecked){
+    protected final void onDefaultSelectorChecked(boolean isChecked) {
         mDatePicker.updateDate(mDate.getYear(), mDate.getMonthOfYear(), mDate.getDayOfMonth());
         int age = Years.yearsBetween(mDate, LocalDate.now()).getYears();
         mSpinner.setSelection(age);
         mSwitcher.showNext();
     }
 
-    public String getValue(){
+    public String getValue() {
         return Dates.toSQL(mDate.toDate());
     }
 
-    public void setValue(String value){
+    public void setValue(String value) {
         try {
             mDate = new LocalDate(Dates.fromSQL(value));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        updateDate(mDate.getYear(),mDate.getMonthOfYear(),mDate.getDayOfMonth());
+        updateDate(mDate.getYear(), mDate.getMonthOfYear(), mDate.getDayOfMonth());
     }
 
-    public void init(LocalDate date, DatePicker.OnDateChangedListener mListener){
+    public void init(LocalDate date, DatePicker.OnDateChangedListener mListener) {
         mDatePicker.init(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), mListener);
         int age = Years.yearsBetween(date, LocalDate.now()).getYears();
         mSpinner.setSelection(age);
     }
 
-    public void updateDate(int year, int month, int day){
+    public void updateDate(int year, int month, int day) {
         mDatePicker.updateDate(mDate.getYear(), mDate.getMonthOfYear(), mDate.getDayOfMonth());
         int age = Years.yearsBetween(mDate, LocalDate.now()).getYears();
         mSpinner.setSelection(age);
     }
 
-    public void setDefaultText(String text){
+    public void setDefaultText(String text) {
         mCheckBox.setText(text);
     }
 
-    public void setDefaultText(int resId){
+    public void setDefaultText(int resId) {
         String locale = Preferences.getString(getContext(),
                 getContext().getString(R.string.setting_locale), "en");
         Locales.updateLocale(getContext(), locale);

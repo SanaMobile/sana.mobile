@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/settings_basic_network_title" >
+    <PreferenceCategory android:title="@string/settings_basic_network_title">
         <ListPreference
             android:key="@string/setting_locale"
             android:summary="@string/setting_summary_locale"
             android:title="@string/setting_title_locale"
             android:entries="@array/setting_entries_locale"
-            android:entryValues="@array/setting_entryValues_locale"
-            />
+            android:entryValues="@array/setting_entryValues_locale" />
         <EditTextPreference
             android:key="s_phone_name"
             android:summary="@string/setting_phone_name_summary"
@@ -16,22 +15,23 @@
         <EditTextPreference
             android:key="s_mds_url"
             android:title="@string/setting_mds_url"
-            android:summary="@string/setting_mds_url_summary" android:defaultValue="@string/host_mds"/>
+            android:summary="@string/setting_mds_url_summary"
+            android:defaultValue="@string/host_mds" />
         <CheckBoxPreference
             android:key="s_secure"
             android:title="@string/setting_secure"
             android:summary="@string/setting_secure_summary"
             android:defaultValue="true" />
         <EditTextPreference
-            android:summary="@string/setting_mds_port_summary" 
-            android:key="s_mds_port" 
-            android:title="@string/setting_mds_port" 
+            android:summary="@string/setting_mds_port_summary"
+            android:key="s_mds_port"
+            android:title="@string/setting_mds_port"
             android:defaultValue="@integer/port_mds" />
         <EditTextPreference
             android:summary="@string/setting_mds_root_summary"
             android:key="s_mds_root"
             android:title="@string/setting_mds_root"
-            android:defaultValue="@string/path_root"/>
+            android:defaultValue="@string/path_root" />
     </PreferenceCategory>
 
 </PreferenceScreen>

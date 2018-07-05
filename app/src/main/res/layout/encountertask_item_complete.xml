@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Used PatientListFragment -->
+<?xml version="1.0" encoding="utf-8"?><!-- Used PatientListFragment -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <!-- Header -->
     <!--
@@ -36,7 +35,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:padding="8dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,6 +54,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textIsSelectable="true"
                 android:text="GivenName Surname" />
+
             <TextView
                 android:id="@+id/system_id"
                 android:layout_width="wrap_content"
@@ -68,6 +68,7 @@
                 android:textColor="@color/light_gray"
                 android:textIsSelectable="true"
                 android:text="123456" />
+
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
@@ -81,7 +82,7 @@
                 android:textColor="@color/light_gray"
                 android:textIsSelectable="true"
                 android:visibility="gone" />
-            
+
             <TextView
                 android:id="@+id/procedure_title"
                 android:layout_width="wrap_content"
@@ -93,9 +94,9 @@
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/light_gray"
-                android:textIsSelectable="true" 
-                android:text="Procedure Title"/>
-  
+                android:textIsSelectable="true"
+                android:text="Procedure Title" />
+
             <TextView
                 android:id="@+id/due_on"
                 android:layout_width="wrap_content"
@@ -107,8 +108,8 @@
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/complete"
-                android:textIsSelectable="true" 
-                android:text="2001-01-01 23:59"/>
+                android:textIsSelectable="true"
+                android:text="2001-01-01 23:59" />
         </LinearLayout>
 
         <ImageView

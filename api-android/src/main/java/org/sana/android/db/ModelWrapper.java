@@ -1,19 +1,19 @@
 /**
  * Copyright (c) 2013, Sana
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Sana nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the Sana nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -49,26 +49,26 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
-    implements ModelIterable<T>, IModel
-{
+        implements ModelIterable<T>, IModel {
 
     public static final String TAG = ModelWrapper.class.getSimpleName();
 
-    public interface BaseProjection{
-        String[] ID_PROJECTION = new String[] { BaseContract._ID };
-        String[] UUID_PROJECTION = new String[] { BaseContract._ID };
+    public interface BaseProjection {
+        String[] ID_PROJECTION = new String[]{BaseContract._ID};
+        String[] UUID_PROJECTION = new String[]{BaseContract._ID};
     }
-    public ModelWrapper(Cursor cursor){
+
+    public ModelWrapper(Cursor cursor) {
         super(cursor);
     }
 
-    public boolean getBooleanField(int columnIndex){
+    public boolean getBooleanField(int columnIndex) {
         boolean field = false;
         field = (getInt(columnIndex) == 1);
         return field;
     }
 
-    public Date getDateField(String field){
+    public Date getDateField(String field) {
         String dateStr = getString(getColumnIndex(field));
         try {
             return DateUtil.parseDate(dateStr);
@@ -77,15 +77,15 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
         }
     }
 
-    public int getIntField(String field){
+    public int getIntField(String field) {
         return getInt(getColumnIndex(field));
     }
 
-    public String getStringField(String field){
+    public String getStringField(String field) {
         return getString(getColumnIndex(field));
     }
 
-    public boolean getBooleanField(String field){
+    public boolean getBooleanField(String field) {
         return getBooleanField(getColumnIndex(field));
     }
 
@@ -118,10 +118,10 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @see org.sana.android.db.ModelIterable#next()
      */
     public T next() {
-        if(moveToNext()){
-            try{
+        if (moveToNext()) {
+            try {
                 return getObject();
-            } catch (Exception e){
+            } catch (Exception e) {
                 throw new NoSuchElementException("Failed to instantiate object ");
             }
         }
@@ -159,19 +159,19 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
         return new ProxyIterator<T>(this);
     }
 
-    public java.util.List<T> toList(ModelWrapper<T> wrapper){
+    public java.util.List<T> toList(ModelWrapper<T> wrapper) {
         java.util.List<T> list = new java.util.ArrayList<T>(wrapper.getCount());
-        for(T t:wrapper){
+        for (T t : wrapper) {
             list.add(t);
         }
         return list;
     }
 
-    public static class ProxyIterator<T extends IModel> implements Iterator <T> {
+    public static class ProxyIterator<T extends IModel> implements Iterator<T> {
 
         private ModelWrapper<T> modelWrapper;
 
-        public ProxyIterator(ModelWrapper<T> proxy){
+        public ProxyIterator(ModelWrapper<T> proxy) {
             this.modelWrapper = proxy;
         }
 
@@ -199,11 +199,11 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
         }
     }
 
-    public static synchronized String constructSelectionClause(String[] fields){
+    public static synchronized String constructSelectionClause(String[] fields) {
         StringBuilder selection = new StringBuilder();
         int index = 0;
-        for(String field:fields){
-            if(index > 0)
+        for (String field : fields) {
+            if (index > 0)
                 selection.append(" AND ");
             selection.append(field + " = ?");
             index++;
@@ -222,12 +222,11 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @throws IllegalArgumentException if multiple rows are returned.
      */
     public static synchronized Cursor getOneByField(Uri contentUri, ContentResolver resolver,
-            String field, Object object)
-    {
+                                                    String field, Object object) {
         String selection = field + " = ?";
-        Cursor cursor = resolver.query(contentUri,null, selection,
-                new String[]{ object.toString() }, null);
-        if(cursor != null && cursor.getCount() > 1){
+        Cursor cursor = resolver.query(contentUri, null, selection,
+                new String[]{object.toString()}, null);
+        if (cursor != null && cursor.getCount() > 1) {
             cursor.close();
             throw new IllegalArgumentException("Multiple entries found! Expecting one.");
         }
@@ -246,10 +245,9 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @throws IllegalArgumentException if multiple rows are returned.
      */
     public static synchronized Cursor getOneByFields(Uri contentUri, ContentResolver resolver,
-            String[] fields, String[] vals)
-    {
+                                                     String[] fields, String[] vals) {
         Cursor cursor = ModelWrapper.getAllByFields(contentUri, resolver, fields, vals);
-        if(cursor != null && cursor.getCount() > 1){
+        if (cursor != null && cursor.getCount() > 1) {
             cursor.close();
             throw new IllegalArgumentException("Multiple entries found! Expecting one.");
         }
@@ -267,15 +265,14 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @throws IllegalArgumentException if multiple rows are returned.
      */
     public static synchronized Cursor getOneByUuid(Uri contentUri, ContentResolver resolver,
-            String uuid)
-    {
+                                                   String uuid) {
         String selection = BaseContract.UUID + " = ?";
 
-        Cursor cursor = resolver.query(contentUri,null, selection,
-                new String[]{ uuid }, null);
-        if(cursor != null && cursor.getCount() > 1){
+        Cursor cursor = resolver.query(contentUri, null, selection,
+                new String[]{uuid}, null);
+        if (cursor != null && cursor.getCount() > 1) {
             cursor.close();
-            throw new IllegalArgumentException("Non unique id! " +contentUri+"/"+uuid);
+            throw new IllegalArgumentException("Non unique id! " + contentUri + "/" + uuid);
         }
         return cursor;
     }
@@ -291,8 +288,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @return A cursor with zero or more rows.
      */
     public static synchronized Cursor getAllByField(Uri contentUri, ContentResolver resolver,
-            String field, Object object)
-    {
+                                                    String field, Object object) {
         return ModelWrapper.getAllByFieldOrdered(contentUri, resolver, field, object, null);
     }
 
@@ -307,8 +303,7 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @return A cursor with zero or more rows.
      */
     public static synchronized Cursor getAllByFields(Uri contentUri, ContentResolver resolver,
-            String[] fields, String[] vals)
-    {
+                                                     String[] fields, String[] vals) {
         return ModelWrapper.getAllByFieldsOrdered(contentUri, resolver, fields, vals, null);
     }
 
@@ -325,16 +320,15 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @return A cursor with zero or more rows.
      */
     public static synchronized Cursor getAllByFieldOrdered(Uri contentUri, ContentResolver resolver,
-            String field, Object object, String order)
-    {
+                                                           String field, Object object, String order) {
         String selection = null;
         String[] selectionArgs = null;
 
-        if(!TextUtils.isEmpty(field) && object != null){
+        if (!TextUtils.isEmpty(field) && object != null) {
             selection = field + " = ?";
-            selectionArgs = new String[]{ object.toString() } ;
+            selectionArgs = new String[]{object.toString()};
         }
-        return resolver.query(contentUri,null, selection, selectionArgs, order);
+        return resolver.query(contentUri, null, selection, selectionArgs, order);
     }
 
     /**
@@ -350,12 +344,11 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @return A cursor with zero or more rows.
      */
     public static synchronized Cursor getAllByFieldsOrdered(Uri contentUri, ContentResolver resolver,
-            String[] fields, String[] vals, String order)
-    {
+                                                            String[] fields, String[] vals, String order) {
         StringBuilder selection = new StringBuilder();
         int index = 0;
-        for(String field:fields){
-            if(index > 0)
+        for (String field : fields) {
+            if (index > 0)
                 selection.append(" AND ");
             selection.append(field + " = ?");
             index++;
@@ -372,10 +365,10 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param resolver The resolver which will perform the query.
      * @return A cursor with the result or null.
      */
-    public static synchronized Cursor getAllByCreatedAsc(Uri contentUri, ContentResolver resolver)
-    {
-        return ModelWrapper.getAllByFieldOrdered(contentUri, resolver, null, null, BaseContract.CREATED +" ASC");
+    public static synchronized Cursor getAllByCreatedAsc(Uri contentUri, ContentResolver resolver) {
+        return ModelWrapper.getAllByFieldOrdered(contentUri, resolver, null, null, BaseContract.CREATED + " ASC");
     }
+
     /**
      * Convenience wrapper to return a cursor which returns all of the entries
      * ordered by {@link org.sana.android.provider.BaseContract#CREATED CREATED}
@@ -385,10 +378,9 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param resolver The resolver which will perform the query.
      * @return A cursor with the result or null.
      */
-    public static synchronized Cursor getAllByCreatedDesc(Uri contentUri, ContentResolver resolver)
-    {
-        final String order = BaseContract.CREATED +" DESC";
-        return resolver.query(contentUri,null, null,null, order);
+    public static synchronized Cursor getAllByCreatedDesc(Uri contentUri, ContentResolver resolver) {
+        final String order = BaseContract.CREATED + " DESC";
+        return resolver.query(contentUri, null, null, null, order);
     }
 
     /**
@@ -400,10 +392,9 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param resolver The resolver which will perform the query.
      * @return A cursor with the result or null.
      */
-    public static synchronized Cursor getAllByModifiedAsc(Uri contentUri, ContentResolver resolver)
-    {
-        final String order = BaseContract.MODIFIED +" ASC";
-        return resolver.query(contentUri,null, null,null, order);
+    public static synchronized Cursor getAllByModifiedAsc(Uri contentUri, ContentResolver resolver) {
+        final String order = BaseContract.MODIFIED + " ASC";
+        return resolver.query(contentUri, null, null, null, order);
     }
 
     /**
@@ -415,10 +406,9 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param resolver The resolver which will perform the query.
      * @return A cursor with the result or null.
      */
-    public static synchronized Cursor getAllByModifiedDesc(Uri contentUri, ContentResolver resolver)
-    {
-        final String order = BaseContract.MODIFIED +" DESC";
-        return resolver.query(contentUri,null, null,null, order);
+    public static synchronized Cursor getAllByModifiedDesc(Uri contentUri, ContentResolver resolver) {
+        final String order = BaseContract.MODIFIED + " DESC";
+        return resolver.query(contentUri, null, null, null, order);
     }
 
     /**
@@ -429,33 +419,33 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param resolver
      * @return
      */
-    public static synchronized boolean insertOrUpdate(Uri uri, ContentValues values, ContentResolver resolver){
+    public static synchronized boolean insertOrUpdate(Uri uri, ContentValues values, ContentResolver resolver) {
         Cursor c = null;
         boolean exists = false;
-        String uuid = (values.containsKey(BaseContract.UUID))?
-                values.getAsString(BaseContract.UUID): null;
-        if(uuid != null){
-            try{
+        String uuid = (values.containsKey(BaseContract.UUID)) ?
+                values.getAsString(BaseContract.UUID) : null;
+        if (uuid != null) {
+            try {
                 c = ModelWrapper.getOneByUuid(uri, resolver, uuid);
-                if(c != null && c.moveToFirst() && c.getCount() == 1){
+                if (c != null && c.moveToFirst() && c.getCount() == 1) {
                     exists = true;
                 }
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                if(c!=null)
+                if (c != null)
                     c.close();
             }
         }
-        try{
-            if(exists){
-                if(values.containsKey(BaseContract.UUID))
-                        values.remove(BaseContract.UUID);
+        try {
+            if (exists) {
+                if (values.containsKey(BaseContract.UUID))
+                    values.remove(BaseContract.UUID);
                 resolver.update(uri, values, null, null);
             } else {
                 resolver.insert(uri, values);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -463,19 +453,20 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
     }
 
     public synchronized static Uri getOneReferenceByFields(Uri contentUri, String[] fields,
-            String[] vals, ContentResolver resolver)
-    {
+                                                           String[] vals, ContentResolver resolver) {
         Uri uri = contentUri;
         Cursor c = null;
-        try{
+        try {
             c = ModelWrapper.getOneByFields(contentUri, resolver, fields, vals);
-            if(c != null && c.moveToFirst() && c.getCount() == 1){
+            if (c != null && c.moveToFirst() && c.getCount() == 1) {
                 long id = c.getLong(c.getColumnIndex(BaseColumns._ID));
                 uri = ContentUris.withAppendedId(contentUri, id);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally { if(c!=null) c.close(); }
+        } finally {
+            if (c != null) c.close();
+        }
         return uri;
     }
 
@@ -488,33 +479,32 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @return
      */
     public static synchronized Uri exists(ContentResolver resolver,
-            Uri uri,
-            String selection,
-            String[] selectionArgs)
-    {
+                                          Uri uri,
+                                          String selection,
+                                          String[] selectionArgs) {
         Uri result = null;
         Cursor c = null;
         boolean exists = false;
         // allows for appending uuid query
-        if(selection == null && selectionArgs == null
-                    && !TextUtils.isEmpty(uri.getQuery())){
+        if (selection == null && selectionArgs == null
+                && !TextUtils.isEmpty(uri.getQuery())) {
             String uuid = uri.getQueryParameter(BaseContract.UUID);
             selection = BaseContract.UUID + "=?";
-            selectionArgs = new String[]{ uuid };
+            selectionArgs = new String[]{uuid};
         }
-        try{
+        try {
             c = resolver.query(uri,
-                        BaseProjection.ID_PROJECTION,
-                        selection,
-                        selectionArgs, null);
-            if(c != null && c.moveToFirst() && c.getCount() == 1){
+                    BaseProjection.ID_PROJECTION,
+                    selection,
+                    selectionArgs, null);
+            if (c != null && c.moveToFirst() && c.getCount() == 1) {
                 exists = true;
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e);
         } finally {
-            if(c!=null) c.close();
+            if (c != null) c.close();
         }
         return result;
     }
@@ -529,15 +519,14 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @return
      */
     public static synchronized boolean exists(Context context,
-                                          Uri uri,
-                                          String selection,
-                                          String[] selectionArgs)
-    {
+                                              Uri uri,
+                                              String selection,
+                                              String[] selectionArgs) {
         Cursor cursor = null;
         boolean exists = false;
         boolean unique = false;
 
-        if(Uris.isEmpty(uri))
+        if (Uris.isEmpty(uri))
             throw new NullPointerException("Empty object Uri.");
 
         try {
@@ -547,8 +536,8 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
                     selection,
                     selectionArgs, null);
             // Check that the cursor returned
-            if (cursor != null){
-                if (cursor.getCount() == 1){
+            if (cursor != null) {
+                if (cursor.getCount() == 1) {
                     // Count was one so exists and unique
                     exists = true;
                     unique = true;
@@ -559,11 +548,11 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(cursor != null) cursor.close();
+            if (cursor != null) cursor.close();
         }
 
         // Handle the existence and uniqueness constraints
-        if(exists && !unique) {
+        if (exists && !unique) {
             // TODO Class based exception
             throw new IllegalArgumentException("MultipleObjectsReturned");
         }
@@ -578,12 +567,11 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param uri
      * @return
      */
-    public static synchronized boolean exists(Context context, Uri uri)
-    {
-        switch(Uris.getTypeDescriptor(uri)) {
+    public static synchronized boolean exists(Context context, Uri uri) {
+        switch (Uris.getTypeDescriptor(uri)) {
             case Uris.ITEM_UUID:
             case Uris.ITEM_ID:
-                return exists(context,uri,null,null);
+                return exists(context, uri, null, null);
             case Uris.ITEMS:
             default:
                 throw new IllegalArgumentException("Invalid Uri. Directory type." + uri);
@@ -598,40 +586,39 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @return
      */
     public static synchronized Uri getOrCreate(Uri uri,
-            ContentValues values,
-            ContentResolver resolver)
-    {
+                                               ContentValues values,
+                                               ContentResolver resolver) {
         Uri result = Uri.EMPTY;
         Cursor c = null;
         int updated = 0;
         boolean created = false;
 
-        switch(Uris.getTypeDescriptor(uri)){
-        case Uris.ITEM_UUID:
-        case Uris.ITEM_ID:
-            if(Uris.isEmpty(exists(resolver, uri, null, null))){
-                updated = resolver.update(uri, values, null, null);
-            } else {
-              throw new IllegalArgumentException("Error updating. Item does not exist: " + uri);
-            }
-            break;
-        case Uris.ITEMS:
-            if(uri.getQuery() != null){
-                String uuid = uri.getQueryParameter(BaseContract.UUID);
-                String selection = BaseContract.UUID + "=?";
-                String[] selectionArgs = new String[]{ uuid };
-                result = exists(resolver, uri, selection, selectionArgs);
-                if(!Uris.isEmpty(result)){
-                    resolver.update(uri, values, null, null);
+        switch (Uris.getTypeDescriptor(uri)) {
+            case Uris.ITEM_UUID:
+            case Uris.ITEM_ID:
+                if (Uris.isEmpty(exists(resolver, uri, null, null))) {
+                    updated = resolver.update(uri, values, null, null);
+                } else {
+                    throw new IllegalArgumentException("Error updating. Item does not exist: " + uri);
+                }
+                break;
+            case Uris.ITEMS:
+                if (uri.getQuery() != null) {
+                    String uuid = uri.getQueryParameter(BaseContract.UUID);
+                    String selection = BaseContract.UUID + "=?";
+                    String[] selectionArgs = new String[]{uuid};
+                    result = exists(resolver, uri, selection, selectionArgs);
+                    if (!Uris.isEmpty(result)) {
+                        resolver.update(uri, values, null, null);
+                    } else {
+                        result = resolver.insert(uri, values);
+                    }
                 } else {
                     result = resolver.insert(uri, values);
                 }
-            } else {
-                result = resolver.insert(uri, values);
-            }
-            break;
-        default:
-            throw new IllegalArgumentException("Error updating. Unrecognized uri: " + uri);
+                break;
+            default:
+                throw new IllegalArgumentException("Error updating. Unrecognized uri: " + uri);
         }
         return result;
     }
@@ -643,29 +630,29 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @param resolver
      * @return
      */
-    public static synchronized String getUuid(Uri uri, ContentResolver resolver){
+    public static synchronized String getUuid(Uri uri, ContentResolver resolver) {
         Log.i(TAG, "getUuid() " + uri);
         int descriptor = Uris.getTypeDescriptor(uri);
-        Log.d(TAG,".... descriptor=" + descriptor);
-        switch(descriptor){
-        case Uris.ITEM_UUID:
-            return uri.getLastPathSegment();
-        case Uris.ITEM_ID:
-            Cursor c = null;
-            String uuid = null;
-            try{
-                c = resolver.query(uri,
-                    new String[]{ BaseContract.UUID }, null,null,null);
-                if (c!=null && c.moveToFirst())
-                    uuid = c.getString(0);
-            }catch (Exception e){
-                e.printStackTrace();
-            } finally {
-                if(c != null) c.close();
-            }
-            return uuid;
-        default:
-            throw new IllegalArgumentException("Invalid item uri: " + uri);
+        Log.d(TAG, ".... descriptor=" + descriptor);
+        switch (descriptor) {
+            case Uris.ITEM_UUID:
+                return uri.getLastPathSegment();
+            case Uris.ITEM_ID:
+                Cursor c = null;
+                String uuid = null;
+                try {
+                    c = resolver.query(uri,
+                            new String[]{BaseContract.UUID}, null, null, null);
+                    if (c != null && c.moveToFirst())
+                        uuid = c.getString(0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (c != null) c.close();
+                }
+                return uuid;
+            default:
+                throw new IllegalArgumentException("Invalid item uri: " + uri);
         }
     }
 
@@ -678,24 +665,24 @@ public abstract class ModelWrapper<T extends IModel> extends CursorWrapper
      * @return The row id value
      * @throws IllegalArgumentException
      */
-    public static synchronized long getRowId(Uri uri, ContentResolver resolver){
-        switch(Uris.getTypeDescriptor(uri)){
-        case Uris.ITEM_ID:
-            return Long.parseLong(uri.getLastPathSegment());
-        case Uris.ITEM_UUID:
-            long id = -1;
-            Cursor c = null;
-            try{
-                c = resolver.query(uri,
-                    new String[]{ BaseContract._ID }, null,null,null);
-                if (c.moveToFirst())
-                    id = c.getInt(0);
-            } finally {
-                if(c != null) c.close();
-            }
-            return id;
-        default:
-            throw new IllegalArgumentException("Invalid item uri");
+    public static synchronized long getRowId(Uri uri, ContentResolver resolver) {
+        switch (Uris.getTypeDescriptor(uri)) {
+            case Uris.ITEM_ID:
+                return Long.parseLong(uri.getLastPathSegment());
+            case Uris.ITEM_UUID:
+                long id = -1;
+                Cursor c = null;
+                try {
+                    c = resolver.query(uri,
+                            new String[]{BaseContract._ID}, null, null, null);
+                    if (c.moveToFirst())
+                        id = c.getInt(0);
+                } finally {
+                    if (c != null) c.close();
+                }
+                return id;
+            default:
+                throw new IllegalArgumentException("Invalid item uri");
         }
     }
 }

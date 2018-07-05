@@ -22,15 +22,17 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         tools:replace="android:icon, android:theme"
         android:icon="@drawable/ic_app_logo"
-        android:label="@string/app_name" android:theme="@style/Theme.Large.NoActionBar">
-        <meta-data android:name="local_build" android:value="@string/cfg_build_variant">
-        </meta-data>
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Large.NoActionBar">
+        <meta-data
+            android:name="local_build"
+            android:value="@string/cfg_build_variant"></meta-data>
         <service
             android:name="org.sana.android.service.BackgroundUploader"
             android:enabled="true"
@@ -40,8 +42,7 @@
         <provider
             android:name=".android.db.impl.ModelContentProviderImpl"
             android:authorities="org.sana.provider"
-            android:grantUriPermissions="true">
-        </provider>
+            android:grantUriPermissions="true"></provider>
         <!-- Providers below here are deprecated -->
         <provider
             android:name="org.sana.android.db.ImageProvider"
@@ -57,17 +58,17 @@
             android:authorities="org.sana.provider.Binary" />
         <provider
             android:name=".android.content.MessageQueueProvider"
-            android:authorities="org.sana.provider.dispatch"
-            />
+            android:authorities="org.sana.provider.dispatch" />
         <!-- Activity section -->
         <activity
             android:name="org.sana.android.activity.PatientRunner"
             android:screenOrientation="portrait"
-            android:label="@string/title_register_new_patient" >
+            android:label="@string/title_register_new_patient">
             <intent-filter>
                 <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
                 <action android:name="android.intent.action.INSERT" />
                 <action android:name="android.intent.action.INSERT_OR_EDIT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.patient" />
             </intent-filter>
@@ -75,6 +76,7 @@
                 <action android:name="org.sana.android.intent.action.RUN_PROCEDURE" />
                 <action android:name="android.intent.action.INSERT" />
                 <action android:name="android.intent.action.INSERT_OR_EDIT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.subject" />
             </intent-filter>
@@ -107,7 +109,7 @@
         <activity
             android:name="org.sana.android.activity.ProceduresList"
             android:screenOrientation="portrait"
-            android:label="@string/title_procedures_list" >
+            android:label="@string/title_procedures_list">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -134,7 +136,8 @@
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter" />
             </intent-filter>
             <intent-filter>
-                6E3L;<action android:name="android.intent.action.PICK" />
+                6E3L;
+                <action android:name="android.intent.action.PICK" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.encounter" />
             </intent-filter>
@@ -148,7 +151,7 @@
         <activity
             android:name="org.sana.android.activity.EncounterTaskList"
             android:label="@string/title_savedprocedure_list"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -172,6 +175,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.PICK" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.notification" />
             </intent-filter>
@@ -188,6 +192,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.PICK" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/org.sana.info" />
             </intent-filter>
@@ -197,8 +202,9 @@
                 <data android:mimeType="vnd.android.cursor.item/org.sana.info" />
             </intent-filter>
         </activity>
-        <activity android:name="org.sana.android.activity.ProcedureSdImporter"
-                  android:screenOrientation="portrait" >
+        <activity
+            android:name="org.sana.android.activity.ProcedureSdImporter"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="org.sana.android.activity.IMPORT_PROCEDURE" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -242,7 +248,7 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.NotificationViewer"
-            android:label="@string/title_notification_viewer" >
+            android:label="@string/title_notification_viewer">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -251,7 +257,7 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.settings.Settings"
-            android:label="@string/title_settings" >
+            android:label="@string/title_settings">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -260,7 +266,7 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.settings.NetworkSettings"
-            android:label="@string/title_network_settings" >
+            android:label="@string/title_network_settings">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -269,7 +275,7 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.settings.ResourceSettings"
-            android:label="@string/title_resource_settings" >
+            android:label="@string/title_resource_settings">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -278,7 +284,7 @@
         </activity>
         <activity
             android:name="org.sana.android.activity.settings.BasicSettings"
-            android:label="@string/title_basic_settings" >
+            android:label="@string/title_basic_settings">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -307,6 +313,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
@@ -315,42 +322,49 @@
         <!-- Service section -->
         <service android:name=".android.service.impl.SessionService">
             <intent-filter>
-                <action android:name="org.sana.service.SessionService.START"/>
+                <action android:name="org.sana.service.SessionService.START" />
             </intent-filter>
             <intent-filter>
-                <action android:name="org.sana.service.SessionService.BIND_REMOTE"/>
+                <action android:name="org.sana.service.SessionService.BIND_REMOTE" />
             </intent-filter>
         </service>
         <service android:name=".android.service.impl.DispatchService">
             <intent-filter>
-                <action android:name="org.sana.intent.action.CREATE"/>
-                <action android:name="org.sana.intent.action.READ"/>
-                <action android:name="org.sana.intent.action.UPDATE"/>
-                <action android:name="org.sana.intent.action.DELETE"/>
-                <data android:scheme="content"
+                <action android:name="org.sana.intent.action.CREATE" />
+                <action android:name="org.sana.intent.action.READ" />
+                <action android:name="org.sana.intent.action.UPDATE" />
+                <action android:name="org.sana.intent.action.DELETE" />
+
+                <data
+                    android:scheme="content"
                     android:host="org.sana.provider"
-                    android:mimeType="vnd.android.cursor.item/*"/>
+                    android:mimeType="vnd.android.cursor.item/*" />
             </intent-filter>
             <intent-filter>
-                <action android:name="org.sana.intent.action.READ"/>
-                <data android:scheme="content"
+                <action android:name="org.sana.intent.action.READ" />
+                <data
+                    android:scheme="content"
                     android:host="org.sana.provider"
-                    android:mimeType="vnd.android.cursor.dir/*"/>
+                    android:mimeType="vnd.android.cursor.dir/*" />
             </intent-filter>
             <intent-filter>
-                <action android:name="org.sana.intent.action.READ"/>
-                <action android:name="org.sana.intent.action.UPDATE"/>
-                <data android:scheme="package" android:host="org.sana.provider"/>
+                <action android:name="org.sana.intent.action.READ" />
+                <action android:name="org.sana.intent.action.UPDATE" />
+
+                <data
+                    android:scheme="package"
+                    android:host="org.sana.provider" />
             </intent-filter>
         </service>
         <service android:name=".android.service.impl.ApplicationService"></service>
         <service android:name=".android.service.impl.InstrumentationService">
             <intent-filter>
-                <action android:name="org.sana.android.intent.ACTION_RECORD_GPS"/>
-                <data android:mimeType="vnd.android.cursor.item/org.sana.observation"/>
+                <action android:name="org.sana.android.intent.ACTION_RECORD_GPS" />
+                <data android:mimeType="vnd.android.cursor.item/org.sana.observation" />
             </intent-filter>
         </service>
-        <activity android:name=".android.activity.ObservationList" >
+
+        <activity android:name=".android.activity.ObservationList">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

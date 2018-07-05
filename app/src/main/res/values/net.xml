@@ -5,11 +5,11 @@
     <integer name="port_mds">443</integer>
     <string name="scheme_mds">https</string>
     <string name="host_mds" translatable="false">demo.sana.csail.mit.edu</string>
-    
+
     <string name="path_root" translatable="false">/mds/</string>
 
     <string name="path_root_training" translatable="false">test/mds/</string>
-    
+
     <string name="path_session" translatable="false">core/session/</string>
     <string name="path_encounter" translatable="false"></string>
     <string name="path_notification" translatable="false"></string>

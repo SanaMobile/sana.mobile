@@ -63,35 +63,35 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
     public static SimpleDateFormat sdf = new SimpleDateFormat(IModel.DATE_FORMAT,
             Locale.US);
     public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm",
-                    Locale.US);
+            Locale.US);
     //TODO start using a proper inner join for the query instead of the
     //repetitive queries for the patient and procedure info.
     protected static final String SELECT = "SELECT" +
-        "encountertask.uuid AS uuid, " +
-        "encountertask.due_date AS due_on, " +
-        "encountertask.subject AS subject_uuid, " +
-        "subject.given_name AS subject_given_name, " +
-        "subject.family_name AS subject_family_name, " +
-        "subject.system_id AS subject_system_id, " +
-        "encountertask.procedure AS procedure_uuid, " +
-        "procedure.title AS procedure_title " +
-        "FROM encountertask " +
-        "INNER JOIN procedure ON encountertask.procedure = procedure._id " +
-        "INNER JOIN subject ON encountertask.subject = subject.uuid;";
+            "encountertask.uuid AS uuid, " +
+            "encountertask.due_date AS due_on, " +
+            "encountertask.subject AS subject_uuid, " +
+            "subject.given_name AS subject_given_name, " +
+            "subject.family_name AS subject_family_name, " +
+            "subject.system_id AS subject_system_id, " +
+            "encountertask.procedure AS procedure_uuid, " +
+            "procedure.title AS procedure_title " +
+            "FROM encountertask " +
+            "INNER JOIN procedure ON encountertask.procedure = procedure._id " +
+            "INNER JOIN subject ON encountertask.subject = subject.uuid;";
 
     static final String SIMPLE_SELECT = EncounterTasks.Contract.OBSERVER + " = ?"
             + " AND " + EncounterTasks.Contract.STATUS + " = ? ";
 
-    static final String[] mProjection = new String[] {
-        Contract._ID,
-        Contract.SUBJECT,
-        Contract.PROCEDURE,
-        Contract.DUE_DATE,
-        Contract.UUID,
-        Contract.STATUS,
-                Contract.COMPLETED,
-                Contract.ENCOUNTER
-        };
+    static final String[] mProjection = new String[]{
+            Contract._ID,
+            Contract.SUBJECT,
+            Contract.PROCEDURE,
+            Contract.DUE_DATE,
+            Contract.UUID,
+            Contract.STATUS,
+            Contract.COMPLETED,
+            Contract.ENCOUNTER
+    };
 
     // Once a day 86400000
     long delta = 1000;
@@ -108,7 +108,9 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
     // Activity Methods
     //
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
@@ -138,21 +140,21 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         setListAdapter(mAdapter);
         Uri syncUri = EncounterTasks.CONTENT_URI;
         Uri observer = getActivity().getIntent().getParcelableExtra(
-            Intents.EXTRA_OBSERVER);
+                Intents.EXTRA_OBSERVER);
         delta = getActivity().getResources().getInteger(
-            R.integer.sync_delta_encountertasks);
+                R.integer.sync_delta_encountertasks);
         // Always sync subjects first
-        syncSubjects(getActivity(),Subjects.CONTENT_URI);
+        syncSubjects(getActivity(), Subjects.CONTENT_URI);
 
         // sync for specific observer or all tasks
-        if(!Uris.isEmpty(observer)){
+        if (!Uris.isEmpty(observer)) {
             Log.i(TAG, "sync: observer = " + observer);
             // sync subjects first
             sync(getActivity(), Subjects.CONTENT_URI);
             String observerUuid = ModelWrapper.getUuid(
-                observer, getActivity().getContentResolver());
+                    observer, getActivity().getContentResolver());
             Uri u = EncounterTasks.CONTENT_URI.buildUpon().appendQueryParameter(
-                "assigned_to__uuid",observerUuid).build();
+                    "assigned_to__uuid", observerUuid).build();
             sync(getActivity(), u);
         } else {
             Log.i(TAG, "sync: all ");
@@ -164,7 +166,9 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         getActivity().getSupportLoaderManager().initLoader(Uris.ENCOUNTER_TASK_DIR, null, this);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (mListener != null) {
@@ -176,28 +180,32 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
     // Loader Callbacks
     //
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         Log.d(TAG, "onCreateLoader() ");
         CursorLoader loader = new CursorLoader(getActivity(),
                 mUri,
                 mProjection,
-                        getSelection(),
-                new String[]{ getObserver() , getSelectedStatus() },
+                getSelection(),
+                new String[]{getObserver(), getSelectedStatus()},
                 Contract.DUE_DATE + " ASC");
         return loader;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         Log.d(TAG, "onLoadFinished() ");
 
-        if (cursor == null || (cursor !=null && cursor.getCount() == 0)) {
+        if (cursor == null || (cursor != null && cursor.getCount() == 0)) {
             setEmptyText(getString(R.string.msg_no_patients));
         }
-        if(cursor != null)
+        if (cursor != null)
             ((EncounterTaskCursorAdapter) this.getListAdapter()).swapCursor(cursor);
     }
 
@@ -234,7 +242,7 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         mListener = listener;
     }
 
-    public static class ViewHolder{
+    public static class ViewHolder {
         ImageView image;
         TextView name;
         TextView systemId;
@@ -244,25 +252,25 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         EncounterTask task = null;
     }
 
-    public String getObserver(){
+    public String getObserver() {
         Uri obsUri = getActivity().getIntent().getParcelableExtra(Intents.EXTRA_OBSERVER);
         String observer = ModelWrapper.getUuid(obsUri, getActivity().getContentResolver());
-        return (TextUtils.isEmpty(observer))? "": observer;
+        return (TextUtils.isEmpty(observer)) ? "" : observer;
     }
 
     //TODO try reading from intent
-    public String getSelectedStatus(){
+    public String getSelectedStatus() {
         return "Assigned";
     }
 
-    public String getSelection(){
+    public String getSelection() {
         return SIMPLE_SELECT;
     }
 
     /**
      * @author Sana Development Team
      */
-    public class EncounterTaskCursorAdapter extends CursorAdapter{
+    public class EncounterTaskCursorAdapter extends CursorAdapter {
 
         private final LayoutInflater mInflater;
         // Holders for the cursor column index values
@@ -275,8 +283,9 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         protected int uuidIndex = -1;
         protected int encounterIndex = -1;
         protected String[] months;
+
         public EncounterTaskCursorAdapter(Context context, Cursor c) {
-            super(context.getApplicationContext(),c,false);
+            super(context.getApplicationContext(), c, false);
             mInflater = LayoutInflater.from(context);
         }
 
@@ -292,7 +301,7 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
 
 
         @Override
-        public void changeCursor (Cursor cursor){
+        public void changeCursor(Cursor cursor) {
             setColumnIndexes(cursor);
             super.changeCursor(cursor);
         }
@@ -306,8 +315,8 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            Log.d(TAG+".mAdapter", "bindView(): cursor position: "
-                + ((cursor != null)? cursor.getPosition(): 0));
+            Log.d(TAG + ".mAdapter", "bindView(): cursor position: "
+                    + ((cursor != null) ? cursor.getPosition() : 0));
             int position = this.getCursor().getPosition();
             String uuid = ((Cursor) getItem(position)).getString(uuidIndex);
             String due_on = ((Cursor) this.getItem(position)).getString(dueOnIndex);
@@ -316,7 +325,7 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
             boolean complete = false;
             boolean reviewed = false;
             Status stat = Status.fromString(status);
-            switch(stat){
+            switch (stat) {
                 case COMPLETED:
                 case REVIEWED:
                     complete = true;
@@ -324,50 +333,50 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
                 default:
                     complete = false;
             }
-            if(complete)
-                setDate(view,true,completed,position);
+            if (complete)
+                setDate(view, true, completed, position);
             else
-                setDate(view,due_on, position);
+                setDate(view, due_on, position);
             String patientUUid = ((Cursor) getItem(position)).getString(subjectIndex);
-            setPatient(context,view,patientUUid);
+            setPatient(context, view, patientUUid);
             String procedureUuid = ((Cursor) getItem(position)).getString(procedureIndex);
-            setProcedure(context,view,procedureUuid);
+            setProcedure(context, view, procedureUuid);
             String encounter = ((Cursor) getItem(position)).getString(encounterIndex);
             Bundle data = new Bundle();
             data.putString(Contract.STATUS, status);
             data.putParcelable(Intents.EXTRA_TASK,
-                Uris.withAppendedUuid(EncounterTasks.CONTENT_URI, uuid));
+                    Uris.withAppendedUuid(EncounterTasks.CONTENT_URI, uuid));
             data.putParcelable(Intents.EXTRA_SUBJECT,
-                Uris.withAppendedUuid(Subjects.CONTENT_URI, patientUUid));
+                    Uris.withAppendedUuid(Subjects.CONTENT_URI, patientUUid));
             data.putParcelable(Intents.EXTRA_PROCEDURE,
-                Uris.withAppendedUuid(Procedures.CONTENT_URI, procedureUuid));
+                    Uris.withAppendedUuid(Procedures.CONTENT_URI, procedureUuid));
             data.putParcelable(Intents.EXTRA_TASK_ENCOUNTER,
-                Uris.withAppendedUuid(EncounterTasks.CONTENT_URI, uuid));
-            if(!TextUtils.isEmpty(encounter))
+                    Uris.withAppendedUuid(EncounterTasks.CONTENT_URI, uuid));
+            if (!TextUtils.isEmpty(encounter))
                 data.putParcelable(Intents.EXTRA_ENCOUNTER,
-                    Uris.withAppendedUuid(Encounters.CONTENT_URI, encounter));
+                        Uris.withAppendedUuid(Encounters.CONTENT_URI, encounter));
             view.setTag(data);
             mData.put(position, data);
             Log.i(TAG, "Finished setting data for: " + position);
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d(TAG+".mAdapter", "get view ");
-            return super.getView(position,convertView, parent);
+            Log.d(TAG + ".mAdapter", "get view ");
+            return super.getView(position, convertView, parent);
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-            Log.d(TAG+".mAdapter", "new view  cursor position: "
-                + ((cursor != null)? cursor.getPosition(): 0));
+            Log.d(TAG + ".mAdapter", "new view  cursor position: "
+                    + ((cursor != null) ? cursor.getPosition() : 0));
             View view = mInflater.inflate(R.layout.encountertask_list_item, null);
             bindView(view, context, cursor);
             return view;
         }
 
-        protected void setColumnIndexes(Cursor cursor){
+        protected void setColumnIndexes(Cursor cursor) {
             // Do a null check just in case
-            if(cursor == null) {
+            if (cursor == null) {
                 Log.w(TAG, "setColumnIndexes(null)");
                 return;
             }
@@ -382,12 +391,12 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         }
     }
 
-    public final void sync(Context context, Uri uri){
+    public final void sync(Context context, Uri uri) {
         Logf.D(TAG, "sync() --> " + uri);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         long lastSync = 0;
         int descriptor = Uris.getContentDescriptor(uri);
-        switch(descriptor){
+        switch (descriptor) {
             case Uris.SUBJECT:
                 lastSync = prefs.getLong("patient_sync", 0);
                 break;
@@ -399,32 +408,32 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         }
 
         long now = System.currentTimeMillis();
-        Log.d(TAG, "last: " + lastSync +", now: " + now+ ", delta: " + (now-lastSync) + ", doSync: " + ((now - lastSync) > delta));
+        Log.d(TAG, "last: " + lastSync + ", now: " + now + ", delta: " + (now - lastSync) + ", doSync: " + ((now - lastSync) > delta));
         // TODO
-        if((now - lastSync) > delta){
+        if ((now - lastSync) > delta) {
             Logf.I(TAG, "sync(): synchronizing list: " + uri);
-            switch(descriptor){
-            case Uris.SUBJECT:
-                prefs.edit().putLong("patient_sync", now).commit();
-                break;
-            case Uris.ENCOUNTER_TASK:
-                prefs.edit().putLong("encountertask_sync", now).commit();
-                break;
-            default:
+            switch (descriptor) {
+                case Uris.SUBJECT:
+                    prefs.edit().putLong("patient_sync", now).commit();
+                    break;
+                case Uris.ENCOUNTER_TASK:
+                    prefs.edit().putLong("encountertask_sync", now).commit();
+                    break;
+                default:
             }
             Intent intent = new Intent(Intents.ACTION_READ, uri);
             context.startService(intent);
         }
     }
 
-    public final void syncSubjects(Context context, Uri uri){
+    public final void syncSubjects(Context context, Uri uri) {
         Logf.D(TAG, "sync() --> " + uri);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         long lastSync = prefs.getLong("patient_sync", 0);
         long now = System.currentTimeMillis();
-        Log.d(TAG, "last: " + lastSync +", now: " + now+ ", delta: " + (now-lastSync) + ", doSync: " + ((now - lastSync) > delta));
+        Log.d(TAG, "last: " + lastSync + ", now: " + now + ", delta: " + (now - lastSync) + ", doSync: " + ((now - lastSync) > delta));
         // TODO
-        if((now - lastSync) > delta){
+        if ((now - lastSync) > delta) {
             Logf.I(TAG, "sync(): synchronizing list: " + uri);
             prefs.edit().putLong("patient_sync", now).commit();
 
@@ -443,29 +452,30 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         }
     }
 
-    public final void setProcedure(Context context, View view, String uuid){
-        Log.d(TAG+".setProcedure", "procedure uuid: " + uuid);
+    public final void setProcedure(Context context, View view, String uuid) {
+        Log.d(TAG + ".setProcedure", "procedure uuid: " + uuid);
         Cursor c = null;
         String title = null;
-        TextView procedureTitle = (TextView)view.findViewById(R.id.procedure_title);
-        try{
+        TextView procedureTitle = (TextView) view.findViewById(R.id.procedure_title);
+        try {
             Uri uri = Uris.withAppendedUuid(Procedures.CONTENT_URI, uuid);
-            c = context.getContentResolver().query(uri, new String[]{ Procedures.Contract.TITLE } , null,null,null);
-            if(c != null && c.moveToFirst()){
+            c = context.getContentResolver().query(uri, new String[]{Procedures.Contract.TITLE}, null, null, null);
+            if (c != null && c.moveToFirst()) {
                 title = c.getString(0);
             }
         } finally {
-            if(c != null) c.close();
-            procedureTitle.setText((TextUtils.isEmpty(title)? "null": title));
+            if (c != null) c.close();
+            procedureTitle.setText((TextUtils.isEmpty(title) ? "null" : title));
         }
-        Log.d(TAG+".setProcedure", "finished setting view: " + title);
+        Log.d(TAG + ".setProcedure", "finished setting view: " + title);
     }
 
-    public void setDate(View view, String due_on, long id){
-        setDate(view,false,due_on,id);
+    public void setDate(View view, String due_on, long id) {
+        setDate(view, false, due_on, id);
     }
-    public void setDate(View view, boolean completed, String due_on, long id){
-        TextView dueOn = (TextView)view.findViewById(R.id.due_on);
+
+    public void setDate(View view, boolean completed, String due_on, long id) {
+        TextView dueOn = (TextView) view.findViewById(R.id.due_on);
         Log.i(TAG, "due_on:" + due_on);
 
         Date date = new Date();
@@ -487,19 +497,19 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
 
         Log.i(TAG, "due_on(formatted):" + due_on);
         dueOn.setText(due_on);
-        if(completed){
+        if (completed) {
             dueOn.setTextColor(getResources().getColor(R.color.complete));
-        } else if(now.getDay() == date.getDay()
-                    && now.getMonth() == date.getMonth()
-                    && now.getYear() == date.getYear()){
-            if(now.after(date)){
+        } else if (now.getDay() == date.getDay()
+                && now.getMonth() == date.getMonth()
+                && now.getYear() == date.getYear()) {
+            if (now.after(date)) {
                 dueOn.setTextColor(getResources().getColor(R.color.past_due));
                 Log.w(TAG, "DUE TODAY-PAST DUE:" + id);
             } else {
                 Log.w(TAG, "DUE TODAY:" + id);
                 dueOn.setTextColor(getResources().getColor(R.color.due_today));
             }
-        } else if(now.after(date)){
+        } else if (now.after(date)) {
             dueOn.setTextColor(getResources().getColor(R.color.past_due));
             Log.w(TAG, "PAST DUE DATE:" + id);
         } else {
@@ -508,7 +518,7 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         }
     }
 
-    public void setPatient(Context context, View view, String uuid){
+    public void setPatient(Context context, View view, String uuid) {
         Cursor c = null;
         String familyName = null;
         String givenName = null;
@@ -516,11 +526,11 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
         String id = null;
         String imagePath = null;
         TextView name = (TextView) view.findViewById(R.id.name);
-        TextView systemId = (TextView)view.findViewById(R.id.system_id);
-        ImageView image = (ImageView)view.findViewById(R.id.image);
-        try{
+        TextView systemId = (TextView) view.findViewById(R.id.system_id);
+        ImageView image = (ImageView) view.findViewById(R.id.image);
+        try {
             c = ModelWrapper.getOneByUuid(Subjects.CONTENT_URI, context.getContentResolver(), uuid);
-            if(c != null && c.moveToFirst()){
+            if (c != null && c.moveToFirst()) {
                 familyName = c.getString(c.getColumnIndex(Patients.Contract.FAMILY_NAME));
                 givenName = c.getString(c.getColumnIndex(Patients.Contract.GIVEN_NAME));
                 id = c.getString(c.getColumnIndex(Patients.Contract.PATIENT_ID));
@@ -528,26 +538,26 @@ public class EncounterTaskListFragment extends ListFragment implements LoaderCal
                 imagePath = c.getString(c.getColumnIndex(Patients.Contract.IMAGE));
             }
         } finally {
-            if(c != null) c.close();
-            name.setText((TextUtils.isEmpty(displayName)? "null": displayName));
-            systemId.setText((TextUtils.isEmpty(id)? "null id":id));
-            setImage(image,imagePath);
+            if (c != null) c.close();
+            name.setText((TextUtils.isEmpty(displayName) ? "null" : displayName));
+            systemId.setText((TextUtils.isEmpty(id) ? "null id" : id));
+            setImage(image, imagePath);
         }
     }
 
-    public void setImage(ImageView view, String imagePath){
+    public void setImage(ImageView view, String imagePath) {
         // Set patient name and image
-        if(imagePath != null){
-            try{
+        if (imagePath != null) {
+            try {
                 view.setImageBitmap(Bitmaps.decodeSampledBitmapFromFile(
-                    Uri.parse(imagePath).getPath(), 128,128));
-            } catch (Exception e){
-                Log.e(TAG+".mAdapter", "bindView(): " + e.getMessage());
+                        Uri.parse(imagePath).getPath(), 128, 128));
+            } catch (Exception e) {
+                Log.e(TAG + ".mAdapter", "bindView(): " + e.getMessage());
             }
         }
     }
 
-    public Bundle getSelectedData(long id){
+    public Bundle getSelectedData(long id) {
         Bundle data = mData.get(id);
         return data;
     }
