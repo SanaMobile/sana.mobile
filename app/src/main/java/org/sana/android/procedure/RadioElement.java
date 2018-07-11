@@ -16,17 +16,17 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 
 /**
- * RadioElement is a ProcedureElement that can display a question along with 
- * multiple-choice radio box answers. Unlike a MultiSelectElement, only one 
+ * RadioElement is a ProcedureElement that can display a question along with
+ * multiple-choice radio box answers. Unlike a MultiSelectElement, only one
  * answer can be selected at a time.
  * <p/>
  * <ul type="none">
  * <li><b>Clinical Use </b> Wherever the CHW needs to be prompted to select
  * one, and only one, value from a predefined set.</li>
- * <li><b>Collects </b>Zero or more string values representing an item in the 
+ * <li><b>Collects </b>Zero or more string values representing an item in the
  * list of available answers delimited by TOKEN_DELIMITER.</li>
  * </ul>
- * 
+ *
  * @author Sana Development Team
  */
 public class RadioElement extends SelectionElement {
@@ -35,13 +35,17 @@ public class RadioElement extends SelectionElement {
     ArrayList<RadioButton> rblist;
     RadioGroup mRadioGroup;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ElementType getType() {
         return ElementType.RADIO;
     }
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected View createView(Context c) {
         Log.i(TAG, "[" + id + "]createView()");
@@ -50,14 +54,14 @@ public class RadioElement extends SelectionElement {
         mRadioGroup.setOrientation(LinearLayout.VERTICAL);
         rblist = new ArrayList<RadioButton>(values.length);
 
-        if(answer == null)
+        if (answer == null)
             answer = "";
-        for(String value : values) {
-            Log.d(TAG, "..." + value +":" + getLabelFromValue(value));
+        for (String value : values) {
+            Log.d(TAG, "..." + value + ":" + getLabelFromValue(value));
             RadioButton rb = new RadioButton(c);
             rb.setText(getLabelFromValue(value));
             rb.setTag(value);
-            if(value.equals(answer)) {
+            if (value.equals(answer)) {
                 rb.setChecked(true);
             }
             rblist.add(rb);
@@ -70,7 +74,7 @@ public class RadioElement extends SelectionElement {
                         ()));
             }
         });
-        radioView.addView(mRadioGroup, new ViewGroup.LayoutParams(-1,-1));
+        radioView.addView(mRadioGroup, new ViewGroup.LayoutParams(-1, -1));
         return encapsulateQuestion(c, radioView);
     }
 
@@ -79,12 +83,12 @@ public class RadioElement extends SelectionElement {
         Log.i(TAG, "[" + id + "]setAnswer() --> " + answer);
         this.answer = answer;
 
-        if(isViewActive()) {
-            for(RadioButton r : rblist) {
-                if(TextUtils.isEmpty(answer))
+        if (isViewActive()) {
+            for (RadioButton r : rblist) {
+                if (TextUtils.isEmpty(answer))
                     continue;
-                r.setChecked((String.valueOf(r.getTag()).equals(this.answer))?
-                    true:false);
+                r.setChecked((String.valueOf(r.getTag()).equals(this.answer)) ?
+                        true : false);
             }
         }
 
@@ -108,34 +112,35 @@ public class RadioElement extends SelectionElement {
         */
         return answer;
     }
-    
-    /** Default constructor */
-    private RadioElement(String id, String question, String answer, 
-    		String concept, String figure, String audio, String[] choices) 
-    {
-        super(id,question,answer, concept, figure, audio, choices);
+
+    /**
+     * Default constructor
+     */
+    private RadioElement(String id, String question, String answer,
+                         String concept, String figure, String audio, String[] choices) {
+        super(id, question, answer, concept, figure, audio, choices);
     }
 
     private RadioElement(String id, String question, String answer,
                          String concept, String figure, String audio,
-                         String[] choices, String[] values)
-    {
-        super(id,question,answer, concept, figure, audio, choices, values);
+                         String[] choices, String[] values) {
+        super(id, question, answer, concept, figure, audio, choices, values);
     }
 
-    /** @see ProcedureElement#fromXML(String, String, String, String, String, String, Node) */
-    public static RadioElement fromXML(String id, String question, 
-    		String answer, String concept, String figure, String audio, 
-    		Node node) throws ProcedureParseException  
-    {
-        String choicesStr = SanaUtil.getNodeAttributeOrDefault(node, 
-        		"choices", "");
+    /**
+     * @see ProcedureElement#fromXML(String, String, String, String, String, String, Node)
+     */
+    public static RadioElement fromXML(String id, String question,
+                                       String answer, String concept, String figure, String audio,
+                                       Node node) throws ProcedureParseException {
+        String choicesStr = SanaUtil.getNodeAttributeOrDefault(node,
+                "choices", "");
         String valuesStr = SanaUtil.getNodeAttributeOrDefault(node, "values",
                 choicesStr);
-        return new RadioElement(id, question, answer, concept, figure, audio, 
-        		choicesStr.split(SelectionElement.TOKEN_DELIMITER),
+        return new RadioElement(id, question, answer, concept, figure, audio,
+                choicesStr.split(SelectionElement.TOKEN_DELIMITER),
                 valuesStr.split(SelectionElement.TOKEN_DELIMITER));
     }
-    
-    
+
+
 }

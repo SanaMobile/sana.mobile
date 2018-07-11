@@ -6,16 +6,14 @@
     android:gravity="center_vertical|center_horizontal"
     android:orientation="vertical"
     tools:context="org.sana.android.activity.AuthenticationActivity"
-    android:background="@drawable/bg_hdpi"
-    >
+    android:background="@drawable/bg_hdpi">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        >
+        android:layout_marginRight="20dp">
 
         <ImageView
             android:layout_width="match_parent"
@@ -28,8 +26,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="0dp"
             android:maxWidth="64dp"
-            android:adjustViewBounds="false"
-            />
+            android:adjustViewBounds="false" />
     </LinearLayout>
 
     <LinearLayout
@@ -50,7 +47,8 @@
             android:inputType="text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_margin="10dp"
-            android:textStyle="normal" style="@style/Widget.EditText.Light"/>
+            android:textStyle="normal"
+            style="@style/Widget.EditText.Light" />
 
         <EditText
             android:id="@+id/input_password"
@@ -61,7 +59,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_margin="10dp"
             android:layout_marginBottom="16dp"
-            style="@style/Widget.EditText.Light"/>
+            style="@style/Widget.EditText.Light" />
 
         <Button
             android:id="@+id/btn_login"
@@ -74,7 +72,8 @@
             android:minWidth="128dp"
             android:nestedScrollingEnabled="false"
             android:layout_gravity="center"
-            android:padding="16dp"/>
+            android:padding="16dp" />
+
         <Button
             android:id="@+id/btn_exit"
             android:layout_width="fill_parent"
@@ -84,7 +83,8 @@
             android:layout_margin="5dp"
             android:layout_gravity="center"
             android:minWidth="128dp"
-            android:padding="16dp"/>
+            android:padding="16dp" />
+
         <Button
             android:id="@+id/btn_configure"
             android:layout_width="wrap_content"
@@ -94,7 +94,7 @@
             android:layout_margin="5dp"
             android:minWidth="128dp"
             android:layout_gravity="center"
-            android:padding="16dp"/>
+            android:padding="16dp" />
 
 
     </LinearLayout>
@@ -106,6 +106,6 @@
         android:gravity="center_horizontal"
         android:textAppearance="@style/Base.TextAppearance.AppCompat"
         android:text="@string/display_version"
-        android:textColor="@color/light_gray"/>
+        android:textColor="@color/light_gray" />
 
 </LinearLayout>

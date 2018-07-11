@@ -26,12 +26,15 @@
         android:adjustViewBounds="true"
         android:maxHeight="32dip"
         android:layout_gravity="center|left"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp" />
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" android:id="@+id/actions" android:layout_marginTop="5dip" android:layout_gravity="bottom">
+        android:layout_height="fill_parent"
+        android:id="@+id/actions"
+        android:layout_marginTop="5dip"
+        android:layout_gravity="bottom">
 
         <Button
             android:id="@+id/btn_main_select_patient"
@@ -40,7 +43,7 @@
             android:onClick="submit"
             android:drawableLeft="@drawable/ic_menu_allfriends"
             android:text="@string/button_main_select_patient"
-            style="@style/Widget.Button.Large.Dark"/>
+            style="@style/Widget.Button.Large.Dark" />
 
         <Button
             android:id="@+id/btn_main_transfers"
@@ -49,7 +52,7 @@
             android:onClick="submit"
             android:drawableLeft="@drawable/ic_menu_archive"
             android:text="@string/button_main_view_prior_encounters"
-            style="@style/Widget.Button.Large.Dark"/>
+            style="@style/Widget.Button.Large.Dark" />
 
         <Button
             android:id="@+id/btn_training_mode"
@@ -58,7 +61,7 @@
             android:layout_height="wrap_content"
             android:onClick="submit"
             android:drawableLeft="@drawable/ic_menu_edit"
-            android:text="@string/button_main_training_mode"/>
+            android:text="@string/button_main_training_mode" />
 
         <Button
             android:id="@+id/button_main_notifications"

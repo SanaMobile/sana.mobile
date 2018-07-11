@@ -55,13 +55,15 @@ import android.view.Window;
 import android.widget.Toast;
 
 
-/** Base class activity for containing a BaseRunnerFragment. Additional logic is
+/**
+ * Base class activity for containing a BaseRunnerFragment. Additional logic is
  * built into this class to handle launching and capturing returned values from
  * Activities used to capture data along with initiating procedure saving,
  * reloading, and uploading.
- * 
- * @author Sana Development Team */
-public abstract class BaseRunner extends FragmentActivity implements BaseRunnerFragment.ProcedureListener{
+ *
+ * @author Sana Development Team
+ */
+public abstract class BaseRunner extends FragmentActivity implements BaseRunnerFragment.ProcedureListener {
 
     public static final String TAG = BaseRunner.class.getSimpleName();
     public static final String INTENT_KEY_STRING = "intentKey";
@@ -110,73 +112,77 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
         }
     };
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
-    	Locales.updateLocale(this, getString(R.string.force_locale));
+        Locales.updateLocale(this, getString(R.string.force_locale));
     }
-    
+
     @Override
-    public void onPause(){
+    public void onPause() {
         Log.i(TAG, "onPause()");
         super.onPause();
-    	if(mUploading.get() && mUploadingDialog != null){
-    		mUploadingDialog.dismiss();
-    		mUploadingDialog = null;
-    	}
-    	LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(mReceiver);
+        if (mUploading.get() && mUploadingDialog != null) {
+            mUploadingDialog.dismiss();
+            mUploadingDialog = null;
+        }
+        LocalBroadcastManager.getInstance(this.getApplicationContext()).unregisterReceiver(mReceiver);
     }
-    
+
     @Override
-    public void onResume(){
+    public void onResume() {
         Log.i(TAG, "onResume()");
         super.onResume();
-    	Log.d(TAG, "...uploading: " + mUploading.get());
-    	if(mUploading.get()){
-    		if(mUploadingDialog != null){
+        Log.d(TAG, "...uploading: " + mUploading.get());
+        if (mUploading.get()) {
+            if (mUploadingDialog != null) {
                 Log.d(TAG, "...mUploadingDialog != null && mUploading.get() = true");
-    			mUploadingDialog.show();
-    		} else {
-    			Log.d(TAG, "...mUploadingDialog == null && mUploading.get() = true");
-    			mUploadingDialog = new ProgressDialog(this);
-    			mUploadingDialog.setTitle(R.string.general_upload_in_progress);
-    			mUploadingDialog.setCancelable(false);
-    			mUploadingDialog.show();
-    		}
-    	} else {
-			Logf.D(TAG, "mUploading.get() = false");
-    	}
+                mUploadingDialog.show();
+            } else {
+                Log.d(TAG, "...mUploadingDialog == null && mUploading.get() = true");
+                mUploadingDialog = new ProgressDialog(this);
+                mUploadingDialog.setTitle(R.string.general_upload_in_progress);
+                mUploadingDialog.setCancelable(false);
+                mUploadingDialog.show();
+            }
+        } else {
+            Logf.D(TAG, "mUploading.get() = false");
+        }
         registerLocalBroadcastReceiver(mReceiver);
     }
-    
-    public IntentFilter buildFilter(){
-        Log.i(TAG,"buildFilter()");
-    	IntentFilter filter = new IntentFilter(DispatchResponseReceiver.BROADCAST_RESPONSE);
+
+    public IntentFilter buildFilter() {
+        Log.i(TAG, "buildFilter()");
+        IntentFilter filter = new IntentFilter(DispatchResponseReceiver.BROADCAST_RESPONSE);
         filter.addDataScheme(Encounters.CONTENT_URI.getScheme());
         try {
-            
+
             filter.addDataType(Encounters.CONTENT_ITEM_TYPE);
         } catch (MalformedMimeTypeException e) {
-        
+
         }
         return filter;
     }
 
-    protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver, IntentFilter filter){
+    protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver, IntentFilter filter) {
         Log.i(TAG, "registerLocalBroadcastReceiver(BroadcastReceiver,IntentFilter)");
         LocalBroadcastManager.getInstance(
                 getApplicationContext()).registerReceiver(receiver, filter);
     }
 
-    protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver){
+    protected void registerLocalBroadcastReceiver(BroadcastReceiver receiver) {
         Log.i(TAG, "registerLocalBroadcastReceiver(BroadcastReceiver)");
         IntentFilter filter = buildFilter();
-        registerLocalBroadcastReceiver(receiver,filter);
+        registerLocalBroadcastReceiver(receiver, filter);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
@@ -187,7 +193,9 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
 
     ReentrantLock lock = new ReentrantLock();
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         lock.lock();
@@ -219,7 +227,9 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
         return false;
     }
 
-    /** The back key will activate previous page. */
+    /**
+     * The back key will activate previous page.
+     */
     @Override
     public boolean onKeyDown(int keycode, KeyEvent e) {
         switch (keycode) {
@@ -232,7 +242,9 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -243,8 +255,7 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                         .setMessage(getResources().getString(
                                 R.string.dialog_already_uploaded))
                         .setNeutralButton(getResources().getString(R.string.general_ok),
-                                new DialogInterface.OnClickListener()
-                                {
+                                new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         // close without saving
                                         setResult(RESULT_OK, null);
@@ -254,16 +265,18 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                         .create();
 
             case DIALOG_SIGNAL_STRENGTH:
-            	break;
-            case DIALOG_UPLOAD_RESULT:	
-            
+                break;
+            case DIALOG_UPLOAD_RESULT:
+
             default:
                 break;
         }
         return null;
     }
 
-    /** Handles launching data capture Activities. */
+    /**
+     * Handles launching data capture Activities.
+     */
     @Override
     protected void onNewIntent(Intent intent) {
         Log.i(TAG, "data: " + intent.toUri(Intent.URI_INTENT_SCHEME));
@@ -292,7 +305,7 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                     // With vanilla Android, it's a bug in 1.6.
 
                     //Uri tempImageUri = Uri.fromFile(getTemporaryImageFile());
-                    Uri tempImageUri = Uri.fromFile(getTemporaryImageFile(params[0],params[1], params[2]));
+                    Uri tempImageUri = Uri.fromFile(getTemporaryImageFile(params[0], params[1], params[2]));
                     Log.d(TAG, "tempImageUri: " + tempImageUri);
                     mEncounterState = new Intent();
                     mEncounterState.setDataAndType(tempImageUri, "image/jpg");
@@ -315,22 +328,22 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                     page = intent.getIntExtra("page", -1);
                     mPluginId = id;
                     // encounter uuid from the activity intent
-            		String encounter = ModelWrapper.getUuid(intent.getData(), getContentResolver());
-            		Uri mSubject = getIntent().getParcelableExtra(Intents.EXTRA_SUBJECT);
-            		String subject = ModelWrapper.getUuid(mSubject, getContentResolver());
-            		// Use the node id and encounter to get or create the observation entry
-            		data = ObservationWrapper.getReferenceByEncounterAndId(
-    						getContentResolver(), encounter,
-    						id);
-            		if(data == null || data.equals(Observations.CONTENT_URI)){
-            			ContentValues vals = new ContentValues();
-            			vals.put(BaseContract.UUID, UUIDUtil.generate(encounter, id).toString());
-            			vals.put(Observations.Contract.ENCOUNTER, encounter);
-            			vals.put(Observations.Contract.ID, id);
-            			vals.put(Observations.Contract.CONCEPT, plug.getStringExtra(Observations.Contract.CONCEPT));
-            			vals.put(Observations.Contract.SUBJECT, subject);
-            			data = getContentResolver().insert(Observations.CONTENT_URI, vals);
-            		}
+                    String encounter = ModelWrapper.getUuid(intent.getData(), getContentResolver());
+                    Uri mSubject = getIntent().getParcelableExtra(Intents.EXTRA_SUBJECT);
+                    String subject = ModelWrapper.getUuid(mSubject, getContentResolver());
+                    // Use the node id and encounter to get or create the observation entry
+                    data = ObservationWrapper.getReferenceByEncounterAndId(
+                            getContentResolver(), encounter,
+                            id);
+                    if (data == null || data.equals(Observations.CONTENT_URI)) {
+                        ContentValues vals = new ContentValues();
+                        vals.put(BaseContract.UUID, UUIDUtil.generate(encounter, id).toString());
+                        vals.put(Observations.Contract.ENCOUNTER, encounter);
+                        vals.put(Observations.Contract.ID, id);
+                        vals.put(Observations.Contract.CONCEPT, plug.getStringExtra(Observations.Contract.CONCEPT));
+                        vals.put(Observations.Contract.SUBJECT, subject);
+                        data = getContentResolver().insert(Observations.CONTENT_URI, vals);
+                    }
                     plug.setDataAndType(data, intent.getType());
                     plug.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     // Take a look at it
@@ -339,26 +352,26 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                     startActivityForResult(plug, PLUGIN_INTENT_REQUEST_CODE);
                     break;
                 case OBSERVATION_RESULT_CODE:
-                	id = intent.getStringExtra("id");
-                	page = intent.getIntExtra("page", -1);
-                	String obs = intent.getStringExtra(Observations.Contract.VALUE);
-                	ContentValues vals = new ContentValues();
-                	vals.put(Observations.Contract.VALUE, obs);
-                	//getContentResolver().update(intent.getData(), vals, null,null );
-                	Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id,obs));
-                	//setValue(page, id, obs);
-                	//storeCurrentProcedure(false, true);
-                	break;
+                    id = intent.getStringExtra("id");
+                    page = intent.getIntExtra("page", -1);
+                    String obs = intent.getStringExtra(Observations.Contract.VALUE);
+                    ContentValues vals = new ContentValues();
+                    vals.put(Observations.Contract.VALUE, obs);
+                    //getContentResolver().update(intent.getData(), vals, null,null );
+                    Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id, obs));
+                    //setValue(page, id, obs);
+                    //storeCurrentProcedure(false, true);
+                    break;
                 case RUN_DISCARD:
-                	Intent dial = intent.getParcelableExtra(Intent.EXTRA_INTENT);
-                	// This is very forgiving of missing EXTRA_INTENT
-                	try{
-                		startActivityForResult(dial, RUN_DISCARD);
-                	} catch (Exception e){
-                		Log.w(TAG, "Bad Intent: " + dial);
-                		e.printStackTrace();
-                	}
-                	break;
+                    Intent dial = intent.getParcelableExtra(Intent.EXTRA_INTENT);
+                    // This is very forgiving of missing EXTRA_INTENT
+                    try {
+                        startActivityForResult(dial, RUN_DISCARD);
+                    } catch (Exception e) {
+                        Log.w(TAG, "Bad Intent: " + dial);
+                        e.printStackTrace();
+                    }
+                    break;
                 default:
                     break;
             }
@@ -370,14 +383,16 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                     Toast.LENGTH_SHORT).show();
         }
     }
+
     Uri tempImageUri = Uri.EMPTY;
-    
-    /** Handles the results of Activities launched for data capture. */
+
+    /**
+     * Handles the results of Activities launched for data capture.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
-            final Intent data)
-    {
-        Log.i(TAG, "data: " + ((data != null) ? data.toUri(Intent.URI_INTENT_SCHEME):"null"));
+                                    final Intent data) {
+        Log.i(TAG, "data: " + ((data != null) ? data.toUri(Intent.URI_INTENT_SCHEME) : "null"));
         Log.d(TAG, "Returned. requestCode: " + requestCode);
         Log.d(TAG, "......... resultCode : " + resultCode);
         Log.d(TAG, "......... obs        : " + mEncounterState.getData());
@@ -387,28 +402,28 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
         int page = -1;
         switch (resultCode) {
             case (RESULT_OK):
-            	page = mRunnerFragment.getCurrentPage();
+                page = mRunnerFragment.getCurrentPage();
                 try {
                     switch (requestCode) {
-                    /*
-                     * case (BARCODE_INTENT_REQUEST_CODE): String contents =
-                     * data.getStringExtra("SCAN_RESULT"); String format =
-                     * data.getStringExtra("SCAN_RESULT_FORMAT"); Log.i(TAG,
-                     * "Got result from barcode intent: " + contents);
-                     * ProcedurePage pp = p.current(); PatientIdElement
-                     * patientId = pp.getPatientIdElement();
-                     * patientId.setAndRefreshAnswer(contents); break;
-                     */
-                    // TODO the camera should get removed.
+                        /*
+                         * case (BARCODE_INTENT_REQUEST_CODE): String contents =
+                         * data.getStringExtra("SCAN_RESULT"); String format =
+                         * data.getStringExtra("SCAN_RESULT_FORMAT"); Log.i(TAG,
+                         * "Got result from barcode intent: " + contents);
+                         * ProcedurePage pp = p.current(); PatientIdElement
+                         * patientId = pp.getPatientIdElement();
+                         * patientId.setAndRefreshAnswer(contents); break;
+                         */
+                        // TODO the camera should get removed.
                         case (CAMERA_INTENT_REQUEST_CODE):
                             ImageProcessingTaskRequest request =
                                     new ImageProcessingTaskRequest();
                             request.savedProcedureId = params[0];
                             request.elementId = params[1];
                             //request.tempImageFile = getTemporaryImageFile();
-                            request.tempImageFile = getTemporaryImageFile(params[0],params[1], params[2]);
+                            request.tempImageFile = getTemporaryImageFile(params[0], params[1], params[2]);
                             request.c = this;
-                            
+
                             request.intent = data;
                             Log.i(TAG, "savedProcedureId " + request.savedProcedureId
                                     + " and elementId " + request.elementId);
@@ -431,26 +446,26 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                             break;
                         case PLUGIN_INTENT_REQUEST_CODE:
                             Uri mObs = data.getData();
-                            String type = (TextUtils.isEmpty(data.getType()))? 
-                            		"text/plain": data.getType();
-                            id = (data.hasExtra(Observations.Contract.ID))?
-                            		data.getStringExtra(Observations.Contract.ID):
-                            		mPluginId;
+                            String type = (TextUtils.isEmpty(data.getType())) ?
+                                    "text/plain" : data.getType();
+                            id = (data.hasExtra(Observations.Contract.ID)) ?
+                                    data.getStringExtra(Observations.Contract.ID) :
+                                    mPluginId;
 
                             // Print plugin result
                             Log.d(TAG, "....Plugin result:");
                             Log.d(TAG, "........data      : " + mObs);
                             Log.d(TAG, "........id        : " + id);
                             Log.d(TAG, "........type      : " + type);
-                            
+
                             // Check if we get plain text first
                             if (type.equals("text/plain")) {
                                 answer = mObs.getFragment();
 
-                            // Otherwise we have binary blob so we insert
+                                // Otherwise we have binary blob so we insert
                             } else {
-                            	answer = ObservationWrapper.getComplexData(
-                            				getContentResolver(), mObs).getAbsolutePath();
+                                answer = ObservationWrapper.getComplexData(
+                                        getContentResolver(), mObs).getAbsolutePath();
                                 Uri uri = BinaryDAO.updateOrCreate(
                                         getContentResolver(),
                                         mEncounterState.getData().getLastPathSegment(),
@@ -465,15 +480,15 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
                             break;
 
                         case OBSERVATION_RESULT_CODE:
-                        	id = data.getStringExtra("id");
-                        	page = data.getIntExtra("page", -1);
-                        	String obs = data.getStringExtra(Observations.Contract.VALUE);
-                        	Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id,obs));
-                        	setValue(page, id, obs);
-                        	break;
+                            id = data.getStringExtra("id");
+                            page = data.getIntExtra("page", -1);
+                            String obs = data.getStringExtra(Observations.Contract.VALUE);
+                            Log.e(TAG, String.format("Returned observation: { page: '%d', id: '%s', value: '%s'}", page, id, obs));
+                            setValue(page, id, obs);
+                            break;
                         case RUN_DISCARD:
-                        	Log.i(TAG, "Action completed successfully: " + data);
-                        	break;
+                            Log.i(TAG, "Action completed successfully: " + data);
+                            break;
                         default:
                             Log.e(TAG, "Unknown activity");
                             answer = "";
@@ -498,120 +513,122 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
 
     }
 
-    public boolean setValue(int pageIndex, String elementId, String value){
-    	boolean result = false;
-    	if (mRunnerFragment != null && mRunnerFragment instanceof BaseRunnerFragment) {
+    public boolean setValue(int pageIndex, String elementId, String value) {
+        boolean result = false;
+        if (mRunnerFragment != null && mRunnerFragment instanceof BaseRunnerFragment) {
             result = mRunnerFragment.setValue(pageIndex, elementId, value);
-    	}
-    	return result;
+        }
+        return result;
     }
-    
-    public void storeCurrentProcedure(boolean finished, boolean skipHidden){
+
+    public void storeCurrentProcedure(boolean finished, boolean skipHidden) {
         if (mRunnerFragment != null) {
-        	mRunnerFragment.storeCurrentProcedure(finished, skipHidden);
+            mRunnerFragment.storeCurrentProcedure(finished, skipHidden);
         }
     }
-    
-    protected final void makeText(String text){
-		makeText(text, Toast.LENGTH_LONG);
-	}
-    
-    protected final void makeText(String text, int duration){
-    	Locales.updateLocale(this, getString(R.string.force_locale));
-		Toast.makeText(this, text, duration).show();
-	}
-    
-    protected final void makeText(int resId){
-    	makeText(resId, Toast.LENGTH_SHORT);
-	}
-    
-    protected final void makeText(int resId, int duration){
-    	makeText(getString(resId), duration);
-	}
-    
-    /** A static temporary image file
-     * 
-     * @return */
+
+    protected final void makeText(String text) {
+        makeText(text, Toast.LENGTH_LONG);
+    }
+
+    protected final void makeText(String text, int duration) {
+        Locales.updateLocale(this, getString(R.string.force_locale));
+        Toast.makeText(this, text, duration).show();
+    }
+
+    protected final void makeText(int resId) {
+        makeText(resId, Toast.LENGTH_SHORT);
+    }
+
+    protected final void makeText(int resId, int duration) {
+        makeText(getString(resId), duration);
+    }
+
+    /**
+     * A static temporary image file
+     *
+     * @return
+     */
     protected static File getTemporaryImageFile() {
         return new File(Environment.getExternalStorageDirectory(), "sana.jpg");
     }
-    
+
     protected static File getTemporaryImageFile(String encounter, String obsId, String objId) {
-    	File dir = new File(Environment.getExternalStorageDirectory(), "sana/tmp/");
-    	if(!dir.exists())
-    		dir.mkdirs();
+        File dir = new File(Environment.getExternalStorageDirectory(), "sana/tmp/");
+        if (!dir.exists())
+            dir.mkdirs();
         return new File(dir, String.format("%s_%s-%s.jpg", encounter, obsId, objId));
     }
-    
+
     protected static boolean removeTemporaryImageFile(String encounter, String obsId) {
-    	File dir = new File(Environment.getExternalStorageDirectory(), "sana/tmp/");
-    	if(!dir.exists())
-    		dir.mkdirs();
-        File tmp =  new File(dir, String.format("%s_%s.jpg", encounter, obsId));
+        File dir = new File(Environment.getExternalStorageDirectory(), "sana/tmp/");
+        if (!dir.exists())
+            dir.mkdirs();
+        File tmp = new File(dir, String.format("%s_%s.jpg", encounter, obsId));
         return tmp.delete();
     }
-    
+
     /**
-     * 
      * @param text
      * @return
      */
-    protected final AlertDialog createUploadResultSuccessDialog(String text){
-    	Locales.updateLocale(this,getString(R.string.force_locale));
-    	return new AlertDialog.Builder(this)
-    	.setTitle(getResources().getString(R.string.upload_status))
-        .setMessage((TextUtils.isEmpty(text))?getResources().getString(R.string.upload_success):text)
-            .setNeutralButton(getResources().getString(R.string.general_ok), new DialogInterface.OnClickListener(){
+    protected final AlertDialog createUploadResultSuccessDialog(String text) {
+        Locales.updateLocale(this, getString(R.string.force_locale));
+        return new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.upload_status))
+                .setMessage((TextUtils.isEmpty(text)) ? getResources().getString(R.string.upload_success) : text)
+                .setNeutralButton(getResources().getString(R.string.general_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {// close without saving
                         setResult(RESULT_OK, null);
                         finish();
-                }})
-             .setCancelable(false)
-             .create();
+                    }
+                })
+                .setCancelable(false)
+                .create();
     }
-    
+
     /**
-     * 
      * @param text
      * @return
      */
-    protected final AlertDialog createUploadResultFailDialog(String text){
-    	Locales.updateLocale(this,getString(R.string.force_locale));
-    	return new AlertDialog.Builder(this)
-        	.setTitle(getResources().getString(R.string.upload_status))
-            .setMessage((TextUtils.isEmpty(text))?getResources().getString(R.string.upload_fail):text)
-            .setNeutralButton(getResources().getString(R.string.general_ok), new DialogInterface.OnClickListener(){
+    protected final AlertDialog createUploadResultFailDialog(String text) {
+        Locales.updateLocale(this, getString(R.string.force_locale));
+        return new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.upload_status))
+                .setMessage((TextUtils.isEmpty(text)) ? getResources().getString(R.string.upload_fail) : text)
+                .setNeutralButton(getResources().getString(R.string.general_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                    	// close without saving
+                        // close without saving
                         //setResult(RESULT_OK, null);
                         //finish();
-                }})
-             .setCancelable(false)
-             .create();
+                    }
+                })
+                .setCancelable(false)
+                .create();
     }
-    
-    protected final void createSignalStrengthDialog(){
-    	
-    	
+
+    protected final void createSignalStrengthDialog() {
+
+
     }
-    
-    public void hideUploadingDialog(){
-    	if(mUploadingDialog != null && mUploadingDialog.isShowing()){
-    		mUploadingDialog.dismiss();
-    		mUploadingDialog = null;
-    	}
+
+    public void hideUploadingDialog() {
+        if (mUploadingDialog != null && mUploadingDialog.isShowing()) {
+            mUploadingDialog.dismiss();
+            mUploadingDialog = null;
+        }
     }
-    
-    public void showUploadingDialog(){
-    	if(mUploadingDialog != null && !mUploadingDialog.isShowing())
-    		mUploadingDialog.show();
-    	else{
-    		mUploadingDialog = new ProgressDialog(this);
-    		mUploadingDialog.setTitle(R.string.general_upload_in_progress);
-    		mUploadingDialog.setCancelable(false);
-    		mUploadingDialog.show();
-    	}
-    		
+
+    public void showUploadingDialog() {
+        if (mUploadingDialog != null && !mUploadingDialog.isShowing())
+            mUploadingDialog.show();
+        else {
+            mUploadingDialog = new ProgressDialog(this);
+            mUploadingDialog.setTitle(R.string.general_upload_in_progress);
+            mUploadingDialog.setCancelable(false);
+            mUploadingDialog.show();
+        }
+
     }
 
     /**
@@ -619,10 +636,10 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
      *
      * @param message
      */
-    public void showProgressDialog(String message){
-        if(mUploadingDialog != null && !mUploadingDialog.isShowing())
+    public void showProgressDialog(String message) {
+        if (mUploadingDialog != null && !mUploadingDialog.isShowing())
             mUploadingDialog.show();
-        else{
+        else {
             mUploadingDialog = new ProgressDialog(this);
             mUploadingDialog.setTitle(message);
             mUploadingDialog.setCancelable(false);
@@ -635,83 +652,85 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
      *
      * @param resId The id of the string resource to display
      */
-    public void showProgressDialog(int resId){
+    public void showProgressDialog(int resId) {
         showProgressDialog(Strings.getLocalizedString(this, resId));
     }
 
     /**
      * Hides the progress dialog if it is being displayed
      */
-    public void hideProgressDialog(){
-        if(mUploadingDialog != null && mUploadingDialog.isShowing()){
+    public void hideProgressDialog() {
+        if (mUploadingDialog != null && mUploadingDialog.isShowing()) {
             mUploadingDialog.dismiss();
             mUploadingDialog = null;
         }
     }
-    
-    public void setUploading(boolean state){
-    	mUploading.set(state);
-    }
-    
-    public void onSaveInstanceState(Bundle outState){
-    	super.onSaveInstanceState(outState);
-    	outState.putBoolean("mUploading", mUploading.get());
-    }
-    
-    public void onRestoreInstanceState(Bundle inState){
-    	super.onRestoreInstanceState(inState);
-    	if(inState != null){
-    		mUploading.set(inState.getBoolean("mUploading", false));
-    	} else {
-    		mUploading.set(false);
-    	}
-    }
-    
-    private class GSMStateListener extends PhoneStateListener{
-    	@Override
-        public void onSignalStrengthsChanged(SignalStrength strength) {
-        	Locales.updateLocale(BaseRunner.this, getString(R.string.force_locale));
-        	String negativeText = getResources().getString(R.string.general_cancel);
-        	String positiveText = getResources().getString(R.string.general_ok);
-            super.onSignalStrengthsChanged(strength);
-            new AlertDialog.Builder(BaseRunner.this)
-                .setTitle("SNR")
-                .setMessage(String.valueOf(strength.getGsmSignalStrength()))
-                .setPositiveButton(positiveText, new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface dialog, int whichButton) {// close without saving
-                        //setResult(RESULT_OK, null);
-                        //finish();
-                }})
-                .setNegativeButton(negativeText, new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface dialog, int whichButton) {// close without saving
-                        //setResult(RESULT_OK, null);
-                        //finish();
-                }})
-                .create()
-                .show();
-        }
-    }
-    
-    public void onProcedureComplete(Intent data){
-    }
-    
-    public void onProcedureCancelled(String message){
+
+    public void setUploading(boolean state) {
+        mUploading.set(state);
     }
 
-    protected void handleBroadcast(Intent intent){
-        Log.i(TAG,"handleBroadcast(Intent)");
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("mUploading", mUploading.get());
+    }
+
+    public void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        if (inState != null) {
+            mUploading.set(inState.getBoolean("mUploading", false));
+        } else {
+            mUploading.set(false);
+        }
+    }
+
+    private class GSMStateListener extends PhoneStateListener {
+        @Override
+        public void onSignalStrengthsChanged(SignalStrength strength) {
+            Locales.updateLocale(BaseRunner.this, getString(R.string.force_locale));
+            String negativeText = getResources().getString(R.string.general_cancel);
+            String positiveText = getResources().getString(R.string.general_ok);
+            super.onSignalStrengthsChanged(strength);
+            new AlertDialog.Builder(BaseRunner.this)
+                    .setTitle("SNR")
+                    .setMessage(String.valueOf(strength.getGsmSignalStrength()))
+                    .setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {// close without saving
+                            //setResult(RESULT_OK, null);
+                            //finish();
+                        }
+                    })
+                    .setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {// close without saving
+                            //setResult(RESULT_OK, null);
+                            //finish();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+    }
+
+    public void onProcedureComplete(Intent data) {
+    }
+
+    public void onProcedureCancelled(String message) {
+    }
+
+    protected void handleBroadcast(Intent intent) {
+        Log.i(TAG, "handleBroadcast(Intent)");
         int result = intent.getIntExtra(Response.CODE, 400);
         Log.d(TAG, "...code=" + result);
         if (result >= 100 && result < 200) {
-            Log.d(TAG, "...CONTINUE" );
+            Log.d(TAG, "...CONTINUE");
             // do nothing
-        } else if(result >= 200 && result < 300) {
+        } else if (result >= 200 && result < 300) {
             Log.d(TAG, "...SUCCESS");
             handleBroadcastResultSuccess(intent);
-        } else if(result >= 400){
+        } else if (result >= 400) {
             Log.d(TAG, "...FAILURE");
             handleBroadcastResultFailure(intent);
-        }  else {
+        } else {
             Log.d(TAG, "...UNKNOWN");
         }
     }
@@ -722,12 +741,12 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
      *
      * @param intent The response message
      */
-    protected void handleBroadcastResultSuccess(Intent intent){
+    protected void handleBroadcastResultSuccess(Intent intent) {
         Log.i(TAG, "handleBroadcastResultSuccess(Intent)");
         setUploading(false);
         hideUploadingDialog();
-        String text = intent.hasExtra(Response.MESSAGE)?
-                intent.getStringExtra(Response.MESSAGE):
+        String text = intent.hasExtra(Response.MESSAGE) ?
+                intent.getStringExtra(Response.MESSAGE) :
                 "Upload Result Received: " + intent.getDataString();
         createUploadResultSuccessDialog(text).show();
     }
@@ -738,12 +757,12 @@ public abstract class BaseRunner extends FragmentActivity implements BaseRunnerF
      *
      * @param intent The response message
      */
-    protected void handleBroadcastResultFailure(Intent intent){
+    protected void handleBroadcastResultFailure(Intent intent) {
         Log.i(TAG, "handleBroadcastResultFailure(Intent)");
         setUploading(false);
         hideUploadingDialog();
-        String text = intent.hasExtra(Response.MESSAGE)?
-                intent.getStringExtra(Response.MESSAGE):
+        String text = intent.hasExtra(Response.MESSAGE) ?
+                intent.getStringExtra(Response.MESSAGE) :
                 "Upload Result Received: " + intent.getDataString();
         createUploadResultFailDialog(text).show();
     }

@@ -2,8 +2,8 @@
 <resources>
 
     <declare-styleable name="CustomDatePicker">
-        <attr name="startYear" format="integer"/>
-        <attr name="endYear" format="integer"/>
+        <attr name="startYear" format="integer" />
+        <attr name="endYear" format="integer" />
         <attr name="monthNames" format="reference" />
     </declare-styleable>
 </resources>

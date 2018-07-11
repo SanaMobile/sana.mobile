@@ -61,11 +61,11 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
     public static final String TAG = EncounterListFragment.class.getSimpleName();
 
     static final SimpleDateFormat sdf = new SimpleDateFormat(IModel.DATE_FORMAT,
-        Locale.US);
+            Locale.US);
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd",
-        Locale.US);
+            Locale.US);
 
-    static final String[] mProjection = new String[] {
+    static final String[] mProjection = new String[]{
             Encounters.Contract._ID,
             Encounters.Contract.UUID,
             Encounters.Contract.PROCEDURE,
@@ -74,7 +74,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
             Encounters.Contract.UPLOAD_STATUS,
             Encounters.Contract.UPLOAD_QUEUE,
             Encounters.Contract.CREATED,
-            Encounters.Contract.FINISHED };
+            Encounters.Contract.FINISHED};
 
     // Once a day 86400000
     long delta = 1000;
@@ -90,7 +90,9 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
     // Activity Methods
     //
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
@@ -121,7 +123,9 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         getActivity().getSupportLoaderManager().initLoader(Uris.ENCOUNTER_DIR, null, this);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (mListener != null) {
@@ -133,7 +137,9 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
     // Loader Callbacks
     //
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         Log.d(TAG, "onCreateLoader() ");
@@ -146,15 +152,17 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         return loader;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         Log.d(TAG, "onLoadFinished() ");
 
-        if (cursor == null || (cursor !=null && cursor.getCount() == 0)) {
+        if (cursor == null || (cursor != null && cursor.getCount() == 0)) {
             setEmptyText(getString(R.string.msg_no_encounters));
         }
-        if(cursor != null)
+        if (cursor != null)
             ((EncounterCursorAdapter) this.getListAdapter()).swapCursor(cursor);
     }
 
@@ -191,7 +199,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         mListener = listener;
     }
 
-    static class ViewHolder{
+    static class ViewHolder {
         ImageView image;
         TextView name;
         TextView systemId;
@@ -201,31 +209,32 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         Encounter task = null;
     }
 
-    public String getObserver(){
+    public String getObserver() {
         Uri obsUri = getActivity().getIntent().getParcelableExtra(Intents.EXTRA_OBSERVER);
         String observer = ModelWrapper.getUuid(obsUri, getActivity().getContentResolver());
-        return (TextUtils.isEmpty(observer))? "": observer;
+        return (TextUtils.isEmpty(observer)) ? "" : observer;
     }
 
     //TODO try reading from intent
-    public String getSelectedStatus(){
+    public String getSelectedStatus() {
         return "Assigned";
     }
 
-    public String getSelection(){
+    public String getSelection() {
         return null;
     }
 
     /**
      * @author Sana Development Team
      */
-    public class EncounterCursorAdapter extends CursorAdapter{
+    public class EncounterCursorAdapter extends CursorAdapter {
 
         private final LayoutInflater mInflater;
         private ArrayList<Boolean> itemChecked = new ArrayList<Boolean>();
         String[] months;
+
         public EncounterCursorAdapter(Context context, Cursor c) {
-            super(context.getApplicationContext(),c,false);
+            super(context.getApplicationContext(), c, false);
             mInflater = LayoutInflater.from(context);
             for (int i = 0; i < this.getCount(); i++) {
                 itemChecked.add(i, false); // initializes all items value with false
@@ -237,13 +246,13 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         }
 
         public EncounterCursorAdapter(Context context, Cursor c, int flags) {
-            super(context,c, flags);
+            super(context, c, flags);
             mInflater = LayoutInflater.from(context);
         }
 
 
         @Override
-        public void changeCursor (Cursor cursor){
+        public void changeCursor(Cursor cursor) {
             // need to update to checked records
             updateChecked(cursor);
             super.changeCursor(cursor);
@@ -256,19 +265,19 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
             return super.swapCursor(newCursor);
         }
 
-        private void updateChecked(Cursor newCursor){
+        private void updateChecked(Cursor newCursor) {
             Log.i(TAG, "updateChecked()");
-            int sizeOf = (newCursor != null)? newCursor.getCount(): 0;
+            int sizeOf = (newCursor != null) ? newCursor.getCount() : 0;
             int sizeOld = itemChecked.size();
             ArrayList<Boolean> checked = new ArrayList<Boolean>(sizeOf);
-            for(int i = 0; i< sizeOf; i++){
+            for (int i = 0; i < sizeOf; i++) {
                 checked.add(false);
             }
             int index = 0;
             Log.d(TAG, "....sizeOld: " + sizeOld);
             Log.d(TAG, "....sizeOf: " + sizeOf);
-            while(index < sizeOf){
-                if(sizeOld > 0 && index < sizeOld){
+            while (index < sizeOf) {
+                if (sizeOld > 0 && index < sizeOld) {
                     checked.set(index, itemChecked.get(index));
                 } else {
                     checked.set(index, false);
@@ -280,7 +289,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            Log.d(TAG+".mAdapter", "bindView(): cursor position: " + ((cursor != null)? cursor.getPosition(): 0));
+            Log.d(TAG + ".mAdapter", "bindView(): cursor position: " + ((cursor != null) ? cursor.getPosition() : 0));
             final int position = this.getCursor().getPosition();
             Bundle data = new Bundle();
             // Get the encounter UUID
@@ -288,7 +297,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
             String state = cursor.getString(4);
             Boolean finished = Boolean.valueOf(cursor.getString(8));
             data.putParcelable(Intents.EXTRA_ENCOUNTER, Uris.withAppendedUuid(Encounters.CONTENT_URI, uuid));
-            data.putBoolean(Encounters.Contract.FINISHED,finished);
+            data.putBoolean(Encounters.Contract.FINISHED, finished);
 
             final String procedureUuid = cursor.getString(2);
             final String date = cursor.getString(7);
@@ -308,23 +317,23 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
 
             // TODO move this to a background thread?
             // Sets the procedure title string
-            setProcedure(context,view,procedureUuid);
+            setProcedure(context, view, procedureUuid);
             // Sets the date string
             setDate(view, date);
             // Sets the status string
-            setUploadStatus(view,status,queuePosition,finished);
+            setUploadStatus(view, status, queuePosition, finished);
             // Sets the patient name and id string
-            setPatient(context,view,patientUUid);
+            setPatient(context, view, patientUUid);
             Log.d(TAG, "Putting data into position: " + position);
-            mData.put(position,data);
+            mData.put(position, data);
         }
 
         public View getView(final int pos, View inView, ViewGroup parent) {
-            Log.i(TAG+".mAdapter", "getView()");
+            Log.i(TAG + ".mAdapter", "getView()");
             if (inView == null) {
                 //LayoutInflater inflater = (LayoutInflater) context
                 //        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                inView = mInflater.inflate(R.layout.encounterlist_item, parent,false);
+                inView = mInflater.inflate(R.layout.encounterlist_item, parent, false);
             }
 
             final CheckBox cBox = (CheckBox) inView.findViewById(R.id.checkbox);
@@ -334,22 +343,22 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
                     // Need the size check
                     CheckBox cb = (CheckBox) v.findViewById(R.id.checkbox);
                     if (cb.isChecked()) {
-                        if(itemChecked.size() > 0)
+                        if (itemChecked.size() > 0)
                             itemChecked.set(pos, true);
                     } else if (!cb.isChecked()) {
-                        if(itemChecked.size() > 0)
+                        if (itemChecked.size() > 0)
                             itemChecked.set(pos, false);
                     }
                 }
             });
-            if(itemChecked.size() > 0)
+            if (itemChecked.size() > 0)
                 cBox.setChecked(itemChecked.get(pos));
             return super.getView(pos, inView, parent);
         }
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-            Log.d(TAG+".mAdapter", "new view  cursor position: " + ((cursor != null)? cursor.getPosition(): 0));
+            Log.d(TAG + ".mAdapter", "new view  cursor position: " + ((cursor != null) ? cursor.getPosition() : 0));
             View view = mInflater.inflate(R.layout.encounterlist_item, viewGroup, false);
             bindView(view, context, cursor);
             return view;
@@ -357,7 +366,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
 
     }
 
-    public void setProcedure(Context context, View view, String uuid){
+    public void setProcedure(Context context, View view, String uuid) {
         Log.i(TAG, "setProcedure() " + uuid);
         TextView name = (TextView) view.findViewById(R.id.procedure);
 
@@ -373,15 +382,15 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
             if (cur2.moveToFirst()) {
                 title = cur2.getString(1);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(cur2 != null) cur2.close();
+            if (cur2 != null) cur2.close();
         }
-        name.setText((TextUtils.isEmpty(title)? "null": title));
+        name.setText((TextUtils.isEmpty(title) ? "null" : title));
     }
 
-    public void setPatient(Context context, View view, String uuid){
+    public void setPatient(Context context, View view, String uuid) {
         Log.i(TAG, "setPatient() " + uuid);
         TextView name = (TextView) view.findViewById(R.id.subject);
         Cursor c = null;
@@ -389,21 +398,21 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         String givenName = null;
         String displayName = null;
         String id = null;
-        try{
+        try {
             c = ModelWrapper.getOneByUuid(Subjects.CONTENT_URI, context.getContentResolver(), uuid);
-            if(c != null && c.moveToFirst()){
+            if (c != null && c.moveToFirst()) {
                 familyName = c.getString(c.getColumnIndex(Patients.Contract.FAMILY_NAME));
                 givenName = c.getString(c.getColumnIndex(Patients.Contract.GIVEN_NAME));
                 id = c.getString(c.getColumnIndex(Patients.Contract.PATIENT_ID));
                 displayName = StringUtil.formatPatientDisplayName(givenName, familyName);
             }
         } finally {
-            if(c != null) c.close();
-            name.setText((TextUtils.isEmpty(displayName)? "null": displayName) + " "+ id);
+            if (c != null) c.close();
+            name.setText((TextUtils.isEmpty(displayName) ? "null" : displayName) + " " + id);
         }
     }
 
-    public void setDate(View view, String date){
+    public void setDate(View view, String date) {
         Log.i(TAG, "setDate() " + date);
 
         /*
@@ -417,7 +426,7 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         String display = (dateObj == null)? "null date": df.format(dateObj);
         dateView.setText(display);
         */
-        TextView dateView = (TextView)view.findViewById(R.id.procedure_date);
+        TextView dateView = (TextView) view.findViewById(R.id.procedure_date);
         try {
             Date d = Dates.fromSQL(date);
             DateTime dt = new DateTime(d);
@@ -426,14 +435,14 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
             int year = dt.getYear();
             String localizedMonth = months[month - 1];
             dateView.setText(String.format("%02d %s %04d", dayOfMonth, localizedMonth, year));
-        } catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public void setUploadStatus(View view, int queueStatus, int queuePosition,boolean complete){
+    public void setUploadStatus(View view, int queueStatus, int queuePosition, boolean complete) {
         Log.i(TAG, "setUploadStatus() " + queueStatus + ":" + queuePosition);
-        TextView statusView = (TextView)view.findViewById(R.id.queue_status);
+        TextView statusView = (TextView) view.findViewById(R.id.queue_status);
         statusView.setText("" + queueStatus + " - " + queuePosition);
         String message = "";
 
@@ -472,18 +481,20 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         statusView.setText(message);
     }
 
-    /** All checkboxes will be checked */
+    /**
+     * All checkboxes will be checked
+     */
     public void selectAllProcedures() {
         for (int x = 0; x < getListAdapter().getCount(); x++) {
             try {
                 CheckBox checkbox = (CheckBox) getListView().getChildAt(x)
-                                                .findViewById(R.id.checkbox);
+                        .findViewById(R.id.checkbox);
                 checkbox.setChecked(true);
                 Log.i(TAG, "....Is checkbox checked? (Should be true): "
                         + checkbox.isChecked());
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "Exception in selectAll(): pos: " + x+" ," + e.getMessage());
+                Log.e(TAG, "Exception in selectAll(): pos: " + x + " ," + e.getMessage());
             }
         }
     }
@@ -500,14 +511,13 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
                 checkbox.setChecked(false);
 
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "Exception in unselectAll(): " + e.toString());
         }
     }
 
-    public List<Uri> getSelected(){
+    public List<Uri> getSelected() {
         Log.i(TAG, "getSelected()");
         List<Uri> uris = new ArrayList<Uri>();
         long[] ids = getChecked();
@@ -518,17 +528,17 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         for (int x = 0; x < count; x++) {
             //View child = view.getChildAt(x);
             Bundle data = mData.get(x);
-            if(data != null){
+            if (data != null) {
                 Uri encounter = data.getParcelable(Intents.EXTRA_ENCOUNTER);
                 uris.add(encounter);
             } else {
-                Log.e(TAG,"....NULL data bundle");
+                Log.e(TAG, "....NULL data bundle");
             }
         }
         return uris;
     }
 
-    public List<Uri> getSelectedFinished(){
+    public List<Uri> getSelectedFinished() {
         Log.i(TAG, "getSelectedFinished()");
         List<Uri> uris = new ArrayList<Uri>();
         long[] ids = getChecked();
@@ -538,58 +548,58 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         for (int x = 0; x < count; x++) {
             //View child = view.getChildAt(x);
             boolean finished = isItemFinished(x);
-            if(finished){
+            if (finished) {
                 Uri encounter = getItemUri(x);
                 uris.add(encounter);
             } else {
-                Log.e(TAG,"....NULL data bundle");
+                Log.e(TAG, "....NULL data bundle");
             }
         }
         return uris;
     }
 
-    public long[] getChecked(){
-        Log.i(TAG,"getChecked()");
+    public long[] getChecked() {
+        Log.i(TAG, "getChecked()");
         List<Long> checked = new ArrayList<Long>();
-        for(int x = 0;x < getListAdapter().getCount(); x++){
-            if(getItemChecked(x)){
+        for (int x = 0; x < getListAdapter().getCount(); x++) {
+            if (getItemChecked(x)) {
                 checked.add(new Long(x));
             }
         }
         long[] ids = new long[checked.size()];
-        for(int y=0; y < checked.size();y++){
+        for (int y = 0; y < checked.size(); y++) {
             ids[y] = checked.get(y);
         }
         return ids;
     }
 
-    public boolean getItemChecked(int id){
-        Log.i(TAG,"getItemChecked() " + id);
+    public boolean getItemChecked(int id) {
+        Log.i(TAG, "getItemChecked() " + id);
         ListView view = getListView();
         final View child = view.getChildAt(id);
-        if(child == null)
+        if (child == null)
             return false;
         CheckBox checkbox = (CheckBox) child.findViewById(R.id.checkbox);
-        return (checkbox != null)? checkbox.isChecked(): false;
+        return (checkbox != null) ? checkbox.isChecked() : false;
     }
 
-    public boolean isItemFinished(long id){
-        Log.i(TAG,"isItemFinished() " + id);
+    public boolean isItemFinished(long id) {
+        Log.i(TAG, "isItemFinished() " + id);
         Bundle data = mData.get(id);
         boolean finished = data.getBoolean(Encounters.Contract.FINISHED, false);
         return finished;
     }
 
-    public Uri getItemUri(long id){
+    public Uri getItemUri(long id) {
         Bundle data = mData.get(id);
-        if(data != null){
+        if (data != null) {
             Uri encounter = data.getParcelable(Intents.EXTRA_ENCOUNTER);
             return encounter;
         }
         return Uri.EMPTY;
     }
 
-    public int deleteSelected(){
+    public int deleteSelected() {
         Log.i(TAG, "deleteSelected()");
         int count = 0;
         int obsCount = 0;
@@ -597,47 +607,47 @@ public class EncounterListFragment extends ListFragment implements LoaderCallbac
         long[] checked = getChecked();
         List<Long> ids = new ArrayList<Long>();
 
-        for(long id:checked){
+        for (long id : checked) {
             ids.add(id);
         }
-        for(Long id:ids){
-            try{
+        for (Long id : ids) {
+            try {
                 String uuid = ((Cursor) getListAdapter().getItem(id.intValue())).getString(1);
-                Log.d(TAG,"....uuid = " + uuid);
+                Log.d(TAG, "....uuid = " + uuid);
                 obsCount += getActivity().getContentResolver().delete(Observations.CONTENT_URI,
-                    Observations.Contract.ENCOUNTER + " = ?",
-                    new String[]{ uuid });
+                        Observations.Contract.ENCOUNTER + " = ?",
+                        new String[]{uuid});
                 imageCount += getActivity().getContentResolver().delete(ImageSQLFormat.CONTENT_URI,
-                    ImageSQLFormat.ENCOUNTER_ID+ " = ?",
-                    new String[]{ String.valueOf(id) });
-            } catch(Exception e){
+                        ImageSQLFormat.ENCOUNTER_ID + " = ?",
+                        new String[]{String.valueOf(id)});
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         Log.d(TAG, "....deleted:");
         Log.d(TAG, "........images=" + imageCount);
         Log.d(TAG, "........observations" + obsCount);
-        try{
-            if(ids.size() > 1) {
+        try {
+            if (ids.size() > 1) {
                 String idList = SanaUtil.formatPrimaryKeyList(ids);
                 count = getActivity().getContentResolver().delete(Encounters.CONTENT_URI,
                         Encounters.Contract._ID + " IN " + idList, null);
-            } else if(ids.size() == 1){
+            } else if (ids.size() == 1) {
                 count = getActivity().getContentResolver().delete(
                         Encounters.CONTENT_URI,
                         Encounters.Contract._ID + " = ?",
-                        new String[]{ String.valueOf(ids.get(0)) });
+                        new String[]{String.valueOf(ids.get(0))});
             } else {
                 Log.d(TAG, "Delete with None selected");
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG,"....deleted encounters = " + count);
+        Log.d(TAG, "....deleted encounters = " + count);
         return count;
     }
 
-    public Bundle getSelectedData(long id){
+    public Bundle getSelectedData(long id) {
         Bundle data = mData.get(id);
         return data;
     }

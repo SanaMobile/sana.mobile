@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.sana.android.db;
 
@@ -10,10 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * @author Sana Development
- *
  */
 public class DatabaseManager {
-	private AtomicInteger mOpenCounter = new AtomicInteger();
+    private AtomicInteger mOpenCounter = new AtomicInteger();
 
     private static DatabaseManager instance;
     private static SQLiteOpenHelper mDatabaseHelper;
@@ -36,7 +35,7 @@ public class DatabaseManager {
     }
 
     public SQLiteDatabase openDatabase() {
-        if(mOpenCounter.incrementAndGet() == 1) {
+        if (mOpenCounter.incrementAndGet() == 1) {
             // Opening new database
             mDatabase = mDatabaseHelper.getWritableDatabase();
         }
@@ -44,7 +43,7 @@ public class DatabaseManager {
     }
 
     public void closeDatabase() {
-        if(mOpenCounter.decrementAndGet() == 0) {
+        if (mOpenCounter.decrementAndGet() == 0) {
             // Closing database
             mDatabase.close();
 

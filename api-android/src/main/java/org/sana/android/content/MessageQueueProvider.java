@@ -18,7 +18,7 @@ import android.text.TextUtils;
  */
 public class MessageQueueProvider extends ContentProvider {
 
-    public interface Contract{
+    public interface Contract {
         String AUTH = "_auth";
         String STATE = "_state";
         String PRIORITY = "_priority";
@@ -34,7 +34,7 @@ public class MessageQueueProvider extends ContentProvider {
 
     }
 
-    public enum State{
+    public enum State {
         ERROR(-1),
         CANCELLED(0),
         COMPLETE(1),
@@ -42,25 +42,31 @@ public class MessageQueueProvider extends ContentProvider {
         SCHEDULED(4),
         SENDING(8),;
         final int code;
-        State(int code){
+
+        State(int code) {
             this.code = code;
         }
-        public int code(){
+
+        public int code() {
             return code;
         }
     }
-    public enum Priority{
+
+    public enum Priority {
         LOW(8),
         HIGH(1),
         FIRST(0);
         public final long priority;
-        Priority(long i){
+
+        Priority(long i) {
             this.priority = i;
         }
-        public long val(){
+
+        public long val() {
             return priority;
         }
     }
+
     protected static final class MessageQueueHelper extends SQLiteOpenHelper {
 
         public static final String CREATE = "CREATE TABLE messages (" +
@@ -99,16 +105,18 @@ public class MessageQueueProvider extends ContentProvider {
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
             + "/message/");
     public static final UriMatcher sUriMatcher = new UriMatcher(0);
-    static{
+
+    static {
         sUriMatcher.addURI(AUTHORITY, "message/", 1);
         sUriMatcher.addURI(AUTHORITY, "message/#", 2);
     }
 
     protected static final String DATABASE = "messages.db";
     private MessageQueueHelper mOpenHelper;
+
     @Override
     public boolean onCreate() {
-        mOpenHelper = new MessageQueueHelper(getContext(),DATABASE, 1);
+        mOpenHelper = new MessageQueueHelper(getContext(), DATABASE, 1);
         return true;
     }
 
@@ -116,7 +124,7 @@ public class MessageQueueProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
         switch (sUriMatcher.match(uri)) {
             case 1:
-                s1 = (TextUtils.isEmpty(s1))? BaseColumns._ID + " _ASC": s1;
+                s1 = (TextUtils.isEmpty(s1)) ? BaseColumns._ID + " _ASC" : s1;
                 break;
             case 2:
                 s = s + BaseColumns._ID + " = " + uri.getLastPathSegment();
@@ -137,10 +145,10 @@ public class MessageQueueProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        if(!contentValues.containsKey("_priority")){
+        if (!contentValues.containsKey("_priority")) {
             contentValues.put("_priority", 1);
         }
-        if(!contentValues.containsKey("_state")){
+        if (!contentValues.containsKey("_state")) {
             contentValues.put("_state", 1);
         }
         long id = db.insert(TABLE, null, contentValues);

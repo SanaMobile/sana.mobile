@@ -66,9 +66,10 @@ import android.widget.Toast;
 /**
  * Main Activity which handles user authentication and initializes services that
  * Sana uses.
+ *
  * @author Sana Dev Team
  */
-public class MainActivity extends BaseActivity implements AuthenticationDialogListener{
+public class MainActivity extends BaseActivity implements AuthenticationDialogListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String CLOSE = "org.sana.android.intent.CLOSE";
@@ -83,7 +84,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     public static final int VIEW_ENCOUNTER = 7;
     public static final int SETTINGS = 8;
     public static final int EXECUTE_TASK = 9;
-    private Runner<Intent,Intent> runner;
+    private Runner<Intent, Intent> runner;
 
     private String mWorkflow = "org.sana.android.app.workflow.DEFAULT";
     // This is the initial state
@@ -93,7 +94,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     private boolean init = false;
 
     @Override
-    protected void onNewIntent(Intent intent){
+    protected void onNewIntent(Intent intent) {
         Logf.D(TAG, "onNewIntent()");
         //super.onNewIntent(intent);
         onUpdateAppState(intent);
@@ -101,119 +102,119 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        Logf.I(TAG, "onActivityResult()", ((resultCode == RESULT_OK)? "OK":"CANCELED" ));
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Logf.I(TAG, "onActivityResult()", ((resultCode == RESULT_OK) ? "OK" : "CANCELED"));
         Uri uri = Uri.EMPTY;
-        switch(resultCode){
-        case RESULT_CANCELED:
+        switch (resultCode) {
+            case RESULT_CANCELED:
 
-            switch(requestCode){
-            case AUTHENTICATE:
-                Logf.W(TAG, "onActivityResult()", "Authentication failure..Exiting");
-                finish();
-            case SETTINGS:
+                switch (requestCode) {
+                    case AUTHENTICATE:
+                        Logf.W(TAG, "onActivityResult()", "Authentication failure..Exiting");
+                        finish();
+                    case SETTINGS:
+                        break;
+                }
+
+                //onNext(data);
                 break;
-            }
-            
-            //onNext(data);
-            break;
-        case RESULT_OK:
-            if(data != null)
-                onUpdateAppState(data);
-            Uri dataUri = (data != null)? data.getData(): Uri.EMPTY;
-            Intent intent = new Intent();
-            onSaveAppState(intent);
-            switch(requestCode){
-            case AUTHENTICATE:
-                hideViewsByRole();
-                break;
-            case RUN_REGISTRATION:
-                mEncounter = Uri.EMPTY;
-                break;
-            case PICK_PATIENT:
-                intent.setAction(Intent.ACTION_PICK)
-                .setData(Procedures.CONTENT_URI)
-                .putExtras(data);
-                startActivityForResult(intent, PICK_PROCEDURE);
-                break;
-            case PICK_PROCEDURE:
-                intent.setAction(Intents.ACTION_RUN_PROCEDURE)
-                .setData(data.getData())
-                .putExtras(data);
-                startActivityForResult(intent, RUN_PROCEDURE);
-                break;
-            case PICK_ENCOUNTER:
-                //intent.setAction(Intent.ACTION_VIEW)
-                //.setData(data.getData())
-                intent.setClass(this, ObservationList.class)
-                .setData(data.getData())
-                .putExtras(data);
-                startActivity(intent);
-                break;
-            case PICK_ENCOUNTER_TASK:
-                    //Uri task = data.getParcelableExtra(Intents.EXTRA_TASK);
-                    int flags = data.getFlags();
-                    uri = Uri.EMPTY;
-                    if(data.hasCategory(Intents.CATEGORY_TASK_COMPLETE)){
-                        Log.i(TAG, "....Task complete: "+ mTask);
-                        uri = intent.getParcelableExtra(Intents.EXTRA_ENCOUNTER);
+            case RESULT_OK:
+                if (data != null)
+                    onUpdateAppState(data);
+                Uri dataUri = (data != null) ? data.getData() : Uri.EMPTY;
+                Intent intent = new Intent();
+                onSaveAppState(intent);
+                switch (requestCode) {
+                    case AUTHENTICATE:
+                        hideViewsByRole();
+                        break;
+                    case RUN_REGISTRATION:
+                        mEncounter = Uri.EMPTY;
+                        break;
+                    case PICK_PATIENT:
+                        intent.setAction(Intent.ACTION_PICK)
+                                .setData(Procedures.CONTENT_URI)
+                                .putExtras(data);
+                        startActivityForResult(intent, PICK_PROCEDURE);
+                        break;
+                    case PICK_PROCEDURE:
+                        intent.setAction(Intents.ACTION_RUN_PROCEDURE)
+                                .setData(data.getData())
+                                .putExtras(data);
+                        startActivityForResult(intent, RUN_PROCEDURE);
+                        break;
+                    case PICK_ENCOUNTER:
+                        //intent.setAction(Intent.ACTION_VIEW)
+                        //.setData(data.getData())
                         intent.setClass(this, ObservationList.class)
-                        .setData(uri)
-                        .putExtras(data);
+                                .setData(data.getData())
+                                .putExtras(data);
                         startActivity(intent);
-                    } else {
-                        Log.i(TAG, "....Task in progress: "+ mTask);
-                        //markTaskStatusInProgress(mTask);
-                        uri = intent.getParcelableExtra(Intents.EXTRA_PROCEDURE);
-                        intent.setAction(Intent.ACTION_VIEW)
-                        .setData(uri)
-                        .putExtras(data);
-                        startActivityForResult(intent, EXECUTE_TASK);
-                    }
-                    break;
-            case EXECUTE_TASK:
-                    dump();
-                    startService(data);
-                    markTaskStatusCompleted(mTask,mEncounter);
-                    mTask = Uri.EMPTY;
-                    mEncounter = Uri.EMPTY;
-                    break;
-            case RUN_PROCEDURE:
-            case Intents.RUN_PROCEDURE:
-                // Handle any content type specific actions
-                switch(Uris.getDescriptor(dataUri)){
-                    case Uris.ENCOUNTER_ITEM:
-                        //startService(data);
-                    break;
+                        break;
+                    case PICK_ENCOUNTER_TASK:
+                        //Uri task = data.getParcelableExtra(Intents.EXTRA_TASK);
+                        int flags = data.getFlags();
+                        uri = Uri.EMPTY;
+                        if (data.hasCategory(Intents.CATEGORY_TASK_COMPLETE)) {
+                            Log.i(TAG, "....Task complete: " + mTask);
+                            uri = intent.getParcelableExtra(Intents.EXTRA_ENCOUNTER);
+                            intent.setClass(this, ObservationList.class)
+                                    .setData(uri)
+                                    .putExtras(data);
+                            startActivity(intent);
+                        } else {
+                            Log.i(TAG, "....Task in progress: " + mTask);
+                            //markTaskStatusInProgress(mTask);
+                            uri = intent.getParcelableExtra(Intents.EXTRA_PROCEDURE);
+                            intent.setAction(Intent.ACTION_VIEW)
+                                    .setData(uri)
+                                    .putExtras(data);
+                            startActivityForResult(intent, EXECUTE_TASK);
+                        }
+                        break;
+                    case EXECUTE_TASK:
+                        dump();
+                        startService(data);
+                        markTaskStatusCompleted(mTask, mEncounter);
+                        mTask = Uri.EMPTY;
+                        mEncounter = Uri.EMPTY;
+                        break;
+                    case RUN_PROCEDURE:
+                    case Intents.RUN_PROCEDURE:
+                        // Handle any content type specific actions
+                        switch (Uris.getDescriptor(dataUri)) {
+                            case Uris.ENCOUNTER_ITEM:
+                                //startService(data);
+                                break;
+                            default:
+                        }
+                        mEncounter = Uri.EMPTY;
+                        String onComplete = data.getStringExtra(Intents.EXTRA_ON_COMPLETE);
+                        // If procedure onComplete was set start it
+                        if (!TextUtils.isEmpty(onComplete)) {
+                            try {
+                                Intent next = null;
+                                next = Intent.parseUri(onComplete, Intent
+                                        .URI_INTENT_SCHEME);
+                                onSaveAppState(next);
+                                startActivityForResult(next, RUN_PROCEDURE);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
                     default:
                 }
-                mEncounter = Uri.EMPTY;
-                String onComplete = data.getStringExtra(Intents.EXTRA_ON_COMPLETE);
-                // If procedure onComplete was set start it
-                if(!TextUtils.isEmpty(onComplete)) {
-                    try {
-                        Intent next = null;
-                        next = Intent.parseUri(onComplete, Intent
-                            .URI_INTENT_SCHEME);
-                        onSaveAppState(next);
-                        startActivityForResult(next, RUN_PROCEDURE);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-            default:
-            }
 
-            //data.setAction(Intents.ACTION_OK);
-            //onNext(data);
-            break;
+                //data.setAction(Intents.ACTION_OK);
+                //onNext(data);
+                break;
         }
     }
 
-    public void hideViewsByRole(){
+    public void hideViewsByRole() {
         mRoot = isAdmin(mObserver);
-        if(!mRoot){
+        if (!mRoot) {
             LinearLayout main = (LinearLayout) findViewById(R.id.main_root);
             // TODO RBAC
             //main.removeView(findViewById(R.id.btn_main_select_patient));
@@ -235,10 +236,10 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             setContentView(R.layout.main_ht);
         */
         // TODO rethink where to integrate this
-        checkUpdate(Uris.buildUri("package", "org.sana.provider" , ""));
+        checkUpdate(Uris.buildUri("package", "org.sana.provider", ""));
         runner = new DefaultActivityRunner();
         init();
-        if(Uris.isEmpty(mObserver)){
+        if (Uris.isEmpty(mObserver)) {
             onNext(null);
         }
     }
@@ -255,10 +256,11 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         super.onResume();
         Logf.I(TAG, "onResume()");
         IntentFilter filter = new IntentFilter(Response.RESPONSE);
-        try{
+        try {
             filter.addDataType(Encounters.CONTENT_ITEM_TYPE);
             filter.addDataType(EncounterTasks.CONTENT_ITEM_TYPE);
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
         LocalBroadcastManager.getInstance(this.getApplicationContext()).registerReceiver(mReceiver, filter);
         //bindSessionService();
         // This prevents us from relaunching the login on every resume
@@ -267,7 +269,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         Logf.I(TAG, "onStart()");
         // We want the session service to be running if Main has been started
@@ -280,7 +282,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         Log.d(TAG, "onDestroy()");
         super.onStop();
         // kill the session service if there is nothing else bound
-        if(mBound)
+        if (mBound)
             stopService(new Intent(SessionService.ACTION_START));
         else
             stopService(new Intent(SessionService.ACTION_START));
@@ -296,13 +298,14 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     private static final int OPTION_EXPORT_DATABASE = 0;
     private static final int OPTION_SETTINGS = 1;
     private static final int OPTION_SYNC = 2;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        if(mDebug){
+        if (mDebug) {
             menu.add(0, OPTION_EXPORT_DATABASE, 0, "Export Data");
         }
-        if(mRoot || mDebug){
+        if (mRoot || mDebug) {
             menu.add(0, OPTION_SETTINGS, 1, getString(R.string.menu_settings));
             menu.add(0, OPTION_SYNC, 2, getString(R.string.menu_sync));
         }
@@ -310,23 +313,23 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case OPTION_EXPORT_DATABASE:
-            try {
-                boolean exported = SanaUtil.exportDatabase(this,  "models.db");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return true;
-        case OPTION_SETTINGS:
-            Intent i = new Intent(Intent.ACTION_PICK);
-            i.setClass(this, Settings.class);
-            startActivityForResult(i, SETTINGS);
-            return true;
-        case OPTION_SYNC:
-            //doUpdatePatientDatabase();
-            return true;
+            case OPTION_EXPORT_DATABASE:
+                try {
+                    boolean exported = SanaUtil.exportDatabase(this, "models.db");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            case OPTION_SETTINGS:
+                Intent i = new Intent(Intent.ACTION_PICK);
+                i.setClass(this, Settings.class);
+                startActivityForResult(i, SETTINGS);
+                return true;
+            case OPTION_SYNC:
+                //doUpdatePatientDatabase();
+                return true;
         }
         return false;
     }
@@ -358,21 +361,21 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         startActivityForResult(intent, AUTHENTICATE);
     }
 
-    protected void onNext(Intent intent){
-        if(intent == null){
+    protected void onNext(Intent intent) {
+        if (intent == null) {
             showAuthenticationActivity();
             return;
         }
         intent.putExtra(Intents.EXTRA_REQUEST, mIntent);
         mPrevious = Intents.copyOf(mIntent);
         mIntent = runner.next(intent);
-        if(mIntent.hasExtra(Intents.EXTRA_TASKS)){
+        if (mIntent.hasExtra(Intents.EXTRA_TASKS)) {
             Logf.D(TAG, "onNext(Intent)", "sending tasks to dispatcher");
             Intent tasks = new Intent(MainActivity.this, DispatchService.class);
             tasks.putExtra(Intents.EXTRA_TASKS, mIntent.getParcelableArrayListExtra(Intents.EXTRA_TASKS));
             startService(tasks);
         }
-        if(mIntent.getAction().equals(Intents.ACTION_FINISH)){
+        if (mIntent.getAction().equals(Intents.ACTION_FINISH)) {
             Logf.D(TAG, "onNext(Intent)", "finishing");
             finish();
         } else {
@@ -381,11 +384,12 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
             startActivityForResult(mIntent, Intents.parseActionDescriptor(mIntent));
         }
     }
+
     /**
      * Checks whether the application needs to be updated.
      */
-    protected void checkUpdate(Uri uri){
-        if(!checkUpdate){
+    protected void checkUpdate(Uri uri) {
+        if (!checkUpdate) {
             Intent update = new Intent("org.sana.intent.action.READ");
             update.setData(uri);//, "application/vnd.android.package-archive");
             startService(update);
@@ -398,13 +402,14 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     protected ISessionService mService = null;
 
     // connector to the session service
-    protected ServiceConnection mConnection = new ServiceConnection(){
+    protected ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i(TAG, "ServiceConnection.onServiceConnected()");
             mService = ISessionService.Stub.asInterface(service);
             mBound = true;
         }
+
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.i(TAG, "ServiceConnection.onServiceDisconnected()");
@@ -414,10 +419,10 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     };
 
     // handles initiating the session service binding
-    protected void bindSessionService(){
+    protected void bindSessionService() {
         Log.i(TAG, "bindSessionService()");
-        if(!mBound){
-            if(mService == null){
+        if (!mBound) {
+            if (mService == null) {
                 bindService(new Intent(SessionService.ACTION_START), mConnection, Context.BIND_AUTO_CREATE);
                 //bindService(new Intent(SessionService.BIND_REMOTE), mCallbackConnection, Context.BIND_AUTO_CREATE);
             }
@@ -425,9 +430,9 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     }
 
     // handles disconnecting from the session service bindings
-    protected void unbindSessionService(){
+    protected void unbindSessionService() {
         // Unbind from the service
-        if (mBound){
+        if (mBound) {
             // Detach
             unbindService(mConnection);
             mBound = false;
@@ -437,31 +442,31 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     private ResetDatabaseTask mResetDatabaseTask;
 
 
-    void init(){
+    void init() {
         Logf.D(TAG, "init()");
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
-        boolean dbInit =preferences.getBoolean(Constants.DB_INIT, false);
+        boolean dbInit = preferences.getBoolean(Constants.DB_INIT, false);
 
 
         PreferenceManager.setDefaultValues(this, R.xml.settings, true);
-        PreferenceManager.setDefaultValues(this, R.xml.network_settings,true);
+        PreferenceManager.setDefaultValues(this, R.xml.network_settings, true);
         PreferenceManager.setDefaultValues(this, R.xml.resource_settings, true);
         PreferenceManager.setDefaultValues(this, R.xml.notifications, true);
-        if(!dbInit){
-                Logf.D(TAG, "init()", "Initializing");
-                doClearDatabase();
+        if (!dbInit) {
+            Logf.D(TAG, "init()", "Initializing");
+            doClearDatabase();
             // Make sure directory structure is in place on external drive
-                EducationResource.intializeDevice();
-                Procedure.intializeDevice();
-                preferences.edit().putBoolean(Constants.DB_INIT, true).commit();
-                init = true;
+            EducationResource.intializeDevice();
+            Procedure.intializeDevice();
+            preferences.edit().putBoolean(Constants.DB_INIT, true).commit();
+            init = true;
         } else {
             Logf.D(TAG, "init()", "reloading");
             // RELOAD Database
             //preferences.edit().clear().commit();
             //PreferenceManager.setDefaultValues(this, R.xml.network_settings,true);
-            doClearDatabase(new Uri[]{ Procedures.CONTENT_URI });
+            doClearDatabase(new Uri[]{Procedures.CONTENT_URI});
             preferences.edit().putBoolean(Constants.DB_INIT, true).commit();
 
         }
@@ -469,24 +474,26 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     }
 
 
-    /** Executes a task to clear out the database */
+    /**
+     * Executes a task to clear out the database
+     */
     private void doClearDatabase() {
         // TODO: context leak
-        if(mResetDatabaseTask!= null && mResetDatabaseTask.getStatus() != Status.FINISHED)
-                return;
+        if (mResetDatabaseTask != null && mResetDatabaseTask.getStatus() != Status.FINISHED)
+            return;
         mResetDatabaseTask =
-                (ResetDatabaseTask) new ResetDatabaseTask(this,true).execute(this);
+                (ResetDatabaseTask) new ResetDatabaseTask(this, true).execute(this);
     }
 
     private void doClearDatabase(Uri[] uris) {
         // TODO: context leak
-        if(mResetDatabaseTask!= null && mResetDatabaseTask.getStatus() != Status.FINISHED)
-                return;
+        if (mResetDatabaseTask != null && mResetDatabaseTask.getStatus() != Status.FINISHED)
+            return;
         mResetDatabaseTask =
-                (ResetDatabaseTask) new ResetDatabaseTask(this,true,uris).execute(this);
+                (ResetDatabaseTask) new ResetDatabaseTask(this, true, uris).execute(this);
     }
 
-    private void saveLocalTaskState(Bundle outState){
+    private void saveLocalTaskState(Bundle outState) {
         final ResetDatabaseTask rTask = mResetDatabaseTask;
         if (rTask != null && rTask.getStatus() != Status.FINISHED) {
             rTask.cancel(true);
@@ -515,7 +522,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         outState.putBoolean("update", checkUpdate);
     }
 
-    void showAuthenticationDialog(){
+    void showAuthenticationDialog() {
 
     }
 
@@ -524,8 +531,8 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
      */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        EditText userEdit = (EditText)dialog.getDialog().findViewById(R.id.username);
-        EditText userPassword = (EditText)dialog.getDialog().findViewById(R.id.username);
+        EditText userEdit = (EditText) dialog.getDialog().findViewById(R.id.username);
+        EditText userPassword = (EditText) dialog.getDialog().findViewById(R.id.username);
     }
 
     /* (non-Javadoc)
@@ -533,29 +540,30 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
      */
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        try{
+        try {
             dialog.dismiss();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(dialog.getId() == R.id.dialog_authentication)
+            if (dialog.getId() == R.id.dialog_authentication)
                 this.finish();
         }
     }
 
     /**
      * Retrieves the device phone number using the TelephonyManager
+     *
      * @return the device phone number
      */
-    public String getPhoneNumber(){
-        TelephonyManager tMgr =(TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    public String getPhoneNumber() {
+        TelephonyManager tMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String phoneNumber = tMgr.getLine1Number();
         return phoneNumber;
     }
 
-    public void submit(View v){
+    public void submit(View v) {
         Intent intent = null;
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.btn_main_select_patient:
                 intent = new Intent(Intent.ACTION_PICK);
                 intent.setDataAndType(Subjects.CONTENT_URI, Subjects.CONTENT_TYPE);
@@ -617,35 +625,36 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     // The callback to get data from the asynchronous calls
     private ISessionCallback mCallback = new ISessionCallback.Stub() {
 
-            @Override
-            public void onValueChanged(int arg0, String arg1, String arg2)
-                    throws RemoteException {
-                Log.d(TAG,  ".mCallback.onValueChanged( " +arg0 +", "+arg1+
-                        ", " + arg2+ " )");
-                Bundle data = new Bundle();
-                data.putString(Intents.EXTRA_INSTANCE, arg1);
-                data.putString(Intents.EXTRA_OBSERVER, arg2);
-                mHandler.sendMessage(mHandler.obtainMessage(arg0, data));
-            }
+        @Override
+        public void onValueChanged(int arg0, String arg1, String arg2)
+                throws RemoteException {
+            Log.d(TAG, ".mCallback.onValueChanged( " + arg0 + ", " + arg1 +
+                    ", " + arg2 + " )");
+            Bundle data = new Bundle();
+            data.putString(Intents.EXTRA_INSTANCE, arg1);
+            data.putString(Intents.EXTRA_OBSERVER, arg2);
+            mHandler.sendMessage(mHandler.obtainMessage(arg0, data));
+        }
 
-        };
+    };
 
-        // This is the handler which responds to the SessionService
-        // It expects a Message with msg.what = FAILURE or SUCCESS
-        // and a Bundle with the new session key if successful.
-        private Handler mHandler = new Handler() {
+    // This is the handler which responds to the SessionService
+    // It expects a Message with msg.what = FAILURE or SUCCESS
+    // and a Bundle with the new session key if successful.
+    private Handler mHandler = new Handler() {
 
-            @Override public void handleMessage(Message msg) {
-                int state = msg.what;
-                Log.i(TAG, "handleMessage(): " + msg.what);
-                cancelProgressDialogFragment();
-                switch(state){
+        @Override
+        public void handleMessage(Message msg) {
+            int state = msg.what;
+            Log.i(TAG, "handleMessage(): " + msg.what);
+            cancelProgressDialogFragment();
+            switch (state) {
                 case SessionService.FAILURE:
                     loginsRemaining--;
                     // TODO use a string resource
                     Toast.makeText(MainActivity.this,
                             "Username and password incorrect! Logins remaining: "
-                                    +loginsRemaining,
+                                    + loginsRemaining,
                             Toast.LENGTH_SHORT).show();
                     showAuthenticationDialog();
                     break;
@@ -665,40 +674,39 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                     break;
                 default:
                     Log.e(TAG, "Should never get here");
-                }
-
-                // Finish if remaining logins => 0
-                if(loginsRemaining == 0){
-                    finish();
-                }
             }
-        };
 
-        public boolean isAdmin(Uri observer){
-            Log.i(TAG,"isAdmin() " + observer);
-            if(Uris.isEmpty(observer))
-                return false;
-            String uuid = observer.getLastPathSegment();
-            String[] admins = this.getResources().getStringArray(R.array.admins);
-            boolean admin = false;
-            for(String adminUuid:admins)
-                if(uuid.compareTo(adminUuid) == 0){
-                    admin = true;
-                    break;
-                }
-            Log.d(TAG,"...." + admin);
-            return admin;
+            // Finish if remaining logins => 0
+            if (loginsRemaining == 0) {
+                finish();
+            }
         }
+    };
 
-
-
-    public void handleTaskStatusChange(Uri task, org.sana.api.task.Status status, String now){
-        handleTaskStatusChange(task,status,now,null);
+    public boolean isAdmin(Uri observer) {
+        Log.i(TAG, "isAdmin() " + observer);
+        if (Uris.isEmpty(observer))
+            return false;
+        String uuid = observer.getLastPathSegment();
+        String[] admins = this.getResources().getStringArray(R.array.admins);
+        boolean admin = false;
+        for (String adminUuid : admins)
+            if (uuid.compareTo(adminUuid) == 0) {
+                admin = true;
+                break;
+            }
+        Log.d(TAG, "...." + admin);
+        return admin;
     }
 
-    public void handleTaskStatusChange(Uri task, org.sana.api.task.Status status, String now, ContentValues values){
-        if(now == null) now = timeStamp();
-        if(values == null)
+
+    public void handleTaskStatusChange(Uri task, org.sana.api.task.Status status, String now) {
+        handleTaskStatusChange(task, status, now, null);
+    }
+
+    public void handleTaskStatusChange(Uri task, org.sana.api.task.Status status, String now, ContentValues values) {
+        if (now == null) now = timeStamp();
+        if (values == null)
             values = new ContentValues();
         Log.i(TAG, "Updating status: " + now + " --> " + status + " --> " + values.size() + " --> " + task);
 
@@ -709,16 +717,17 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         // Convert to a Bundle so that we can pass it
         Log.d(TAG, "FORM data");
         Bundle form = new Bundle();
-        form.putString(Tasks.Contract.STATUS,String.valueOf(status.code));
-        form.putString(Tasks.Contract.MODIFIED,now);
-        getContentResolver().update(task,values,null,null);
+        form.putString(Tasks.Contract.STATUS, String.valueOf(status.code));
+        form.putString(Tasks.Contract.MODIFIED, now);
+        getContentResolver().update(task, values, null, null);
 
         // send to sync
-        Intent intent = new Intent(Intents.ACTION_UPDATE,task);
+        Intent intent = new Intent(Intents.ACTION_UPDATE, task);
         intent.putExtra("form", form);
         startService(intent);
     }
-    public void markTaskStatusInProgress(Uri task){
+
+    public void markTaskStatusInProgress(Uri task) {
         Log.i(TAG, "markStatusInProgress(): " + task);
         org.sana.api.task.Status status = org.sana.api.task.Status.IN_PROGRESS;
         String now = timeStamp();
@@ -726,24 +735,24 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         values.put(Tasks.Contract.STATUS, "In Progress");
         values.put(Tasks.Contract.MODIFIED, now);
         values.put(Tasks.Contract.STARTED, now);
-        getContentResolver().update(task,values,null,null);
+        getContentResolver().update(task, values, null, null);
 
         Bundle form = new Bundle();
         form.putString(Tasks.Contract.STATUS, "In Progress");
-        form.putString(Tasks.Contract.MODIFIED,now);
-        form.putString(Tasks.Contract.STARTED,now);
+        form.putString(Tasks.Contract.MODIFIED, now);
+        form.putString(Tasks.Contract.STARTED, now);
 
         // send to sync
-        Intent intent = new Intent(Intents.ACTION_UPDATE,task);
+        Intent intent = new Intent(Intents.ACTION_UPDATE, task);
         intent.putExtra("form", form);
         startService(intent);
     }
 
-    public void markTaskStatusCompleted(Uri task, Uri encounter){
+    public void markTaskStatusCompleted(Uri task, Uri encounter) {
         Log.i(TAG, "markStatusCompleted(): " + task);
         org.sana.api.task.Status status = org.sana.api.task.Status.COMPLETED;
         String now = timeStamp();
-        String uuid = ModelWrapper.getUuid(encounter,getContentResolver());
+        String uuid = ModelWrapper.getUuid(encounter, getContentResolver());
         ContentValues values = new ContentValues();
         values.put(Tasks.Contract.STATUS, status.toString());
         values.put(Tasks.Contract.COMPLETED, now);
@@ -752,59 +761,59 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
 
         Bundle form = new Bundle();
         form.putString(Tasks.Contract.STATUS, status.toString());
-        form.putString(Tasks.Contract.MODIFIED,now);
-        form.putString(Tasks.Contract.COMPLETED,now);
+        form.putString(Tasks.Contract.MODIFIED, now);
+        form.putString(Tasks.Contract.COMPLETED, now);
         form.putString(EncounterTasks.Contract.ENCOUNTER, uuid);
 
         // send to sync
-        Intent intent = new Intent(Intents.ACTION_UPDATE,task);
+        Intent intent = new Intent(Intents.ACTION_UPDATE, task);
         intent.putExtra("form", form);
         startService(intent);
     }
 
     static final SimpleDateFormat sdf = new SimpleDateFormat(IModel.DATE_FORMAT,
-        Locale.US);
+            Locale.US);
 
-    public String timeStamp(String key, ContentValues values){
+    public String timeStamp(String key, ContentValues values) {
         Date now = new Date();
         String nowStr = sdf.format(now);
         values.put(key, nowStr);
         return nowStr;
     }
 
-    public String timeStamp(){
+    public String timeStamp() {
         Date now = new Date();
         String nowStr = sdf.format(now);
         return nowStr;
     }
 
     @Override
-    protected void handleBroadcast(Intent data){
-        Log.i(TAG,"handleBroadcast()");
+    protected void handleBroadcast(Intent data) {
+        Log.i(TAG, "handleBroadcast()");
         cancelProgressDialogFragment();
         String message = data.getStringExtra(Response.MESSAGE);
-        Response.Code code = Response.Code.get(data.getIntExtra(Response.CODE,-1));
+        Response.Code code = Response.Code.get(data.getIntExtra(Response.CODE, -1));
         Uri uri = data.getData();
-        int descriptor = (uri != null)? Uris.getDescriptor(uri): Uris.NO_MATCH;
-        
-        Log.i(TAG,"....descriptor="+descriptor);
-        switch(code){
+        int descriptor = (uri != null) ? Uris.getDescriptor(uri) : Uris.NO_MATCH;
+
+        Log.i(TAG, "....descriptor=" + descriptor);
+        switch (code) {
             case CONTINUE:
-                switch(descriptor){
+                switch (descriptor) {
                     case Uris.ENCOUNTER_ITEM:
                     case Uris.ENCOUNTER_UUID:
-                        if(showProgressForeground())
+                        if (showProgressForeground())
                             showProgressDialogFragment(message);
                         break;
-                default:
+                    default:
                 }
             default:
-                switch(descriptor){
+                switch (descriptor) {
                     case Uris.ENCOUNTER_ITEM:
                     case Uris.ENCOUNTER_UUID:
                         hideProgressDialogFragment();
-                        if(!TextUtils.isEmpty(message)){
-                            Toast.makeText(this,message,Toast.LENGTH_LONG).show();
+                        if (!TextUtils.isEmpty(message)) {
+                            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
                         }
                         break;
                     default:

@@ -1,5 +1,12 @@
-<Procedure title="Test Upload" author="Sana">
-	<Page>
-		<Element concept="PICTURE" type="PICTURE" id="1" question="Image media file for patient encounter" answer=""/>
-	</Page>
+<Procedure
+    title="Test Upload"
+    author="Sana">
+    <Page>
+        <Element
+            concept="PICTURE"
+            type="PICTURE"
+            id="1"
+            question="Image media file for patient encounter"
+            answer="" />
+    </Page>
 </Procedure>

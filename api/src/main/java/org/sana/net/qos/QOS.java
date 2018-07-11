@@ -15,9 +15,10 @@ public class QOS {
     public Date received = new Date();
     public Date requestComplete = new Date();
 
-    public QOS(){}
+    public QOS() {
+    }
 
-    public void increment(){
+    public void increment() {
         sendCount++;
     }
 }

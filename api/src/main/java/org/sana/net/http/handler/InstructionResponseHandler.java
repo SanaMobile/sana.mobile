@@ -8,11 +8,12 @@ import org.sana.net.Response;
 
 import com.google.gson.reflect.TypeToken;
 
-public class InstructionResponseHandler extends ApiResponseHandler<Response<Collection<Notification>>>{
+public class InstructionResponseHandler extends ApiResponseHandler<Response<Collection<Notification>>> {
 
-	public Type getType() {
-		final Type type = new TypeToken<Response<Collection<Notification>>>(){}.getType();
-		return type;
-	}
+    public Type getType() {
+        final Type type = new TypeToken<Response<Collection<Notification>>>() {
+        }.getType();
+        return type;
+    }
 }
 

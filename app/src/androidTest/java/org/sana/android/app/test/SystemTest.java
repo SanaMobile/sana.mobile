@@ -1,28 +1,28 @@
 /**
  * Copyright (c) 2013, Sana
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Sana nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the Sana nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * <p>
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL Sana BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.sana.android.app.test;
@@ -54,37 +54,37 @@ import android.test.AndroidTestCase;
  */
 public class SystemTest extends AndroidTestCase {
 
-	static final String[] sCrud = new String[]{
-		Intent.ACTION_INSERT,
-		Intent.ACTION_INSERT_OR_EDIT,
-		Intent.ACTION_VIEW,
-		Intent.ACTION_EDIT,
-		Intent.ACTION_DELETE,
-		Intent.ACTION_PICK,
-	};
-	
-	static final String[] sActions = new String[]{
-		Intent.ACTION_MAIN,
-		Intent.ACTION_RUN,
-		Intent.ACTION_PICK_ACTIVITY,
-	};
-	
-	static Uri[] sModels = new Uri[]{
-		Concepts.CONTENT_URI,
-		Encounters.CONTENT_URI,
-		Events.CONTENT_URI,
-		Instructions.CONTENT_URI,
-		Notifications.CONTENT_URI,
-		Observations.CONTENT_URI,
-		Observers.CONTENT_URI,
-		Procedures.CONTENT_URI,
-		Subjects.CONTENT_URI,
-		Patients.CONTENT_URI
-		
-	};
-	
-	
-	public void testWriteIntents(){
+    static final String[] sCrud = new String[]{
+            Intent.ACTION_INSERT,
+            Intent.ACTION_INSERT_OR_EDIT,
+            Intent.ACTION_VIEW,
+            Intent.ACTION_EDIT,
+            Intent.ACTION_DELETE,
+            Intent.ACTION_PICK,
+    };
+
+    static final String[] sActions = new String[]{
+            Intent.ACTION_MAIN,
+            Intent.ACTION_RUN,
+            Intent.ACTION_PICK_ACTIVITY,
+    };
+
+    static Uri[] sModels = new Uri[]{
+            Concepts.CONTENT_URI,
+            Encounters.CONTENT_URI,
+            Events.CONTENT_URI,
+            Instructions.CONTENT_URI,
+            Notifications.CONTENT_URI,
+            Observations.CONTENT_URI,
+            Observers.CONTENT_URI,
+            Procedures.CONTENT_URI,
+            Subjects.CONTENT_URI,
+            Patients.CONTENT_URI
+
+    };
+
+
+    public void testWriteIntents() {
 		/*
 		 * 		assertEquals(Intents.parseActionDescriptor(new Intent(Intent.ACTION_MAIN)), Intents.MAIN);
 		assertEquals(Intents.parseActionDescriptor(new Intent(Intent.ACTION_RUN)), Intents.RUN);
@@ -107,29 +107,29 @@ public class SystemTest extends AndroidTestCase {
 		assertEquals(Intents.parseActionDescriptor(new Intent(Intent.ACTION_SEARCH)), Intents.SEARCH);
 		assertEquals(Intents.parseActionDescriptor(new Intent(Intent.ACTION_WEB_SEARCH)), Intents.WEB_SEARCH);
 		 */
-		PrintWriter pw;
-		BufferedOutputStream os;
-		File ext = new File(Environment.getExternalStorageDirectory(),"intents.txt");
-		try {
-			pw = new PrintWriter(ext);
-			for(String action:sActions){
-				pw.println(new Intent(action).toUri(Intent.URI_INTENT_SCHEME));
-			}
-			for(Uri uri:sModels){
-				Intent intent = new Intent();
-				intent.setData(uri);
-				for(String crud:sCrud){
-					intent.setAction(crud);
-					pw.println(intent.toUri(Intent.URI_INTENT_SCHEME));
-				}
-			}
-			pw.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	}
-	
+        PrintWriter pw;
+        BufferedOutputStream os;
+        File ext = new File(Environment.getExternalStorageDirectory(), "intents.txt");
+        try {
+            pw = new PrintWriter(ext);
+            for (String action : sActions) {
+                pw.println(new Intent(action).toUri(Intent.URI_INTENT_SCHEME));
+            }
+            for (Uri uri : sModels) {
+                Intent intent = new Intent();
+                intent.setData(uri);
+                for (String crud : sCrud) {
+                    intent.setAction(crud);
+                    pw.println(intent.toUri(Intent.URI_INTENT_SCHEME));
+                }
+            }
+            pw.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+    }
+
 }

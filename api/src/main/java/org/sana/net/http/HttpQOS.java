@@ -34,29 +34,30 @@ public class HttpQOS {
 
     /**
      * Writes transmission quality data to an HttpRequest's headers.
+     *
      * @param request The HttpRequest to write to.
-     * @param data The transmission data to write.
+     * @param data    The transmission data to write.
      */
     public static void write(HttpRequest request, QOS data) {
         HttpParams params = request.getParams();
         params.setParameter(Params.SOURCE, data.source);
         params.setParameter(Params.TARGET, data.target);
-        if (data.sent != null){
+        if (data.sent != null) {
             params.setLongParameter(Params.SENT, data.sent.getTime());
         }
         params.setIntParameter(Params.SEND_COUNT, data.sendCount);
-        if (data.eventStart != null){
+        if (data.eventStart != null) {
             params.setLongParameter(Params.EVENT_START,
                     data.eventStart.getTime());
         }
-        if (data.eventComplete != null){
+        if (data.eventComplete != null) {
             params.setLongParameter(Params.EVENT_COMPLETE,
                     data.eventComplete.getTime());
         }
-        if (data.received != null){
+        if (data.received != null) {
             params.setLongParameter(Params.RECEIVED, data.received.getTime());
         }
-        if(data.requestComplete != null) {
+        if (data.requestComplete != null) {
             params.setLongParameter(Params.REQUEST_COMPLETE,
                     data.requestComplete.getTime());
         }
@@ -66,10 +67,11 @@ public class HttpQOS {
     /**
      * Reads quality of service data from the response headers and returns a
      * new {@link org.sana.net.qos.QOS QOS} object.
+     *
      * @param response The object to read the qos data from.
      * @return A new
      */
-    public static final QOS read(HttpResponse response){
+    public static final QOS read(HttpResponse response) {
         HttpParams params = response.getParams();
         QOS qos = new QOS();
         qos.source = String.valueOf(params.getParameter(Params.SOURCE));

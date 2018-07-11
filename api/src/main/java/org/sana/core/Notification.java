@@ -5,10 +5,9 @@ import org.sana.api.INotification;
 
 /**
  * An informational message.
- * 
- * @author Sana Development
  *
+ * @author Sana Development
  */
-public class Notification extends Model implements INotification{
+public class Notification extends Model implements INotification {
 
 }

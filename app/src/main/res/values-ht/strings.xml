@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Language: HT -->
-<!-- Docs say that all the identifiers should be in lower case -->
+<?xml version="1.0" encoding="utf-8"?><!-- Language: HT --><!-- Docs say that all the identifiers should be in lower case -->
 <resources>
     <string name="hello">Hello</string>
     <string name="app_name">Sana</string>

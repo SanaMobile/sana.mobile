@@ -17,16 +17,16 @@ public class LocalizedDateFormatter {
     public static final int FORMAT_DAY_FIRST = 1;
     public static final int FORMAT_SHORT = 2;
 
-    public LocalizedDateFormatter(Context context, int format, String[] months){
+    public LocalizedDateFormatter(Context context, int format, String[] months) {
         this.months = months;
         this.format = format;
     }
 
-    private String format(int year, int month, int day){
+    private String format(int year, int month, int day) {
         return String.format("%02d %s %04d", day, months[month - 1], year);
     }
 
-    public String format(Date date){
+    public String format(Date date) {
         DateTime dt = new DateTime(date);
         int month = dt.getMonthOfYear();
         int dayOfMonth = dt.getDayOfMonth();

@@ -1,19 +1,19 @@
 /**
  * Copyright (c) 2013, Sana
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Sana nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the Sana nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -41,7 +41,7 @@ public class Response<T> {
      *
      * @author Sana
      */
-    public enum Code{
+    public enum Code {
         UNKNOWN(-1),
         CONTINUE(100),
         OK(200),
@@ -58,13 +58,13 @@ public class Response<T> {
 
         public final int code;
 
-        Code(int code){
+        Code(int code) {
             this.code = code;
         }
 
-        public static Code get(int val){
-            for(Code c:Code.values()){
-                if(c.code == val)
+        public static Code get(int val) {
+            for (Code c : Code.values()) {
+                if (c.code == val)
                     return c;
             }
             throw new IllegalArgumentException("Unknown code int value: " + val);
@@ -77,8 +77,8 @@ public class Response<T> {
          *
          * @return
          */
-        public String statusString(){
-            if(code < 300)
+        public String statusString() {
+            if (code < 300)
                 return Status.SUCCESS.toString();
             else
                 return Status.FAILURE.toString();
@@ -89,7 +89,7 @@ public class Response<T> {
     /**
      *  The success or failure status.
      */
-    public enum Status{
+    public enum Status {
         SUCCESS,
         FAILURE,
         UNKNOWN;
@@ -103,9 +103,9 @@ public class Response<T> {
          * @throws IllegalArgumentException If no matching <code>Status</code>
          *   is found.
          */
-        public Status fromString(String val){
-            for(Status status:Status.values()){
-                if(val.compareToIgnoreCase(status.toString()) == 0) return status;
+        public Status fromString(String val) {
+            for (Status status : Status.values()) {
+                if (val.compareToIgnoreCase(status.toString()) == 0) return status;
             }
             throw new IllegalArgumentException("Unrecognized status string. " + val);
         }
@@ -139,13 +139,13 @@ public class Response<T> {
         this.status = status;
         this.code = code;
         this.message = message;
-        this.errors = (errors != null)?
-            Arrays.copyOf(errors, errors.length):
-            new String[0];
+        this.errors = (errors != null) ?
+                Arrays.copyOf(errors, errors.length) :
+                new String[0];
     }
 
     public Response(String status, int code, T message) {
-        this(status,code,message, null);
+        this(status, code, message, null);
     }
 
     /**
@@ -153,7 +153,7 @@ public class Response<T> {
      * @return true if <code>code >= 200</code> < <code>code < 400 </code>
      */
     public boolean succeeded() {
-        return (200 <= code) && (code < 400)  ;
+        return (200 <= code) && (code < 400);
     }
 
     /**
@@ -172,7 +172,7 @@ public class Response<T> {
         return message;
     }
 
-    public void setMessage(T message){
+    public void setMessage(T message) {
         this.message = message;
     }
 
@@ -184,19 +184,19 @@ public class Response<T> {
         return code;
     }
 
-    public void setCode(int code){
+    public void setCode(int code) {
         this.code = code;
     }
 
-    public String getStatus(){
+    public String getStatus() {
         return this.status;
     }
 
-    public void setStatus(String status){
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public static <K> Response<K> empty(){
+    public static <K> Response<K> empty() {
         Response<K> e = new Response<K>();
         return e;
     }

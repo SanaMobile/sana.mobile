@@ -18,26 +18,32 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-/** Displays a list of Procedures.
- * 
- * @author Sana Development Team */
+/**
+ * Displays a list of Procedures.
+ *
+ * @author Sana Development Team
+ */
 public class ProceduresList extends ListActivity {
 
-    /** Intent extra for a procedure. */
+    /**
+     * Intent extra for a procedure.
+     */
     public static final String EXTRA_PROCEDURE_URI = "uri_procedure";
-    
+
     private static final String TAG = ProceduresList.class.toString();
-    private static final String[] PROJECTION = new String[] {
+    private static final String[] PROJECTION = new String[]{
             Procedures.Contract._ID, Procedures.Contract.TITLE,
             Procedures.Contract.AUTHOR
     };
-    
-    private static final String[] PROJECTION2 = new String[] {
-        Procedures.Contract._ID, Procedures.Contract.TITLE,
-        Procedures.Contract.VERSION
+
+    private static final String[] PROJECTION2 = new String[]{
+            Procedures.Contract._ID, Procedures.Contract.TITLE,
+            Procedures.Contract.VERSION
     };
-    
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,25 +52,27 @@ public class ProceduresList extends ListActivity {
         if (uri == null) {
             uri = Procedures.CONTENT_URI;
         }
-        sync(this,uri);
+        sync(this, uri);
         Cursor cursor = managedQuery(uri, PROJECTION2, null, null,
                 Procedures.DEFAULT_SORT_ORDER);
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
                 R.layout.procedure_list_row, cursor,
-                new String[] {
+                new String[]{
                         Procedures.Contract.TITLE,
                         Procedures.Contract.VERSION
                         //Procedures.Contract.AUTHOR
                 },
-                new int[] {
+                new int[]{
                         R.id.toptext, R.id.bottomtext
                 });
-    	Locales.updateLocale(this, getString(R.string.force_locale));
+        Locales.updateLocale(this, getString(R.string.force_locale));
         setListAdapter(adapter);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Uri uri = ContentUris.withAppendedId(getIntent().getData(), id);
@@ -85,10 +93,10 @@ public class ProceduresList extends ListActivity {
             startActivity(new Intent(Intent.ACTION_EDIT, uri));
         }
     }
-    
 
-    final void sync(Context context, Uri uri){
-    	Intent intent = new Intent(context.getString(R.string.intent_action_read),uri);
-    	context.startService(intent);
+
+    final void sync(Context context, Uri uri) {
+        Intent intent = new Intent(context.getString(R.string.intent_action_read), uri);
+        context.startService(intent);
     }
 }

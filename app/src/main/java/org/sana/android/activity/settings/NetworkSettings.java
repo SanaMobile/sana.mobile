@@ -19,13 +19,15 @@ import android.util.Log;
  * these are stored in Constants. The default phone name is the phone's number.
  * String values are stored as preferences and can be retrieved as follows:
  * PreferenceManager.getDefaultSharedPreferences(c).getString("key name")
- * 
+ *
  * @author Sana Dev Team
  */
 public class NetworkSettings extends PreferenceActivity {
     public static final String TAG = NetworkSettings.class.getSimpleName();
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +35,9 @@ public class NetworkSettings extends PreferenceActivity {
         initPreferences();
     }
 
-    /** Sets the default values for the preference screen */
+    /**
+     * Sets the default values for the preference screen
+     */
     private void initPreferences() {
         // Phone name
         String phoneNum = ((TelephonyManager) getSystemService(

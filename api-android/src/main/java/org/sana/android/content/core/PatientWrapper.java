@@ -1,28 +1,28 @@
 /**
  * Copyright (c) 2013, Sana
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Sana nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the Sana nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * <p>
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL Sana BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.sana.android.content.core;
@@ -53,72 +53,72 @@ import android.text.TextUtils;
  *
  */
 public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
-	public static final String TAG = PatientWrapper.class.getSimpleName();
+    public static final String TAG = PatientWrapper.class.getSimpleName();
 
-	/**
-	 * @param cursor
-	 */
-	public PatientWrapper(Cursor cursor) {
-		super(cursor);
-	}
+    /**
+     * @param cursor
+     */
+    public PatientWrapper(Cursor cursor) {
+        super(cursor);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.api.IPatient#getGiven_name()
-	 */
-	@Override
-	public String getGiven_name() {
-		return getStringField(Patients.Contract.GIVEN_NAME);
-	}
+    /* (non-Javadoc)
+     * @see org.sana.api.IPatient#getGiven_name()
+     */
+    @Override
+    public String getGiven_name() {
+        return getStringField(Patients.Contract.GIVEN_NAME);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.api.IPatient#getFamily_name()
-	 */
-	@Override
-	public String getFamily_name() {
-		return getStringField(Patients.Contract.FAMILY_NAME);
-	}
+    /* (non-Javadoc)
+     * @see org.sana.api.IPatient#getFamily_name()
+     */
+    @Override
+    public String getFamily_name() {
+        return getStringField(Patients.Contract.FAMILY_NAME);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.api.IPatient#getDob()
-	 */
-	@Override
-	public Date getDob() {
-		return getDateField(Patients.Contract.DOB);
-	}
+    /* (non-Javadoc)
+     * @see org.sana.api.IPatient#getDob()
+     */
+    @Override
+    public Date getDob() {
+        return getDateField(Patients.Contract.DOB);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.api.IPatient#getGender()
-	 */
-	@Override
-	public String getGender() {
-		return getStringField(Patients.Contract.GENDER);
-	}
+    /* (non-Javadoc)
+     * @see org.sana.api.IPatient#getGender()
+     */
+    @Override
+    public String getGender() {
+        return getStringField(Patients.Contract.GENDER);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.api.IPatient#getImage()
-	 */
-	@Override
-	public URI getImage() {
-		try{
-			return URI.create(getStringField(Patients.Contract.IMAGE));
-		} catch(Exception e){
-		}
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.sana.api.IPatient#getImage()
+     */
+    @Override
+    public URI getImage() {
+        try {
+            return URI.create(getStringField(Patients.Contract.IMAGE));
+        } catch (Exception e) {
+        }
+        return null;
+    }
 
-    public boolean getConfirmed(){
+    public boolean getConfirmed() {
         return getBooleanField(Patients.Contract.CONFIRMED);
     }
 
-    public boolean getDobEstimated(){
+    public boolean getDobEstimated() {
         return getBooleanField(Patients.Contract.DOB_ESTIMATED);
     }
 
-	/* (non-Javadoc)
-	 * @see org.sana.android.db.ModelWrapper#getObject()
-	 */
-	@Override
-	public IPatient getObject() {
+    /* (non-Javadoc)
+     * @see org.sana.android.db.ModelWrapper#getObject()
+     */
+    @Override
+    public IPatient getObject() {
         Patient obj = new Patient();
         obj.setUuid(getUuid());
         obj.setCreated(getCreated());
@@ -132,18 +132,18 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
         obj.setSystemId(getSystemId());
         //obj.setDobEstimated(getDobEstimated());
         //obj.setConfirmed(getConfirmed());
-		return obj;
-	}
+        return obj;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.sana.api.IPatient#getLocation()
-	 */
-	@Override
-	public ILocation getLocation() {
-		Location location = new Location();
-		location.setName(getStringField(Patients.Contract.LOCATION));
-		return location;
-	}
+    /* (non-Javadoc)
+     * @see org.sana.api.IPatient#getLocation()
+     */
+    @Override
+    public ILocation getLocation() {
+        Location location = new Location();
+        location.setName(getStringField(Patients.Contract.LOCATION));
+        return location;
+    }
 
     /**
      * Gets the value of the system identifier stored in the
@@ -151,7 +151,7 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
      *
      * @return The value or null.
      */
-    public String getSystemId(){
+    public String getSystemId() {
         return getStringField(Patients.Contract.PATIENT_ID);
     }
 
@@ -162,7 +162,7 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
      * @param systemId The system id to query
      * @return
      */
-    public static Patient getOneBySystemId(ContentResolver resolver, String systemId){
+    public static Patient getOneBySystemId(ContentResolver resolver, String systemId) {
         PatientWrapper wrapper = new PatientWrapper(ModelWrapper.getOneByFields(
                 Patients.CONTENT_URI,
                 resolver,
@@ -170,9 +170,9 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
                 new String[]{systemId}
         ));
         Patient obj = null;
-        if(wrapper != null)
-            try{
-                if(wrapper.getCount() == 1) {
+        if (wrapper != null)
+            try {
+                if (wrapper.getCount() == 1) {
                     wrapper.moveToFirst();
                     obj = new Patient();
                     obj = (Patient) wrapper.getObject();
@@ -185,9 +185,9 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
         return obj;
     }
 
-    public static Patient get(Context context, Uri uri){
+    public static Patient get(Context context, Uri uri) {
         Patient patient = null;
-        switch(Uris.getTypeDescriptor(uri)) {
+        switch (Uris.getTypeDescriptor(uri)) {
             case Uris.ITEM_UUID:
             case Uris.ITEM_ID:
                 PatientWrapper wrapper = null;
@@ -213,9 +213,9 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
         return patient;
     }
 
-    public static Uri getOrCreate(Context context, Uri uri, ContentValues values){
+    public static Uri getOrCreate(Context context, Uri uri, ContentValues values) {
         Uri result = Uri.EMPTY;
-        switch(Uris.getTypeDescriptor(uri)) {
+        switch (Uris.getTypeDescriptor(uri)) {
             case Uris.ITEM_UUID:
             case Uris.ITEM_ID:
                 if (exists(context, uri)) {
@@ -233,22 +233,22 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
         return result;
     }
 
-    public static Uri getOrCreate(Context context, ContentValues values){
+    public static Uri getOrCreate(Context context, ContentValues values) {
         return getOrCreate(context, Subjects.CONTENT_URI, values);
     }
 
-    public static Uri getOrCreate(Context context, Patient mPatient){
+    public static Uri getOrCreate(Context context, Patient mPatient) {
         ContentValues cv = new ContentValues();
         String uuid = mPatient.getUuid();
         Uri uri = Patients.CONTENT_URI;
         boolean exists = false;
-        if(!TextUtils.isEmpty(uuid)){
+        if (!TextUtils.isEmpty(uuid)) {
             exists = ModelWrapper.exists(context, Uris.withAppendedUuid(uri,
                     uuid));
-            if(!exists){
+            if (!exists) {
                 cv.put(Patients.Contract.UUID, uuid);
             } else {
-                uri = Uris.withAppendedUuid(uri,uuid);
+                uri = Uris.withAppendedUuid(uri, uuid);
             }
         } else {
             uuid = UUIDUtil.generatePatientUUID(mPatient.getSystemId()).toString();
@@ -264,12 +264,12 @@ public class PatientWrapper extends ModelWrapper<IPatient> implements IPatient {
         //TODO update db and uncomment
         //cv.put(Patients.Contract.CONFIRMED, mPatient.getConfirmed());
         //cv.put(Patients.Contract.DOB_ESTIMATED, mPatient.isDobEstimated());
-        if(mPatient.getLocation() != null)
+        if (mPatient.getLocation() != null)
             cv.put(Patients.Contract.LOCATION, mPatient.getLocation().getUuid());
-        if(exists){
-            context.getContentResolver().update(uri,cv,null,null);
+        if (exists) {
+            context.getContentResolver().update(uri, cv, null, null);
         } else {
-            uri = context.getContentResolver().insert(Patients.CONTENT_URI,cv);
+            uri = context.getContentResolver().insert(Patients.CONTENT_URI, cv);
         }
         return uri;
     }

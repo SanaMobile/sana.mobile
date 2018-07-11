@@ -3,7 +3,7 @@ package org.sana.android.net.ssl;
  * $HeadURL$
  * $Revision$
  * $Date$
- * 
+ *
  * ====================================================================
  *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -57,19 +57,19 @@ import org.apache.http.params.HttpParams;
 
 /**
  * <p>
- * EasySSLProtocolSocketFactory can be used to creats SSL {@link Socket}s 
- * that accept self-signed certificates. 
+ * EasySSLProtocolSocketFactory can be used to creats SSL {@link Socket}s
+ * that accept self-signed certificates.
  * </p>
  * <p>
- * This socket factory SHOULD NOT be used for productive systems 
- * due to security reasons, unless it is a concious decision and 
- * you are perfectly aware of security implications of accepting 
+ * This socket factory SHOULD NOT be used for productive systems
+ * due to security reasons, unless it is a concious decision and
+ * you are perfectly aware of security implications of accepting
  * self-signed certificates
  * </p>
- *
+ * <p>
  * <p>
  * Example of using custom protocol socket factory for a specific host:
- *     <pre>
+ * <pre>
  *     Protocol easyhttps = new Protocol("https", new EasySSLProtocolSocketFactory(), 443);
  *
  *     URI uri = new URI("https://localhost/", true);
@@ -83,7 +83,7 @@ import org.apache.http.params.HttpParams;
  * </p>
  * <p>
  * Example of using custom protocol socket factory per default instead of the standard one:
- *     <pre>
+ * <pre>
  *     Protocol easyhttps = new Protocol("https", new EasySSLProtocolSocketFactory(), 443);
  *     Protocol.registerProtocol("https", easyhttps);
  *
@@ -92,9 +92,9 @@ import org.apache.http.params.HttpParams;
  *     client.executeMethod(httpget);
  *     </pre>
  * </p>
- * 
+ *
  * @author <a href="mailto:oleg -at- ural.ru">Oleg Kalnichevski</a>
- * 
+ * <p>
  * <p>
  * DISCLAIMER: HttpClient developers DO NOT actively support this component.
  * The component is provided as a reference material, which may be inappropriate
@@ -104,21 +104,23 @@ import org.apache.http.params.HttpParams;
 
 public class SimpleSSLProtocolSocketFactory extends SSLSocketFactory {
 
-	// always verify the host - dont check for certificate
-	final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
-		public boolean verify(String hostname, SSLSession session) {
-			return true;
-		}
-	};
-	
-	public SimpleSSLProtocolSocketFactory(KeyStore truststore)
-			throws NoSuchAlgorithmException, KeyManagementException,
-			KeyStoreException, UnrecoverableKeyException {
-		super(truststore);
-		// TODO Auto-generated constructor stub
-	}
+    // always verify the host - dont check for certificate
+    final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    };
 
-	/** Log object for this class. */
+    public SimpleSSLProtocolSocketFactory(KeyStore truststore)
+            throws NoSuchAlgorithmException, KeyManagementException,
+            KeyStoreException, UnrecoverableKeyException {
+        super(truststore);
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
+     * Log object for this class.
+     */
     //private static final Log LOG = LogFactory.getLog(EasySSLProtocolSocketFactory.class);
 
     private SSLContext sslcontext = null;
@@ -127,24 +129,26 @@ public class SimpleSSLProtocolSocketFactory extends SSLSocketFactory {
         try {
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(
-              null, 
-              new TrustManager[]{
-            	        new X509TrustManager() {
-            	            public java.security.cert.X509Certificate[]
-            	getAcceptedIssuers() {
-            	                return null;
-            	            }
-            	            public void checkClientTrusted(
-            	                java.security.cert.X509Certificate[] certs, String
-            	authType) {
-            	            }
-            	            public void checkServerTrusted(
-            	                java.security.cert.X509Certificate[] certs, String
-            	authType) {
-            	            }
-            	        } 
-            	    } ,
-              null);
+                    null,
+                    new TrustManager[]{
+                            new X509TrustManager() {
+                                public java.security.cert.X509Certificate[]
+                                getAcceptedIssuers() {
+                                    return null;
+                                }
+
+                                public void checkClientTrusted(
+                                        java.security.cert.X509Certificate[] certs, String
+                                        authType) {
+                                }
+
+                                public void checkServerTrusted(
+                                        java.security.cert.X509Certificate[] certs, String
+                                        authType) {
+                                }
+                            }
+                    },
+                    null);
             return context;
         } catch (Exception e) {
             //LOG.error(e.getMessage(), e);
@@ -160,50 +164,48 @@ public class SimpleSSLProtocolSocketFactory extends SSLSocketFactory {
     }
 
     /**
-     * @see SecureProtocolSocketFactory#createSocket(java.lang.String,int,java.net.InetAddress,int)
+     * @see SecureProtocolSocketFactory#createSocket(java.lang.String, int, java.net.InetAddress, int)
      */
     public Socket createSocket(
-        String host,
-        int port,
-        InetAddress clientHost,
-        int clientPort)
-        throws IOException, UnknownHostException {
+            String host,
+            int port,
+            InetAddress clientHost,
+            int clientPort)
+            throws IOException, UnknownHostException {
 
         return getSSLContext().getSocketFactory().createSocket(
-            host,
-            port,
-            clientHost,
-            clientPort
+                host,
+                port,
+                clientHost,
+                clientPort
         );
     }
 
     /**
      * Attempts to get a new socket connection to the given host within the given time limit.
      * <p>
-     * To circumvent the limitations of older JREs that do not support connect timeout a 
-     * controller thread is executed. The controller thread attempts to create a new socket 
-     * within the given limit of time. If socket constructor does not return until the 
+     * To circumvent the limitations of older JREs that do not support connect timeout a
+     * controller thread is executed. The controller thread attempts to create a new socket
+     * within the given limit of time. If socket constructor does not return until the
      * timeout expires, the controller terminates and throws an {@link ConnectTimeoutException}
      * </p>
-     *  
-     * @param host the host name/IP
-     * @param port the port on the host
+     *
+     * @param host       the host name/IP
+     * @param port       the port on the host
      * @param clientHost the local host name/IP to bind the socket to
      * @param clientPort the port on the local machine
-     * @param params {@link HttpConnectionParams Http connection parameters}
-     * 
+     * @param params     {@link HttpConnectionParams Http connection parameters}
      * @return Socket a new socket
-     * 
-     * @throws IOException if an I/O error occurs while creating the socket
+     * @throws IOException          if an I/O error occurs while creating the socket
      * @throws UnknownHostException if the IP address of the host cannot be
-     * determined
+     *                              determined
      */
     public Socket createSocket(
-        final String host,
-        final int port,
-        final InetAddress localAddress,
-        final int localPort,
-        final HttpParams params
+            final String host,
+            final int port,
+            final InetAddress localAddress,
+            final int localPort,
+            final HttpParams params
     ) throws IOException, UnknownHostException, ConnectTimeoutException {
         if (params == null) {
             throw new IllegalArgumentException("Parameters may not be null");
@@ -223,30 +225,30 @@ public class SimpleSSLProtocolSocketFactory extends SSLSocketFactory {
     }
 
     /**
-     * @see SecureProtocolSocketFactory#createSocket(java.lang.String,int)
+     * @see SecureProtocolSocketFactory#createSocket(java.lang.String, int)
      */
     public Socket createSocket(String host, int port)
-        throws IOException, UnknownHostException {
+            throws IOException, UnknownHostException {
         return getSSLContext().getSocketFactory().createSocket(
-            host,
-            port
+                host,
+                port
         );
     }
 
     /**
-     * @see SecureProtocolSocketFactory#createSocket(java.net.Socket,java.lang.String,int,boolean)
+     * @see SecureProtocolSocketFactory#createSocket(java.net.Socket, java.lang.String, int, boolean)
      */
     public Socket createSocket(
-        Socket socket,
-        String host,
-        int port,
-        boolean autoClose)
-        throws IOException, UnknownHostException {
+            Socket socket,
+            String host,
+            int port,
+            boolean autoClose)
+            throws IOException, UnknownHostException {
         return getSSLContext().getSocketFactory().createSocket(
-            socket,
-            host,
-            port,
-            autoClose
+                socket,
+                host,
+                port,
+                autoClose
         );
     }
 

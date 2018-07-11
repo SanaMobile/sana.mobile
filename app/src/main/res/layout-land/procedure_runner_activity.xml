@@ -3,13 +3,13 @@
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:orientation="vertical"
-    android:layout_height="fill_parent" >
-    
+    android:layout_height="fill_parent">
+
     <fragment
         android:id="@+id/procedure_runner_fragment"
         android:name="org.sana.android.fragment.ProcedureRunnerFragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         class="org.sana.android.fragment.ProcedureRunnerFragment" />
-    
+
 </LinearLayout>

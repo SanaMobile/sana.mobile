@@ -12,12 +12,12 @@
     <!-- Progress Dialog colors -->
     <color name="bg_progressdialog">#8C4406</color>
     <color name="fg_progressdialog">#FFFFFF</color>
-    
+
     <!-- Alert colors -->
     <color name="bg_alertsuccess">#00FF00</color>
     <color name="bg_alertfail">#FF0000</color>
     <color name="fg_alert">#FFFFFF</color>
-    
+
     <!-- Android compat colors -->
     <drawable name="screen_background_holo_light">#fff3f3f3</drawable>
     <drawable name="screen_background_holo_dark">#ff000000</drawable>
@@ -43,5 +43,5 @@
     <color name="highlighted_text_holo_light">#6633b5e5</color>
     <color name="link_text_holo_dark">#5c5cff</color>
     <color name="link_text_holo_light">#0000ee</color>
-    
+
 </resources>

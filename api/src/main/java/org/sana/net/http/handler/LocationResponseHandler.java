@@ -5,13 +5,15 @@ import java.util.Collection;
 
 import org.sana.core.Location;
 import org.sana.net.Response;
+
 import com.google.gson.reflect.TypeToken;
 
-public class LocationResponseHandler extends ApiResponseHandler<Response<Collection<Location>>>{
+public class LocationResponseHandler extends ApiResponseHandler<Response<Collection<Location>>> {
 
-	@Override
-	public Type getType() {
-		Type typeOf = new TypeToken<Response<Collection<Location>>>(){}.getType();
-		return typeOf;
-	}
+    @Override
+    public Type getType() {
+        Type typeOf = new TypeToken<Response<Collection<Location>>>() {
+        }.getType();
+        return typeOf;
+    }
 }

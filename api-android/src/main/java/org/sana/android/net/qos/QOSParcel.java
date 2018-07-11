@@ -12,11 +12,11 @@ import java.util.Date;
  */
 public class QOSParcel extends QOS implements Parcelable {
 
-    public QOSParcel(){
+    public QOSParcel() {
         super();
     }
 
-    public QOSParcel(Parcel in){
+    public QOSParcel(Parcel in) {
         source = in.readString();
         target = in.readString();
         sent = new Date(in.readLong());
@@ -45,7 +45,7 @@ public class QOSParcel extends QOS implements Parcelable {
     }
 
     public static Parcelable.Creator<QOSParcel> CREATOR = new Parcelable
-            .Creator<QOSParcel>(){
+            .Creator<QOSParcel>() {
 
         @Override
         public QOSParcel createFromParcel(Parcel parcel) {

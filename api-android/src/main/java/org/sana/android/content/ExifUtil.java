@@ -25,32 +25,32 @@ public class ExifUtil {
 
             Matrix matrix = new Matrix();
             switch (orientation) {
-            case 2:
-                matrix.setScale(-1, 1);
-                break;
-            case 3:
-                matrix.setRotate(180);
-                break;
-            case 4:
-                matrix.setRotate(180);
-                matrix.postScale(-1, 1);
-                break;
-            case 5:
-                matrix.setRotate(90);
-                matrix.postScale(-1, 1);
-                break;
-            case 6:
-                matrix.setRotate(90);
-                break;
-            case 7:
-                matrix.setRotate(-90);
-                matrix.postScale(-1, 1);
-                break;
-            case 8:
-                matrix.setRotate(-90);
-                break;
-            default:
-                return bitmap;
+                case 2:
+                    matrix.setScale(-1, 1);
+                    break;
+                case 3:
+                    matrix.setRotate(180);
+                    break;
+                case 4:
+                    matrix.setRotate(180);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 5:
+                    matrix.setRotate(90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 6:
+                    matrix.setRotate(90);
+                    break;
+                case 7:
+                    matrix.setRotate(-90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case 8:
+                    matrix.setRotate(-90);
+                    break;
+                default:
+                    return bitmap;
             }
 
             try {
@@ -106,37 +106,38 @@ public class ExifUtil {
         */
         return orientation;
     }
+
     public static Bitmap rotateBitmap(File src, Bitmap bitmap) {
         try {
             int orientation = getExifOrientation(src.getAbsolutePath());
             Matrix matrix = new Matrix();
             switch (orientation) {
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                matrix.setScale(-1, 1);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                matrix.setRotate(180);
-                break;
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                matrix.setRotate(180);
-                matrix.postScale(-1, 1);
-                break;
-            case ExifInterface.ORIENTATION_TRANSPOSE:
-                matrix.setRotate(90);
-                matrix.postScale(-1, 1);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                matrix.setRotate(90);
-                break;
-            case ExifInterface.ORIENTATION_TRANSVERSE:
-                matrix.setRotate(-90);
-                matrix.postScale(-1, 1);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                matrix.setRotate(-90);
-                break;
-            default:
-                return bitmap;
+                case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                    matrix.setScale(-1, 1);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    matrix.setRotate(180);
+                    break;
+                case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                    matrix.setRotate(180);
+                    matrix.postScale(-1, 1);
+                    break;
+                case ExifInterface.ORIENTATION_TRANSPOSE:
+                    matrix.setRotate(90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    matrix.setRotate(90);
+                    break;
+                case ExifInterface.ORIENTATION_TRANSVERSE:
+                    matrix.setRotate(-90);
+                    matrix.postScale(-1, 1);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    matrix.setRotate(-90);
+                    break;
+                default:
+                    return bitmap;
             }
 
             try {
@@ -149,7 +150,7 @@ public class ExifUtil {
             }
 
         } catch (IOException e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
         return bitmap;
     }

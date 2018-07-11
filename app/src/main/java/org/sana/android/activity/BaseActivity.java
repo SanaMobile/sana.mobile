@@ -37,21 +37,23 @@ import org.sana.android.util.UriUtil;
 /**
  * Base class that contains basic functionalities and behaviors that all
  * activities should do.
+ *
  * @author Sana Dev Team
  */
-public abstract class BaseActivity extends FragmentActivity implements AuthenticationDialogListener{
+public abstract class BaseActivity extends FragmentActivity implements AuthenticationDialogListener {
 
     public static final String TAG = BaseActivity.class.getSimpleName();
-    static 
-    
+    static
+
     // Dialog for prompting the user that a long operation is being performed.
-    ProgressDialog mWaitDialog = null;
+            ProgressDialog mWaitDialog = null;
     protected String mLocale = null;
     protected boolean mForceLocale = false;
 
     /**
      * Finishes the calling activity and launches the activity contained in
      * <code>intent</code>
+     *
      * @param intent
      */
     void switchActivity(Intent intent) {
@@ -78,42 +80,45 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     protected boolean mDebug = false;
     protected boolean mRoot = false;
     private boolean mUploadForeground = false;
-    
+
     // State keys
     public static final String STATE_DIALOG = "__dialog";
     public static final String STATE_ROLE = "__role";
-    
+
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
-          @Override
-          public void onReceive(Context context, Intent intent) {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             handleBroadcast(intent);
-          }
-        };
+        }
+    };
 
     /**
      * Returns the value of the instance key which is created when the object is
      * instantiated.
+     *
      * @return
      */
-    protected String getInstanceKey(){
+    protected String getInstanceKey() {
         return mInstanceKey;
     }
 
     /**
      * Returns the value of the session key. Warning: any key returned must be
      * authenticated with the session service.
+     *
      * @return
      */
-    protected String getSessionKey(){
+    protected String getSessionKey() {
         return mSessionKey;
     }
 
     /**
      * Sets the value of the session key. Warning: this method does not make
      * any atempt to validate whether the session is authenticated.
+     *
      * @param sessionKey
      */
-    protected void setSessionKey(String sessionKey){
+    protected void setSessionKey(String sessionKey) {
         mSessionKey = sessionKey;
     }
 
@@ -121,16 +126,17 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * Writes the state fields for this component to a bundle.
      * Currently this writes the following from the Bundle
      * <ul>
-     *  <li>instance key</li>
-     *  <li>session key</li>
-     *  <li>current encounter</li>
-     *  <li>current subject</li>
-     *  <li>current observer</li>
-     *  <li>current procedure</li>
+     * <li>instance key</li>
+     * <li>session key</li>
+     * <li>current encounter</li>
+     * <li>current subject</li>
+     * <li>current observer</li>
+     * <li>current procedure</li>
      * </ul>
+     *
      * @param outState
      */
-    protected void onSaveAppState(Bundle outState){
+    protected void onSaveAppState(Bundle outState) {
         outState.putString(Keys.INSTANCE_KEY, mInstanceKey);
         outState.putString(Keys.SESSION_KEY, mSessionKey);
         outState.putParcelable(Intents.EXTRA_ENCOUNTER, mEncounter);
@@ -145,16 +151,17 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * Writes the state fields for this component to an Intent as Extras.
      * Currently this writes the following from the Intent.
      * <ul>
-     *  <li>instance key</li>
-     *  <li>session key</li>
-     *  <li>current encounter</li>
-     *  <li>current subject</li>
-     *  <li>current observer</li>
-     *  <li>current procedure</li>
+     * <li>instance key</li>
+     * <li>session key</li>
+     * <li>current encounter</li>
+     * <li>current subject</li>
+     * <li>current observer</li>
+     * <li>current procedure</li>
      * </ul>
+     *
      * @param outState
      */
-    protected void onSaveAppState(Intent outState){
+    protected void onSaveAppState(Intent outState) {
         outState.putExtra(Keys.INSTANCE_KEY, mInstanceKey);
         outState.putExtra(Keys.SESSION_KEY, mSessionKey);
         outState.putExtra(Intents.EXTRA_ENCOUNTER, mEncounter);
@@ -170,45 +177,45 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * Currently this attempts to read the following extras from the
      * Intent.
      * <ul>
-     *  <li>instance key</li>
-     *  <li>session key</li>
-     *  <li>current encounter</li>
-     *  <li>current subject</li>
-     *  <li>current observer</li>
-     *  <li>current procedure</li>
+     * <li>instance key</li>
+     * <li>session key</li>
+     * <li>current encounter</li>
+     * <li>current subject</li>
+     * <li>current observer</li>
+     * <li>current procedure</li>
      * </ul>
      *
      * @param inState
      */
-    protected void onUpdateAppState(Intent inState){
+    protected void onUpdateAppState(Intent inState) {
         String k = inState.getStringExtra(Keys.INSTANCE_KEY);
-        if(k != null)
+        if (k != null)
             mInstanceKey = new String(k);
 
         k = inState.getStringExtra(Keys.SESSION_KEY);
-        if(k!=null)
+        if (k != null)
             mSessionKey = new String(k);
 
         Uri temp = inState.getParcelableExtra(Intents.EXTRA_ENCOUNTER);
-        if(temp != null)
+        if (temp != null)
             mEncounter = UriUtil.copyInstance(temp);
 
         temp = inState.getParcelableExtra(Intents.EXTRA_SUBJECT);
-        if(temp != null)
+        if (temp != null)
             mSubject = UriUtil.copyInstance(temp);
 
         temp = inState.getParcelableExtra(Intents.EXTRA_PROCEDURE);
-        if(temp != null)
+        if (temp != null)
             mProcedure = UriUtil.copyInstance(temp);
 
         temp = inState.getParcelableExtra(Intents.EXTRA_OBSERVER);
-        if(temp != null)
+        if (temp != null)
             mObserver = UriUtil.copyInstance(temp);
 
         temp = inState.getParcelableExtra(Intents.EXTRA_TASK);
-        if(temp != null)
+        if (temp != null)
             mTask = UriUtil.copyInstance(temp);
-            
+
         mRoot = inState.getBooleanExtra(STATE_ROLE, false);
     }
 
@@ -216,48 +223,48 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * Sets the state fields for this component from a bundle.
      * Currently this attempts to read the following from the Bundle
      * <ul>
-     *  <li>instance key</li>
-     *  <li>session key</li>
-     *  <li>current encounter</li>
-     *  <li>current subject</li>
-     *  <li>current observer</li>
-     *  <li>current procedure</li>
+     * <li>instance key</li>
+     * <li>session key</li>
+     * <li>current encounter</li>
+     * <li>current subject</li>
+     * <li>current observer</li>
+     * <li>current procedure</li>
      * </ul>
      *
      * @param inState
      */
-    protected void onUpdateAppState(Bundle inState){
+    protected void onUpdateAppState(Bundle inState) {
         String k = inState.getString(Keys.INSTANCE_KEY);
-        if(k!=null)
+        if (k != null)
             mInstanceKey = new String(k);
         k = inState.getString(Keys.SESSION_KEY);
-        if(k!=null)
+        if (k != null)
             mSessionKey = new String(k);
 
         Uri temp = inState.getParcelable(Intents.EXTRA_ENCOUNTER);
-        if(temp != null)
+        if (temp != null)
             mEncounter = UriUtil.copyInstance(temp);
 
         temp = inState.getParcelable(Intents.EXTRA_SUBJECT);
-        if(temp != null)
+        if (temp != null)
             mSubject = UriUtil.copyInstance(temp);
 
         temp = inState.getParcelable(Intents.EXTRA_PROCEDURE);
-        if(temp != null)
+        if (temp != null)
             mProcedure = UriUtil.copyInstance(temp);
 
         temp = inState.getParcelable(Intents.EXTRA_OBSERVER);
-        if(temp != null)
+        if (temp != null)
             mObserver = UriUtil.copyInstance(temp);
 
         temp = inState.getParcelable(Intents.EXTRA_TASK);
-        if(temp != null)
+        if (temp != null)
             mTask = UriUtil.copyInstance(temp);
-            
+
         mRoot = inState.getBoolean(STATE_ROLE);
     }
 
-    protected void onClearAppState(){
+    protected void onClearAppState() {
         mWaiting.set(false);
         mDialogString = null;
         mInstanceKey = UUID.randomUUID().toString();
@@ -269,9 +276,9 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
         mTask = Uri.EMPTY;
         mRoot = false;
     }
-    
-    protected final void setCurrentCredentials(String username, String password){
-        Editor editor =  PreferenceManager
+
+    protected final void setCurrentCredentials(String username, String password) {
+        Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(this).edit();
         editor.putString(
                 Constants.PREFERENCE_EMR_USERNAME, username);
@@ -279,9 +286,9 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
                 Constants.PREFERENCE_EMR_PASSWORD, password);
         editor.commit();
     }
-    
-    protected final void clearCredentials(){
-        setCurrentCredentials("NULL","NULL");
+
+    protected final void clearCredentials() {
+        setCurrentCredentials("NULL", "NULL");
     }
 
     /**
@@ -291,11 +298,11 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      *
      * @param data
      */
-    protected void setResultAppData(Intent data){
+    protected void setResultAppData(Intent data) {
         onSaveAppState(data);
     }
 
-    public Bundle getState(){
+    public Bundle getState() {
         Bundle state = new Bundle();
         onSaveAppState(state);
         return state;
@@ -306,7 +313,7 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * @see com.actionbarsherlock.app.SherlockActivity#onSaveInstanceState(android.os.Bundle)
      */
     @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState){
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         onSaveAppState(savedInstanceState);
         //onSaveDialog(savedInstanceState);
@@ -317,7 +324,7 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * @see com.actionbarsherlock.app.SherlockActivity#onRestoreInstanceState(android.os.Bundle)
      */
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState){
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         onUpdateAppState(savedInstanceState);
         //onRestoreDialog(savedInstanceState);
@@ -328,33 +335,34 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * @see android.app.Activity#onCreate(android.os.Bundle)
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         // get the fields from the launch intent extras
-        if(intent != null)
+        if (intent != null)
             onUpdateAppState(intent);
         // assume savedInstanceState is newer
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
             onUpdateAppState(savedInstanceState);
-        mLocale =  getString(R.string.force_locale);
+        mLocale = getString(R.string.force_locale);
         mForceLocale = !TextUtils.isEmpty(mLocale);
         Locales.updateLocale(this, mLocale);
-        
+
         mUploadForeground = this.getResources().getBoolean(R.bool.cfg_upload_foreground);
     }
 
     /**
      * Displays a progress dialog fragment with the provided message.
+     *
      * @param message
      */
     void showProgressDialogFragment(String message) {
-        Log.i(TAG,"showProgressDialogFragment");
+        Log.i(TAG, "showProgressDialogFragment");
         if (mWaitDialog != null && mWaitDialog.isShowing()) {
             hideProgressDialogFragment();
         }
         // No need to create dialog if this is finishing
-        if(isFinishing())
+        if (isFinishing())
             return;
         mDialogString = message;
         mWaitDialog = new ProgressDialog(this);
@@ -368,83 +376,83 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
      * Hides the progress dialog if it is shown.
      */
     void hideProgressDialogFragment() {
-        Log.i(TAG,"hideProgressDialogFragment");
+        Log.i(TAG, "hideProgressDialogFragment");
         mWaiting.set(false);
         if (mWaitDialog == null) {
             return;
         }
         // dismiss if finishing
-        try{
-            if(isFinishing()){
+        try {
+            if (isFinishing()) {
                 mWaitDialog.dismiss();
                 //cancelProgressDialogFragment();
             } else {
                 mWaitDialog.dismiss();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    final void cancelProgressDialogFragment(){
-        Log.i(TAG,"cancelProgressDialogFragment");
+    final void cancelProgressDialogFragment() {
+        Log.i(TAG, "cancelProgressDialogFragment");
         mWaiting.set(false);
         mDialogString = null;
-        try{
-            if(mWaitDialog != null)// && mWaitDialog.isShowing())
+        try {
+            if (mWaitDialog != null)// && mWaitDialog.isShowing())
                 mWaitDialog.dismiss();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected final boolean showProgressForeground(){
+    protected final boolean showProgressForeground() {
         return mUploadForeground;
     }
 
-    public void setData(Uri uri){
+    public void setData(Uri uri) {
         int code = Uris.getTypeDescriptor(uri);
         setData(code, uri);
     }
 
-    public void setData(int code, Uri uri){
-        switch(code){
-        case Uris.ENCOUNTER_DIR:
-        case Uris.ENCOUNTER_ITEM:
-        case Uris.ENCOUNTER_UUID:
-            mEncounter = uri;
-            break;
-        case Uris.OBSERVER_DIR:
-        case Uris.OBSERVER_ITEM:
-        case Uris.OBSERVER_UUID:
-            mObserver = uri;
-            break;
-        case Uris.PROCEDURE_DIR:
-        case Uris.PROCEDURE_ITEM:
-        case Uris.PROCEDURE_UUID:
-            mProcedure = uri;
-            break;
-        case Uris.SUBJECT_DIR:
-        case Uris.SUBJECT_ITEM:
-        case Uris.SUBJECT_UUID:
-            mSubject = uri;
-            break;
-        case Uris.ENCOUNTER_TASK_DIR:
-        case Uris.ENCOUNTER_TASK_ITEM:
-        case Uris.ENCOUNTER_TASK_UUID:
-        case Uris.OBSERVATION_TASK_DIR:
-        case Uris.OBSERVATION_TASK_ITEM:
-        case Uris.OBSERVATION_TASK_UUID:
-            mTask = uri;
-            break;
-        default:
-            break;
+    public void setData(int code, Uri uri) {
+        switch (code) {
+            case Uris.ENCOUNTER_DIR:
+            case Uris.ENCOUNTER_ITEM:
+            case Uris.ENCOUNTER_UUID:
+                mEncounter = uri;
+                break;
+            case Uris.OBSERVER_DIR:
+            case Uris.OBSERVER_ITEM:
+            case Uris.OBSERVER_UUID:
+                mObserver = uri;
+                break;
+            case Uris.PROCEDURE_DIR:
+            case Uris.PROCEDURE_ITEM:
+            case Uris.PROCEDURE_UUID:
+                mProcedure = uri;
+                break;
+            case Uris.SUBJECT_DIR:
+            case Uris.SUBJECT_ITEM:
+            case Uris.SUBJECT_UUID:
+                mSubject = uri;
+                break;
+            case Uris.ENCOUNTER_TASK_DIR:
+            case Uris.ENCOUNTER_TASK_ITEM:
+            case Uris.ENCOUNTER_TASK_UUID:
+            case Uris.OBSERVATION_TASK_DIR:
+            case Uris.OBSERVATION_TASK_ITEM:
+            case Uris.OBSERVATION_TASK_UUID:
+                mTask = uri;
+                break;
+            default:
+                break;
         }
     }
 
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
-        if(isFinishing())
+        if (isFinishing())
             cancelProgressDialogFragment();
         else
             hideProgressDialogFragment();
@@ -453,11 +461,11 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
     @Override
     protected void onResume() {
         super.onResume();
-        if(mWaiting.get() && mDialogString != null)
+        if (mWaiting.get() && mDialogString != null)
             showProgressDialogFragment(mDialogString);
         // simple way to set the locale
         // Should probably be replaced with a change listener
-        mLocale = Preferences.getString(this,getString(R.string.setting_locale), "en");
+        mLocale = Preferences.getString(this, getString(R.string.setting_locale), "en");
     }
 
     /* (non-Javadoc)
@@ -476,33 +484,33 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
         throw new UnsupportedOperationException();
     }
 
-    protected void dump(){
-        Logf.D(this.getComponentName().getShortClassName(),"dump()", String.format("{ 'encounter': '%s',"
-                +" 'observer': '%s', 'subject': '%s', 'procedure': '%s', 'task': '%s' }",
+    protected void dump() {
+        Logf.D(this.getComponentName().getShortClassName(), "dump()", String.format("{ 'encounter': '%s',"
+                        + " 'observer': '%s', 'subject': '%s', 'procedure': '%s', 'task': '%s' }",
                 mEncounter, mObserver, mSubject, mProcedure, mTask));
     }
 
-    protected void dump(String method){
-        Logf.D(this.getComponentName().getShortClassName(),method+".dump()", String.format("{ 'encounter': '%s',"
-                +" 'observer': '%s', 'subject': '%s', 'procedure': '%s', 'task': '%s' }",
+    protected void dump(String method) {
+        Logf.D(this.getComponentName().getShortClassName(), method + ".dump()", String.format("{ 'encounter': '%s',"
+                        + " 'observer': '%s', 'subject': '%s', 'procedure': '%s', 'task': '%s' }",
                 mEncounter, mObserver, mSubject, mProcedure, mTask));
 
     }
 
-    protected final void makeText(String text){
+    protected final void makeText(String text) {
         makeText(text, Toast.LENGTH_LONG);
     }
 
-    protected final void makeText(String text, int duration){
+    protected final void makeText(String text, int duration) {
         Toast.makeText(this, text, duration).show();
     }
 
-    protected final void makeText(int resId){
+    protected final void makeText(int resId) {
         Locales.updateLocale(this, getString(R.string.force_locale));
         makeText(resId, Toast.LENGTH_SHORT);
     }
 
-    protected final void makeText(int resId, int duration){
+    protected final void makeText(int resId, int duration) {
         makeText(getString(resId), duration);
     }
 
@@ -522,38 +530,39 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(
                     getPackageName(), 0);
-            ApplicationInfo ai  = getPackageManager().getApplicationInfo(
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(
                     getPackageName(), PackageManager.GET_META_DATA);
             Bundle metadata = ai.metaData;
             String local = metadata.getString("local_build");
-            Log.i(TAG, "Version info: name=" + pi.versionName +", code=" +
+            Log.i(TAG, "Version info: name=" + pi.versionName + ", code=" +
                     pi.versionCode);
-            version = (!TextUtils.isEmpty(local))?
-                    String.format(versionFormat, pi.versionName, local): pi.versionName;
+            version = (!TextUtils.isEmpty(local)) ?
+                    String.format(versionFormat, pi.versionName, local) : pi.versionName;
         } catch (Exception e) {
 
         }
-        Log.d(TAG, "...version string=" +version);
+        Log.d(TAG, "...version string=" + version);
         // Temporary work around.
         //version = getString(R.string.display_version);
         return version;
     }
 
-    protected void handleBroadcast(Intent intent){
+    protected void handleBroadcast(Intent intent) {
         Log.i(TAG, "handleBroadcast(Intent)");
         // Extract data included in the Intent
     }
 
     static final IntentFilter filter = new IntentFilter();
-    static{
+
+    static {
         filter.addAction(DispatchResponseReceiver.BROADCAST_RESPONSE);
         filter.addDataScheme("content");
         filter.addDataAuthority("org.sana.provider", null);
     }
 
 
-    public String getStringLocalized(int resId){
-        if(!TextUtils.isEmpty(mLocale)) {
+    public String getStringLocalized(int resId) {
+        if (!TextUtils.isEmpty(mLocale)) {
             mLocale = Preferences.getString(this,
                     getString(R.string.setting_locale), "en");
         }
@@ -561,25 +570,25 @@ public abstract class BaseActivity extends FragmentActivity implements Authentic
         return super.getString(resId);
     }
 
-    public void setContentViewLocalized(int resId){
-        if(mForceLocale)
+    public void setContentViewLocalized(int resId) {
+        if (mForceLocale)
             Locales.updateLocale(this, mLocale);
         super.setContentView(resId);
     }
 
-    protected void onSaveDialog(Bundle savedInstanceState){
+    protected void onSaveDialog(Bundle savedInstanceState) {
         Bundle dialog = new Bundle();
-        dialog.putBoolean("mWaiting",mWaiting.get());
-        dialog.putString("mDialogString",mDialogString);
+        dialog.putBoolean("mWaiting", mWaiting.get());
+        dialog.putString("mDialogString", mDialogString);
         savedInstanceState.putBundle("mDialog", dialog);
     }
 
-    protected void onRestoreDialog(Bundle savedInstanceState){
+    protected void onRestoreDialog(Bundle savedInstanceState) {
         Bundle dialog = savedInstanceState.getBundle("mDialog");
-        if(dialog != null){
-            mWaiting.set(dialog.getBoolean("mWaiting",false));
+        if (dialog != null) {
+            mWaiting.set(dialog.getBoolean("mWaiting", false));
             String msg = dialog.getString("mDialogString");
-            mDialogString = (!TextUtils.isEmpty(msg))? msg: null;
+            mDialogString = (!TextUtils.isEmpty(msg)) ? msg : null;
         } else {
             mWaiting.set(false);
             mDialogString = null;

@@ -1,4 +1,6 @@
-<Procedure title="Plugin Test" author="Sana">
+<Procedure
+    title="Plugin Test"
+    author="Sana">
     <!-- Plugin template -->
     <!--
     <Page>
@@ -12,39 +14,47 @@
     </Page>
     -->
     <Page>
-        <Element type="PLUGIN" id="videoTest" 
-        concept="VIDEO"
-        question="Video media file for patient encounter"
-        action="android.media.action.VIDEO_CAPTURE"
-        mimeType=""
-        text=""
-        answer=""/>
+        <Element
+            type="PLUGIN"
+            id="videoTest"
+            concept="VIDEO"
+            question="Video media file for patient encounter"
+            action="android.media.action.VIDEO_CAPTURE"
+            mimeType=""
+            text=""
+            answer="" />
     </Page>
     <Page>
-        <Element type="PLUGIN" id="imageTest" 
-        concept="PICTURE"
-        question="Image media file for patient encounter"
-        action="android.media.action.IMAGE_CAPTURE"
-        mimeType=""
-        text=""
-        answer=""/>
+        <Element
+            type="PLUGIN"
+            id="imageTest"
+            concept="PICTURE"
+            question="Image media file for patient encounter"
+            action="android.media.action.IMAGE_CAPTURE"
+            mimeType=""
+            text=""
+            answer="" />
     </Page>
     <Page>
-        <Element type="PLUGIN" id="soundTest" 
-        concept="SOUND"
-        question="Audio media file for patient encounter"
-        action=""
-        mimeType="audio/*"
-        text=""
-        answer=""/>
+        <Element
+            type="PLUGIN"
+            id="soundTest"
+            concept="SOUND"
+            question="Audio media file for patient encounter"
+            action=""
+            mimeType="audio/*"
+            text=""
+            answer="" />
     </Page>
     <Page>
-        <Element type="PLUGIN" id="textTest" 
-        concept="TEXT"
-        question="Information display"
-        action=""
-        mimeType="text/plain"
-        text=""
-        answer=""/>
+        <Element
+            type="PLUGIN"
+            id="textTest"
+            concept="TEXT"
+            question="Information display"
+            action=""
+            mimeType="text/plain"
+            text=""
+            answer="" />
     </Page>
 </Procedure>

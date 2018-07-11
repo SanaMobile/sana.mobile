@@ -1,19 +1,19 @@
 /**
  * Copyright (c) 2014, Sana
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the Sana nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the Sana nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -27,9 +27,10 @@
  */
 package org.sana.util;
 
-public final class Arrays{
+public final class Arrays {
 
-    private Arrays(){}
+    private Arrays() {
+    }
 
     /**
      * Copies <code>newLength</code> elements from original into a new
@@ -42,16 +43,16 @@ public final class Arrays{
      * @throws NegativeArraySizeException   if newLength < 0
      * @throws NullPointerException if <code>original == null</code>
      */
-    public static <T> T[] copyOf(T[] original, int newLength){
-        if(original == null)
+    public static <T> T[] copyOf(T[] original, int newLength) {
+        if (original == null)
             throw new NullPointerException("Can not copy null array");
-        if(newLength < 0)
+        if (newLength < 0)
             throw new NegativeArraySizeException("Array size must be >= 0");
 
         T[] copy = (T[]) new Object[newLength];
         int index = 0;
-        while(index < newLength){
-            copy[index] = (index < original.length)?original[index]:null;
+        while (index < newLength) {
+            copy[index] = (index < original.length) ? original[index] : null;
             index++;
         }
         return copy;

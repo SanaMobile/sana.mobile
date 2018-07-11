@@ -18,14 +18,16 @@ import android.text.method.PasswordTransformationMethod;
  * stored in Constants. The default phone name is the phone's number. String
  * values are stored as preferences and can be retrieved as follows:
  * PreferenceManager.getDefaultSharedPreferences(c).getString("key name")
- * 
+ *
  * @author Sana Dev Team
  */
 public class Settings extends PreferenceActivity {
 
     public static final String TAG = Settings.class.getSimpleName();
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +35,9 @@ public class Settings extends PreferenceActivity {
         initPreferences();
     }
 
-    /** Sets the default values for the the preferences */
+    /**
+     * Sets the default values for the the preferences
+     */
     private void initPreferences() {
 
         // Health worker username for OpenMRS
@@ -41,7 +45,7 @@ public class Settings extends PreferenceActivity {
         if (TextUtils.isEmpty(prefEmrUsername.getText())) {
             prefEmrUsername.setText(Constants.DEFAULT_USERNAME);
         }
-        
+
         // Health worker password for OpenMRS
         EditTextPreference prefEmrPassword = (EditTextPreference) findPreference(Constants.PREFERENCE_EMR_PASSWORD);
         prefEmrPassword.getEditText().setTransformationMethod(
@@ -49,7 +53,7 @@ public class Settings extends PreferenceActivity {
         if (TextUtils.isEmpty(prefEmrPassword.getText())) {
             prefEmrPassword.setText(Constants.DEFAULT_PASSWORD);
         }
-        
+
         // Whether barcode reading is enabled on the phone
         /*
          * CheckBoxPreference barcodeEnabled = new CheckBoxPreference(this);
@@ -59,8 +63,8 @@ public class Settings extends PreferenceActivity {
          * ("Enable barcode reading of patient and physician ids");
          * barcodeEnabled.setDefaultValue(false);
          * dialogBasedPrefCat.addPreference(barcodeEnabled);
-         */        
-        
+         */
+
         // Launches network preferences
         PreferenceScreen prefNetwork = (PreferenceScreen) findPreference("s_network_settings");
         if (prefNetwork != null) {
