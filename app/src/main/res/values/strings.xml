@@ -70,7 +70,6 @@
     <string name="general_uploading">Uploading</string>
     <string name="general_incomplete">incomplete</string>
     <string name="general_complete">complete</string>
-    <string name="general_exit">Exit</string>
     <string name="general_network_active">Network active</string>
     <string name="general_network_inactive">Network inactive</string>
     <string name="general_unknown">Unknown</string>
@@ -100,7 +99,6 @@
     <string name="menu_save_exit">Save &amp; Exit</string>
     <string name="menu_discard_exit">Discard &amp; Exit</string>
     <string name="menu_jump_to_question">Jump To A Question</string>
-    <string name="menu_exit">Exit</string>
     <string name="menu_view_pages">View pages</string>
 
     <!-- Settings Activity Strings -->

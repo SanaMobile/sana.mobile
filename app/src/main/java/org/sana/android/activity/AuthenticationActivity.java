@@ -154,7 +154,6 @@ public class AuthenticationActivity extends BaseActivity {
     EditText mInputPassword;
 
     Button mBtnLogin;
-    Button mBtnExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,10 +288,6 @@ public class AuthenticationActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.btn_login:
                 logIn();
-                break;
-            case R.id.btn_exit:
-                setResult(RESULT_CANCELED);
-                finish();
                 break;
             case R.id.btn_configure:
                 Intent configure = new Intent(this, BasicSettings.class);
