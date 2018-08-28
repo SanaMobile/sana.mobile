@@ -25,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/authentication_username"
+            android:textColorHint="@color/edit_text_text_color_hint"
             android:inputType="text"
             android:textAppearance="?android:attr/textAppearanceLargeInverse" />
 
@@ -33,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/authentication_password"
+            android:textColorHint="@color/edit_text_text_color_hint"
             android:inputType="textPassword"
             android:textAppearance="?android:attr/textAppearanceLargeInverse" />
 
