@@ -44,8 +44,6 @@ public class AuthenticationActivity extends BaseActivity {
     // Session Related
     // Number of allowed authentication attempts
     private int loginsRemaining = 0;
-    private int loginAttempts = 0;
-    private final int maxLogins = 3;
     private boolean loginSuccessful = false;
 
     protected boolean mBound = false;
@@ -150,10 +148,7 @@ public class AuthenticationActivity extends BaseActivity {
 
     // Views
     EditText mInputUsername;
-
     EditText mInputPassword;
-
-    Button mBtnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +173,6 @@ public class AuthenticationActivity extends BaseActivity {
         TextView tv = (TextView) findViewById(id);
         // TODO Fix the getBuildString to read from the manifest correctly
         tv.setText(getBuildString());
-        //tv.setText(getString(R.string.display_version));
     }
 
     private void disableInput() {
@@ -197,7 +191,6 @@ public class AuthenticationActivity extends BaseActivity {
 
     // Attempts a log-in
     private void logIn() {
-        loginAttempts++;
         // disable input until we get a result back from the service
         disableInput();
 
