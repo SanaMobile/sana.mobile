@@ -9,6 +9,11 @@
     <color name="due_today">#FF9933</color>
     <color name="grey_medium">#808080</color>
     <color name="grey_dark">#404040</color>
+
+    <!-- Edit Text colors -->
+    <color name="edit_text_text_color">@android:color/black</color>
+    <color name="edit_text_text_color_hint">@color/grey_medium</color>
+
     <!-- Progress Dialog colors -->
     <color name="bg_progressdialog">#8C4406</color>
     <color name="fg_progressdialog">#FFFFFF</color>
