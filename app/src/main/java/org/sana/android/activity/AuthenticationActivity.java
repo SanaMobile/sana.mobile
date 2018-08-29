@@ -282,10 +282,6 @@ public class AuthenticationActivity extends BaseActivity {
             case R.id.btn_login:
                 logIn();
                 break;
-            case R.id.btn_exit:
-                setResult(RESULT_CANCELED);
-                finish();
-                break;
             case R.id.btn_configure:
                 Intent configure = new Intent(this, BasicSettings.class);
                 startActivity(configure);
