@@ -163,8 +163,7 @@ public class Constants {
     /**
      * Default location of the Sana mobile Dispatch Server
      */
-    public static final String DEFAULT_DISPATCH_SERVER = "demo.sana.csail.mit" +
-            ".edu";
+    public static final String DEFAULT_DISPATCH_SERVER = "fydp-sana-pga.herokuapp.com";
 
     /**
      * A default phone number
