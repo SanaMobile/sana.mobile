@@ -72,7 +72,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
     private OnPatientSelectedListener mListener;
     Handler mHandler;
     private boolean doSync = false;
-    private int delta = 1000 * 60;
+    private int patientsDelta = 1000 * 60;
     private ScrollCompleteListener mScrollListener = null;
 
     //
@@ -88,7 +88,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         super.onCreate(savedInstanceState);
         //setRetainInstance(true);
         Locales.updateLocale(this.getActivity(), getString(R.string.force_locale));
-        delta = getResources().getInteger(R.integer.sync_delta_subjects);
+        patientsDelta = getResources().getInteger(R.integer.sync_delta_subjects);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         setListAdapter(mAdapter);
         mAdapter.setOnScrollCompleteListener(this);
         // Do we sync with server
-        delta = getActivity().getResources().getInteger(R.integer.sync_delta_subjects);
+        patientsDelta = getActivity().getResources().getInteger(R.integer.sync_delta_subjects);
         //sync(getActivity(), Subjects.CONTENT_URI);
         LoaderManager.enableDebugLogging(true);
         getActivity().getSupportLoaderManager().initLoader(PATIENTS_LOADER, null, this);
@@ -476,8 +476,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         }
     }
 
-    public final boolean sync(Context context, Uri uri) {
-        Log.d(TAG, "sync(Context,Uri)");
+    public final boolean syncPatients(Context context, Uri uri) {
+        Log.d(TAG, "syncPatients(Context,Uri)");
         boolean result = false;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         long lastSync = prefs.getLong("patient_sync", 0);
@@ -485,7 +485,7 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         Log.d(TAG, "last: " + lastSync + ", now: " + now + ", delta: " + (now - lastSync) + ", doSync: " + ((now - lastSync) > 86400000));
         // TODO
         // Once a day 86400000
-        if ((now - lastSync) > delta) {
+        if ((now - lastSync) > patientsDelta) {
             Logf.W(TAG, "sync(): synchronizing patient list");
             prefs.edit().putLong("patient_sync", now).commit();
             Intent intent = new Intent(Intents.ACTION_READ, uri);
@@ -495,8 +495,8 @@ public class PatientListFragment extends ListFragment implements LoaderCallbacks
         return result;
     }
 
-    public final boolean syncForced(Context context, Uri uri) {
-        Log.d(TAG, "syncForced(Context,Uri)");
+    public final boolean syncPatientsForced(Context context, Uri uri) {
+        Log.d(TAG, "syncPatientsForced(Context,Uri)");
         boolean result = false;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         long now = System.currentTimeMillis();

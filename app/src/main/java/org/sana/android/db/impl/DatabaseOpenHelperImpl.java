@@ -81,7 +81,8 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper {
                 ObservationsHelper.getInstance().onCreate(),
                 ObserversHelper.getInstance().onCreate(),
                 ProceduresHelper.getInstance().onCreate(),
-                SubjectsHelper.getInstance().onCreate()
+                SubjectsHelper.getInstance().onCreate(),
+                ProcedureGroupsHelper.getInstance().onCreate()
         };
         //db.acquireReference();
         for (String sql : create) {
@@ -112,7 +113,9 @@ public class DatabaseOpenHelperImpl extends DatabaseOpenHelper {
                     ObservationsHelper.getInstance(),
                     ObserversHelper.getInstance(),
                     ProceduresHelper.getInstance(),
-                    SubjectsHelper.getInstance()};
+                    SubjectsHelper.getInstance(),
+                    ProcedureGroupsHelper.getInstance()
+            };
 
 
             for (TableHelper<?> helper : helpers) {

@@ -25,29 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.provider;
+package org.sana.api;
 
-import android.net.Uri;
+import java.util.List;
 
 /**
  * @author Sana Development
  *
  */
-public class Subjects {
-    public static final String TAG = Subjects.class.getSimpleName();
+public interface IProcedureGroup extends IModel {
 
-    /** The authority for procedures. */
-    public static final String AUTHORITY = "org.sana.provider";
+    /**
+     * @return the title
+     */
+    String getTitle();
 
-    /** The content:// style URI for this content provider. */
-    public static final Uri CONTENT_URI = Uri.parse("content://"
-            + AUTHORITY + "core/subject");
+    /**
+     * @return the author
+     */
+    String getAuthor();
 
-    /** The MIME type of CONTENT_URI providing a directory of subjects. */
-    public static final String CONTENT_TYPE =
-            "vnd.android.cursor.dir/org.sana.subject";
+    /**
+     * @return the description
+     */
+    String getDescription();
 
-    /** The content type of {@link #CONTENT_URI} for a single instance. */
-    public static final String CONTENT_ITEM_TYPE =
-            "vnd.android.cursor.item/org.sana.subject";
+    /**
+     * @return the list of associated procedure ids
+     */
+    List<String> getProcedureNames();
 }

@@ -310,7 +310,7 @@ public class SanaUtil {
         if (searchDuplicateTitleAuthor(ctx, title, author)) {
             Log.i(TAG, "Duplicate found! Updating...");
             // TODO Versioning
-            ctx.getContentResolver().update(procedure.getInstanceUri(),
+            ctx.getContentResolver().update(Procedures.CONTENT_URI,
                     cv,
                     "(title LIKE\"" + title + "\")",
                     null);
@@ -366,7 +366,7 @@ public class SanaUtil {
         insertProcedureFromResourceId(ctx, R.raw.ssi_two_site);
         insertProcedureFromResourceId(ctx, R.raw.audio_upload_test);
         */
-        insertProcedureFromResourceId(ctx, R.raw.demonstration);
+        //insertProcedureFromResourceId(ctx, R.raw.demonstration);
         /*
         insertProcedureFromResourceId(ctx, R.raw.chain_test1);
         insertProcedureFromResourceId(ctx, R.raw.chain_test2);

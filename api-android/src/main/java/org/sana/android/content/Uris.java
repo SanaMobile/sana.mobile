@@ -42,6 +42,7 @@ import org.sana.android.provider.Notifications;
 import org.sana.android.provider.ObservationTasks;
 import org.sana.android.provider.Observations;
 import org.sana.android.provider.Observers;
+import org.sana.android.provider.ProcedureGroups;
 import org.sana.android.provider.Procedures;
 import org.sana.android.provider.Subjects;
 import org.sana.util.UUIDUtil;
@@ -145,6 +146,7 @@ public final class Uris {
     public static final int SUBJECT = 512 << CONTENT_SHIFT;
     public static final int ENCOUNTER_TASK = 1024 << CONTENT_SHIFT;
     public static final int OBSERVATION_TASK = 2048 << CONTENT_SHIFT;
+    public static final int PROCEDURE_GROUP = 4096 << CONTENT_SHIFT;
 
     // dir match codes OBJECT | ITEMS
     public static final int CONCEPT_DIR = CONCEPT | ITEMS;
@@ -159,6 +161,7 @@ public final class Uris {
     public static final int SUBJECT_DIR = SUBJECT | ITEMS;
     public static final int ENCOUNTER_TASK_DIR = ENCOUNTER_TASK | ITEMS;
     public static final int OBSERVATION_TASK_DIR = OBSERVATION_TASK | ITEMS;
+    public static final int PROCEDURE_GROUP_DIR = PROCEDURE_GROUP | ITEMS;
 
     // item match codes OBJECT | ITEM_ID
     public static final int CONCEPT_ITEM = CONCEPT | ITEM_ID;
@@ -173,6 +176,7 @@ public final class Uris {
     public static final int SUBJECT_ITEM = SUBJECT | ITEM_ID;
     public static final int ENCOUNTER_TASK_ITEM = ENCOUNTER_TASK | ITEM_ID;
     public static final int OBSERVATION_TASK_ITEM = OBSERVATION_TASK | ITEM_ID;
+    public static final int PROCEDURE_GROUP_ITEM = PROCEDURE_GROUP | ITEM_ID;
 
     // item match codes OBJECT | ITEM_UUID
     public static final int CONCEPT_UUID = CONCEPT | ITEM_UUID;
@@ -187,6 +191,7 @@ public final class Uris {
     public static final int SUBJECT_UUID = SUBJECT | ITEM_UUID;
     public static final int ENCOUNTER_TASK_UUID = ENCOUNTER_TASK | ITEM_UUID;
     public static final int OBSERVATION_TASK_UUID = OBSERVATION_TASK | ITEM_UUID;
+    public static final int PROCEDURE_GROUP_UUID = PROCEDURE_GROUP | ITEM_UUID;
 
     // Matcher for mapping the Uri to code mappings
     private static final UriMatcher mMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -233,6 +238,9 @@ public final class Uris {
         mMatcher.addURI(Models.AUTHORITY, "core/patient/", SUBJECT_DIR);
         mMatcher.addURI(Models.AUTHORITY, "core/patient/#", SUBJECT_ITEM);
         mMatcher.addURI(Models.AUTHORITY, "core/patient/*", SUBJECT_UUID);
+        mMatcher.addURI(Models.AUTHORITY, "core/proceduregroup/", PROCEDURE_GROUP_DIR);
+        mMatcher.addURI(Models.AUTHORITY, "core/proceduregroup/#", PROCEDURE_GROUP_ITEM);
+        mMatcher.addURI(Models.AUTHORITY, "core/proceduregroup/*", PROCEDURE_GROUP_UUID);
 
         mMatcher.addURI(Models.AUTHORITY, "tasks/encounter/", ENCOUNTER_TASK_DIR);
         mMatcher.addURI(Models.AUTHORITY, "tasks/encounter/#", ENCOUNTER_TASK_ITEM);
@@ -417,6 +425,11 @@ public final class Uris {
             case OBSERVATION_TASK_UUID:
             case OBSERVATION_TASK_ITEM:
                 return ObservationTasks.CONTENT_ITEM_TYPE;
+            case PROCEDURE_GROUP_DIR:
+                return ProcedureGroups.CONTENT_TYPE;
+            case PROCEDURE_GROUP_UUID:
+            case PROCEDURE_GROUP_ITEM:
+                return ProcedureGroups.CONTENT_ITEM_TYPE;
             case PACKAGE_DIR:
                 return "application/vnd.android.package-archive";
             default:
