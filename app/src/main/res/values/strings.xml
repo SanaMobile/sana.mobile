@@ -26,6 +26,7 @@
     <string name="button_main_new_encounter">Encounters</string>
     <string name="button_main_view_prior_encounters">View Prior Encounters</string>
     <string name="button_main_view_notifications">Notifications</string>
+    <string name="button_main_select_procedure_groups">Select Procedure Groups</string>
     <string name="button_main_view_patients">Patients</string>
     <string name="button_main_view_scheduled_tasks">Assigned tasks</string>
     <string name="button_main_register_patients">Register Patient</string>
@@ -246,5 +247,12 @@
     <string name="title_basic_settings">Basic Settings</string>
     <string name="setting_upload_foreground">Notify upload</string>
     <string name="prompt_default">Use default value</string>
+
+    <!-- Procedure Group Strings -->
+    <string name="procedure_group_sync_loading_label">Syncing procedure group</string>
+    <string name="procedure_groups_label">Procedure Groups</string>
+    <string name="select_procedure_group_title">Sync Procedure Groups</string>
+    <string name="procedure_group_num_procedures">Num procedures: %d</string>
+    <string name="procedure_group_sync_label">Sync</string>
 
 </resources>

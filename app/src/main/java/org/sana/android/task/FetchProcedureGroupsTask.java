@@ -25,29 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sana.android.provider;
+package org.sana.android.task;
 
-import android.net.Uri;
+import android.content.Context;
+import android.os.AsyncTask;
+
+import org.sana.android.net.MDSInterface2;
+import org.sana.core.ProcedureGroup;
+
+import java.util.List;
 
 /**
- * @author Sana Development
+ * Pulls a user's procedure groups.
  *
+ * @author Sana Development Team
  */
-public class Subjects {
-    public static final String TAG = Subjects.class.getSimpleName();
+public class FetchProcedureGroupsTask extends AsyncTask<Void, Void, List<ProcedureGroup>> {
 
-    /** The authority for procedures. */
-    public static final String AUTHORITY = "org.sana.provider";
+    public interface FetchProcedureGroupsCallback {
+        void onProcedureGroupsLoaded(List<ProcedureGroup> procedureGroups);
+    }
 
-    /** The content:// style URI for this content provider. */
-    public static final Uri CONTENT_URI = Uri.parse("content://"
-            + AUTHORITY + "core/subject");
+    private Context mContext;
+    private FetchProcedureGroupsCallback mCallback;
 
-    /** The MIME type of CONTENT_URI providing a directory of subjects. */
-    public static final String CONTENT_TYPE =
-            "vnd.android.cursor.dir/org.sana.subject";
+    public FetchProcedureGroupsTask(Context context, FetchProcedureGroupsCallback callback) {
+        mContext = context;
+        mCallback = callback;
+    }
 
-    /** The content type of {@link #CONTENT_URI} for a single instance. */
-    public static final String CONTENT_ITEM_TYPE =
-            "vnd.android.cursor.item/org.sana.subject";
+    @Override
+    protected List<ProcedureGroup> doInBackground(Void... params) {
+       List<ProcedureGroup> procedureGroups = MDSInterface2.getProcedureGroups(mContext);
+       return procedureGroups;
+    }
+
+    @Override
+    protected void onPostExecute(List<ProcedureGroup> procedureGroups) {
+       mCallback.onProcedureGroupsLoaded(procedureGroups);
+    }
 }

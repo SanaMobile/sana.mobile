@@ -71,6 +71,14 @@
             android:drawableLeft="@drawable/ic_menu_notifications"
             android:text="@string/button_main_view_notifications"
             style="@style/Widget.Button.Large.Dark" />
+
+        <Button
+            android:id="@+id/button_main_select_procedure_groups"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="submit"
+            android:text="@string/button_main_select_procedure_groups"
+            style="@style/Widget.Button.Large.Dark" />
     </LinearLayout>
 
 

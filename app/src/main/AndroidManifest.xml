@@ -318,6 +318,10 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".android.activity.SelectProcedureGroups"
+            android:label="@string/procedure_groups_label">
+        </activity>
 
         <!-- Service section -->
         <service android:name=".android.service.impl.SessionService">

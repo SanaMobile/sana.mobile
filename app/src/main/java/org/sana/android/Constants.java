@@ -203,6 +203,16 @@ public class Constants {
     public static final String PREFERENCE_MDS_PORT = "s_mds_port";
 
     /**
+     * Key for ms timestamp of last procedure group sync.
+     */
+    public static final String PREFERENCE_PROCEDURE_GROUP_LAST_SYNC = "procedure_group_last_sync";
+
+    /**
+     * Period in ms for procedure group sync.
+     */
+    public static final int PROCEDURE_GROUP_SYNC_PERIOD = 86400000;
+
+    /**
      * Key for looking up mds server host.
      */
     public static final String PREFERENCE_MDS_ROOT = "s_mds_root";

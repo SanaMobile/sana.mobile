@@ -29,25 +29,50 @@ package org.sana.android.provider;
 
 import android.net.Uri;
 
-/**
- * @author Sana Development
- *
- */
-public class Subjects {
-    public static final String TAG = Subjects.class.getSimpleName();
+import org.sana.core.ProcedureGroup;
 
-    /** The authority for procedures. */
+/**
+ * Metadata and contract for procedure groups in the database.
+ *
+ * @author Sana Development Team
+ */
+public class ProcedureGroups {
+
+    /** The authority for procedure groups. */
     public static final String AUTHORITY = "org.sana.provider";
 
     /** The content:// style URI for this content provider. */
     public static final Uri CONTENT_URI = Uri.parse("content://"
-            + AUTHORITY + "core/subject");
+            + AUTHORITY + "/core/proceduregroup");
 
-    /** The MIME type of CONTENT_URI providing a directory of subjects. */
+    /** The MIME type for a directory of procedure groups.  */
     public static final String CONTENT_TYPE =
-            "vnd.android.cursor.dir/org.sana.subject";
+            "vnd.android.cursor.dir/org.sana.proceduregroup";
 
-    /** The content type of {@link #CONTENT_URI} for a single instance. */
+    /** The MIME type of single procedure group. */
     public static final String CONTENT_ITEM_TYPE =
-            "vnd.android.cursor.item/org.sana.subject";
+            "vnd.android.cursor.item/org.sana.proceduregroup";
+
+    /** The default sort order. */
+    public static final String DEFAULT_SORT_ORDER = "modified DESC";
+
+    /**
+     * Contract for the Procedure Groups table in the database.
+     *
+     * @author Sana Development
+     *
+     */
+    public interface Contract extends BaseContract<ProcedureGroup> {
+        /** The title of the procedure group. */
+        String TITLE = "title";
+
+        /** The author of the procedure group. */
+        String AUTHOR = "author";
+
+        /** The description of the procedure group. */
+        String DESCRIPTION = "description";
+
+        /** A list of ids of the procedures. */
+        String PROCEDURE_NAMES = "procedure_names";
+    }
 }

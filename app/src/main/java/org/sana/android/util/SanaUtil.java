@@ -230,55 +230,32 @@ public class SanaUtil {
     }
 
     /**
-     * Inserts a new procedure into the data store
+     * Inserts a procedure into the data store from a resource id
      *
      * @param ctx the Context where the data is stored
      * @param id  the raw resource id
      */
-    private static void insertProcedure(Context ctx, int id) {
-
-        String title = SanaUtil.randomString("Procedure ", 10);
-        String author = "";
-        String guid = "";
-        String version = "1.0";
-        String xmlFullProcedure;
+    private static void insertProcedureFromResourceId(Context ctx, int id) {
         try {
             InputStream rs = ctx.getResources().openRawResource(id);
             byte[] data = new byte[rs.available()];
             rs.read(data);
-            xmlFullProcedure = new String(data);
 
-            Procedure p = Procedure.fromXMLString(xmlFullProcedure);
-            title = p.getTitle();
-            author = p.getAuthor();
-            guid = p.getGuid();
-            version = p.getVersion();
-
-            ContentValues cv = new ContentValues();
-            cv.put(Procedures.Contract.TITLE, title);
-            cv.put(Procedures.Contract.AUTHOR, author);
-            cv.put(Procedures.Contract.UUID, guid);
-            cv.put(Procedures.Contract.VERSION, version);
-            cv.put(Procedures.Contract.PROCEDURE, xmlFullProcedure);
-
-            if (searchDuplicateTitleAuthor(ctx, title, author)) {
-                Log.d(TAG, "Duplicate found!");
-                ctx.getContentResolver().update(Procedures.CONTENT_URI,
-                        cv,
-                        "(title LIKE\"" + title + "\")", null);
-            } else
-                ctx.getContentResolver().insert(Procedures.CONTENT_URI, cv);
+            String xmlFullProcedure = new String(data);
+            Procedure procedure = Procedure.fromXMLString(xmlFullProcedure);
+            insertProcedure(procedure, xmlFullProcedure, ctx);
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't add procedure id=" + id + ", title = " + title
-                    + ", to db. Exception : " + e.toString());
+            Log.e(TAG, "Couldn't add procedure with resource id=" + id
+                    + " to db. Exception : " + e.toString());
             e.printStackTrace();
         }
     }
 
     /**
-     * Code to insert procedure into database is a duplicate with
-     * insertProcedure this just takes the location from the sd card instead of
-     * an id from the resources.
+     * Inserts a procedure into the data store from an sd card
+     *
+     * @param ctx the Context where the data is stored
+     * @param location the location of the resource
      *
      * @throws IOException
      * @throws ProcedureParseException
@@ -288,48 +265,61 @@ public class SanaUtil {
     public static Integer insertProcedureFromSd(final Context ctx, String location)
             throws IOException, ParserConfigurationException, SAXException,
             ProcedureParseException {
-        String title = SanaUtil.randomString("Procedure ", 10);
-        String author = "";
-        String guid = "";
-        String version = "1.0";
-        String xmlFullProcedure;
         Log.v(TAG, location);
 
         FileInputStream rs = new FileInputStream(location);
         byte[] data = new byte[rs.available()];
         rs.read(data);
 
-        xmlFullProcedure = new String(data);
+        String xmlFullProcedure = new String(data);
+        Procedure procedure = Procedure.fromXMLString(xmlFullProcedure);
+        insertProcedure(procedure, xmlFullProcedure, ctx);
+        return 0;
+    }
 
-        Procedure p = Procedure.fromXMLString(xmlFullProcedure);
-        title = p.getTitle();
-        author = p.getAuthor();
-        guid = p.getGuid();
-        version = p.getVersion();
+    /**
+     * Inserts a procedure into the data store from its procedure XML
+     *
+     * @param ctx the Context where the data is stored
+     * @param procedureXML the xml of the procedure
+     */
+    public static void insertProcedureFromXML(final Context ctx, String procedureXML) {
+        try {
+            Procedure procedure = Procedure.fromXMLString(procedureXML);
+            insertProcedure(procedure, procedureXML, ctx);
+        } catch (Exception e) {
+            Log.e(TAG, "Couldn't add procedure with xml=" + procedureXML
+                    + " to db. Exception : " + e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    private static void insertProcedure(Procedure procedure, String procedureXML, Context ctx) {
+        String title = procedure.getTitle();
+        String author = procedure.getAuthor();
+        String guid = procedure.getGuid();
+        String version = procedure.getVersion();
 
         final ContentValues cv = new ContentValues();
         cv.put(Procedures.Contract.TITLE, title);
         cv.put(Procedures.Contract.AUTHOR, author);
         cv.put(Procedures.Contract.UUID, guid);
         cv.put(Procedures.Contract.VERSION, version);
-        cv.put(Procedures.Contract.PROCEDURE, xmlFullProcedure);
+        cv.put(Procedures.Contract.PROCEDURE, procedureXML);
 
         if (searchDuplicateTitleAuthor(ctx, title, author)) {
             Log.i(TAG, "Duplicate found! Updating...");
             // TODO Versioning
-            ctx.getContentResolver().update(p.getInstanceUri(),
+            ctx.getContentResolver().update(Procedures.CONTENT_URI,
                     cv,
                     "(title LIKE\"" + title + "\")",
                     null);
             Log.i(TAG, "Updated");
-            return 0;
         } else {
             Log.i(TAG, "Inserting record.");
             ctx.getContentResolver().insert(
                     Procedures.CONTENT_URI, cv);
         }
-        Log.i(TAG, "Acquired procedure record from local cache.");
-        return 0;
     }
 
     private static boolean searchDuplicateTitleAuthor(Context ctx, String title,
@@ -358,33 +348,33 @@ public class SanaUtil {
      */
     public static void loadDefaultDatabase(Context ctx) {
         /*
-         * insertProcedure(ctx, R.raw.bronchitis); insertProcedure(ctx,
-         * R.raw.cervicalcancer); insertProcedure(ctx, R.raw.surgery_demo);
-         * insertProcedure(ctx, R.raw.tbcontact); insertProcedure(ctx,
+         * insertProcedureFromResourceId(ctx, R.raw.bronchitis); insertProcedureFromResourceId(ctx,
+         * R.raw.cervicalcancer); insertProcedureFromResourceId(ctx, R.raw.surgery_demo);
+         * insertProcedureFromResourceId(ctx, R.raw.tbcontact); insertProcedureFromResourceId(ctx,
          * R.raw.multiupload_test);
-         * insertProcedure(ctx, R.raw.upload_test); insertProcedure(ctx,
-         * R.raw.hiv); insertProcedure(ctx, R.raw.cervicalcancer);
-         * insertProcedure(ctx, R.raw.prenatal); insertProcedure(ctx,
-         * R.raw.surgery); insertProcedure(ctx, R.raw.derma);
-         * insertProcedure(ctx, R.raw.teleradiology); insertProcedure(ctx,
-         * R.raw.ophthalmology); insertProcedure(ctx, R.raw.tbcontact2);
-         * insertProcedure(ctx, R.raw.tbpatient); insertProcedure(ctx,
+         * insertProcedureFromResourceId(ctx, R.raw.upload_test); insertProcedureFromResourceId(ctx,
+         * R.raw.hiv); insertProcedureFromResourceId(ctx, R.raw.cervicalcancer);
+         * insertProcedureFromResourceId(ctx, R.raw.prenatal); insertProcedureFromResourceId(ctx,
+         * R.raw.surgery); insertProcedureFromResourceId(ctx, R.raw.derma);
+         * insertProcedureFromResourceId(ctx, R.raw.teleradiology); insertProcedureFromResourceId(ctx,
+         * R.raw.ophthalmology); insertProcedureFromResourceId(ctx, R.raw.tbcontact2);
+         * insertProcedureFromResourceId(ctx, R.raw.tbpatient); insertProcedureFromResourceId(ctx,
          * R.raw.oral_cancer);
 
-        insertProcedure(ctx, R.raw.cvd_protocol);
-        insertProcedure(ctx, R.raw.api_test);
-        insertProcedure(ctx, R.raw.ssi_two_site);
-        insertProcedure(ctx, R.raw.audio_upload_test);
+        insertProcedureFromResourceId(ctx, R.raw.cvd_protocol);
+        insertProcedureFromResourceId(ctx, R.raw.api_test);
+        insertProcedureFromResourceId(ctx, R.raw.ssi_two_site);
+        insertProcedureFromResourceId(ctx, R.raw.audio_upload_test);
         */
-        insertProcedure(ctx, R.raw.demonstration);
+        //insertProcedureFromResourceId(ctx, R.raw.demonstration);
         /*
-        insertProcedure(ctx, R.raw.chain_test1);
-        insertProcedure(ctx, R.raw.chain_test2);
-        insertProcedure(ctx, R.raw.api_test_entry);
-        insertProcedure(ctx, R.raw.api_test_select);
+        insertProcedureFromResourceId(ctx, R.raw.chain_test1);
+        insertProcedureFromResourceId(ctx, R.raw.chain_test2);
+        insertProcedureFromResourceId(ctx, R.raw.api_test_entry);
+        insertProcedureFromResourceId(ctx, R.raw.api_test_select);
         */
         /* Haiti procedures */
-        //insertProcedure(ctx, R.raw.ssi);
+        //insertProcedureFromResourceId(ctx, R.raw.ssi);
     }
 
     /**

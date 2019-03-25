@@ -42,6 +42,7 @@ import org.sana.android.db.impl.InstructionsHelper;
 import org.sana.android.db.impl.NotificationsHelper;
 import org.sana.android.db.impl.ObservationsHelper;
 import org.sana.android.db.impl.ObserversHelper;
+import org.sana.android.db.impl.ProcedureGroupsHelper;
 import org.sana.android.db.impl.ProceduresHelper;
 import org.sana.android.db.impl.SubjectsHelper;
 
@@ -110,6 +111,8 @@ public abstract class ModelContentProvider extends ContentProvider {
                 return SubjectsHelper.getInstance();
             case (Uris.ENCOUNTER_TASK):
                 return EncounterTasksHelper.getInstance();
+            case (Uris.PROCEDURE_GROUP):
+                return ProcedureGroupsHelper.getInstance();
             default:
                 throw new IllegalArgumentException("Invalid uri in "
                         + "getTableHelper(): " + uri.toString());

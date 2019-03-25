@@ -28,6 +28,7 @@
 package org.sana.android.db;
 
 import org.sana.R;
+import org.sana.android.provider.ProcedureGroups;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.sana.R;
+import org.sana.android.task.ProcedureGroupSyncTask;
 import org.sana.api.IModel;
 import org.sana.net.Response;
 import org.sana.analytics.Runner;
@@ -215,6 +216,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
     public void hideViewsByRole() {
         mRoot = isAdmin(mObserver);
         if (!mRoot) {
+            findViewById(R.id.button_main_select_procedure_groups).setVisibility(View.GONE);
             LinearLayout main = (LinearLayout) findViewById(R.id.main_root);
             // TODO RBAC
             //main.removeView(findViewById(R.id.btn_main_select_patient));
@@ -266,6 +268,7 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
         // This prevents us from relaunching the login on every resume
         dump();
         hideViewsByRole();
+        syncProcedureGroups();
     }
 
     @Override
@@ -602,6 +605,10 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                         .putExtra(Intents.EXTRA_OBSERVER, mObserver);
                 startActivityForResult(intent, RUN_PROCEDURE);
                 break;
+            case R.id.button_main_select_procedure_groups:
+                intent = new Intent(this.getApplicationContext(), SelectProcedureGroups.class);
+                startActivity(intent);
+                break;
             /*
             case R.id.btn_main_unregistered_subject:
                 intent = new Intent(Intents.ACTION_RUN_PROCEDURE);
@@ -819,5 +826,19 @@ public class MainActivity extends BaseActivity implements AuthenticationDialogLi
                     default:
                 }
         }
+    }
+
+    private boolean syncProcedureGroups() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        long lastSync = prefs.getLong(Constants.PREFERENCE_PROCEDURE_GROUP_LAST_SYNC, 0);
+        long now = System.currentTimeMillis();
+
+        boolean synced = false;
+        if (now - lastSync > Constants.PROCEDURE_GROUP_SYNC_PERIOD) {
+            ProcedureGroupSyncTask procedureGroupSyncTask = new ProcedureGroupSyncTask(this);
+            procedureGroupSyncTask.execute();
+            synced = true;
+        }
+        return synced;
     }
 }
